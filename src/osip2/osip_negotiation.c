@@ -1238,12 +1238,12 @@ osip_negotiation_sdp_message_put_on_hold (sdp_message_t * sdp)
   rcvsnd = sdp_message_a_att_field_get (sdp, pos_media, pos);
   while (rcvsnd != NULL)
     {
-      if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "sendonly")
-	  && 0 == strcmp (rcvsnd, "sendrecv"))
+      if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "sendonly"))
 	{
 	  recv_send = 0;
 	}
-      else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
+      else if (rcvsnd != NULL && (0 == strcmp (rcvsnd, "recvonly")
+				  || 0 == strcmp (rcvsnd, "sendrecv")))
 	{
 	  recv_send = 0;
 	  sprintf (rcvsnd, "sendonly");
@@ -1263,7 +1263,8 @@ osip_negotiation_sdp_message_put_on_hold (sdp_message_t * sdp)
 	    {
 	      recv_send = 0;
 	    }
-	  else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
+	  else if (rcvsnd != NULL && (0 == strcmp (rcvsnd, "recvonly")
+				      || 0 == strcmp (rcvsnd, "sendrecv")))
 	    {
 	      recv_send = 0;
 	      sprintf (rcvsnd, "sendonly");
