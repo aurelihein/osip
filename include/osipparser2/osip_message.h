@@ -30,36 +30,6 @@
  * @brief oSIP SIP Message Accessor Routines
  *
  * This is the SIP accessor and parser related API.
- * <BR>Understanding the parser implementation will prevent you from
- * using it improperly. Read this carefully.<BR>
- * <BR>This implementation could be seen as a partial implementation
- * of the whole SIP syntax. In other words, the parser is 'tolerant'
- * and will not detect a lot of error cases. As an example, no error
- * will be detected while trying to parse the following request-uri:
- * <BR><pre><code>INVITE sip:jack@atosc.org:abcd SIP/2.0</code></pre>
- * <BR>This code shows that even if your SIP message is parsed
- * correctly by oSIP, it may still be not compliant. This could be
- * used by attackers to make your application crash or whatever.
- * In this example, if you are trying to call the atoi() method with
- * the string 'abcd', your application will crash. Of course, there
- * exist solutions! You can check yourself for the validity of the
- * string or use the strtol() method (found on most unix) which is
- * capable of detecting such error cases.
- * <BR>Are you wondering why the parser has been built this way?
- * <BR>The initial answer is that each SIP application have
- * different requirement and some (the proxy!) needs SIP message
- * to be parsed as quickly as possible. Also, most applications
- * only need a few information from a SIP message. (the first Via
- * is the only one interesting!). If the parser was fully checking each
- * Via field validity, it would consume too much CPU on useless
- * operations. If you think this model does not fit your application,
- * then you should buy a slow stack :-).
- * <BR>Is there any plan to change that behaviour?
- * <BR>I do not need it, but if this interest you, it would be
- * possible to compile oSIP in 2 different ways: a full checker
- * model could be useful for SIP application with no performance
- * requirements. Any contributions is welcomed and will be merged
- * if it's made optional.
  */
 
 /**

@@ -55,7 +55,8 @@ WARN_LOGFILE           =
 INPUT                  = src/osip2 \
 			 src/osipparser2 \
 			 include/osip2 \
-			 include/osipparser2
+			 include/osipparser2 \
+			 help/doxygen
 FILE_PATTERNS          = *.h \
                          *.c *.dox
 RECURSIVE              = YES
