@@ -1,3 +1,7 @@
+libosip (0.8.2)
+	* ipv6 support (need more testing.)  - Thanks to tomohide.
+	* support for any scheme in url. (Use with care with applications.)
+	
 libosip (0.8.1) testing ;urgency=high
 	* new finite state machines for TRANSACTION LAYER compliant with
 	  the rfc2543bis-09.txt. This is a total rewrite. Those new
