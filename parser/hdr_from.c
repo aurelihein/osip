@@ -123,7 +123,13 @@ from_parse(from_t *from, char *hvalue)
   */
 
   displayname = strchr(hvalue,'"');
-  url = strchr(hvalue,'<');
+
+  url = strchr(hvalue, '<');
+  if (url!=NULL)
+    {
+      url_end=strchr(url, '>');
+      if (url_end==NULL) return -1;
+    }
 
   /* SIPit day2: this case was not supported
      first '"' is placed after '<' and after '>'
