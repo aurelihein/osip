@@ -264,6 +264,23 @@ test_sdp_message(char *msg, int verbose)
 	    sdp_t *dest;
 	    i = sdp_context_init(&context);
 	    i = sdp_context_set_mycontext(context, (void *)ua_context);
+
+	    {
+	      sdp_t *sdp;
+	      sdp_build_offer(context, &sdp, "10020", "10020");
+	      sdp_2char(sdp, &result);
+	      fprintf(stdout, "Here is the offer:\n%s\n", result);
+	      sfree(result);
+	      sdp_put_on_hold(sdp);
+	      sdp_2char(sdp, &result);
+	      fprintf(stdout, "Here is the offer on hold:\n%s\n", result);
+	      sfree(result);
+	      sdp_free(sdp);
+	      sfree(sdp);
+	    }
+
+
+
 	    i = sdp_context_set_remote_sdp(context, sdp);
 	    if (i!=0) {
 	      fprintf(stdout, "Initialisation of context failed. Could not negociate\n");

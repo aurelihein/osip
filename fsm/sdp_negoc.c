@@ -627,7 +627,7 @@ sdp_context_execute_negociation(sdp_context_t *context)
   i = sdp_init(&local);
   if (i!=0) return -1;
 
-  if (0!=strncmp(remote->v_version, "0", -1))
+  if (0!=strncmp(remote->v_version, "0", 1))
     {
       sdp_free(local);
       sfree(local);
@@ -683,4 +683,157 @@ sdp_context_execute_negociation(sdp_context_t *context)
       return 415;
     }
   
+}
+
+int
+sdp_build_offer(sdp_context_t *con, sdp_t **sdp, char *audio_port, char *video_port)
+{
+  int i;
+  int media_line = 0;
+
+  i = sdp_init(sdp);
+  if (i!=0) return -1;
+
+  sdp_v_version_set(*sdp, sgetcopy("0"));
+  
+  /* those fields MUST be set */
+  sdp_o_origin_set(*sdp,
+		   sgetcopy(config->o_username),
+		   sgetcopy(config->o_session_id),
+		   sgetcopy(config->o_session_version),
+		   sgetcopy(config->o_nettype),
+		   sgetcopy(config->o_addrtype),
+		   sgetcopy(config->o_addr));
+  sdp_s_name_set(*sdp, sgetcopy("A call"));
+  if (config->fcn_set_info!=NULL)
+    config->fcn_set_info(con,*sdp);
+  if (config->fcn_set_uri!=NULL)
+    config->fcn_set_uri(con,*sdp);
+  if (config->fcn_set_emails!=NULL)
+    config->fcn_set_emails(con,*sdp);
+  if (config->fcn_set_phones!=NULL)
+    config->fcn_set_phones(con,*sdp);
+  if (config->c_nettype!=NULL)
+    sdp_c_connection_add(*sdp, -1,
+			 sgetcopy(config->c_nettype),
+			 sgetcopy(config->c_addrtype),
+			 sgetcopy(config->c_addr),
+			 sgetcopy(config->c_addr_multicast_ttl),
+			 sgetcopy(config->c_addr_multicast_int));
+
+  { /* offer-answer draft says we must copy the "t=" line */
+    int now = time(NULL);
+    char *tmp = smalloc(15);
+    char *tmp2 = smalloc(15);
+    sprintf(tmp, "%i", now);
+    sprintf(tmp2, "%i", now+3600);
+
+    i = sdp_t_time_descr_add(*sdp, tmp, tmp2);
+    if (i!=0) return -1;
+  }
+  if (config->fcn_set_attributes!=NULL)
+    config->fcn_set_attributes(con,*sdp,-1);
+  
+
+  /* add all audio codec */
+  if (!list_eol(config->audio_codec,0))
+    {
+      int pos = 0;
+      payload_t *my = (payload_t *)list_get(config->audio_codec,pos);
+
+      /* all media MUST have the same PROTO, PORT. */
+      sdp_m_media_add(*sdp, sgetcopy("audio"), sgetcopy(audio_port),
+		      my->number_of_port, sgetcopy(my->proto));
+
+      while (!list_eol(config->audio_codec,pos))
+	{
+	  my = (payload_t *)list_get(config->audio_codec,pos);
+	  sdp_m_payload_add(*sdp,media_line,sgetcopy(my->payload));
+	  if (my->a_rtpmap!=NULL)
+	    sdp_a_attribute_add(*sdp, media_line, sgetcopy("rtpmap"),
+				sgetcopy(my->a_rtpmap));
+	  pos++;
+	}
+      media_line++;
+    }
+
+  /* add all video codec */
+  if (!list_eol(config->video_codec,0))
+    {
+      int pos = 0;
+      payload_t *my = (payload_t *)list_get(config->video_codec,pos);
+
+      /* all media MUST have the same PROTO, PORT. */
+      sdp_m_media_add(*sdp, sgetcopy("video"), sgetcopy(video_port),
+		      my->number_of_port, sgetcopy(my->proto));
+
+      while (!list_eol(config->video_codec,pos))
+	{
+	  my = (payload_t *)list_get(config->audio_codec,pos);
+	  sdp_m_payload_add(*sdp,media_line,sgetcopy(my->payload));
+	  if (my->a_rtpmap!=NULL)
+	    sdp_a_attribute_add(*sdp, media_line, sgetcopy("rtpmap"),
+				sgetcopy(my->a_rtpmap));
+	  pos++;
+	}
+      media_line++;
+    }
+  return 0;
+}
+
+
+int
+sdp_put_on_hold(sdp_t *sdp)
+{
+  int pos;
+  int pos_media = -1;
+  char *rcvsnd;
+  int recv_send = -1;
+  pos =0;
+  rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+  while (rcvsnd!=NULL)
+    {
+      if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "sendonly")
+	  && 0==strcmp(rcvsnd, "sendrecv"))
+	{
+	  recv_send = 0;
+	}
+      else if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "recvonly"))
+	{
+	  recv_send = 0;
+	  snprintf(rcvsnd, 8, "sendonly");
+	}
+      pos++;
+      rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+    }
+
+  pos_media=0;
+  while (!sdp_endof_media(sdp, pos_media))
+    {
+      pos=0;
+      rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+      while (rcvsnd!=NULL)
+	{
+	  if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "sendonly"))
+	    {
+	      recv_send = 0;
+	    }
+	  else if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "recvonly"))
+	    {
+	      recv_send = 0;
+	      snprintf(rcvsnd, 8, "sendonly");
+	    }
+	  pos++;
+	  rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+	}
+      pos_media++;
+    }
+
+  if (recv_send==-1)
+    {
+      /* we need to add a global attribute with a feild set to "sendonly" */
+      sdp_a_attribute_add(sdp, -1, sgetcopy("sendonly"), NULL);
+    }
+
+  return 0;
 }
