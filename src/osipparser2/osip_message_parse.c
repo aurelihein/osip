@@ -949,6 +949,7 @@ osip_message_get_reason (int replycode)
     {409, "Conflict"},
     {410, "Gone"},
     {411, "Length Required"},
+    {412, "Conditional Request Failed"},
     {413, "Request Entity Too Large"},
     {414, "Request-URI Too Large"},
     {415, "Unsupported Media Type"},
