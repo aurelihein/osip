@@ -43,10 +43,8 @@ AC_PROG_INSTALL
 
 
 dnl Initialize libtool
+LT_AC_PROG_SED
 AC_PROG_LIBTOOL
-AM_PROG_LIBTOOL
-AC_ENABLE_SHARED(yes)
-AC_ENABLE_STATIC(no)
 
 dnl declare --enable-* args and collect ac_help strings
 

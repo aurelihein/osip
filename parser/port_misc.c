@@ -418,10 +418,13 @@ trace_initialize (trace_level_t level, FILE * file)
   int i = 0;
 
   /* enable trace in log file by default */
+  logfile = NULL;
   if (file != NULL)
     logfile = file;
+#ifdef SYSTEM_LOGGER_ENABLED
   else
     logfile = stdout;
+#endif
 
   /* enable all lower levels */
   while (i < END_TRACE_LEVEL)
@@ -471,10 +474,13 @@ osip_trace (fi, li, level, f, chfr, va_list)
        va_list ap;
 #ifdef ENABLE_TRACE
 
+#if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
        if (logfile == NULL)
          {                      /* user did not initialize logger.. */
            return 1;
          }
+#endif
+
        if (f == NULL)
            f = logfile;
 
@@ -487,30 +493,57 @@ osip_trace (fi, li, level, f, chfr, va_list)
        /* vxworks can't have a local file */
        f = stdout;
 #endif
-#ifdef WIN32
-       f = stdout;
+
+       if (f)
+	 {
+	   if (level == OSIP_FATAL)
+	     fprintf (f, "| FATAL | <%s: %i> ", fi, li);
+	   else if (level == OSIP_BUG)
+	     fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
+	   else if (level == OSIP_ERROR)
+	     fprintf (f, "| ERROR | <%s: %i> ", fi, li);
+	   else if (level == OSIP_WARNING)
+	     fprintf (f, "|WARNING| <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO1)
+	     fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO2)
+	     fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO3)
+	     fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO4)
+	     fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
+
+	   vfprintf (f, chfr, ap);
+	   
+	   fflush (f);
+	 }
+#ifdef SYSTEM_LOGGER_ENABLED
+       else
+	 {
+           char buffer[512];                                                    
+           int in = 0;                                                          
+           if (level == OSIP_FATAL)                                             
+             in = sprintf (buffer, "| FATAL | <%s: %i> ", fi, li);              
+           else if (level == OSIP_BUG)                                          
+             in = sprintf (buffer, "|  BUG  | <%s: %i> ", fi, li);              
+           else if (level == OSIP_ERROR)                                        
+             in = sprintf (buffer, "| ERROR | <%s: %i> ", fi, li);              
+           else if (level == OSIP_WARNING)                                      
+             in = sprintf (buffer, "|WARNING| <%s: %i> ", fi, li);              
+           else if (level == OSIP_INFO1)                                        
+             in = sprintf (buffer, "| INFO1 | <%s: %i> ", fi, li);              
+           else if (level == OSIP_INFO2)                                        
+             in = sprintf (buffer, "| INFO2 | <%s: %i> ", fi, li);              
+           else if (level == OSIP_INFO3)                                        
+             in = sprintf (buffer, "| INFO3 | <%s: %i> ", fi, li);              
+           else if (level == OSIP_INFO4)                                        
+             in = sprintf (buffer, "| INFO4 | <%s: %i> ", fi, li);              
+
+	   vsprintf(buffer+in, chfr, ap);                                       
+           OutputDebugString(buffer);                                           
+	 }
 #endif
-
-       if (level == OSIP_FATAL)
-         fprintf (f, "| FATAL | <%s: %i> ", fi, li);
-       else if (level == OSIP_BUG)
-         fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
-       else if (level == OSIP_ERROR)
-         fprintf (f, "| ERROR | <%s: %i> ", fi, li);
-       else if (level == OSIP_WARNING)
-         fprintf (f, "|WARNING| <%s: %i> ", fi, li);
-       else if (level == OSIP_INFO1)
-         fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
-       else if (level == OSIP_INFO2)
-         fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
-       else if (level == OSIP_INFO3)
-         fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
-       else if (level == OSIP_INFO4)
-         fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
-
-       vfprintf (f, chfr, ap);
-
-       fflush (f);
+	   
 #endif
        va_end (ap);
        return 0;
