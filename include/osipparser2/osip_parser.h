@@ -150,6 +150,20 @@ extern "C"
   int osip_message_get_allow (const osip_message_t * sip, int pos,
 			      osip_allow_t ** dest);
 /**
+ * Set the Authentication-info header.
+ * @param sip The element to work on.
+ * @param hvalue The string describing the element.
+ */
+  int osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue);
+/**
+ * Get one Authentication-info header.
+ * @param sip The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
+ */
+  int osip_message_get_authentication_info (const osip_message_t * sip, int pos,
+			       osip_authentication_info_t ** dest);
+/**
  * Set the Authorization header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
@@ -343,6 +357,22 @@ extern "C"
 					    int pos,
 					    osip_proxy_authorization_t **
 					    dest);
+/**
+ * Set the Proxy-authentication-info header.
+ * @param sip The element to work on.
+ * @param hvalue The string describing the element.
+ */
+  int osip_message_set_proxy_authentication_info (osip_message_t * sip,
+					  const char *hvalue);
+/**
+ * Get the Proxy-authentication-info header.
+ * @param sip The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
+ */
+  int osip_message_get_proxy_authentication_info (const osip_message_t * sip,
+				      int pos,
+				      osip_proxy_authentication_info_t ** dest);
 /**
  * Set the Record-Route header.
  * @param sip The element to work on.

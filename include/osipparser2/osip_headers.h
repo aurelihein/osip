@@ -32,6 +32,7 @@
 #include <osipparser2/headers/osip_accept_language.h>
 #include <osipparser2/headers/osip_alert_info.h>
 #include <osipparser2/headers/osip_allow.h>
+#include <osipparser2/headers/osip_authentication_info.h>
 #include <osipparser2/headers/osip_authorization.h>
 #include <osipparser2/headers/osip_call_id.h>
 #include <osipparser2/headers/osip_call_info.h>
@@ -45,6 +46,7 @@
 #include <osipparser2/headers/osip_from.h>
 #include <osipparser2/headers/osip_mime_version.h>
 #include <osipparser2/headers/osip_proxy_authenticate.h>
+#include <osipparser2/headers/osip_proxy_authentication_info.h>
 #include <osipparser2/headers/osip_proxy_authorization.h>
 #include <osipparser2/headers/osip_record_route.h>
 #include <osipparser2/headers/osip_route.h>

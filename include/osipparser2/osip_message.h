@@ -67,6 +67,7 @@ extern "C"
     osip_list_t *accept_languages;    /**< Accept-Language headers */
     osip_list_t *alert_infos;         /**< Alert-Info headers */
     osip_list_t *allows;              /**< Allows headers */
+    osip_list_t *authentication_infos;/**< authentication_info headers */
     osip_list_t *authorizations;      /**< Authorizations headers */
     osip_call_id_t *call_id;          /**< Call-ID header */
     osip_list_t *call_infos;          /**< Call-Infos header */
@@ -80,6 +81,7 @@ extern "C"
     osip_from_t *from;                /**< From header */
     osip_mime_version_t *mime_version;/**< Mime-Version header */
     osip_list_t *proxy_authenticates; /**< Proxy-Authenticate headers */
+    osip_list_t *proxy_authentication_infos; /**< P-Authentication-Info headers */
     osip_list_t *proxy_authorizations;/**< Proxy-authorization headers */
     osip_list_t *record_routes;       /**< Record-Route headers */
     osip_list_t *routes;              /**< Route headers */

@@ -64,6 +64,7 @@
 #define ORGANIZATION		"organization"
 #define PRIORITY		"priority"
 #define PROXY_AUTHENTICATE	"proxy-authenticate"
+#define PROXY_AUTHENTICATION_INFO	"proxy-authentication-info"
 #define PROXY_AUTHORIZATION	"proxy-authorization"
 #define PROXY_REQUIRE		"proxy-require"
 #define RECORD_ROUTE		"record-route"
@@ -126,6 +127,7 @@
 #define SIP_BUSY_HERE                     486
 #define SIP_REQUEST_TERMINATED            487
 #define SIP_NOT_ACCEPTABLE_HERE           488
+#define SIP_BAD_EVENT                     489
 #define SIP_REQUEST_PENDING               491
 #define SIP_UNDECIPHERABLE                493
 #define SIP_INTERNAL_SERVER_ERROR         500
