@@ -349,10 +349,15 @@ quote_find (char *qstring)
 	  /* example: "\"john"  */
 	  /* example: "\\"jack" */
 	  {
+	    /* special case where the string start with '\' */
+	    if (*qstring=='\\')
+	      i++; /* an escape char was not counted */
 	    if (i % 2 == 0)	/* the '"' was not escaped */
 	      return quote;
 	    else
 	      {			/* else continue with the next '"' */
+		qstring = quote + 1; /* reset qstring because
+					(*quote+1) may be also == to '\\' */
 		quote = strchr (quote + 1, '"');
 		if (quote == NULL)
 		  return NULL;

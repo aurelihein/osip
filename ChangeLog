@@ -1,5 +1,5 @@
 libosip (0.9.3)
-	* fix a bug for quoted string starting with an escaped char '\'.
+	* fix a bug for quoted strings starting with an escaped char '\'.
 	* initial commit for WinCE support. (uncomplete)
 	* fsm/port_sema.c: (windows only) sem_trywait was never returning 0.
 	* add a method to get possible destination and port for a request.
