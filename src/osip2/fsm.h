@@ -51,11 +51,6 @@ osip_event_t *__osip_event_new (type_t type, int transactionid);
 type_t evt_set_type_incoming_sipmessage (osip_message_t * sip);
 type_t evt_set_type_outgoing_sipmessage (osip_message_t * sip);
 
-/* send a request on UDP.                       */
-int udp_send_request (osip_message_t * request, osip_uri_t * proxy);
-
-/* send a response on UDP.                       */
-int udp_send_response (osip_message_t * response);
 
 void __ict_load_fsm (void);
 void __ist_load_fsm (void);
