@@ -160,7 +160,6 @@ dialog_match_as_uac(dialog_t *dlg, sip_t *answer)
 int
 dialog_match_as_uas(dialog_t *dlg, sip_t *request)
 {
-  generic_param_t *tag_param_local;
   generic_param_t *tag_param_remote;
   int i;
   char *tmp;
@@ -176,14 +175,10 @@ dialog_match_as_uas(dialog_t *dlg, sip_t *request)
      To: local_uri;local_tag           <- LOCAL TAG ALWAYS EXIST
      From: remote_uri;remote_tag
   */
-  i = to_get_tag(request->to, &tag_param_local);
-  if (i!=0)
-    return -1;
+
   if (dlg->local_tag==NULL)
     /* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
     return -1;
-  if (0!=strcmp(tag_param_local->gvalue, dlg->local_tag))
-      return -1;
 
   i = from_get_tag(request->from, &tag_param_remote);
   if (i!=0 && dlg->remote_tag!=NULL)  /* no tag in request but tag in dialog */

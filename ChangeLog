@@ -1,4 +1,5 @@
 libosip (0.8.5)
+	* Dialog fully tested and hoped to be correct.
 	* osip_create_transaction: can now be used to create ICT and NICT
 	* contact_param_add: fix MACRO! an argument was missing.
 	* dialog.c: make it more compliant: TO BE TESTED!
