@@ -46,6 +46,12 @@
 
 #if defined(__VXWORKS_OS__)
 #include <selectLib.h>
+
+/* needed for snprintf replacement */
+#include <vxWorks.h>
+#include <fioLib.h>
+#include <string.h>
+
 #elif (!defined(WIN32) && !defined(_WIN32_WCE))
 #include <sys/time.h>
 #elif defined(WIN32)
@@ -870,3 +876,62 @@ void osip_set_allocators(osip_malloc_func_t  *malloc_func,
 
 #endif
 
+#if defined(__VXWORKS_OS__)
+
+typedef struct
+{
+  char* str;
+  int   max;
+  int   len;
+} _context;
+
+STATUS _cb_snprintf( char* buffer, int nc, int arg );
+
+STATUS _cb_snprintf( char* buffer, int nc, int arg )
+{
+  _context *ctx = (_context*)arg;
+
+  if( ctx->max - ctx->len - nc < 1 ) /* retain 1 pos for terminating
+\0 */
+  {
+    nc = ctx->max - ctx->len - 1;
+  }
+ 
+  if( nc > 0 )
+  {
+    memcpy( ctx->str + ctx->len, buffer, nc );
+    ctx->len += nc;
+  };
+
+  ctx->str[ctx->len] = '\0';
+
+  return OK;
+}
+
+
+int osip_vsnprintf( char* buf, int max, const char *fmt, va_list ap )
+{
+  _context ctx;  
+  ctx.str = buf;
+  ctx.max = max;
+  ctx.len = 0;
+
+  if( fioFormatV( fmt, ap, _cb_snprintf, (int)&ctx ) != OK )
+  {
+    return -1;
+  }
+
+  return ctx.len;
+}
+
+int osip_snprintf( char* buf, int max, const char* fmt, ... )
+{
+  int retval;
+  va_list ap;
+  va_start( ap, fmt );
+  retval = osip_vsnprintf( buf, max, fmt, ap );
+  va_end( ap );
+  return retval;
+}
+
+#endif
