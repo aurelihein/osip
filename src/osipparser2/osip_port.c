@@ -111,14 +111,14 @@ osip_fallback_random_number ()
       int fd;
       gettimeofday (&tv, NULL);
       ticks = tv.tv_sec + tv.tv_usec;
-      fd=open("/dev/random",O_RDONLY);
-      if (fd <= 0)
-	fd=open("/dev/urandom",O_RDONLY);
+      fd=open("/dev/urandom",O_RDONLY);
       if (fd > 0)
 	{
           unsigned int r;
-          if (read(fd, &r, sizeof(r))==sizeof(r))
+	  int i;
+          for (i=0;i<512;i++)
 	    {
+	      read(fd, &r, sizeof(r));
 	      ticks += r;
 	    }
 	  close(fd);
