@@ -837,13 +837,20 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
 			   osip_uri_param_t ** url_param)
 {
   int pos = 0;
+  int pname_len;
   osip_uri_param_t *u_param;
-
   *url_param = NULL;
+  if (pname==NULL)
+    return -1;
+  pname_len = strlen(pname);
+  if (pname_len<=0)
+    return -1;
   while (!osip_list_eol (params, pos))
     {
+      int len;
       u_param = (osip_uri_param_t *) osip_list_get (params, pos);
-      if (strncmp (u_param->gname, pname, strlen (pname)) == 0)
+      len = strlen(u_param->gname);
+      if (pname_len == len && strncmp (u_param->gname, pname, strlen (pname)) == 0)
 	{
 	  *url_param = u_param;
 	  return 0;

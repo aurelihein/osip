@@ -652,6 +652,8 @@ osip_from_tag_match (osip_from_t * from1, osip_from_t * from2)
   if ((tag_from1 != NULL && tag_from2 == NULL)
       || (tag_from1 == NULL && tag_from2 != NULL))
     return -1;
+  if (tag_from1->gvalue == NULL || tag_from2->gvalue == NULL)
+    return -1;
   if (0 != strcmp (tag_from1->gvalue, tag_from2->gvalue))
     return -1;
   return 0;
