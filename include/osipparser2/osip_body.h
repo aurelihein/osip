@@ -47,10 +47,10 @@ typedef struct osip_body osip_body_t;
  */
 struct osip_body
 {
-  char *body;
-  size_t        length;
-  osip_list_t *headers;
-  osip_content_type_t *content_type;
+  char *body;                        /**< buffer containing data */
+  size_t        length;              /**< length of data */
+  osip_list_t *headers;              /**< List of headers (when mime is used) */
+  osip_content_type_t *content_type; /**< Content-Type (when mime is used) */
 };
 
 

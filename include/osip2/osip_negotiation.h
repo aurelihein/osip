@@ -25,6 +25,7 @@
 
 
 /**
+ * @internal
  * @file osip_negotiation.h
  * @brief oSIP and SDP offer/answer model Routines
  *
@@ -112,6 +113,7 @@
  */
 
 /**
+ * @internal
  * @defgroup oSIP_OAM oSIP and SDP offer/answer model Handling
  * @ingroup oSIP
  * @{
@@ -139,9 +141,9 @@ extern "C"
  */
   struct osip_negotiation_ctx
   {
-    void *mycontext;		/* add the pointer to your personal context */
-    sdp_message_t *remote;
-    sdp_message_t *local;
+    void *mycontext;		/**< User Defined Pointer */
+    sdp_message_t *remote;      /**< Remote SDP offer     */
+    sdp_message_t *local;       /**< generated SDP answer */
   };
 
 /**
@@ -221,35 +223,35 @@ extern "C"
   struct osip_negotiation
   {
 
-    char *o_username;
-    char *o_session_id;
-    char *o_session_version;
-    char *o_nettype;
-    char *o_addrtype;
-    char *o_addr;
+    char *o_username;               /**< username */
+    char *o_session_id;             /**< session identifier */
+    char *o_session_version;        /**< session version */
+    char *o_nettype;                /**< Network Type */
+    char *o_addrtype;               /**< Address type */
+    char *o_addr;                   /**< Address */
 
-    char *c_nettype;
-    char *c_addrtype;
-    char *c_addr;
-    char *c_addr_multicast_ttl;
-    char *c_addr_multicast_int;
+    char *c_nettype;                /**< Network Type */
+    char *c_addrtype;               /**< Address Type */
+    char *c_addr;                   /**< Address */
+    char *c_addr_multicast_ttl;     /**< TTL value for multicast address  */
+    char *c_addr_multicast_int;     /**< Nb of address for multicast */
 
-    osip_list_t *audio_codec;
-    osip_list_t *video_codec;
-    osip_list_t *other_codec;
+    osip_list_t *audio_codec;       /**< supported audio codec */
+    osip_list_t *video_codec;       /**< supported video codec */
+    osip_list_t *other_codec;       /**< supported application */
 
-    int (*fcn_set_info) (void *, sdp_message_t *);
-    int (*fcn_set_uri) (void *, sdp_message_t *);
+    int (*fcn_set_info) (void *, sdp_message_t *);   /**< callback for info */
+    int (*fcn_set_uri) (void *, sdp_message_t *);    /**< callback for uri */
 
-    int (*fcn_set_emails) (void *, sdp_message_t *);
-    int (*fcn_set_phones) (void *, sdp_message_t *);
-    int (*fcn_set_attributes) (void *, sdp_message_t *, int);
-    int (*fcn_accept_audio_codec) (void *, char *, char *, int, char *);
-    int (*fcn_accept_video_codec) (void *, char *, char *, int, char *);
-    int (*fcn_accept_other_codec) (void *, char *, char *, char *, char *);
-    char *(*fcn_get_audio_port) (void *, int);
-    char *(*fcn_get_video_port) (void *, int);
-    char *(*fcn_get_other_port) (void *, int);
+    int (*fcn_set_emails) (void *, sdp_message_t *); /**< callback for email */
+    int (*fcn_set_phones) (void *, sdp_message_t *); /**< callback for phones */
+    int (*fcn_set_attributes) (void *, sdp_message_t *, int); /**< callback for attr */
+    int (*fcn_accept_audio_codec) (void *, char *, char *, int, char *); /**< callback to accept audio codec during negotiation */
+    int (*fcn_accept_video_codec) (void *, char *, char *, int, char *); /**< callback to accept video codec during negotiation */
+    int (*fcn_accept_other_codec) (void *, char *, char *, char *, char *); /**< callback to accept application during negotiation */
+    char *(*fcn_get_audio_port) (void *, int);   /**< get port for audio stream */
+    char *(*fcn_get_video_port) (void *, int);   /**< get port for video stream */
+    char *(*fcn_get_other_port) (void *, int);   /**< get port for app stream */
 
   };
 
@@ -550,15 +552,15 @@ extern "C"
 					osip_negotiation_ctx_t * ctx,
 					sdp_message_t ** sdp,
 					char *audio_port, char *video_port);
-
-#ifndef DOXYGEN
+/**
+ *@internal
+ */
   int __osip_negotiation_sdp_build_offer (osip_negotiation_t *,
 					  osip_negotiation_ctx_t * ctx,
 					  sdp_message_t ** sdp,
 					  char *audio_port, char *video_port,
 					  char *audio_codec,
 					  char *video_codec);
-#endif
 
 /** Put the SDP message on hold in outgoing invite
  * @param sdp The sdp message to modify.

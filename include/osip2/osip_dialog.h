@@ -114,24 +114,23 @@ extern "C"
 
 /**
  * Structure for referencing a dialog.
+ * @struct osip_dialog
  */
   struct osip_dialog
   {
-    /*  char *dialog_id; ***implied*** *//* call-id:local_tag:remote-tag */
-    char *call_id;
-    char *local_tag;
-    char *remote_tag;
-    osip_list_t *route_set;
-    int local_cseq;
-    int remote_cseq;
-    osip_to_t *remote_uri;
-    osip_from_t *local_uri;
-    osip_contact_t *remote_contact_uri;
-    int secure;
+    char *call_id;                       /**< Call-ID*/
+    char *local_tag;                     /**< local tag */
+    char *remote_tag;                    /**< remote tag */
+    osip_list_t *route_set;              /**< route set */
+    int local_cseq;                      /**< last local cseq */
+    int remote_cseq;                     /**< last remote cseq*/
+    osip_to_t *remote_uri;               /**< remote_uri */
+    osip_from_t *local_uri;              /**< local_uri */
+    osip_contact_t *remote_contact_uri;  /**< remote contact_uri */
+    int secure;                          /**< use secure transport layer */
 
-    /* type of dialog (CALLEE or CALLER) */
-    osip_dialog_type_t type;
-    state_t state;		/* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+    osip_dialog_type_t type;             /**< type of dialog (CALLEE or CALLER) */
+    state_t state;                       /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
   };
 
 /**
@@ -157,8 +156,7 @@ extern "C"
  * @param local_cseq The local cseq
  */
   int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
-						   osip_message_t *
-						   next_request,
+						   osip_message_t *next_request,
 						   int local_cseq);
 
 /**
@@ -242,10 +240,18 @@ extern "C"
   int osip_dialog_match_as_uas (osip_dialog_t * dialog,
 				osip_message_t * request);
 
-#ifndef DOXYGEN
+/**
+ * @internal
+ * Is dialog initiated by as CALLER
+ * @param dialog The element to work on.
+ */
   int osip_dialog_is_originator (osip_dialog_t * dialog);
+/**
+ * @internal
+ * Is dialog initiated by as CALLEE
+ * @param dialog The element to work on.
+ */
   int osip_dialog_is_callee (osip_dialog_t * dialog);
-#endif
 
 
 #ifdef __cplusplus

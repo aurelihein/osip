@@ -67,12 +67,12 @@ extern "C"
   struct osip_fifo
   {
 #ifdef OSIP_MT
-    struct osip_mutex *qislocked;
-    struct osip_sem *qisempty;
+    struct osip_mutex *qislocked;  /**@internal */
+    struct osip_sem *qisempty;     /**@internal */
 #endif
-    osip_list_t *queue;
-    int nb_elt;
-    osip_fifo_etat etat;
+    osip_list_t *queue;            /**< list of nodes containing elements */
+    int nb_elt;                    /**< nb of elements */
+    osip_fifo_etat etat;           /**@internal state of the fifo */
   };
 
 /**

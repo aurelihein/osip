@@ -60,8 +60,8 @@ extern "C"
  */
   struct __node
   {
-    void *next;			/* next __node_t */
-    void *element;
+    void *next;			/**< next __node_t containing element */
+    void *element;              /**< element in Current node */
   };
 #endif
 
@@ -78,8 +78,8 @@ extern "C"
   struct osip_list
   {
 
-    int nb_elt;
-    __node_t *node;
+    int nb_elt;         /**< Number of element in the list */
+    __node_t *node;     /**< Next node containing element  */
 
   };
 

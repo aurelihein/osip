@@ -85,52 +85,49 @@ extern "C"
  */
   struct osip_message
   {
-    /* Start-Line definition */
-    char *sip_version;
-    /* req */
-    osip_uri_t *req_uri;
-    char *sip_method;
-    /* resp */
-    int status_code;
-    char *reason_phrase;
-    /* End of Start-Line definition */
+    char *sip_version;                /**< SIP version (SIP request only) */
+    osip_uri_t *req_uri;              /**< Request-Uri (SIP request only) */
+    char *sip_method;                 /**< METHOD (SIP request only) */
 
-    osip_list_t *accepts;
-    osip_list_t *accept_encodings;
-    osip_list_t *accept_languages;
-    osip_list_t *alert_infos;
-    osip_list_t *allows;
-    osip_list_t *authorizations;
-    osip_call_id_t *call_id;
-    osip_list_t *call_infos;
-    osip_list_t *contacts;
-    osip_list_t *content_dispositions;
-    osip_list_t *content_encodings;
-    osip_content_length_t *content_length;
-    osip_content_type_t *content_type;
-    osip_cseq_t *cseq;
-    osip_list_t *error_infos;
-    osip_from_t *from;
-    osip_mime_version_t *mime_version;
-    osip_list_t *proxy_authenticates;
-    osip_list_t *proxy_authorizations;
-    osip_list_t *record_routes;
-    osip_list_t *routes;
-    osip_to_t *to;
-    osip_list_t *vias;
-    osip_list_t *www_authenticates;
+    int status_code;                  /**< Status Code (SIP answer only) */
+    char *reason_phrase;              /**< Reason Phrase (SIP answer only) */
 
-    osip_list_t *headers;
+    osip_list_t *accepts;             /**< Accept headers */
+    osip_list_t *accept_encodings;    /**< Accept-Encoding headers */
+    osip_list_t *accept_languages;    /**< Accept-Language headers */
+    osip_list_t *alert_infos;         /**< Alert-Info headers */
+    osip_list_t *allows;              /**< Allows headers */
+    osip_list_t *authorizations;      /**< Authorizations headers */
+    osip_call_id_t *call_id;          /**< Call-ID header */
+    osip_list_t *call_infos;          /**< Call-Infos header */
+    osip_list_t *contacts;            /**< Contacts headers */
+    osip_list_t *content_dispositions;/**< Content-Dispositions headers */
+    osip_list_t *content_encodings;   /**< Content-Encodings headers */
+    osip_content_length_t *content_length;   /**< Content-Length header */
+    osip_content_type_t *content_type;       /**< Content-Type header */
+    osip_cseq_t *cseq;                /**< CSeq header */
+    osip_list_t *error_infos;         /**< Error-Info headers */
+    osip_from_t *from;                /**< From header */
+    osip_mime_version_t *mime_version;/**< Mime-Version header */
+    osip_list_t *proxy_authenticates; /**< Proxy-Authenticate headers */
+    osip_list_t *proxy_authorizations;/**< Proxy-authorization headers */
+    osip_list_t *record_routes;       /**< Record-Route headers */
+    osip_list_t *routes;              /**< Route headers */
+    osip_to_t *to;                    /**< To header */
+    osip_list_t *vias;                /**< Vias headers */
+    osip_list_t *www_authenticates;   /**< WWW-Authenticate headers */
 
-    osip_list_t *bodies;
+    osip_list_t *headers;             /**< Other headers */
+
+    osip_list_t *bodies;              /**< List of attachements */
 
     /*
        1: structure and buffer "message" are identical.
        2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
      */
-    int message_property;
-    char *message;
-    size_t message_length;
+    int message_property;             /**@internal */
+    char *message;                    /**@internal */
+    size_t message_length;            /**@internal */
   };
 
 #ifndef SIP_MESSAGE_MAX_LENGTH
