@@ -423,7 +423,7 @@ url_2char(url_t *url, char **dest) {
   if (url->host==NULL&&url->string==NULL) return -1;
   if (url->scheme==NULL&&url->string!=NULL) return -1;
   if (url->string==NULL&&url->scheme==NULL)
-    url->scheme = sgetcopy("sip:"); /* default is sipurl */
+    url->scheme = sgetcopy("sip"); /* default is sipurl */
 
   buf = (char *) smalloc(200*sizeof(char));
   *dest = buf;
