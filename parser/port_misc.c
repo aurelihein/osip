@@ -438,9 +438,9 @@ is_trace_level_activate (trace_level_t level)
 
 int
 #if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__) || defined(WIN32)
-trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
+osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 #else
-trace (fi, li, level, f, chfr, va_list)
+osip_trace (fi, li, level, f, chfr, va_list)
      char *fi;
      char *li;
      int level;

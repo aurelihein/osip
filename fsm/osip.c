@@ -415,7 +415,7 @@ osip_distribute_event (osip_t * osip, sipevent_t * evt)
 
               /* TODO */
 
-              TRACE (trace
+              OSIP_TRACE (osip_trace
                      (__FILE__, __LINE__, OSIP_WARNING, NULL,
                       "transaction does not yet exist... %x callid:%s\n", evt,
                       evt->sip->call_id->number));
@@ -447,7 +447,7 @@ osip_distribute_event (osip_t * osip, sipevent_t * evt)
       return transaction;
   } else
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_BUG, NULL, "wrong event type %x\n", evt));
       return NULL;
     }
@@ -468,7 +468,7 @@ transaction_t *
 osip_find_transaction (osip_t * osip, sipevent_t * evt)
 {
 #ifdef OSIP_MT
-  TRACE (trace
+  OSIP_TRACE (osip_trace
          (__FILE__, __LINE__, OSIP_BUG, NULL,
           "\n\n\n\nYou are using a multithreaded application, but this method is not allowed! Use osip_find_transaction_add_add_event() instead.\n\n\\n"));
 #endif
@@ -602,7 +602,7 @@ osip_create_transaction (osip_t * osip, sipevent_t * evt)
         ctx_type = NICT;
   } else
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_ERROR, NULL,
               "Cannot build a transction for this message!\n"));
       return NULL;

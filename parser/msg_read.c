@@ -93,7 +93,7 @@ msg_startline_2char (startline_t * strtline, char **dest)
   if (strtline->statuscode != NULL)
     return startline_2charresp (strtline, dest);
 
-  TRACE (trace
+  OSIP_TRACE (osip_trace
          (__FILE__, __LINE__, TRACE_LEVEL1, NULL,
           "ERROR strtline->method has no value!\n"));
   return -1;                    /* should never come here */
@@ -738,11 +738,11 @@ msg_logresponse (sip_t * sip, char *fmt)
       i = msg_2char (sip, &tmp1);
       if (i != -1)
         {
-          trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout, "MESSAGE :\n%s\n",
+          osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout, "MESSAGE :\n%s\n",
                  tmp1);
           sfree (tmp1);
       } else
-        trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+        osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
                "MESSAGE : Could not make a string of message!!!!\n");
     }
 
@@ -755,7 +755,7 @@ msg_logresponse (sip_t * sip, char *fmt)
       if (i == -1)
         return;
 
-      trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
+      osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
              sip->strtline->statuscode, sip->strtline->reasonphrase,
              sip->cseq->method, tmp1, tmp2, sip->cseq->number,
              sip->call_id->number);
@@ -777,11 +777,11 @@ msg_logrequest (sip_t * sip, char *fmt)
       i = msg_2char (sip, &tmp1);
       if (i != -1)
         {
-          trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+          osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
                  "<app.c> MESSAGE :\n%s\n", tmp1);
           sfree (tmp1);
       } else
-        trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+        osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
                "<app.c> MESSAGE :\n Could not make a string of message\n");
     }
 
@@ -794,7 +794,7 @@ msg_logrequest (sip_t * sip, char *fmt)
       if (i == -1)
         return;
 
-      trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt, sip->cseq->method, tmp1,
+      osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt, sip->cseq->method, tmp1,
              tmp2, sip->cseq->number, sip->call_id->number);
       sfree (tmp1);
       sfree (tmp2);

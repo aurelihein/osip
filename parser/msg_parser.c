@@ -69,7 +69,7 @@ startline_parsereq (startline_t * dest, char *buf, char **headers)
           hp++;
         else
           {
-            TRACE (trace
+            OSIP_TRACE (osip_trace
                    (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
             return -1;
           }
@@ -117,7 +117,7 @@ startline_parseresp (startline_t * dest, char *buf, char **headers)
           hp++;
         else
           {
-            TRACE (trace
+            OSIP_TRACE (osip_trace
                    (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
             return -1;
           }
@@ -176,7 +176,7 @@ find_next_crlf (char *start_of_header, char **end_of_header)
             soh++;
           else
             {
-              TRACE (trace
+              OSIP_TRACE (osip_trace
                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
                       "Final CRLF is missing\n"));
               return -1;
@@ -251,14 +251,14 @@ find_next_crlfcrlf (char *start_of_part, char **end_of_part)
       i = find_next_crlf (start_of_line, &end_of_line);
       if (i == -1)
         {                       /* error case??? no end of mesage found */
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "Final CRLF is missing\n"));
           return -1;
         }
       if ('\0' == end_of_line[0])
         {                       /* error case??? no end of message found */
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "Final CRLF is missing\n"));
           return -1;
@@ -296,7 +296,7 @@ msg_set_header (sip_t * sip, char *hname, char *hvalue)
       ret = parser_callmethod (my_index, sip, hvalue);
       if (ret == -1)
         {
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "Could not set header: \"%s\" %s\n", hname, hvalue));
           return -1;
@@ -306,7 +306,7 @@ msg_set_header (sip_t * sip, char *hname, char *hvalue)
   /* unknownheader */
   if (msg_setheader (sip, hname, hvalue) == -1)
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_ERROR, NULL,
               "Could not set unknown header\n"));
       return -1;
@@ -445,14 +445,14 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       i = find_next_crlf (start_of_header, &end_of_header);
       if (i == -1)
         {
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "End of header Not found\n"));
           return -1;            /* this is an error case!     */
         }
       if (end_of_header[0] == '\0')
         {                       /* final CRLF is missing */
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "SIP message does not end with CRLFCRLF\n"));
           return -1;
@@ -461,7 +461,7 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       colon_index = strchr (start_of_header, ':');
       if (colon_index == NULL)
         {
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "End of header Not found\n"));
           return -1;            /* this is also an error case */
@@ -501,7 +501,7 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       sfree (hvalue);
       if (i == -1)
         {
-          TRACE (trace
+          OSIP_TRACE (osip_trace
                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
                   "End of header Not found\n"));
           return -1;
@@ -518,7 +518,7 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       start_of_header = end_of_header;
     }
 
-  TRACE (trace
+  OSIP_TRACE (osip_trace
          (__FILE__, __LINE__, OSIP_BUG, NULL, "This code cannot be reached\n"));
   return -1;
 }
@@ -657,7 +657,7 @@ msg_parse (sip_t * sip, char *buf)
   i = msg_startline_parse (sip->strtline, buf, &next_header_index);
   if (i == -1)
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_ERROR, NULL,
               "error in msg_startline_init()\n"));
       return -1;
@@ -668,7 +668,7 @@ msg_parse (sip_t * sip, char *buf)
   i = msg_headers_parse (sip, buf, &next_header_index);
   if (i == -1)
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_ERROR, NULL,
               "error in msg_headers_parse()\n"));
       return -1;
@@ -687,7 +687,7 @@ msg_parse (sip_t * sip, char *buf)
   i = msg_body_parse (sip, buf, &next_header_index);
   if (i == -1)
     {
-      TRACE (trace
+      OSIP_TRACE (osip_trace
              (__FILE__, __LINE__, OSIP_ERROR, NULL,
               "error in msg_body_parse()\n"));
       return -1;

@@ -29,7 +29,7 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
   int i;
   time_t now;
 
-  TRACE (trace
+  OSIP_TRACE (osip_trace
          (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NICT context\n"));
 
   *nict = (nict_t *) smalloc (sizeof (nict_t));
@@ -105,7 +105,7 @@ nict_free (nict_t * nict)
 {
   if (nict == NULL)
     return -1;
-  TRACE (trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
 
   sfree (nict->destination);
   return 0;

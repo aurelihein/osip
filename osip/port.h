@@ -219,21 +219,21 @@ extern "C"
 /* INPUT: chfr | format string for next args       */
   int
 #if defined(HAVE_STDARG_H) || defined(WIN32) || defined(__VXWORKS_OS__)
-    trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...);
+    osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...);
 #else
 /* ERROR? I never tested this */
-    trace (fi, li, level, f, chfr, va_list);
+    osip_trace (fi, li, level, f, chfr, va_list);
 #endif
 
 #ifdef ENABLE_TRACE
 
   /* #ifndef TRACE ??? quick and temporary hack for VC++ */
-#define TRACE(P) P
+#define OSIP_TRACE(P) P
   /* #endif */
 
 #else
 
-#define TRACE(P) do {} while (0)
+#define OSIP_TRACE(P) do {} while (0)
 
 #endif
 
