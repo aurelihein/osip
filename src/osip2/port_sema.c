@@ -325,7 +325,7 @@ osip_mutex_init ()
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
   if (mut == NULL)
     return NULL;
-  if (mut->h = CreateMutex (NULL, FALSE, NULL) != NULL)
+  if ((mut->h = CreateMutex (NULL, FALSE, NULL)) != NULL)
     return (struct osip_mutex *) (mut);
   osip_free (mut);
   return (NULL);
@@ -371,7 +371,7 @@ osip_sem_init (unsigned int value)
   if (sem == NULL)
     return NULL;
 
-  if (sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL) != NULL)
+  if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
     return (struct osip_sem *) (sem);
   osip_free (sem);
   return (NULL);
