@@ -27,7 +27,8 @@ ist_init (ist_t ** ist, osip_t * osip, sip_t * invite)
 {
   int i;
 
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating IST context\n"));
+  OSIP_TRACE (osip_trace
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating IST context\n"));
 
   *ist = (ist_t *) smalloc (sizeof (ist_t));
   if (*ist == NULL)
@@ -88,7 +89,8 @@ ist_free (ist_t * ist)
 {
   if (ist == NULL)
     return -1;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ist ressource\n"));
+  OSIP_TRACE (osip_trace
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ist ressource\n"));
 
   return 0;
 }

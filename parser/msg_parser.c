@@ -70,7 +70,7 @@ startline_parsereq (startline_t * dest, char *buf, char **headers)
         else
           {
             OSIP_TRACE (osip_trace
-                   (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
+                        (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
             return -1;
           }
       }
@@ -118,7 +118,7 @@ startline_parseresp (startline_t * dest, char *buf, char **headers)
         else
           {
             OSIP_TRACE (osip_trace
-                   (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
+                        (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found\n"));
             return -1;
           }
       }
@@ -177,8 +177,8 @@ find_next_crlf (char *start_of_header, char **end_of_header)
           else
             {
               OSIP_TRACE (osip_trace
-                     (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                      "Final CRLF is missing\n"));
+                          (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                           "Final CRLF is missing\n"));
               return -1;
             }
         }
@@ -252,15 +252,15 @@ find_next_crlfcrlf (char *start_of_part, char **end_of_part)
       if (i == -1)
         {                       /* error case??? no end of mesage found */
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "Final CRLF is missing\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "Final CRLF is missing\n"));
           return -1;
         }
       if ('\0' == end_of_line[0])
         {                       /* error case??? no end of message found */
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "Final CRLF is missing\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "Final CRLF is missing\n"));
           return -1;
       } else if ('\r' == end_of_line[0])
         {
@@ -297,8 +297,8 @@ msg_set_header (sip_t * sip, char *hname, char *hvalue)
       if (ret == -1)
         {
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "Could not set header: \"%s\" %s\n", hname, hvalue));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "Could not set header: \"%s\" %s\n", hname, hvalue));
           return -1;
         }
       return 0;
@@ -307,8 +307,8 @@ msg_set_header (sip_t * sip, char *hname, char *hvalue)
   if (msg_setheader (sip, hname, hvalue) == -1)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "Could not set unknown header\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Could not set unknown header\n"));
       return -1;
     }
 
@@ -446,15 +446,15 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       if (i == -1)
         {
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "End of header Not found\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "End of header Not found\n"));
           return -1;            /* this is an error case!     */
         }
       if (end_of_header[0] == '\0')
         {                       /* final CRLF is missing */
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "SIP message does not end with CRLFCRLF\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "SIP message does not end with CRLFCRLF\n"));
           return -1;
         }
       /* find the headere name */
@@ -462,8 +462,8 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       if (colon_index == NULL)
         {
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "End of header Not found\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "End of header Not found\n"));
           return -1;            /* this is also an error case */
         }
       if (colon_index - start_of_header + 1 < 2)
@@ -502,8 +502,8 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       if (i == -1)
         {
           OSIP_TRACE (osip_trace
-                 (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                  "End of header Not found\n"));
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "End of header Not found\n"));
           return -1;
         }
 
@@ -519,7 +519,8 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
     }
 
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_BUG, NULL, "This code cannot be reached\n"));
+              (__FILE__, __LINE__, OSIP_BUG, NULL,
+               "This code cannot be reached\n"));
   return -1;
 }
 
@@ -658,8 +659,8 @@ msg_parse (sip_t * sip, char *buf)
   if (i == -1)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "error in msg_startline_init()\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "error in msg_startline_init()\n"));
       return -1;
     }
   buf = next_header_index;
@@ -669,8 +670,8 @@ msg_parse (sip_t * sip, char *buf)
   if (i == -1)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "error in msg_headers_parse()\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "error in msg_headers_parse()\n"));
       return -1;
     }
   buf = next_header_index;
@@ -688,8 +689,8 @@ msg_parse (sip_t * sip, char *buf)
   if (i == -1)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "error in msg_body_parse()\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "error in msg_body_parse()\n"));
       return -1;
     }
   buf = next_header_index;

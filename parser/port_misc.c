@@ -382,6 +382,7 @@ void
 trace_disable_level (trace_level_t level)
 {
 }
+
 boolean
 is_trace_level_activate (trace_level_t level)
 {

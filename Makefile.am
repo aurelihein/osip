@@ -28,4 +28,10 @@ deb:
 	dpkg-buildpackage -rfakeroot
 
 
+indent:
+	indent */*.c
+	indent */*.h
+	rm -rf */*.c~
+	rm -rf */*.h~
+
 

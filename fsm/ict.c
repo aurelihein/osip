@@ -29,7 +29,8 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
   int i;
   time_t now;
 
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating ICT context\n"));
+  OSIP_TRACE (osip_trace
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating ICT context\n"));
 
   *ict = (ict_t *) smalloc (sizeof (ict_t));
   if (*ict == NULL)
@@ -107,7 +108,8 @@ ict_free (ict_t * ict)
 {
   if (ict == NULL)
     return -1;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
+  OSIP_TRACE (osip_trace
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
 
   sfree (ict->destination);
   return 0;

@@ -1365,8 +1365,8 @@ sdp_parse (sdp_t * sdp, const char *buf)
     /* return -1; */
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "The \"s\" parameter is mandatory, but this packet does not contain any! - anyway, we don't mind about it.\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "The \"s\" parameter is mandatory, but this packet does not contain any! - anyway, we don't mind about it.\n"));
     }
   ptr = next_buf;
 
@@ -1401,8 +1401,8 @@ sdp_parse (sdp_t * sdp, const char *buf)
   if (list_size (sdp->e_emails) == 0 && list_size (sdp->p_phones) == 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "The rfc2327 says there should be at least an email or a phone header!- anyway, we don't mind about it.\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "The rfc2327 says there should be at least an email or a phone header!- anyway, we don't mind about it.\n"));
     }
 
   i = sdp_parse_c (sdp, ptr, &next_buf);

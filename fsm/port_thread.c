@@ -54,8 +54,8 @@ sthread_create (int stacksize, sthread_t * thread, void *(*func) (void *),
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "Error while creating a new thread\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Error while creating a new thread\n"));
       return NULL;
     }
   return thread;

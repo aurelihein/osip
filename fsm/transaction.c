@@ -33,9 +33,9 @@ transaction_init (transaction_t ** transaction, context_type_t ctx_type,
   time_t now;
 
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO2, NULL,
-          "allocating transaction ressource %i %s\n", transactionid,
-          request->call_id->number));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL,
+               "allocating transaction ressource %i %s\n", transactionid,
+               request->call_id->number));
 
   *transaction = (transaction_t *) smalloc (sizeof (transaction_t));
   if (*transaction == NULL)
@@ -182,9 +182,10 @@ transaction_free (transaction_t * transaction)
   if (transaction->orig_request != NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_INFO2, NULL,
-              "free transaction ressource %i %s\n", transaction->transactionid,
-              transaction->orig_request->call_id->number));
+                  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+                   "free transaction ressource %i %s\n",
+                   transaction->transactionid,
+                   transaction->orig_request->call_id->number));
     }
   if (transaction->ctx_type == ICT)
     {
@@ -211,8 +212,8 @@ transaction_free (transaction_t * transaction)
   if (i != 0)                   /* yet removed ??? */
     {
       OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_BUG, NULL,
-                    "transaction already removed from list %i!\n",
-                    transaction->transactionid));
+                              "transaction already removed from list %i!\n",
+                              transaction->transactionid));
     }
 
   /* empty the fifo */
@@ -260,9 +261,10 @@ transaction_free2 (transaction_t * transaction)
   if (transaction->orig_request != NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_INFO2, NULL,
-              "free transaction ressource %i %s\n", transaction->transactionid,
-              transaction->orig_request->call_id->number));
+                  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+                   "free transaction ressource %i %s\n",
+                   transaction->transactionid,
+                   transaction->orig_request->call_id->number));
     }
   if (transaction->ctx_type == ICT)
     {
@@ -340,17 +342,17 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
     }
 
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO4, NULL,
-          "sipevent evt->transactionid: %i\n", evt->transactionid));
+              (__FILE__, __LINE__, OSIP_INFO4, NULL,
+               "sipevent evt->transactionid: %i\n", evt->transactionid));
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent tr->state: %i\n",
-          transaction->state));
+              (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent tr->state: %i\n",
+               transaction->state));
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent evt->type: %i\n",
-          evt->type));
+              (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent evt->type: %i\n",
+               evt->type));
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent evt->sip: %x\n",
-          evt->sip));
+              (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent evt->sip: %x\n",
+               evt->sip));
 
   if (transaction->ctx_type == ICT)
     statemachine = ict_get_fsm ();
@@ -364,7 +366,8 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
   if (-1 == fsm_callmethod (evt->type,
                             transaction->state, statemachine, evt, transaction))
     {
-      OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO3, NULL, "USELESS event!\n"));
+      OSIP_TRACE (osip_trace
+                  (__FILE__, __LINE__, OSIP_INFO3, NULL, "USELESS event!\n"));
       /* message is useless. */
       if (EVT_IS_MSG (evt))
         {
@@ -377,8 +380,8 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
   } else
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_INFO4, NULL,
-              "sipevent evt: method called!\n"));
+                  (__FILE__, __LINE__, OSIP_INFO4, NULL,
+                   "sipevent evt: method called!\n"));
     }
   sfree (evt);                  /* this is the ONLY place for freeing event!! */
   return 1;
@@ -560,24 +563,24 @@ transaction_matching_response_to_xict_17_1_3 (transaction_t * tr, sip_t * respon
   if (topvia_response == NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "Remote UA is not compliant: missing a Via header!\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Remote UA is not compliant: missing a Via header!\n"));
       return -1;
     }
   via_param_getbyname (tr->topvia, "branch", &b_request);
   if (b_request == NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_BUG, NULL,
-              "You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
+                  (__FILE__, __LINE__, OSIP_BUG, NULL,
+                   "You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
       return -1;
     }
   via_param_getbyname (topvia_response, "branch", &b_response);
   if (b_response == NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_BUG, NULL,
-              "Remote UA is not compliant: missing a branch parameter header!\n"));
+                  (__FILE__, __LINE__, OSIP_BUG, NULL,
+                   "Remote UA is not compliant: missing a branch parameter header!\n"));
       return -1;
     }
 
@@ -624,8 +627,8 @@ transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request
   if (topvia_request == NULL)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_ERROR, NULL,
-              "Remote UA is not compliant: missing a Via header!\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Remote UA is not compliant: missing a Via header!\n"));
       return -1;
     }
   via_param_getbyname (topvia_request, "branch", &b_request);

@@ -52,8 +52,8 @@ dialog_update_route_set_as_uas (dialog_t * dialog, sip_t * invite)
     {
       dialog->remote_contact_uri = NULL;
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a contact in invite!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a contact in invite!\n"));
     }
   return 0;
 }
@@ -90,8 +90,8 @@ dialog_update_route_set_as_uac (dialog_t * dialog, sip_t * response)
   } else
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a contact in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a contact in response!\n"));
     }
 
   if (dialog->state == DIALOG_EARLY && list_size (dialog->route_set) == 0)
@@ -127,8 +127,8 @@ dialog_update_tag_as_uac (dialog_t * dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       dialog->remote_tag = NULL;
   } else
     dialog->remote_tag = sgetcopy (tag->gvalue);
@@ -240,8 +240,8 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       return -1;
     }
 
@@ -268,8 +268,8 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
   } else
     (*dialog)->remote_tag = sgetcopy (tag->gvalue);
@@ -315,8 +315,8 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
       {
         (*dialog)->remote_contact_uri = NULL;
         OSIP_TRACE (osip_trace
-               (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                "Remote UA is not compliant: missing a contact in response!\n"));
+                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                     "Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
   (*dialog)->secure = -1;       /* non secure */
@@ -339,7 +339,8 @@ diau_error_1:
   sfree ((*dialog)->call_id);
 diau_error_0:
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not establish dialog!\n"));
+              (__FILE__, __LINE__, OSIP_ERROR, NULL,
+               "Could not establish dialog!\n"));
   sfree (*dialog);
   return -1;
 }
@@ -374,8 +375,8 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-             (__FILE__, __LINE__, OSIP_WARNING, NULL,
-              "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
   } else
     (*dialog)->remote_tag = sgetcopy (tag->gvalue);
@@ -422,8 +423,8 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
       {
         (*dialog)->remote_contact_uri = NULL;
         OSIP_TRACE (osip_trace
-               (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                "Remote UA is not compliant: missing a contact in response!\n"));
+                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                     "Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
   (*dialog)->secure = -1;       /* non secure */
@@ -446,7 +447,8 @@ diau_error_1:
   sfree ((*dialog)->call_id);
 diau_error_0:
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not establish dialog!\n"));
+              (__FILE__, __LINE__, OSIP_ERROR, NULL,
+               "Could not establish dialog!\n"));
   sfree (*dialog);
   return -1;
 }

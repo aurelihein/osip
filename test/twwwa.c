@@ -76,7 +76,7 @@ main (int argc, char **argv)
           } else
             printf ("Bad wwwauthenticate format: %s\n", a_wwwauthenticate);
           www_authenticate_free (wwwauthenticate);
-	  sfree (wwwauthenticate);
+          sfree (wwwauthenticate);
           printf ("=================================================\n");
         }
       res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);      /* lines are under 200 */

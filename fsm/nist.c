@@ -28,7 +28,7 @@ nist_init (nist_t ** nist, osip_t * osip, sip_t * invite)
   int i;
 
   OSIP_TRACE (osip_trace
-         (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NIST context\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NIST context\n"));
 
   *nist = (nist_t *) smalloc (sizeof (nist_t));
   if (*nist == NULL)
@@ -78,7 +78,8 @@ nist_free (nist_t * nist)
 {
   if (nist == NULL)
     return -1;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
+  OSIP_TRACE (osip_trace
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 
   return 0;
 }
