@@ -761,6 +761,7 @@ decrease_ref_count (void)
       osip_mutex_destroy (ref_mutex);
 #endif
       __osip_global_free ();
+      return;
     }
 #ifdef OSIP_MT
   osip_mutex_unlock (ref_mutex);
