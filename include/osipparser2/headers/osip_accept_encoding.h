@@ -46,8 +46,8 @@
  */
   struct osip_accept_encoding
   {
-    char *element;
-    osip_list_t *gen_params;
+    char *element;  /**< accept encoding main value */
+    osip_list_t *gen_params;  /**< accept encoding parameters */
   };
 
 

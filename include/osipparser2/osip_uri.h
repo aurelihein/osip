@@ -55,8 +55,8 @@ extern "C"
  */
   struct osip_uri_param
   {
-    char *gname;
-    char *gvalue;
+    char *gname;    /**< uri parameter name */
+    char *gvalue;   /**< uri parameter value */
   };
 
 /**
@@ -170,16 +170,15 @@ extern "C"
  */
   struct osip_uri
   {
-    char *scheme;
-    char *username;
-    char *password;
-    char *host;
-    char *port;
-    osip_list_t *url_params;
-    osip_list_t *url_headers;
+    char *scheme;              /**< Uri Scheme (sip or sips) */
+    char *username;            /**< Username */
+    char *password;            /**< Password */
+    char *host;                /**< Domain */
+    char *port;                /**< Port number */
+    osip_list_t *url_params;   /**< Uri parameters */
+    osip_list_t *url_headers;  /**< Uri headers */
 
-    char *string;
-		/** other url schemes are strings. (http, mailto...) */
+    char *string;  /**< Space for other url schemes. (http, mailto...) */
   };
 
 /**
