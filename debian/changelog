@@ -1,3 +1,8 @@
+libosip (0.8.9-1) unstable; urgency=low
+  * improvments and compile fix for hp-ux.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 28 Jul 2002 13:04:32 +0100
+
 libosip (0.8.8-1) unstable; urgency=low
   * race conditions and bug fixes.
 
