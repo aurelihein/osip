@@ -225,8 +225,8 @@ osip_util_replace_all_lws (char *sip_message)
 	  || ('\0' == tmp[1]) || ('\0' == tmp[2]) || ('\0' == tmp[3]))
 	return;
 
-      if ((('\r' == tmp[0]) && ('\r' == tmp[1])
-	   && ('\r' == tmp[2]) && ('\r' == tmp[3]))
+      if ((('\r' == tmp[0]) && ('\n' == tmp[1])
+	   && ('\r' == tmp[2]) && ('\n' == tmp[3]))
 	  ||
 	  (('\r' == tmp[0]) && ('\r' == tmp[1]))
 	  || (('\n' == tmp[0]) && ('\n' == tmp[1])))
