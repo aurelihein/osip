@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.58 $)dnl
+AC_REVISION($Revision: 1.59 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -166,6 +166,7 @@ dnl Checks for libraries. (those one are needed for sun)
 AC_CHECK_LIB(posix4,sem_open,[FSM_LIB="$FSM_LIB -lposix4 -mt"])
 AC_CHECK_LIB(nsl,nis_add,[FSM_LIB="$FSM_LIB -lnsl"])
 AC_CHECK_LIB(socket,sendto,[FSM_LIB="$FSM_LIB -lsocket"])
+AC_CHECK_LIB(c, lrand48, AC_DEFINE([HAVE_LRAND48], [], [Defined if you have lrand48]))
 
 AC_CACHE_CHECK([whether -Wall works], Wall_flag, [
   saved_CPPFLAGS=$CPPFLAGS

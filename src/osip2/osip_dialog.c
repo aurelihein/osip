@@ -293,6 +293,8 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   if (*dialog == NULL)
     return -1;
 
+  (*dialog)->your_instance = NULL;
+
   (*dialog)->type = CALLER;
   if (MSG_IS_STATUS_2XX (response))
     (*dialog)->state = DIALOG_CONFIRMED;
@@ -406,6 +408,8 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   if (*dialog == NULL)
     return -1;
 
+  (*dialog)->your_instance = NULL;
+
   (*dialog)->type = CALLER;
 #if 0
   (*dialog)->state = DIALOG_CONFIRMED;
@@ -478,6 +482,8 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
     return -1;
+
+  (*dialog)->your_instance = NULL;
 
   (*dialog)->type = CALLEE;
   if (MSG_IS_STATUS_2XX (response))

@@ -92,14 +92,22 @@ osip_fallback_random_number ()
       struct timeval tv;
 
       gettimeofday (&tv, NULL);
+#ifdef HAVE_LRAND48
+      srand48 (tv.tv_usec);
+#else
       srand (tv.tv_usec);
+#endif
 #else
       srand (time (NULL));
 #endif
       random_seed_set = 1;
     }
 
+#ifdef HAVE_LRAND48
+  return lrand48 ();
+#else
   return rand ();
+#endif
 }
 
 #ifdef WIN32_USE_CRYPTO
