@@ -256,7 +256,6 @@ set_next_token (char **dest, char *buf, int end_separator, char **next)
 }
 
 #if 0
-qdqs
 /*  not yet done!!! :-)
  */
   int
