@@ -1,5 +1,7 @@
 # valid cases with escaped characters
 #
+"\"\""abb" <sip:j.doe:secret@big.com;transport=tcp>
+"\""\"" <sip:j.doe:secret@big.com;transport=tcp>
 "\\" <sip:j.doe:secret@big.com;transport=tcp>
 "\\\\" <sip:j.doe:secret@big.com;transport=tcp>
 "\\\\\\\\" <sip:j.doe:secret@big.com;transport=tcp>
