@@ -254,9 +254,10 @@ osip_start_ack_retransmissions (osip_t * osip, osip_dialog_t * dialog,
 }
 
 /* we stop the 200ok when receiving the corresponding ack */
-void
+osip_dialog_t *
 osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
 {
+  osip_dialog_t *dialog = NULL;
   int i;
   ixt_t *ixt;
   osip_ixt_lock (osip);
@@ -267,10 +268,12 @@ osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
 	{
 	  osip_list_remove (osip->ixt_retransmissions, i);
 	  ixt_free (ixt);
+	  dialog = ixt->dialog;
 	  break;
 	}
     }
   osip_ixt_unlock (osip);
+  return dialog;
 }
 
 /* when a dialog is destroyed by the application,
