@@ -30,8 +30,7 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
   time_t now;
 
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "allocating ICT context\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating ICT context\n"));
 
   *ict = (ict_t *) smalloc (sizeof (ict_t));
   if (*ict == NULL)
@@ -48,7 +47,7 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
     via_t *via;
     char *proto;
 
-    i = msg_getvia (invite, 0, &via);	/* get top via */
+    i = msg_getvia (invite, 0, &via);   /* get top via */
     if (i != 0)
       goto ii_error_1;
     proto = via_getprotocol (via);
@@ -61,23 +60,22 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
     i = stricmp (proto, "TCP");
 #endif
     if (i != 0)
-      {				/* for other reliable protocol than TCP, the timer
-				   must be desactived by the external application */
-	(*ict)->timer_a_length = DEFAULT_T1;
-	(*ict)->timer_a_start = now;
-	if (64 * DEFAULT_T1 < 32000)
-	  (*ict)->timer_d_length = 32000;
-	else
-	  (*ict)->timer_d_length = 64 * DEFAULT_T1;
-	(*ict)->timer_d_start = -1;	/* not started */
-      }
-    else
-      {				/* TCP is used: */
-	(*ict)->timer_a_length = -1;	/* A is not ACTIVE */
-	(*ict)->timer_a_start = -1;	/* not started */
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*ict)->timer_a_length = DEFAULT_T1;
+        (*ict)->timer_a_start = now;
+        if (64 * DEFAULT_T1 < 32000)
+          (*ict)->timer_d_length = 32000;
+        else
+          (*ict)->timer_d_length = 64 * DEFAULT_T1;
+        (*ict)->timer_d_start = -1;     /* not started */
+    } else
+      {                         /* TCP is used: */
+        (*ict)->timer_a_length = -1;    /* A is not ACTIVE */
+        (*ict)->timer_a_start = -1;     /* not started */
 
-	(*ict)->timer_d_length = 0;	/* MUST do the transition immediatly */
-	(*ict)->timer_d_start = -1;	/* not started */
+        (*ict)->timer_d_length = 0;     /* MUST do the transition immediatly */
+        (*ict)->timer_d_start = -1;     /* not started */
       }
   }
 
@@ -87,14 +85,13 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
       int port = 5060;
 
       if (route->url->port != NULL)
-	port = satoi (route->url->port);
+        port = satoi (route->url->port);
       ict_set_destination ((*ict), sgetcopy (route->url->host), port);
-    }
-  else
+  } else
     (*ict)->port = 5060;
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
-  (*ict)->timer_b_start = now;	/* started */
+  (*ict)->timer_b_start = now;  /* started */
 
   /* Oups! A bug! */
   /*  (*ict)->port  = 5060; */
@@ -112,7 +109,7 @@ ict_free (ict_t * ict)
   if (ict == NULL)
     return -1;
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
 
   sfree (ict->destination);
   return 0;
@@ -141,11 +138,11 @@ ict_need_timer_a_event (ict_t * ict, state_t state, int transactionid)
     {
       /* may need timer A */
       if (ict->timer_a_start == -1)
-	return NULL;
+        return NULL;
       if ((now - ict->timer_a_start - 1) * 1000 > ict->timer_a_length)
-	{
-	  return osip_new_event (TIMEOUT_A, transactionid);
-	}
+        {
+          return osip_new_event (TIMEOUT_A, transactionid);
+        }
     }
   return NULL;
 }
@@ -161,9 +158,9 @@ ict_need_timer_b_event (ict_t * ict, state_t state, int transactionid)
     {
       /* may need timer B */
       if (ict->timer_b_start == -1)
-	return NULL;
+        return NULL;
       if ((now - ict->timer_b_start) * 1000 > ict->timer_b_length)
-	return osip_new_event (TIMEOUT_B, transactionid);
+        return osip_new_event (TIMEOUT_B, transactionid);
     }
   return NULL;
 }
@@ -179,9 +176,9 @@ ict_need_timer_d_event (ict_t * ict, state_t state, int transactionid)
     {
       /* may need timer D */
       if (ict->timer_d_start == -1)
-	return NULL;
+        return NULL;
       if ((now - ict->timer_d_start) * 1000 > ict->timer_d_length)
-	return osip_new_event (TIMEOUT_D, transactionid);
+        return osip_new_event (TIMEOUT_D, transactionid);
     }
   return NULL;
 }

@@ -37,12 +37,12 @@ authorization_init (authorization_t ** dest)
   (*dest)->nonce = NULL;
   (*dest)->uri = NULL;
   (*dest)->response = NULL;
-  (*dest)->digest = NULL;	/* DO NOT USE IT IN AUTHORIZATION_T HEADER?? */
-  (*dest)->algorithm = NULL;	/* optionnal, default is "md5" */
-  (*dest)->cnonce = NULL;	/* optionnal */
-  (*dest)->opaque = NULL;	/* optionnal */
-  (*dest)->message_qop = NULL;	/* optionnal */
-  (*dest)->nonce_count = NULL;	/* optionnal */
+  (*dest)->digest = NULL;       /* DO NOT USE IT IN AUTHORIZATION_T HEADER?? */
+  (*dest)->algorithm = NULL;    /* optionnal, default is "md5" */
+  (*dest)->cnonce = NULL;       /* optionnal */
+  (*dest)->opaque = NULL;       /* optionnal */
+  (*dest)->message_qop = NULL;  /* optionnal */
+  (*dest)->nonce_count = NULL;  /* optionnal */
   return 0;
 }
 
@@ -55,6 +55,7 @@ msg_setauthorization (sip_t * sip, char *hvalue)
 {
   authorization_t *authorization;
   int i;
+
   if (sip == NULL || sip->authorizations == NULL)
     return -1;
   i = authorization_init (&authorization);
@@ -67,7 +68,6 @@ msg_setauthorization (sip_t * sip, char *hvalue)
       sfree (authorization);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -89,7 +89,7 @@ authorization_parse (authorization_t * auth, char *hvalue)
   char *space = NULL;
   char *next = NULL;
 
-  space = strchr (hvalue, ' ');	/* SEARCH FOR SPACE */
+  space = strchr (hvalue, ' '); /* SEARCH FOR SPACE */
   if (space == NULL)
     return -1;
 
@@ -103,140 +103,139 @@ authorization_parse (authorization_t * auth, char *hvalue)
       int parse_ok = 0;
 
       if (quoted_string_set ("username", space, &(auth->username), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("realm", space, &(auth->realm), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("nonce", space, &(auth->nonce), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("uri", space, &(auth->uri), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("response", space, &(auth->response), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("digest", space, &(auth->digest), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (token_set ("algorithm", space, &(auth->algorithm), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("cnonce", space, &(auth->cnonce), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("opaque", space, &(auth->opaque), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("qop", space, &(auth->message_qop), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       if (quoted_string_set ("nc", space, &(auth->nonce_count), &next))
-	return -1;
+        return -1;
       if (next == NULL)
-	return 0;		/* end of header detected! */
+        return 0;               /* end of header detected! */
       else if (next != space)
-	{
-	  space = next;
-	  parse_ok++;
-	}
+        {
+          space = next;
+          parse_ok++;
+        }
       /* nothing was recognized:
          here, we should handle a list of unknown tokens where:
          token1 = ( token2 | quoted_text ) */
       /* TODO */
 
       if (0 == parse_ok)
-	{
-	  char *quote1, *quote2, *tmp;
+        {
+          char *quote1, *quote2, *tmp;
 
-	  /* CAUTION */
-	  /* parameter not understood!!! I'm too lazy to handle IT */
-	  /* let's simply bypass it */
-	  if (strlen (space) < 1)
-	    return 0;
-	  tmp = strchr (space + 1, ',');
-	  if (tmp == NULL)	/* it was the last header */
-	    return 0;
-	  quote1 = quote_find (space);
-	  if ((quote1 != NULL) && (quote1 < tmp))	/* this may be a quoted string! */
-	    {
-	      quote2 = quote_find (quote1 + 1);
-	      if (quote2 == NULL)
-		return -1;	/* bad header format... */
-	      if (tmp < quote2)	/* the comma is inside the quotes! */
-		space = strchr (quote2, ',');
-	      else
-		space = tmp;
-	      if (space == NULL)	/* it was the last header */
-		return 0;
-	    }
-	  else
-	    space = tmp;
-	  /* continue parsing... */
-	}
+          /* CAUTION */
+          /* parameter not understood!!! I'm too lazy to handle IT */
+          /* let's simply bypass it */
+          if (strlen (space) < 1)
+            return 0;
+          tmp = strchr (space + 1, ',');
+          if (tmp == NULL)      /* it was the last header */
+            return 0;
+          quote1 = quote_find (space);
+          if ((quote1 != NULL) && (quote1 < tmp))       /* this may be a quoted string! */
+            {
+              quote2 = quote_find (quote1 + 1);
+              if (quote2 == NULL)
+                return -1;      /* bad header format... */
+              if (tmp < quote2) /* the comma is inside the quotes! */
+                space = strchr (quote2, ',');
+              else
+                space = tmp;
+              if (space == NULL)        /* it was the last header */
+                return 0;
+          } else
+            space = tmp;
+          /* continue parsing... */
+        }
     }
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }
 
 /* returns the authorization header.   */
@@ -249,7 +248,7 @@ msg_getauthorization (sip_t * sip, int pos, authorization_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->authorizations) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   authorization = (authorization_t *) list_get (sip->authorizations, pos);
   *dest = authorization;
   return pos;
@@ -382,8 +381,7 @@ authorization_getmessage_qop (authorization_t * authorization)
 }
 
 void
-authorization_setmessage_qop (authorization_t * authorization,
-			      char *message_qop)
+authorization_setmessage_qop (authorization_t * authorization, char *message_qop)
 {
   authorization->message_qop = (char *) message_qop;
 }
@@ -395,8 +393,7 @@ authorization_getnonce_count (authorization_t * authorization)
 }
 
 void
-authorization_setnonce_count (authorization_t * authorization,
-			      char *nonce_count)
+authorization_setnonce_count (authorization_t * authorization, char *nonce_count)
 {
   authorization->nonce_count = (char *) nonce_count;
 }
@@ -580,79 +577,79 @@ authorization_clone (authorization_t * auth, authorization_t ** dest)
    */
 
   i = authorization_init (&au);
-  if (i == -1)			/* allocation failed */
+  if (i == -1)                  /* allocation failed */
     return -1;
   if (auth->auth_type != NULL)
     {
       au->auth_type = sgetcopy (auth->auth_type);
       if (au->auth_type)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->username != NULL)
     {
       au->username = sgetcopy (auth->username);
       if (au->username)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->realm != NULL)
     {
       au->realm = sgetcopy (auth->realm);
       if (auth->realm)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->nonce != NULL)
     {
       au->nonce = sgetcopy (auth->nonce);
       if (auth->nonce)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->uri != NULL)
     {
       au->uri = sgetcopy (auth->uri);
       if (au->uri)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->response != NULL)
     {
       au->response = sgetcopy (auth->response);
       if (auth->response)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->digest != NULL)
     {
       au->digest = sgetcopy (auth->digest);
       if (au->digest)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->algorithm != NULL)
     {
       au->algorithm = sgetcopy (auth->algorithm);
       if (auth->algorithm)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->cnonce != NULL)
     {
       au->cnonce = sgetcopy (auth->cnonce);
       if (au->cnonce)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->opaque != NULL)
     {
       au->opaque = sgetcopy (auth->opaque);
       if (auth->opaque)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->message_qop != NULL)
     {
       au->message_qop = sgetcopy (auth->message_qop);
       if (auth->message_qop)
-	goto ac_error;
+        goto ac_error;
     }
   if (auth->nonce_count != NULL)
     {
       au->nonce_count = sgetcopy (auth->nonce_count);
       if (auth->nonce_count)
-	goto ac_error;
+        goto ac_error;
     }
 
   *dest = au;

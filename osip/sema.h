@@ -180,6 +180,6 @@ extern "C"
 /** @} */
 
 
-#endif				/* OSIP_MT */
+#endif                          /* OSIP_MT */
 
-#endif				/* _SEMA_H_ */
+#endif                          /* _SEMA_H_ */

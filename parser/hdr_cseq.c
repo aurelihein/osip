@@ -76,7 +76,7 @@ cseq_parse (cseq_t * cseq, char *hvalue)
   cseq->number = NULL;
   cseq->method = NULL;
 
-  method = strchr (hvalue, ' ');	/* SEARCH FOR SPACE */
+  method = strchr (hvalue, ' ');        /* SEARCH FOR SPACE */
   end = hvalue + strlen (hvalue);
 
   if (method == NULL)
@@ -98,7 +98,7 @@ cseq_parse (cseq_t * cseq, char *hvalue)
   sstrncpy (cseq->method, method + 1, end - method);
   sclrspace (cseq->method);
 
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }
 
 /* returns the cseq header.            */

@@ -41,8 +41,7 @@ startline_2charreq (startline_t * strtline, char **dest)
   if (i == -1)
     return -1;
   *dest = (char *) smalloc (strlen (strtline->sipmethod)
-			    + strlen (rquri) + strlen (strtline->sipversion) +
-			    3);
+                            + strlen (rquri) + strlen (strtline->sipversion) + 3);
   tmp = *dest;
   sstrncpy (tmp, strtline->sipmethod, strlen (strtline->sipmethod));
   tmp = tmp + strlen (strtline->sipmethod);
@@ -68,8 +67,8 @@ startline_2charresp (startline_t * strtline, char **dest)
       || (strtline->statuscode == NULL) || (strtline->sipversion == NULL))
     return -1;
   *dest = (char *) smalloc (strlen (strtline->sipversion)
-			    + strlen (strtline->statuscode)
-			    + strlen (strtline->reasonphrase) + 4);
+                            + strlen (strtline->statuscode)
+                            + strlen (strtline->reasonphrase) + 4);
   tmp = *dest;
 
   sstrncpy (tmp, strtline->sipversion, strlen (strtline->sipversion));
@@ -95,9 +94,9 @@ msg_startline_2char (startline_t * strtline, char **dest)
     return startline_2charresp (strtline, dest);
 
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, TRACE_LEVEL1, NULL,
-	       "ERROR strtline->method has no value!\n"));
-  return -1;			/* should never come here */
+              (__FILE__, __LINE__, TRACE_LEVEL1, NULL,
+               "ERROR strtline->method has no value!\n"));
+  return -1;                    /* should never come here */
 }
 
 char *
@@ -132,8 +131,8 @@ msg_geturi (sip_t * sip)
 
 int
 strcat_simple_header (char *message, void *ptr_header, char *header_name,
-		      int size_of_header, int (*xxx_2char) (void *, char **),
-		      char **next)
+                      int size_of_header, int (*xxx_2char) (void *, char **),
+                      char **next)
 {
   int i;
   char *tmp;
@@ -144,10 +143,10 @@ strcat_simple_header (char *message, void *ptr_header, char *header_name,
       message = message + strlen (message);
       i = xxx_2char (ptr_header, &tmp);
       if (i == -1)
-	{
-	  *next = NULL;
-	  return -1;
-	}
+        {
+          *next = NULL;
+          return -1;
+        }
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
@@ -160,9 +159,9 @@ strcat_simple_header (char *message, void *ptr_header, char *header_name,
 
 int
 strcat_headers_one_per_line (char *message, list_t * headers, char *header,
-			     int size_of_header, int (*xxx_2char) (void *,
-								   char **),
-			     char **next)
+                             int size_of_header, int (*xxx_2char) (void *,
+                                                                   char **),
+                             char **next)
 {
   char *tmp;
   int pos = 0;
@@ -178,10 +177,10 @@ strcat_headers_one_per_line (char *message, list_t * headers, char *header,
       message = message + strlen (message);
       i = xxx_2char (elt, &tmp);
       if (i == -1)
-	{
-	  *next = NULL;
-	  return -1;
-	}
+        {
+          *next = NULL;
+          return -1;
+        }
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
@@ -196,10 +195,10 @@ strcat_headers_one_per_line (char *message, list_t * headers, char *header,
 
 int
 strcat_headers_all_on_one_line (char *message, list_t * headers, char *header,
-				int size_of_header, int (*xxx_2char) (void *,
-								      char
-								      **),
-				char **next)
+                                int size_of_header, int (*xxx_2char) (void *,
+                                                                      char
+                                                                      **),
+                                char **next)
 {
   char *tmp;
   int pos = 0;
@@ -212,26 +211,26 @@ strcat_headers_all_on_one_line (char *message, list_t * headers, char *header,
       message = message + strlen (message);
 
       while (!list_eol (headers, pos))
-	{
-	  void *elt;
+        {
+          void *elt;
 
-	  elt = (void *) list_get (headers, pos);
-	  i = xxx_2char (elt, &tmp);
-	  if (i == -1)
-	    {
-	      *next = NULL;
-	      return -1;
-	    }
-	  sstrncpy (message, tmp, strlen (tmp));
-	  sfree (tmp);
-	  message = message + strlen (message);
-	  pos++;
-	  if (!list_eol (headers, pos))
-	    {
-	      strncpy (message, ", ", 2);
-	      message = message + 2;
-	    }
-	}
+          elt = (void *) list_get (headers, pos);
+          i = xxx_2char (elt, &tmp);
+          if (i == -1)
+            {
+              *next = NULL;
+              return -1;
+            }
+          sstrncpy (message, tmp, strlen (tmp));
+          sfree (tmp);
+          message = message + strlen (message);
+          pos++;
+          if (!list_eol (headers, pos))
+            {
+              strncpy (message, ", ", 2);
+              message = message + 2;
+            }
+        }
       sstrncpy (message, CRLF, 2);
       message = message + 2;
     }
@@ -293,36 +292,35 @@ msg_2char (sip_t * sip, char **dest)
     number_of_call++;
 #endif
     if (1 == msg_get_property (sip))
-      {				/* message is already available in "message" */
+      {                         /* message is already available in "message" */
 #ifdef ENABLE_DEBUG
-	number_of_call_avoided++;
+        number_of_call_avoided++;
 #endif
 
-	*dest = sgetcopy (sip->message);	/* is we just return the pointer, people will
-						   get issues while upgrading the library. This
-						   is because they are used to call free(*dest)
-						   right after using the buffer. This may be
-						   changed while moving to another branch
-						   developpement. replacement line will be:
-						   *dest = sip->message; */
+        *dest = sgetcopy (sip->message);        /* is we just return the pointer, people will
+                                                   get issues while upgrading the library. This
+                                                   is because they are used to call free(*dest)
+                                                   right after using the buffer. This may be
+                                                   changed while moving to another branch
+                                                   developpement. replacement line will be:
+                                                   *dest = sip->message; */
 #ifdef ENABLE_DEBUG
-	if (number_of_call_avoided % 1000 == 0)
-	  printf ("number of call msg_2char avoided: %i\n",
-		  number_of_call_avoided);
+        if (number_of_call_avoided % 1000 == 0)
+          printf ("number of call msg_2char avoided: %i\n",
+                  number_of_call_avoided);
 #endif
-	return 0;
+        return 0;
 
-      }
-    else
+    } else
       {
-	/* message should be rebuilt: delete the old one if exists. */
-	sfree (sip->message);
-	sip->message = NULL;
+        /* message should be rebuilt: delete the old one if exists. */
+        sfree (sip->message);
+        sip->message = NULL;
       }
   }
 #endif
 
-  message = (char *) smalloc (SIP_MESSAGE_MAX_LENGTH);	/* ???? message could be > 4000  */
+  message = (char *) smalloc (SIP_MESSAGE_MAX_LENGTH);  /* ???? message could be > 4000  */
   *dest = message;
 
   /* add the first line of message */
@@ -340,8 +338,7 @@ msg_2char (sip_t * sip, char **dest)
   message = message + 2;
 
   i = strcat_headers_one_per_line (message, sip->vias, "Via: ", 5,
-				   ((int (*)(void *, char **)) &via_2char),
-				   &next);
+                                   ((int (*)(void *, char **)) &via_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -352,9 +349,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_one_per_line (message, sip->record_routes,
-				 "Record-Route: ", 14,
-				 ((int (*)(void *, char **))
-				  &record_route_2char), &next);
+                                 "Record-Route: ", 14,
+                                 ((int (*)(void *, char **))
+                                  &record_route_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -364,8 +361,8 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_one_per_line (message, sip->routes, "Route: ", 7,
-				   ((int (*)(void *, char **)) &route_2char),
-				   &next);
+                                   ((int (*)(void *, char **)) &route_2char),
+                                   &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -375,7 +372,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->from, "From: ", 6,
-			    ((int (*)(void *, char **)) &from_2char), &next);
+                            ((int (*)(void *, char **)) &from_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -385,7 +382,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->to, "To: ", 4,
-			    ((int (*)(void *, char **)) &to_2char), &next);
+                            ((int (*)(void *, char **)) &to_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -395,8 +392,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->call_id, "Call-ID: ", 9,
-			    ((int (*)(void *, char **)) &call_id_2char),
-			    &next);
+                            ((int (*)(void *, char **)) &call_id_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -406,7 +402,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->cseq, "CSeq: ", 6,
-			    ((int (*)(void *, char **)) &cseq_2char), &next);
+                            ((int (*)(void *, char **)) &cseq_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -416,8 +412,8 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_one_per_line (message, sip->contacts, "Contact: ", 9,
-				   ((int (*)(void *, char **))
-				    &contact_2char), &next);
+                                   ((int (*)(void *, char **))
+                                    &contact_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -427,9 +423,9 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_one_per_line (message,
-				   sip->authorizations, "Authorization: ", 15,
-				   ((int (*)(void *, char **))
-				    &authorization_2char), &next);
+                                   sip->authorizations, "Authorization: ", 15,
+                                   ((int (*)(void *, char **))
+                                    &authorization_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -439,9 +435,9 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_one_per_line (message, sip->www_authenticates,
-				   "WWW-Authenticate: ", 18,
-				   ((int (*)(void *, char **))
-				    &www_authenticate_2char), &next);
+                                   "WWW-Authenticate: ", 18,
+                                   ((int (*)(void *, char **))
+                                    &www_authenticate_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -451,9 +447,9 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_one_per_line (message, sip->proxy_authenticates,
-				   "Proxy-Authenticate: ", 20,
-				   ((int (*)(void *, char **))
-				    &www_authenticate_2char), &next);
+                                   "Proxy-Authenticate: ", 20,
+                                   ((int (*)(void *, char **))
+                                    &www_authenticate_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -464,9 +460,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_one_per_line (message, sip->proxy_authorizations,
-				 "Proxy-Authorization: ", 21,
-				 ((int (*)(void *, char **))
-				  &authorization_2char), &next);
+                                 "Proxy-Authorization: ", 21,
+                                 ((int (*)(void *, char **))
+                                  &authorization_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -484,11 +480,11 @@ msg_2char (sip_t * sip, char **dest)
       header = (header_t *) list_get (sip->headers, pos);
       i = header_2char (header, &tmp);
       if (i == -1)
-	{
-	  sfree (*dest);
-	  *dest = NULL;
-	  return -1;
-	}
+        {
+          sfree (*dest);
+          *dest = NULL;
+          return -1;
+        }
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
@@ -500,8 +496,8 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_all_on_one_line (message, sip->allows, "Allow: ", 7,
-				    ((int (*)(void *, char **))
-				     &content_length_2char), &next);
+                                    ((int (*)(void *, char **))
+                                     &content_length_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -511,8 +507,8 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->content_type, "Content-Type: ", 14,
-			    ((int (*)(void *, char **)) &content_type_2char),
-			    &next);
+                            ((int (*)(void *, char **)) &content_type_2char),
+                            &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -522,9 +518,9 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_headers_all_on_one_line (message, sip->content_encodings,
-				      "Content-Encoding: ", 18,
-				      ((int (*)(void *, char **))
-				       &content_length_2char), &next);
+                                      "Content-Encoding: ", 18,
+                                      ((int (*)(void *, char **))
+                                       &content_length_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -534,8 +530,8 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i = strcat_simple_header (message, sip->mime_version, "Mime-Version: ", 14,
-			    ((int (*)(void *, char **))
-			     &content_length_2char), &next);
+                            ((int (*)(void *, char **))
+                             &content_length_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -547,8 +543,8 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_one_per_line (message, sip->call_infos, "Call-Info: ", 11,
-				 ((int (*)(void *, char **))
-				  &call_info_2char), &next);
+                                 ((int (*)(void *, char **))
+                                  &call_info_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -559,9 +555,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_one_per_line (message, sip->alert_infos, "Alert-Info: ",
-				 12,
-				 ((int (*)(void *, char **))
-				  &call_info_2char), &next);
+                                 12,
+                                 ((int (*)(void *, char **))
+                                  &call_info_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -572,9 +568,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_one_per_line (message, sip->error_infos, "Error-Info: ",
-				 12,
-				 ((int (*)(void *, char **))
-				  &call_info_2char), &next);
+                                 12,
+                                 ((int (*)(void *, char **))
+                                  &call_info_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -585,8 +581,8 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_all_on_one_line (message, sip->accepts, "Accept: ", 8,
-				    ((int (*)(void *, char **))
-				     &content_type_2char), &next);
+                                    ((int (*)(void *, char **))
+                                     &content_type_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -597,9 +593,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_all_on_one_line (message, sip->accept_encodings,
-				    "Accept-Encoding: ", 17,
-				    ((int (*)(void *, char **))
-				     &accept_encoding_2char), &next);
+                                    "Accept-Encoding: ", 17,
+                                    ((int (*)(void *, char **))
+                                     &accept_encoding_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -610,9 +606,9 @@ msg_2char (sip_t * sip, char **dest)
 
   i =
     strcat_headers_all_on_one_line (message, sip->accept_languages,
-				    "Accept-Language: ", 17,
-				    ((int (*)(void *, char **))
-				     &accept_encoding_2char), &next);
+                                    "Accept-Language: ", 17,
+                                    ((int (*)(void *, char **))
+                                     &accept_encoding_2char), &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -643,7 +639,7 @@ msg_2char (sip_t * sip, char **dest)
      }
      else
      { */
-  if (list_eol (sip->bodies, 0))	/* no body */
+  if (list_eol (sip->bodies, 0))        /* no body */
     sstrncpy (message, "0", 1);
   else
     {
@@ -675,7 +671,7 @@ msg_2char (sip_t * sip, char **dest)
       sip->message_property = 1;
       sip->message = sgetcopy (*dest);
 #endif
-      return 0;			/* it's all done */
+      return 0;                 /* it's all done */
     }
   start_of_bodies = message;
 
@@ -687,20 +683,20 @@ msg_2char (sip_t * sip, char **dest)
       body = (body_t *) list_get (sip->bodies, pos);
 
       if (sip->mime_version != NULL)
-	{
-	  sstrncpy (message, "--++", strlen ("--++"));
-	  message = message + strlen (message);
-	  sstrncpy (message, CRLF, 2);
-	  message = message + 2;
-	}
+        {
+          sstrncpy (message, "--++", strlen ("--++"));
+          message = message + strlen (message);
+          sstrncpy (message, CRLF, 2);
+          message = message + 2;
+        }
 
       i = body_2char (body, &tmp);
       if (i != 0)
-	{
-	  sfree (*dest);
-	  *dest = NULL;
-	  return -1;
-	}
+        {
+          sfree (*dest);
+          *dest = NULL;
+          return -1;
+        }
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
@@ -761,29 +757,28 @@ msg_logresponse (sip_t * sip, char *fmt)
     {
       i = msg_2char (sip, &tmp1);
       if (i != -1)
-	{
-	  osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		      "MESSAGE :\n%s\n", tmp1);
-	  sfree (tmp1);
-	}
-      else
-	osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		    "MESSAGE : Could not make a string of message!!!!\n");
+        {
+          osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+                      "MESSAGE :\n%s\n", tmp1);
+          sfree (tmp1);
+      } else
+        osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+                    "MESSAGE : Could not make a string of message!!!!\n");
     }
 
   if (1 == is_trace_level_activate (TRACE_LEVEL0))
     {
       i = from_2char (sip->from, &tmp1);
       if (i == -1)
-	return;
+        return;
       i = to_2char (sip->to, &tmp2);
       if (i == -1)
-	return;
+        return;
 
       osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
-		  sip->strtline->statuscode, sip->strtline->reasonphrase,
-		  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
-		  sip->call_id->number);
+                  sip->strtline->statuscode, sip->strtline->reasonphrase,
+                  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
+                  sip->call_id->number);
 
       sfree (tmp1);
       sfree (tmp2);
@@ -801,28 +796,27 @@ msg_logrequest (sip_t * sip, char *fmt)
     {
       i = msg_2char (sip, &tmp1);
       if (i != -1)
-	{
-	  osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		      "<app.c> MESSAGE :\n%s\n", tmp1);
-	  sfree (tmp1);
-	}
-      else
-	osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		    "<app.c> MESSAGE :\n Could not make a string of message\n");
+        {
+          osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+                      "<app.c> MESSAGE :\n%s\n", tmp1);
+          sfree (tmp1);
+      } else
+        osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
+                    "<app.c> MESSAGE :\n Could not make a string of message\n");
     }
 
   if (1 == is_trace_level_activate (TRACE_LEVEL0))
     {
       i = from_2char (sip->from, &tmp1);
       if (i == -1)
-	return;
+        return;
       i = to_2char (sip->to, &tmp2);
       if (i == -1)
-	return;
+        return;
 
       osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
-		  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
-		  sip->call_id->number);
+                  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
+                  sip->call_id->number);
       sfree (tmp1);
       sfree (tmp2);
     }

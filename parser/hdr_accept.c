@@ -46,7 +46,6 @@ msg_setaccept (sip_t * sip, char *hvalue)
       sfree (accept);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -63,7 +62,7 @@ msg_getaccept (sip_t * sip, int pos, accept_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->accepts) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   accept = (accept_t *) list_get (sip->accepts, pos);
   *dest = accept;
   return pos;

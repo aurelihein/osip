@@ -28,8 +28,7 @@ nist_init (nist_t ** nist, osip_t * osip, sip_t * invite)
   int i;
 
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "allocating NIST context\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NIST context\n"));
 
   *nist = (nist_t *) smalloc (sizeof (nist_t));
   if (*nist == NULL)
@@ -43,7 +42,7 @@ nist_init (nist_t ** nist, osip_t * osip, sip_t * invite)
     via_t *via;
     char *proto;
 
-    i = msg_getvia (invite, 0, &via);	/* get top via */
+    i = msg_getvia (invite, 0, &via);   /* get top via */
     if (i != 0)
       goto ii_error_1;
     proto = via_getprotocol (via);
@@ -56,15 +55,14 @@ nist_init (nist_t ** nist, osip_t * osip, sip_t * invite)
     i = stricmp (proto, "TCP");
 #endif
     if (i != 0)
-      {				/* for other reliable protocol than TCP, the timer
-				   must be desactived by the external application */
-	(*nist)->timer_j_length = 64 * DEFAULT_T1;
-	(*nist)->timer_j_start = -1;	/* not started */
-      }
-    else
-      {				/* TCP is used: */
-	(*nist)->timer_j_length = 0;	/* MUST do the transition immediatly */
-	(*nist)->timer_j_start = -1;	/* not started */
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*nist)->timer_j_length = 64 * DEFAULT_T1;
+        (*nist)->timer_j_start = -1;    /* not started */
+    } else
+      {                         /* TCP is used: */
+        (*nist)->timer_j_length = 0;    /* MUST do the transition immediatly */
+        (*nist)->timer_j_start = -1;    /* not started */
       }
   }
 
@@ -81,8 +79,7 @@ nist_free (nist_t * nist)
   if (nist == NULL)
     return -1;
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "free nist ressource\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 
   return 0;
 }
@@ -98,9 +95,9 @@ nist_need_timer_j_event (nist_t * nist, state_t state, int transactionid)
   if (state == NIST_COMPLETED)
     {
       if (nist->timer_j_start == -1)
-	return NULL;
+        return NULL;
       if ((now - nist->timer_j_start) * 1000 > nist->timer_j_length)
-	return osip_new_event (TIMEOUT_J, transactionid);
+        return osip_new_event (TIMEOUT_J, transactionid);
     }
   return NULL;
 }

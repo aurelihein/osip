@@ -27,7 +27,7 @@ int
 list_init (list_t * li)
 {
   li->nb_elt = 0;
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }
 
 void
@@ -73,8 +73,8 @@ int
 list_eol (list_t * li, int i)
 {
   if (i < li->nb_elt)
-    return 0;			/* not end of list */
-  return 1;			/* end of list */
+    return 0;                   /* not end of list */
+  return 1;                     /* end of list */
 }
 
 /* index starts from 0; */
@@ -85,7 +85,7 @@ list_add (list_t * li, void *el, int pos)
   int i = 0;
 
   if (pos == -1 || pos >= li->nb_elt)
-    {				/* insert at the end  */
+    {                           /* insert at the end  */
       pos = li->nb_elt;
     }
 
@@ -98,7 +98,7 @@ list_add (list_t * li, void *el, int pos)
       return li->nb_elt;
     }
 
-  ntmp = li->node;		/* exist because nb_elt>0  */
+  ntmp = li->node;              /* exist because nb_elt>0  */
 
   if (pos == 0)
     {
@@ -152,7 +152,7 @@ list_get (list_t * li, int pos)
     return 0;
 
 
-  ntmp = li->node;		/* exist because nb_elt>0 */
+  ntmp = li->node;              /* exist because nb_elt>0 */
 
   while (pos > i)
     {
@@ -174,10 +174,10 @@ list_remove (list_t * li, int pos)
     /* element does not exist */
     return -1;
 
-  ntmp = li->node;		/* exist because nb_elt>0 */
+  ntmp = li->node;              /* exist because nb_elt>0 */
 
   if ((pos == 0))
-    {				/* special case  */
+    {                           /* special case  */
       li->node = (node_t *) ntmp->next;
       li->nb_elt--;
       sfree (ntmp);

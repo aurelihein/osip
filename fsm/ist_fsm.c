@@ -139,7 +139,7 @@ ist_create_resp_100 (transaction_t * ist, sip_t * request)
   if (i != 0)
     goto icr_error;
   /* 17.2.1 says: should NOT add a tag */
-  i = to_clone (request->to, &(resp_100->to));	/* DOES NOT include any tag! */
+  i = to_clone (request->to, &(resp_100->to));  /* DOES NOT include any tag! */
   if (i != 0)
     goto icr_error;
   i = call_id_clone (request->call_id, &(resp_100->call_id));
@@ -157,10 +157,10 @@ ist_create_resp_100 (transaction_t * ist, sip_t * request)
 
     while (!list_eol (ist->orig_request->vias, pos))
       {
-	orig_via = (via_t *) list_get (ist->orig_request->vias, pos);
-	via_clone (orig_via, &via);
-	list_add (resp_100->vias, via, -1);
-	pos++;
+        orig_via = (via_t *) list_get (ist->orig_request->vias, pos);
+        via_clone (orig_via, &via);
+        list_add (resp_100->vias, via, -1);
+        pos++;
       }
   }
 
@@ -182,54 +182,52 @@ ist_rcv_invite (transaction_t * ist, sipevent_t * evt)
   int i;
   osip_t *osip = (osip_t *) ist->config;
 
-  if (ist->state == IST_PRE_PROCEEDING)	/* announce new INVITE */
+  if (ist->state == IST_PRE_PROCEEDING) /* announce new INVITE */
     {
       /* Here we have ist->orig_request == NULL */
       ist->orig_request = evt->sip;
 
       osip->cb_ist_invite_received (ist, evt->sip);
-    }
-  else				/* IST_PROCEEDING or IST_COMPLETED */
+  } else                        /* IST_PROCEEDING or IST_COMPLETED */
     {
       /* delete retransmission */
       msg_free (evt->sip);
       sfree (evt->sip);
 
       if (osip->cb_ist_invite_received2 != NULL)
-	osip->cb_ist_invite_received2 (ist, ist->orig_request);
-      if (ist->last_response != NULL)	/* retransmit last response */
-	{
-	  via_t *via;
+        osip->cb_ist_invite_received2 (ist, ist->orig_request);
+      if (ist->last_response != NULL)   /* retransmit last response */
+        {
+          via_t *via;
 
-	  via = (via_t *) list_get (ist->last_response->vias, 0);
-	  {
-	    int port;
+          via = (via_t *) list_get (ist->last_response->vias, 0);
+          {
+            int port;
 
-	    if (via->port == NULL)
-	      port = 5060;
-	    else
-	      port = atoi (via->port);	/* we should use strtol to handle errors */
-	    i = osip->cb_send_message (ist, ist->last_response, via->host,
-				       port, ist->out_socket);
-	  }
-	  if (i != 0)
-	    {
-	      osip->cb_ist_transport_error (ist, i);
-	      transaction_set_state (ist, IST_TERMINATED);
-	      osip->cb_ist_kill_transaction (ist);
-	      /* MUST BE DELETED NOW */
-	      return;
-	    }
-	  else
-	    {
-	      if (MSG_IS_STATUS_1XX (ist->last_response))
-		osip->cb_ist_1xx_sent (ist, ist->last_response);
-	      else if (MSG_IS_STATUS_2XX (ist->last_response))
-		osip->cb_ist_2xx_sent2 (ist, ist->last_response);
-	      else
-		osip->cb_ist_3456xx_sent2 (ist, ist->last_response);
-	    }
-	}
+            if (via->port == NULL)
+              port = 5060;
+            else
+              port = atoi (via->port);  /* we should use strtol to handle errors */
+            i = osip->cb_send_message (ist, ist->last_response, via->host,
+                                       port, ist->out_socket);
+          }
+          if (i != 0)
+            {
+              osip->cb_ist_transport_error (ist, i);
+              transaction_set_state (ist, IST_TERMINATED);
+              osip->cb_ist_kill_transaction (ist);
+              /* MUST BE DELETED NOW */
+              return;
+          } else
+            {
+              if (MSG_IS_STATUS_1XX (ist->last_response))
+                osip->cb_ist_1xx_sent (ist, ist->last_response);
+              else if (MSG_IS_STATUS_2XX (ist->last_response))
+                osip->cb_ist_2xx_sent2 (ist, ist->last_response);
+              else
+                osip->cb_ist_3456xx_sent2 (ist, ist->last_response);
+            }
+        }
     }
 
   /* we come here only if it was the first INVITE received */
@@ -257,9 +255,9 @@ ist_timeout_g_event (transaction_t * ist, sipevent_t * evt)
     if (via->port == NULL)
       port = 5060;
     else
-      port = atoi (via->port);	/* we should use strtol to handle errors */
+      port = atoi (via->port);  /* we should use strtol to handle errors */
     i = osip->cb_send_message (ist, ist->last_response, via->host,
-			       port, ist->out_socket);
+                               port, ist->out_socket);
   }
   if (i != 0)
     {
@@ -318,9 +316,9 @@ ist_snd_1xx (transaction_t * ist, sipevent_t * evt)
     if (via->port == NULL)
       port = 5060;
     else
-      port = atoi (via->port);	/* we should use strtol to handle errors */
+      port = atoi (via->port);  /* we should use strtol to handle errors */
     i = osip->cb_send_message (ist, ist->last_response, via->host,
-			       port, ist->out_socket);
+                               port, ist->out_socket);
   }
   if (i != 0)
     {
@@ -329,8 +327,7 @@ ist_snd_1xx (transaction_t * ist, sipevent_t * evt)
       osip->cb_ist_kill_transaction (ist);
       /* MUST BE DELETED NOW */
       return;
-    }
-  else
+  } else
     osip->cb_ist_1xx_sent (ist, ist->last_response);
 
   /* we are already in the proper state */
@@ -358,9 +355,9 @@ ist_snd_2xx (transaction_t * ist, sipevent_t * evt)
     if (via->port == NULL)
       port = 5060;
     else
-      port = atoi (via->port);	/* we should use strtol to handle errors */
+      port = atoi (via->port);  /* we should use strtol to handle errors */
     i = osip->cb_send_message (ist, ist->last_response, via->host,
-			       port, ist->out_socket);
+                               port, ist->out_socket);
   }
   if (i != 0)
     {
@@ -369,8 +366,7 @@ ist_snd_2xx (transaction_t * ist, sipevent_t * evt)
       osip->cb_ist_kill_transaction (ist);
       /* MUST BE DELETED NOW */
       return;
-    }
-  else
+  } else
     osip->cb_ist_2xx_sent (ist, ist->last_response);
 
   transaction_set_state (ist, IST_TERMINATED);
@@ -399,9 +395,9 @@ ist_snd_3456xx (transaction_t * ist, sipevent_t * evt)
     if (via->port == NULL)
       port = 5060;
     else
-      port = atoi (via->port);	/* we should use strtol to handle errors */
+      port = atoi (via->port);  /* we should use strtol to handle errors */
     i = osip->cb_send_message (ist, ist->last_response, via->host,
-			       port, ist->out_socket);
+                               port, ist->out_socket);
   }
   if (i != 0)
     {
@@ -410,17 +406,16 @@ ist_snd_3456xx (transaction_t * ist, sipevent_t * evt)
       osip->cb_ist_kill_transaction (ist);
       /* MUST BE DELETED NOW */
       return;
-    }
-  else
+  } else
     {
       if (MSG_IS_STATUS_3XX (ist->last_response))
-	osip->cb_ist_3xx_sent (ist, ist->last_response);
+        osip->cb_ist_3xx_sent (ist, ist->last_response);
       else if (MSG_IS_STATUS_4XX (ist->last_response))
-	osip->cb_ist_4xx_sent (ist, ist->last_response);
+        osip->cb_ist_4xx_sent (ist, ist->last_response);
       else if (MSG_IS_STATUS_5XX (ist->last_response))
-	osip->cb_ist_5xx_sent (ist, ist->last_response);
+        osip->cb_ist_5xx_sent (ist, ist->last_response);
       else
-	osip->cb_ist_6xx_sent (ist, ist->last_response);
+        osip->cb_ist_6xx_sent (ist, ist->last_response);
     }
 
   ist->ist_context->timer_g_start = time (NULL);
@@ -444,12 +439,12 @@ ist_rcv_ack (transaction_t * ist, sipevent_t * evt)
 
   if (ist->state == IST_COMPLETED)
     osip->cb_ist_ack_received (ist, ist->ack);
-  else				/* IST_CONFIRMED */
-    {				/* ack retransmission */
+  else                          /* IST_CONFIRMED */
+    {                           /* ack retransmission */
       if (osip->cb_ist_ack_received2 != NULL)
-	osip->cb_ist_ack_received2 (ist, ist->ack);
+        osip->cb_ist_ack_received2 (ist, ist->ack);
     }
   /* set the timer to 0 for reliable, and T4 for unreliable (already set) */
-  ist->ist_context->timer_i_start = time (NULL);	/* not started */
+  ist->ist_context->timer_i_start = time (NULL);        /* not started */
   transaction_set_state (ist, IST_CONFIRMED);
 }

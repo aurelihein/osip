@@ -162,55 +162,47 @@ nict_snd_request (transaction_t * nict, sipevent_t * evt)
   nict->orig_request = evt->sip;
 
   i = osip->cb_send_message (nict, evt->sip, nict->nict_context->destination,
-			     nict->nict_context->port, nict->out_socket);
+                             nict->nict_context->port, nict->out_socket);
 
   if (i == 0)
     {
       /* invoke the right callback! */
       if (MSG_IS_REGISTER (evt->sip))
-	{
-	  if (osip->cb_nict_register_sent != NULL)
-	    osip->cb_nict_register_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_BYE (evt->sip))
-	{
-	  if (osip->cb_nict_bye_sent != NULL)
-	    osip->cb_nict_bye_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_OPTIONS (evt->sip))
-	{
-	  if (osip->cb_nict_options_sent != NULL)
-	    osip->cb_nict_options_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_INFO (evt->sip))
-	{
-	  if (osip->cb_nict_info_sent != NULL)
-	    osip->cb_nict_info_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_CANCEL (evt->sip))
-	{
-	  if (osip->cb_nict_cancel_sent != NULL)
-	    osip->cb_nict_cancel_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_NOTIFY (evt->sip))
-	{
-	  if (osip->cb_nict_notify_sent != NULL)
-	    osip->cb_nict_notify_sent (nict, nict->orig_request);
-	}
-      else if (MSG_IS_SUBSCRIBE (evt->sip))
-	{
-	  if (osip->cb_nict_subscribe_sent != NULL)
-	    osip->cb_nict_subscribe_sent (nict, nict->orig_request);
-	}
-      else
-	{
-	  if (osip->cb_nict_unknown_sent != NULL)
-	    osip->cb_nict_unknown_sent (nict, nict->orig_request);
-	}
+        {
+          if (osip->cb_nict_register_sent != NULL)
+            osip->cb_nict_register_sent (nict, nict->orig_request);
+      } else if (MSG_IS_BYE (evt->sip))
+        {
+          if (osip->cb_nict_bye_sent != NULL)
+            osip->cb_nict_bye_sent (nict, nict->orig_request);
+      } else if (MSG_IS_OPTIONS (evt->sip))
+        {
+          if (osip->cb_nict_options_sent != NULL)
+            osip->cb_nict_options_sent (nict, nict->orig_request);
+      } else if (MSG_IS_INFO (evt->sip))
+        {
+          if (osip->cb_nict_info_sent != NULL)
+            osip->cb_nict_info_sent (nict, nict->orig_request);
+      } else if (MSG_IS_CANCEL (evt->sip))
+        {
+          if (osip->cb_nict_cancel_sent != NULL)
+            osip->cb_nict_cancel_sent (nict, nict->orig_request);
+      } else if (MSG_IS_NOTIFY (evt->sip))
+        {
+          if (osip->cb_nict_notify_sent != NULL)
+            osip->cb_nict_notify_sent (nict, nict->orig_request);
+      } else if (MSG_IS_SUBSCRIBE (evt->sip))
+        {
+          if (osip->cb_nict_subscribe_sent != NULL)
+            osip->cb_nict_subscribe_sent (nict, nict->orig_request);
+      } else
+        {
+          if (osip->cb_nict_unknown_sent != NULL)
+            osip->cb_nict_unknown_sent (nict, nict->orig_request);
+        }
 
       transaction_set_state (nict, NICT_TRYING);
-    }
-  else
+  } else
     {
       osip->cb_nict_transport_error (nict, i);
       transaction_set_state (nict, NICT_TERMINATED);
@@ -229,20 +221,18 @@ nict_timeout_e_event (transaction_t * nict, sipevent_t * evt)
   /* reset timer */
   if (nict->state == NICT_TRYING)
     {
-      nict->nict_context->timer_e_length =
-	nict->nict_context->timer_e_length * 2;
+      nict->nict_context->timer_e_length = nict->nict_context->timer_e_length * 2;
       if (nict->nict_context->timer_e_length > 4000)
-	nict->nict_context->timer_e_length = 4000;
-    }
-  else				/* in PROCEEDING STATE, TIMER is always 4000 */
+        nict->nict_context->timer_e_length = 4000;
+  } else                        /* in PROCEEDING STATE, TIMER is always 4000 */
     nict->nict_context->timer_e_length = 4000;
 
   nict->nict_context->timer_e_start = now;
 
   /* retransmit REQUEST */
   i = osip->cb_send_message (nict, nict->orig_request,
-			     nict->nict_context->destination,
-			     nict->nict_context->port, nict->out_socket);
+                             nict->nict_context->destination,
+                             nict->nict_context->port, nict->out_socket);
   if (i != 0)
     {
       osip->cb_nict_transport_error (nict, i);
@@ -316,16 +306,16 @@ nict_rcv_23456xx (transaction_t * nict, sipevent_t * evt)
   else
     {
       if (MSG_IS_STATUS_3XX (nict->last_response))
-	osip->cb_nict_3xx_received (nict, nict->last_response);
+        osip->cb_nict_3xx_received (nict, nict->last_response);
       else if (MSG_IS_STATUS_4XX (nict->last_response))
-	osip->cb_nict_4xx_received (nict, nict->last_response);
+        osip->cb_nict_4xx_received (nict, nict->last_response);
       else if (MSG_IS_STATUS_5XX (nict->last_response))
-	osip->cb_nict_5xx_received (nict, nict->last_response);
+        osip->cb_nict_5xx_received (nict, nict->last_response);
       else
-	osip->cb_nict_6xx_received (nict, nict->last_response);
+        osip->cb_nict_6xx_received (nict, nict->last_response);
     }
 
-  if (nict->state != NICT_COMPLETED)	/* reset timer K */
+  if (nict->state != NICT_COMPLETED)    /* reset timer K */
     nict->nict_context->timer_k_start = time (NULL);
   transaction_set_state (nict, NICT_COMPLETED);
 }

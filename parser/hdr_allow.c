@@ -40,7 +40,6 @@ msg_setallow (sip_t * sip, char *hvalue)
       sfree (allow);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -55,7 +54,7 @@ msg_getallow (sip_t * sip, int pos, allow_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->allows) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   allow = (allow_t *) list_get (sip->allows, pos);
   *dest = allow;
   return pos;

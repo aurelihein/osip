@@ -40,7 +40,6 @@ msg_setencryption (sip_t * sip, char *hvalue)
       sfree (encryption);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -55,7 +54,7 @@ msg_getencryption (sip_t * sip, int pos, encryption_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->encryptions) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   encryption = (encryption_t *) list_get (sip->encryptions, pos);
   *dest = encryption;
   return pos;
@@ -73,9 +72,8 @@ encryption_parse (encryption_t * cd, char *hvalue)
   if (cd_params != NULL)
     {
       if (generic_param_parseall (cd->gen_params, cd_params) == -1)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     cd_params = hvalue + strlen (hvalue);
 
   if (cd_params - hvalue + 1 < 2)

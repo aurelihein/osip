@@ -43,7 +43,6 @@ msg_setcontent_encoding (sip_t * sip, char *hvalue)
       sfree (content_encoding);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -58,7 +57,7 @@ msg_getcontent_encoding (sip_t * sip, int pos, content_encoding_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->content_encodings) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   ce = (content_encoding_t *) list_get (sip->content_encodings, pos);
   *dest = ce;
   return pos;

@@ -47,14 +47,13 @@ dialog_update_route_set_as_uas (dialog_t * dialog, sip_t * invite)
       contact = list_get (invite->contacts, 0);
       i = contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     {
       dialog->remote_contact_uri = NULL;
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a contact in invite!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a contact in invite!\n"));
     }
   return 0;
 }
@@ -87,31 +86,30 @@ dialog_update_route_set_as_uac (dialog_t * dialog, sip_t * response)
       contact = list_get (response->contacts, 0);
       i = contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a contact in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a contact in response!\n"));
     }
 
   if (dialog->state == DIALOG_EARLY && list_size (dialog->route_set) == 0)
-    {				/* update the route set */
+    {                           /* update the route set */
       int pos = 0;
 
       while (!list_eol (response->record_routes, pos))
-	{
-	  record_route_t *rr;
-	  record_route_t *rr2;
+        {
+          record_route_t *rr;
+          record_route_t *rr2;
 
-	  rr = (record_route_t *) list_get (response->record_routes, pos);
-	  i = record_route_clone (rr, &rr2);
-	  if (i != 0)
-	    return -1;
-	  list_add (dialog->route_set, rr2, -1);
-	  pos++;
-	}
+          rr = (record_route_t *) list_get (response->record_routes, pos);
+          i = record_route_clone (rr, &rr2);
+          if (i != 0)
+            return -1;
+          list_add (dialog->route_set, rr2, -1);
+          pos++;
+        }
     }
 
   if (MSG_IS_STATUS_2XX (response))
@@ -129,11 +127,10 @@ dialog_update_tag_as_uac (dialog_t * dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       dialog->remote_tag = NULL;
-    }
-  else
+  } else
     dialog->remote_tag = sgetcopy (tag->gvalue);
   return 0;
 }
@@ -168,14 +165,14 @@ dialog_match_as_uac (dialog_t * dlg, sip_t * answer)
     return -1;
 
   i = to_get_tag (answer->to, &tag_param_remote);
-  if (i != 0 && dlg->remote_tag != NULL)	/* no tag in response but tag in dialog */
-    return -1;			/* impossible... */
-  if (i != 0 && dlg->remote_tag == NULL)	/* no tag in response AND no tag in dialog */
+  if (i != 0 && dlg->remote_tag != NULL)        /* no tag in response but tag in dialog */
+    return -1;                  /* impossible... */
+  if (i != 0 && dlg->remote_tag == NULL)        /* no tag in response AND no tag in dialog */
     {
       if (0 ==
-	  from_compare ((from_t *) dlg->local_uri, (from_t *) answer->from)
-	  && 0 == from_compare (dlg->remote_uri, answer->to))
-	return 0;
+          from_compare ((from_t *) dlg->local_uri, (from_t *) answer->from)
+          && 0 == from_compare (dlg->remote_uri, answer->to))
+        return 0;
       return -1;
     }
 
@@ -213,14 +210,14 @@ dialog_match_as_uas (dialog_t * dlg, sip_t * request)
     return -1;
 
   i = from_get_tag (request->from, &tag_param_remote);
-  if (i != 0 && dlg->remote_tag != NULL)	/* no tag in request but tag in dialog */
-    return -1;			/* impossible... */
-  if (i != 0 && dlg->remote_tag == NULL)	/* no tag in request AND no tag in dialog */
+  if (i != 0 && dlg->remote_tag != NULL)        /* no tag in request but tag in dialog */
+    return -1;                  /* impossible... */
+  if (i != 0 && dlg->remote_tag == NULL)        /* no tag in request AND no tag in dialog */
     {
       if (0 ==
-	  from_compare ((from_t *) dlg->remote_uri, (from_t *) request->from)
-	  && 0 == from_compare (dlg->local_uri, request->to))
-	return 0;
+          from_compare ((from_t *) dlg->remote_uri, (from_t *) request->from)
+          && 0 == from_compare (dlg->local_uri, request->to))
+        return 0;
       return -1;
     }
 
@@ -246,8 +243,8 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       return -1;
     }
 
@@ -258,7 +255,7 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   (*dialog)->type = CALLER;
   if (MSG_IS_STATUS_2XX (response))
     (*dialog)->state = DIALOG_CONFIRMED;
-  else				/* 1XX */
+  else                          /* 1XX */
     (*dialog)->state = DIALOG_EARLY;
 
   i = call_id_2char (response->call_id, &((*dialog)->call_id));
@@ -274,11 +271,10 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
-    }
-  else
+  } else
     (*dialog)->remote_tag = sgetcopy (tag->gvalue);
 
   (*dialog)->route_set = (list_t *) smalloc (sizeof (list_t));
@@ -293,7 +289,7 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
       rr = (record_route_t *) list_get (response->record_routes, pos);
       i = record_route_clone (rr, &rr2);
       if (i != 0)
-	goto diau_error_2;
+        goto diau_error_2;
       list_add ((*dialog)->route_set, rr2, -1);
       pos++;
     }
@@ -314,20 +310,19 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
 
     if (!list_eol (response->contacts, 0))
       {
-	contact = list_get (response->contacts, 0);
-	i = contact_clone (contact, &((*dialog)->remote_contact_uri));
-	if (i != 0)
-	  goto diau_error_5;
-      }
-    else
+        contact = list_get (response->contacts, 0);
+        i = contact_clone (contact, &((*dialog)->remote_contact_uri));
+        if (i != 0)
+          goto diau_error_5;
+    } else
       {
-	(*dialog)->remote_contact_uri = NULL;
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "Remote UA is not compliant: missing a contact in response!\n"));
+        (*dialog)->remote_contact_uri = NULL;
+        OSIP_TRACE (osip_trace
+                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                     "Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
-  (*dialog)->secure = -1;	/* non secure */
+  (*dialog)->secure = -1;       /* non secure */
 
   return 0;
 
@@ -339,8 +334,7 @@ diau_error_4:
   sfree ((*dialog)->remote_uri);
 diau_error_3:
 diau_error_2:
-  list_special_free ((*dialog)->route_set,
-		     (void *(*)(void *)) &record_route_free);
+  list_special_free ((*dialog)->route_set, (void *(*)(void *)) &record_route_free);
   sfree ((*dialog)->route_set);
   sfree ((*dialog)->remote_tag);
   sfree ((*dialog)->local_tag);
@@ -348,8 +342,8 @@ diau_error_1:
   sfree ((*dialog)->call_id);
 diau_error_0:
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-	       "Could not establish dialog!\n"));
+              (__FILE__, __LINE__, OSIP_ERROR, NULL,
+               "Could not establish dialog!\n"));
   sfree (*dialog);
   *dialog = NULL;
   return -1;
@@ -369,7 +363,7 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
   (*dialog)->type = CALLEE;
   if (MSG_IS_STATUS_2XX (response))
     (*dialog)->state = DIALOG_CONFIRMED;
-  else				/* 1XX */
+  else                          /* 1XX */
     (*dialog)->state = DIALOG_EARLY;
 
   i = call_id_2char (response->call_id, &((*dialog)->call_id));
@@ -385,11 +379,10 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in response!\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
-    }
-  else
+  } else
     (*dialog)->remote_tag = sgetcopy (tag->gvalue);
 
   (*dialog)->route_set = (list_t *) smalloc (sizeof (list_t));
@@ -404,7 +397,7 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
       rr = (record_route_t *) list_get (response->record_routes, pos);
       i = record_route_clone (rr, &rr2);
       if (i != 0)
-	goto diau_error_2;
+        goto diau_error_2;
       list_add ((*dialog)->route_set, rr2, -1);
       pos++;
     }
@@ -426,20 +419,19 @@ dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response)
 
     if (!list_eol (invite->contacts, 0))
       {
-	contact = list_get (invite->contacts, 0);
-	i = contact_clone (contact, &((*dialog)->remote_contact_uri));
-	if (i != 0)
-	  goto diau_error_5;
-      }
-    else
+        contact = list_get (invite->contacts, 0);
+        i = contact_clone (contact, &((*dialog)->remote_contact_uri));
+        if (i != 0)
+          goto diau_error_5;
+    } else
       {
-	(*dialog)->remote_contact_uri = NULL;
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "Remote UA is not compliant: missing a contact in response!\n"));
+        (*dialog)->remote_contact_uri = NULL;
+        OSIP_TRACE (osip_trace
+                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                     "Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
-  (*dialog)->secure = -1;	/* non secure */
+  (*dialog)->secure = -1;       /* non secure */
 
   return 0;
 
@@ -451,8 +443,7 @@ diau_error_4:
   sfree ((*dialog)->remote_uri);
 diau_error_3:
 diau_error_2:
-  list_special_free ((*dialog)->route_set,
-		     (void *(*)(void *)) &record_route_free);
+  list_special_free ((*dialog)->route_set, (void *(*)(void *)) &record_route_free);
   sfree ((*dialog)->route_set);
   sfree ((*dialog)->remote_tag);
   sfree ((*dialog)->local_tag);
@@ -460,8 +451,8 @@ diau_error_1:
   sfree ((*dialog)->call_id);
 diau_error_0:
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-	       "Could not establish dialog!\n"));
+              (__FILE__, __LINE__, OSIP_ERROR, NULL,
+               "Could not establish dialog!\n"));
   sfree (*dialog);
   *dialog = NULL;
   return -1;
@@ -478,8 +469,7 @@ dialog_free (dialog_t * dialog)
   sfree (dialog->local_uri);
   to_free (dialog->remote_uri);
   sfree (dialog->remote_uri);
-  list_special_free (dialog->route_set,
-		     (void *(*)(void *)) &record_route_free);
+  list_special_free (dialog->route_set, (void *(*)(void *)) &record_route_free);
   sfree (dialog->route_set);
   sfree (dialog->remote_tag);
   sfree (dialog->local_tag);

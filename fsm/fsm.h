@@ -59,8 +59,8 @@ typedef struct _transition_t
 transition_t;
 
 int fsm_callmethod (type_t type, state_t state,
-		    statemachine_t * statemachine,
-		    void *sipevent, void *transaction);
+                    statemachine_t * statemachine,
+                    void *sipevent, void *transaction);
 
 
 /*!! THESE ARE FOR INTERNAL USE ONLY!! */

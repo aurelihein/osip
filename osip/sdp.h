@@ -79,7 +79,7 @@ extern "C"
   {
     char *t_start_time;
     char *t_stop_time;
-    list_t *r_repeats;		/* list of char * */
+    list_t *r_repeats;          /* list of char * */
   };
 
 /**
@@ -101,8 +101,8 @@ extern "C"
 
   struct sdp_key_t
   {
-    char *k_keytype;		/* "prompt", "clear", "base64", "uri" */
-    char *k_keydata;		/* key data for "clear" and "base64", uri for "uri" */
+    char *k_keytype;            /* "prompt", "clear", "base64", "uri" */
+    char *k_keydata;            /* key data for "clear" and "base64", uri for "uri" */
   };
 
 /**
@@ -125,7 +125,7 @@ extern "C"
   struct sdp_attribute_t
   {
     char *a_att_field;
-    char *a_att_value;		/* optional */
+    char *a_att_value;          /* optional */
   };
 
 /**
@@ -181,9 +181,9 @@ extern "C"
     list_t *m_payloads;
 
     char *i_info;
-    list_t *c_connections;	/* list of sdp_connection_t * */
-    list_t *b_bandwidths;	/* list of sdp_bandwidth_t * */
-    list_t *a_attributes;	/* list of sdp_attribute_t * */
+    list_t *c_connections;      /* list of sdp_connection_t * */
+    list_t *b_bandwidths;       /* list of sdp_bandwidth_t * */
+    list_t *a_attributes;       /* list of sdp_attribute_t * */
     sdp_key_t *k_key;
   };
 
@@ -216,15 +216,15 @@ extern "C"
     char *s_name;
     char *i_info;
     char *u_uri;
-    list_t *e_emails;		/* list of char * */
-    list_t *p_phones;		/* list of char * */
+    list_t *e_emails;           /* list of char * */
+    list_t *p_phones;           /* list of char * */
     sdp_connection_t *c_connection;
-    list_t *b_bandwidths;	/* list of sdp_bandwidth_t * */
-    list_t *t_descrs;		/* list of sdp_time_descr_t * */
+    list_t *b_bandwidths;       /* list of sdp_bandwidth_t * */
+    list_t *t_descrs;           /* list of sdp_time_descr_t * */
     char *z_adjustments;
     sdp_key_t *k_key;
-    list_t *a_attributes;	/* list of sdp_attribute_t * */
-    list_t *m_medias;		/* list of sdp_media_t * */
+    list_t *a_attributes;       /* list of sdp_attribute_t * */
+    list_t *m_medias;           /* list of sdp_media_t * */
   };
 
 
@@ -280,8 +280,8 @@ extern "C"
  * @param addr The token value.
  */
   int sdp_o_origin_set (sdp_t * sdp, char *username, char *sess_id,
-			char *sess_version, char *nettype,
-			char *addrtype, char *addr);
+                        char *sess_version, char *nettype,
+                        char *addrtype, char *addr);
 /**
  * Get the username ('o' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -382,9 +382,9 @@ extern "C"
  * @param addr_multicast_int The token value.
  */
   int sdp_c_connection_add (sdp_t * sdp, int pos_media,
-			    char *nettype, char *addrtype,
-			    char *addr, char *addr_multicast_ttl,
-			    char *addr_multicast_int);
+                            char *nettype, char *addrtype,
+                            char *addr, char *addr_multicast_ttl,
+                            char *addr_multicast_int);
 #ifndef DOXYGEN
 /* this method should be internal only... */
   sdp_connection_t *sdp_connection_get (sdp_t * sdp, int pos_media, int pos);
@@ -432,7 +432,7 @@ extern "C"
  * @param bandwidth The token value.
  */
   int sdp_b_bandwidth_add (sdp_t * sdp, int pos_media,
-			   char *bwtype, char *bandwidth);
+                           char *bwtype, char *bandwidth);
 /**
  * Get the bandwidth ('b' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -505,8 +505,7 @@ extern "C"
  * @param keytype The token value.
  * @param keydata The token value.
  */
-  int sdp_k_key_set (sdp_t * sdp, int pos_media, char *keytype,
-		     char *keydata);
+  int sdp_k_key_set (sdp_t * sdp, int pos_media, char *keytype, char *keydata);
 /**
  * Get the key type ('k' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -527,7 +526,7 @@ extern "C"
  * @param att_value The token value.
  */
   int sdp_a_attribute_add (sdp_t * sdp, int pos_media, char *att_field,
-			   char *att_value);
+                           char *att_value);
 /**
  * Get one of the attribute ('a' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -564,7 +563,7 @@ extern "C"
  * @param proto The token value.
  */
   int sdp_m_media_add (sdp_t * sdp, char *media,
-		       char *port, char *number_of_port, char *proto);
+                       char *port, char *number_of_port, char *proto);
 /**
  * Get the media type ('m' field) of a SDP packet.
  * @param sdp The element to work on.

@@ -43,13 +43,12 @@ main (int argc, char **argv)
   tos_file = fopen (argv[1], "r");
   if (tos_file == NULL)
     {
-      fprintf (stdout, "Failed to open %s file.\nUsage: tto tos.txt\n",
-	       argv[1]);
+      fprintf (stdout, "Failed to open %s file.\nUsage: tto tos.txt\n", argv[1]);
       exit (0);
     }
 
   a_to = (char *) smalloc (200);
-  res = fgets (a_to, 200, tos_file);	/* lines are under 200 */
+  res = fgets (a_to, 200, tos_file);    /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,26 +58,25 @@ main (int argc, char **argv)
       strncpy (a_to + strlen (a_to) - 1, "\0", 1);
 
       if (0 != strncmp (a_to, "#", 1))
-	{
-	  /* allocate & init to */
-	  to_init (&to);
-	  printf ("=================================================\n");
-	  printf ("TO TO PARSE: |%s|\n", a_to);
-	  errcode = to_parse (to, a_to);
-	  if (errcode != -1)
-	    {
-	      if (to_2char (to, &dest) != -1)
-		{
-		  printf ("result:      |%s|\n", dest);
-		  sfree (dest);
-		}
-	    }
-	  else
-	    printf ("Bad to format: %s\n", a_to);
-	  to_free (to), sfree (to);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_to, 200, tos_file);	/* lines are under 200 */
+        {
+          /* allocate & init to */
+          to_init (&to);
+          printf ("=================================================\n");
+          printf ("TO TO PARSE: |%s|\n", a_to);
+          errcode = to_parse (to, a_to);
+          if (errcode != -1)
+            {
+              if (to_2char (to, &dest) != -1)
+                {
+                  printf ("result:      |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad to format: %s\n", a_to);
+          to_free (to), sfree (to);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_to, 200, tos_file);        /* lines are under 200 */
     }
   sfree (a_to);
   return 0;

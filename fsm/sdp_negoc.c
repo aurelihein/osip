@@ -303,11 +303,10 @@ sdp_config_set_c_addr_multicast_int (char *tmp)
 
 int
 sdp_config_add_support_for_audio_codec (char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+                                        char *proto, char *c_nettype,
+                                        char *c_addrtype, char *c_addr,
+                                        char *c_addr_multicast_ttl,
+                                        char *c_addr_multicast_int, char *a_rtpmap)
 {
   int i;
   payload_t *my_payload;
@@ -330,11 +329,10 @@ sdp_config_add_support_for_audio_codec (char *payload, char *number_of_port,
 
 int
 sdp_config_add_support_for_video_codec (char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+                                        char *proto, char *c_nettype,
+                                        char *c_addrtype, char *c_addr,
+                                        char *c_addr_multicast_ttl,
+                                        char *c_addr_multicast_int, char *a_rtpmap)
 {
   int i;
   payload_t *my_payload;
@@ -357,11 +355,10 @@ sdp_config_add_support_for_video_codec (char *payload, char *number_of_port,
 
 int
 sdp_config_add_support_for_other_codec (char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+                                        char *proto, char *c_nettype,
+                                        char *c_addrtype, char *c_addr,
+                                        char *c_addr_multicast_ttl,
+                                        char *c_addr_multicast_int, char *a_rtpmap)
 {
   int i;
   payload_t *my_payload;
@@ -416,8 +413,8 @@ sdp_config_find_audio_payload (char *payload)
     {
       my = (payload_t *) list_get (config->audio_codec, pos);
       if (strlen (my->payload) == length)
-	if (0 == strncmp (my->payload, payload, length))
-	  return my;
+        if (0 == strncmp (my->payload, payload, length))
+          return my;
       pos++;
     }
   return NULL;
@@ -436,8 +433,8 @@ sdp_config_find_video_payload (char *payload)
     {
       my = (payload_t *) list_get (config->video_codec, pos);
       if (strlen (my->payload) == length)
-	if (0 == strncmp (my->payload, payload, length))
-	  return my;
+        if (0 == strncmp (my->payload, payload, length))
+          return my;
       pos++;
     }
   return NULL;
@@ -456,8 +453,8 @@ sdp_config_find_other_payload (char *payload)
     {
       my = (payload_t *) list_get (config->other_codec, pos);
       if (strlen (my->payload) == length)
-	if (0 == strncmp (my->payload, payload, length))
-	  return my;
+        if (0 == strncmp (my->payload, payload, length))
+          return my;
       pos++;
     }
   return NULL;
@@ -510,34 +507,34 @@ sdp_config_set_fcn_set_attributes (int (*fcn) (sdp_context_t *, sdp_t *, int))
 
 int
 sdp_config_set_fcn_accept_audio_codec (int (*fcn) (sdp_context_t *, char *,
-						   char *, int, char *))
+                                                   char *, int, char *))
 {
   if (config == NULL)
     return -1;
   config->fcn_accept_audio_codec = (int (*)(void *, char *,
-					    char *, int, char *)) fcn;
+                                            char *, int, char *)) fcn;
   return 0;
 }
 
 int
 sdp_config_set_fcn_accept_video_codec (int (*fcn) (sdp_context_t *, char *,
-						   char *, int, char *))
+                                                   char *, int, char *))
 {
   if (config == NULL)
     return -1;
   config->fcn_accept_video_codec = (int (*)(void *, char *,
-					    char *, int, char *)) fcn;
+                                            char *, int, char *)) fcn;
   return 0;
 }
 
 int
 sdp_config_set_fcn_accept_other_codec (int (*fcn) (sdp_context_t *, char *,
-						   char *, char *, char *))
+                                                   char *, char *, char *))
 {
   if (config == NULL)
     return -1;
   config->fcn_accept_other_codec = (int (*)(void *, char *,
-					    char *, char *, char *)) fcn;
+                                            char *, char *, char *)) fcn;
   return 0;
 }
 
@@ -577,11 +574,11 @@ sdp_partial_clone (sdp_context_t * con, sdp_t * remote, sdp_t ** dest)
 
   /* those fields MUST be set */
   sdp_o_origin_set (*dest,
-		    sgetcopy (config->o_username),
-		    sgetcopy (config->o_session_id),
-		    sgetcopy (config->o_session_version),
-		    sgetcopy (config->o_nettype),
-		    sgetcopy (config->o_addrtype), sgetcopy (config->o_addr));
+                    sgetcopy (config->o_username),
+                    sgetcopy (config->o_session_id),
+                    sgetcopy (config->o_session_version),
+                    sgetcopy (config->o_nettype),
+                    sgetcopy (config->o_addrtype), sgetcopy (config->o_addr));
   sdp_s_name_set (*dest, sgetcopy (remote->s_name));
   if (config->fcn_set_info != NULL)
     config->fcn_set_info (con, *dest);
@@ -593,18 +590,18 @@ sdp_partial_clone (sdp_context_t * con, sdp_t * remote, sdp_t ** dest)
     config->fcn_set_phones (con, *dest);
   if (config->c_nettype != NULL)
     sdp_c_connection_add (*dest, -1,
-			  sgetcopy (config->c_nettype),
-			  sgetcopy (config->c_addrtype),
-			  sgetcopy (config->c_addr),
-			  sgetcopy (config->c_addr_multicast_ttl),
-			  sgetcopy (config->c_addr_multicast_int));
+                          sgetcopy (config->c_nettype),
+                          sgetcopy (config->c_addrtype),
+                          sgetcopy (config->c_addr),
+                          sgetcopy (config->c_addr_multicast_ttl),
+                          sgetcopy (config->c_addr_multicast_int));
 
-  {				/* offer-answer draft says we must copy the "t=" line */
+  {                             /* offer-answer draft says we must copy the "t=" line */
     char *tmp = sdp_t_start_time_get (remote, 0);
     char *tmp2 = sdp_t_stop_time_get (remote, 0);
 
     if (tmp == NULL || tmp2 == NULL)
-      return -1;		/* no t line?? */
+      return -1;                /* no t line?? */
     i = sdp_t_time_descr_add (*dest, sgetcopy (tmp), sgetcopy (tmp2));
     if (i != 0)
       return -1;
@@ -622,7 +619,7 @@ sdp_confirm_media (sdp_context_t * context, sdp_t * remote, sdp_t ** dest)
   int ret;
   int i;
   int k;
-  int audio_qty = 0;		/* accepted audio line: do not accept more than one */
+  int audio_qty = 0;            /* accepted audio line: do not accept more than one */
   int video_qty = 0;
 
   i = 0;
@@ -634,161 +631,151 @@ sdp_confirm_media (sdp_context_t * context, sdp_t * remote, sdp_t ** dest)
       tmp4 = sdp_m_proto_get (remote, i);
 
       if (tmp == NULL)
-	return -1;
+        return -1;
       sdp_m_media_add (*dest, sgetcopy (tmp), sgetcopy ("0"),
-		       NULL, sgetcopy (tmp4));
+                       NULL, sgetcopy (tmp4));
       k = 0;
       if (0 == strncmp (tmp, "audio", 5))
-	{
-	  do
-	    {
-	      payload = sdp_m_payload_get (remote, i, k);
-	      if (payload != NULL)
-		{
-		  payload_t *my_payload =
-		    sdp_config_find_audio_payload (payload);
+        {
+          do
+            {
+              payload = sdp_m_payload_get (remote, i, k);
+              if (payload != NULL)
+                {
+                  payload_t *my_payload = sdp_config_find_audio_payload (payload);
 
-		  if (my_payload != NULL)	/* payload is supported */
-		    {
-		      ret = -1;	/* somtimes, codec can be refused even if supported */
-		      if (config->fcn_accept_audio_codec != NULL)
-			ret = config->fcn_accept_audio_codec (context, tmp2,
-							      tmp3, audio_qty,
-							      payload);
-		      if (0 == ret)
-			{
-			  sdp_m_payload_add (*dest, i, sgetcopy (payload));
-			  if (my_payload->a_rtpmap != NULL)
-			    sdp_a_attribute_add (*dest, i,
-						 sgetcopy ("rtpmap"),
-						 sgetcopy (my_payload->
-							   a_rtpmap));
-			  if (my_payload->c_nettype != NULL)
-			    {
-			      sdp_media_t *med =
-				list_get ((*dest)->m_medias, i);
+                  if (my_payload != NULL)       /* payload is supported */
+                    {
+                      ret = -1; /* somtimes, codec can be refused even if supported */
+                      if (config->fcn_accept_audio_codec != NULL)
+                        ret = config->fcn_accept_audio_codec (context, tmp2,
+                                                              tmp3, audio_qty,
+                                                              payload);
+                      if (0 == ret)
+                        {
+                          sdp_m_payload_add (*dest, i, sgetcopy (payload));
+                          if (my_payload->a_rtpmap != NULL)
+                            sdp_a_attribute_add (*dest, i,
+                                                 sgetcopy ("rtpmap"),
+                                                 sgetcopy (my_payload->a_rtpmap));
+                          if (my_payload->c_nettype != NULL)
+                            {
+                              sdp_media_t *med = list_get ((*dest)->m_medias, i);
 
-			      if (list_eol (med->c_connections, 0))
-				sdp_c_connection_add (*dest, i,
-						      sgetcopy (my_payload->
-								c_nettype),
-						      sgetcopy (my_payload->
-								c_addrtype),
-						      sgetcopy (my_payload->
-								c_addr),
-						      sgetcopy (my_payload->
-								c_addr_multicast_ttl),
-						      sgetcopy (my_payload->
-								c_addr_multicast_int));
-			    }
-			}
-		    }
-		}
-	      k++;
-	    }
-	  while (payload != NULL);
-	  if (NULL != sdp_m_payload_get (*dest, i, 0))
-	    audio_qty = 1;
-	}
-      else if (0 == strncmp (tmp, "video", 5))
-	{
-	  do
-	    {
-	      payload = sdp_m_payload_get (remote, i, k);
-	      if (payload != NULL)
-		{
-		  payload_t *my_payload =
-		    sdp_config_find_video_payload (payload);
+                              if (list_eol (med->c_connections, 0))
+                                sdp_c_connection_add (*dest, i,
+                                                      sgetcopy (my_payload->
+                                                                c_nettype),
+                                                      sgetcopy (my_payload->
+                                                                c_addrtype),
+                                                      sgetcopy (my_payload->
+                                                                c_addr),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_ttl),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_int));
+                            }
+                        }
+                    }
+                }
+              k++;
+            }
+          while (payload != NULL);
+          if (NULL != sdp_m_payload_get (*dest, i, 0))
+            audio_qty = 1;
+      } else if (0 == strncmp (tmp, "video", 5))
+        {
+          do
+            {
+              payload = sdp_m_payload_get (remote, i, k);
+              if (payload != NULL)
+                {
+                  payload_t *my_payload = sdp_config_find_video_payload (payload);
 
-		  if (my_payload != NULL)	/* payload is supported */
-		    {
-		      ret = -1;
-		      if (config->fcn_accept_video_codec != NULL)
-			ret =
-			  config->fcn_accept_video_codec (context, tmp2, tmp3,
-							  video_qty, payload);
-		      if (0 == ret)
-			{
-			  sdp_m_payload_add (*dest, i, sgetcopy (payload));
-			  /* TODO  set the attribute list (rtpmap..) */
-			  if (my_payload->a_rtpmap != NULL)
-			    sdp_a_attribute_add (*dest, i,
-						 sgetcopy ("rtpmap"),
-						 sgetcopy (my_payload->
-							   a_rtpmap));
-			  if (my_payload->c_nettype != NULL)
-			    {
-			      sdp_media_t *med =
-				list_get ((*dest)->m_medias, i);
+                  if (my_payload != NULL)       /* payload is supported */
+                    {
+                      ret = -1;
+                      if (config->fcn_accept_video_codec != NULL)
+                        ret =
+                          config->fcn_accept_video_codec (context, tmp2, tmp3,
+                                                          video_qty, payload);
+                      if (0 == ret)
+                        {
+                          sdp_m_payload_add (*dest, i, sgetcopy (payload));
+                          /* TODO  set the attribute list (rtpmap..) */
+                          if (my_payload->a_rtpmap != NULL)
+                            sdp_a_attribute_add (*dest, i,
+                                                 sgetcopy ("rtpmap"),
+                                                 sgetcopy (my_payload->a_rtpmap));
+                          if (my_payload->c_nettype != NULL)
+                            {
+                              sdp_media_t *med = list_get ((*dest)->m_medias, i);
 
-			      if (list_eol (med->c_connections, 0))
-				sdp_c_connection_add (*dest, i,
-						      sgetcopy (my_payload->
-								c_nettype),
-						      sgetcopy (my_payload->
-								c_addrtype),
-						      sgetcopy (my_payload->
-								c_addr),
-						      sgetcopy (my_payload->
-								c_addr_multicast_ttl),
-						      sgetcopy (my_payload->
-								c_addr_multicast_int));
-			    }
-			}
-		    }
-		}
-	      k++;
-	    }
-	  while (payload != NULL);
-	  if (NULL != sdp_m_payload_get (*dest, i, 0))
-	    video_qty = 1;
-	}
-      else
-	{
-	  do
-	    {
-	      payload = sdp_m_payload_get (remote, i, k);
-	      if (payload != NULL)
-		{
-		  payload_t *my_payload =
-		    sdp_config_find_other_payload (payload);
+                              if (list_eol (med->c_connections, 0))
+                                sdp_c_connection_add (*dest, i,
+                                                      sgetcopy (my_payload->
+                                                                c_nettype),
+                                                      sgetcopy (my_payload->
+                                                                c_addrtype),
+                                                      sgetcopy (my_payload->
+                                                                c_addr),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_ttl),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_int));
+                            }
+                        }
+                    }
+                }
+              k++;
+            }
+          while (payload != NULL);
+          if (NULL != sdp_m_payload_get (*dest, i, 0))
+            video_qty = 1;
+      } else
+        {
+          do
+            {
+              payload = sdp_m_payload_get (remote, i, k);
+              if (payload != NULL)
+                {
+                  payload_t *my_payload = sdp_config_find_other_payload (payload);
 
-		  if (my_payload != NULL)	/* payload is supported */
-		    {
-		      ret = -1;
-		      if (config->fcn_accept_other_codec != NULL)
-			ret =
-			  config->fcn_accept_other_codec (context, tmp, tmp2,
-							  tmp3, payload);
-		      if (0 == ret)
-			{
-			  sdp_m_payload_add (*dest, i, sgetcopy (payload));
-			  /* rtpmap has no meaning here! */
-			  if (my_payload->c_nettype != NULL)
-			    {
-			      sdp_media_t *med =
-				list_get ((*dest)->m_medias, i);
+                  if (my_payload != NULL)       /* payload is supported */
+                    {
+                      ret = -1;
+                      if (config->fcn_accept_other_codec != NULL)
+                        ret =
+                          config->fcn_accept_other_codec (context, tmp, tmp2,
+                                                          tmp3, payload);
+                      if (0 == ret)
+                        {
+                          sdp_m_payload_add (*dest, i, sgetcopy (payload));
+                          /* rtpmap has no meaning here! */
+                          if (my_payload->c_nettype != NULL)
+                            {
+                              sdp_media_t *med = list_get ((*dest)->m_medias, i);
 
-			      if (list_eol (med->c_connections, 0))
-				sdp_c_connection_add (*dest, i,
-						      sgetcopy (my_payload->
-								c_nettype),
-						      sgetcopy (my_payload->
-								c_addrtype),
-						      sgetcopy (my_payload->
-								c_addr),
-						      sgetcopy (my_payload->
-								c_addr_multicast_ttl),
-						      sgetcopy (my_payload->
-								c_addr_multicast_int));
-			    }
-			}
-		    }
-		}
-	      k++;
-	    }
-	  while (payload != NULL);
-	}
+                              if (list_eol (med->c_connections, 0))
+                                sdp_c_connection_add (*dest, i,
+                                                      sgetcopy (my_payload->
+                                                                c_nettype),
+                                                      sgetcopy (my_payload->
+                                                                c_addrtype),
+                                                      sgetcopy (my_payload->
+                                                                c_addr),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_ttl),
+                                                      sgetcopy (my_payload->
+                                                                c_addr_multicast_int));
+                            }
+                        }
+                    }
+                }
+              k++;
+            }
+          while (payload != NULL);
+        }
       i++;
     }
   return 0;
@@ -817,7 +804,7 @@ sdp_context_execute_negociation (sdp_context_t * context)
       sdp_free (local);
       sfree (local);
       /*      sdp_context->fcn_wrong_version(context); */
-      return 406;		/* Not Acceptable */
+      return 406;               /* Not Acceptable */
     }
 
   i = sdp_partial_clone (context, remote, &local);
@@ -840,33 +827,31 @@ sdp_context_execute_negociation (sdp_context_t * context)
     {
       /* this is to refuse each line with no codec that matches! */
       if (NULL == sdp_m_payload_get (local, i, 0))
-	{
-	  sdp_media_t *med = list_get ((local)->m_medias, i);
-	  char *str = sdp_m_payload_get (remote, i, 0);
+        {
+          sdp_media_t *med = list_get ((local)->m_medias, i);
+          char *str = sdp_m_payload_get (remote, i, 0);
 
-	  sdp_m_payload_add (local, i, sgetcopy (str));
-	  sfree (med->m_port);
-	  med->m_port = sgetcopy ("0");	/* refuse this line */
-	}
-      else
-	{			/* number of "m" lines that match */
-	  sdp_media_t *med = list_get (local->m_medias, i);
+          sdp_m_payload_add (local, i, sgetcopy (str));
+          sfree (med->m_port);
+          med->m_port = sgetcopy ("0"); /* refuse this line */
+      } else
+        {                       /* number of "m" lines that match */
+          sdp_media_t *med = list_get (local->m_medias, i);
 
-	  m_lines_that_match++;
-	  sfree (med->m_port);
-	  if (config->fcn_get_audio_port != NULL)
-	    med->m_port = config->fcn_get_audio_port (context, i);
-	  else
-	    med->m_port = sgetcopy ("0");	/* should never happen */
-	}
+          m_lines_that_match++;
+          sfree (med->m_port);
+          if (config->fcn_get_audio_port != NULL)
+            med->m_port = config->fcn_get_audio_port (context, i);
+          else
+            med->m_port = sgetcopy ("0");       /* should never happen */
+        }
       i++;
     }
   if (m_lines_that_match > 0)
     {
       context->local = local;
       return 200;
-    }
-  else
+  } else
     {
       sdp_free (local);
       sfree (local);
@@ -877,7 +862,7 @@ sdp_context_execute_negociation (sdp_context_t * context)
 
 int
 sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
-		 char *video_port)
+                 char *video_port)
 {
   int i;
   int media_line = 0;
@@ -890,11 +875,11 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 
   /* those fields MUST be set */
   sdp_o_origin_set (*sdp,
-		    sgetcopy (config->o_username),
-		    sgetcopy (config->o_session_id),
-		    sgetcopy (config->o_session_version),
-		    sgetcopy (config->o_nettype),
-		    sgetcopy (config->o_addrtype), sgetcopy (config->o_addr));
+                    sgetcopy (config->o_username),
+                    sgetcopy (config->o_session_id),
+                    sgetcopy (config->o_session_version),
+                    sgetcopy (config->o_nettype),
+                    sgetcopy (config->o_addrtype), sgetcopy (config->o_addr));
   sdp_s_name_set (*sdp, sgetcopy ("A call"));
   if (config->fcn_set_info != NULL)
     config->fcn_set_info (con, *sdp);
@@ -906,13 +891,13 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
     config->fcn_set_phones (con, *sdp);
   if (config->c_nettype != NULL)
     sdp_c_connection_add (*sdp, -1,
-			  sgetcopy (config->c_nettype),
-			  sgetcopy (config->c_addrtype),
-			  sgetcopy (config->c_addr),
-			  sgetcopy (config->c_addr_multicast_ttl),
-			  sgetcopy (config->c_addr_multicast_int));
+                          sgetcopy (config->c_nettype),
+                          sgetcopy (config->c_addrtype),
+                          sgetcopy (config->c_addr),
+                          sgetcopy (config->c_addr_multicast_ttl),
+                          sgetcopy (config->c_addr_multicast_int));
 
-  {				/* offer-answer draft says we must copy the "t=" line */
+  {                             /* offer-answer draft says we must copy the "t=" line */
     int now = time (NULL);
     char *tmp = smalloc (15);
     char *tmp2 = smalloc (15);
@@ -936,17 +921,17 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 
       /* all media MUST have the same PROTO, PORT. */
       sdp_m_media_add (*sdp, sgetcopy ("audio"), sgetcopy (audio_port),
-		       my->number_of_port, sgetcopy (my->proto));
+                       my->number_of_port, sgetcopy (my->proto));
 
       while (!list_eol (config->audio_codec, pos))
-	{
-	  my = (payload_t *) list_get (config->audio_codec, pos);
-	  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
-	  if (my->a_rtpmap != NULL)
-	    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
-				 sgetcopy (my->a_rtpmap));
-	  pos++;
-	}
+        {
+          my = (payload_t *) list_get (config->audio_codec, pos);
+          sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
+          if (my->a_rtpmap != NULL)
+            sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
+                                 sgetcopy (my->a_rtpmap));
+          pos++;
+        }
       media_line++;
     }
 
@@ -958,17 +943,17 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 
       /* all media MUST have the same PROTO, PORT. */
       sdp_m_media_add (*sdp, sgetcopy ("video"), sgetcopy (video_port),
-		       my->number_of_port, sgetcopy (my->proto));
+                       my->number_of_port, sgetcopy (my->proto));
 
       while (!list_eol (config->video_codec, pos))
-	{
-	  my = (payload_t *) list_get (config->audio_codec, pos);
-	  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
-	  if (my->a_rtpmap != NULL)
-	    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
-				 sgetcopy (my->a_rtpmap));
-	  pos++;
-	}
+        {
+          my = (payload_t *) list_get (config->audio_codec, pos);
+          sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
+          if (my->a_rtpmap != NULL)
+            sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
+                                 sgetcopy (my->a_rtpmap));
+          pos++;
+        }
       media_line++;
     }
   return 0;
@@ -988,15 +973,14 @@ sdp_put_on_hold (sdp_t * sdp)
   while (rcvsnd != NULL)
     {
       if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "sendonly")
-	  && 0 == strcmp (rcvsnd, "sendrecv"))
-	{
-	  recv_send = 0;
-	}
-      else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
-	{
-	  recv_send = 0;
-	  sprintf (rcvsnd, "sendonly");
-	}
+          && 0 == strcmp (rcvsnd, "sendrecv"))
+        {
+          recv_send = 0;
+      } else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
+        {
+          recv_send = 0;
+          sprintf (rcvsnd, "sendonly");
+        }
       pos++;
       rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
     }
@@ -1007,19 +991,18 @@ sdp_put_on_hold (sdp_t * sdp)
       pos = 0;
       rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
       while (rcvsnd != NULL)
-	{
-	  if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "sendonly"))
-	    {
-	      recv_send = 0;
-	    }
-	  else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
-	    {
-	      recv_send = 0;
-	      sprintf (rcvsnd, "sendonly");
-	    }
-	  pos++;
-	  rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
-	}
+        {
+          if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "sendonly"))
+            {
+              recv_send = 0;
+          } else if (rcvsnd != NULL && 0 == strcmp (rcvsnd, "recvonly"))
+            {
+              recv_send = 0;
+              sprintf (rcvsnd, "sendonly");
+            }
+          pos++;
+          rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
+        }
       pos_media++;
     }
 
@@ -1044,10 +1027,10 @@ sdp_put_off_hold (sdp_t * sdp)
   while (rcvsnd != NULL)
     {
       if (rcvsnd != NULL && (0 == strcmp (rcvsnd, "sendonly")
-			     || 0 == strcmp (rcvsnd, "recvonly")))
-	{
-	  sprintf (rcvsnd, "sendrecv");
-	}
+                             || 0 == strcmp (rcvsnd, "recvonly")))
+        {
+          sprintf (rcvsnd, "sendrecv");
+        }
       pos++;
       rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
     }
@@ -1058,15 +1041,15 @@ sdp_put_off_hold (sdp_t * sdp)
       pos = 0;
       rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
       while (rcvsnd != NULL)
-	{
-	  if (rcvsnd != NULL && (0 == strcmp (rcvsnd, "sendonly")
-				 || 0 == strcmp (rcvsnd, "recvonly")))
-	    {
-	      sprintf (rcvsnd, "sendrecv");
-	    }
-	  pos++;
-	  rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
-	}
+        {
+          if (rcvsnd != NULL && (0 == strcmp (rcvsnd, "sendonly")
+                                 || 0 == strcmp (rcvsnd, "recvonly")))
+            {
+              sprintf (rcvsnd, "sendrecv");
+            }
+          pos++;
+          rcvsnd = sdp_a_att_field_get (sdp, pos_media, pos);
+        }
       pos_media++;
     }
 

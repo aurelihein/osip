@@ -110,15 +110,14 @@ content_type_parse (content_type_t * content_type, char *hvalue)
   content_type_params = strchr (hvalue, ';');
 
   if (subtype == NULL)
-    return -1;			/* do we really mind such an error */
+    return -1;                  /* do we really mind such an error */
 
   if (content_type_params != NULL)
     {
       if (generic_param_parseall (content_type->gen_params,
-				  content_type_params) == -1)
-	return -1;
-    }
-  else
+                                  content_type_params) == -1)
+        return -1;
+  } else
     content_type_params = subtype + strlen (subtype);
 
   if (subtype - hvalue + 1 < 2)
@@ -134,8 +133,7 @@ content_type_parse (content_type_t * content_type, char *hvalue)
   content_type->subtype = (char *) smalloc (content_type_params - subtype);
   if (content_type->subtype == NULL)
     return -1;
-  sstrncpy (content_type->subtype, subtype + 1,
-	    content_type_params - subtype - 1);
+  sstrncpy (content_type->subtype, subtype + 1, content_type_params - subtype - 1);
   sclrspace (content_type->subtype);
 
   return 0;
@@ -158,7 +156,7 @@ content_type_2char (content_type_t * content_type, char **dest)
     return -1;
 
   /* try to guess a long enough length */
-  len = strlen (content_type->type) + strlen (content_type->subtype) + 4	/* for '/', ' ', ';' and '\0' */
+  len = strlen (content_type->type) + strlen (content_type->subtype) + 4        /* for '/', ' ', ';' and '\0' */
     + 10 * list_size (content_type->gen_params);
 
   buf = (char *) smalloc (len);
@@ -172,31 +170,31 @@ content_type_2char (content_type_t * content_type, char **dest)
     generic_param_t *u_param;
 
     if (!list_eol (content_type->gen_params, pos))
-      {				/* needed for cannonical form! (authentication issue of rfc2543) */
-	sprintf (tmp, " ");
-	tmp++;
+      {                         /* needed for cannonical form! (authentication issue of rfc2543) */
+        sprintf (tmp, " ");
+        tmp++;
       }
     while (!list_eol (content_type->gen_params, pos))
       {
-	int tmp_len;
-	u_param =
-	  (generic_param_t *) list_get (content_type->gen_params, pos);
-	if (u_param->gvalue == NULL)
-	  {
-	    sfree (buf);
-	    return -1;
-	  }
-	tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
-	  + strlen (u_param->gvalue);
-	if (len < tmp_len)
-	  {
-	    buf = realloc (buf, tmp_len);
-	    len = tmp_len;
-	    tmp = buf + strlen (buf);
-	  }
-	sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-	tmp = tmp + strlen (tmp);
-	pos++;
+        int tmp_len;
+
+        u_param = (generic_param_t *) list_get (content_type->gen_params, pos);
+        if (u_param->gvalue == NULL)
+          {
+            sfree (buf);
+            return -1;
+          }
+        tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
+          + strlen (u_param->gvalue);
+        if (len < tmp_len)
+          {
+            buf = realloc (buf, tmp_len);
+            len = tmp_len;
+            tmp = buf + strlen (buf);
+          }
+        sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+        tmp = tmp + strlen (tmp);
+        pos++;
       }
   }
   *dest = buf;
@@ -237,7 +235,7 @@ content_type_clone (content_type_t * ctt, content_type_t ** dest)
     return -1;
 
   i = content_type_init (&ct);
-  if (i != 0)			/* allocation failed */
+  if (i != 0)                   /* allocation failed */
     return -1;
   ct->type = sgetcopy (ctt->type);
   ct->subtype = sgetcopy (ctt->subtype);
@@ -249,16 +247,16 @@ content_type_clone (content_type_t * ctt, content_type_t ** dest)
 
     while (!list_eol (ctt->gen_params, pos))
       {
-	u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
-	i = generic_param_clone (u_param, &dest_param);
-	if (i != 0)
-	  {
-	    content_type_free (ct);
-	    sfree (ct);
-	    return -1;
-	  }
-	list_add (ct->gen_params, dest_param, -1);
-	pos++;
+        u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
+        i = generic_param_clone (u_param, &dest_param);
+        if (i != 0)
+          {
+            content_type_free (ct);
+            sfree (ct);
+            return -1;
+          }
+        list_add (ct->gen_params, dest_param, -1);
+        pos++;
       }
   }
   *dest = ct;

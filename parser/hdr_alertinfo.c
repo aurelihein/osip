@@ -40,7 +40,6 @@ msg_setalert_info (sip_t * sip, char *hvalue)
       sfree (alert_info);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -55,7 +54,7 @@ msg_getalert_info (sip_t * sip, int pos, alert_info_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->alert_infos) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
   *dest = alert_info;
   return pos;

@@ -56,7 +56,7 @@ extern "C"
 
   struct node_t
   {
-    void *next;			/* next node_t */
+    void *next;                 /* next node_t */
     void *element;
   };
 #endif

@@ -54,14 +54,13 @@ msg_setproxy_authorization (sip_t * sip, char *hvalue)
 }
 
 int
-msg_getproxy_authorization (sip_t * sip, int pos,
-			    proxy_authorization_t ** dest)
+msg_getproxy_authorization (sip_t * sip, int pos, proxy_authorization_t ** dest)
 {
   proxy_authorization_t *proxy_authorization;
 
   *dest = NULL;
   if (list_size (sip->proxy_authorizations) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   proxy_authorization =
     (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
   *dest = proxy_authorization;

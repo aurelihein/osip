@@ -40,7 +40,6 @@ msg_setcontent_disposition (sip_t * sip, char *hvalue)
       sfree (content_disposition);
       return -1;
     }
-
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -49,14 +48,13 @@ msg_setcontent_disposition (sip_t * sip, char *hvalue)
 }
 
 int
-msg_getcontent_disposition (sip_t * sip, int pos,
-			    content_disposition_t ** dest)
+msg_getcontent_disposition (sip_t * sip, int pos, content_disposition_t ** dest)
 {
   content_disposition_t *content_disposition;
 
   *dest = NULL;
   if (list_size (sip->content_dispositions) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   content_disposition =
     (content_disposition_t *) list_get (sip->content_dispositions, pos);
   *dest = content_disposition;
@@ -75,9 +73,8 @@ content_disposition_parse (content_disposition_t * cd, char *hvalue)
   if (cd_params != NULL)
     {
       if (generic_param_parseall (cd->gen_params, cd_params) == -1)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     cd_params = hvalue + strlen (hvalue);
 
   if (cd_params - hvalue + 1 < 2)
