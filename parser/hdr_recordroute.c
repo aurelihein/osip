@@ -40,11 +40,15 @@ msg_setrecord_route (sip_t * sip, char *hvalue)
   int i;
 
   i = record_route_init (&record_route);
-  if (i == -1)                  /* allocation failed */
+  if (i != 0)
     return -1;
   i = record_route_parse (record_route, hvalue);
-  if (i == -1)
-    return -1;
+  if (i != 0)
+    {
+      record_route_free(record_route);
+      sfree(record_route);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
@@ -77,29 +81,30 @@ record_route_parse (record_route_t * record_route, char *hvalue)
 
 /* returns the record_route header as a string.          */
 /* INPUT : record_route_t *record_route | record_route header.  */
-/* returns null on error. */
-/* returns the from header as a string.  */
-/* INPUT : from_t *from | from header.   */
-/* returns null on error. */
+/* returns -1 on error. */
 int
 record_route_2char (record_route_t * record_route, char **dest)
 {
   char *url;
   char *buf;
+  int i;
+  int len;
 
   *dest = NULL;
   if ((record_route == NULL) || (record_route->url == NULL))
     return -1;
 
-  buf = (char *) smalloc (200);
-  *dest = buf;
+  i = url_2char (record_route->url, &url);
+  if (i != 0)
+    return -1;
 
-  if (url_2char (record_route->url, &url) == -1)
-    {
-      sfree (buf);
-      *dest = NULL;
-      return -1;
-    }
+  if (record_route->displayname==NULL)
+    len = strlen(url) +5;
+  else
+    len = strlen(url) + strlen(record_route->displayname) +5;
+
+  buf = (char *) smalloc (len);
+  if (buf==NULL) { sfree(url); return -1; }
 
   /* route and record-route always use brackets */
   if (record_route->displayname != NULL)
@@ -108,22 +113,32 @@ record_route_2char (record_route_t * record_route, char **dest)
     sprintf (buf, "<%s>", url);
   sfree (url);
 
-  buf = buf + strlen (buf);
   {
     int pos = 0;
     generic_param_t *u_param;
+    int plen;
+    char *tmp;
 
     while (!list_eol (record_route->gen_params, pos))
       {
         u_param = (generic_param_t *) list_get (record_route->gen_params, pos);
-        if (u_param->gvalue != NULL)
-          sprintf (buf, ";%s=%s", u_param->gname, u_param->gvalue);
-        else
-          sprintf (buf, ";%s", u_param->gname);
-        buf = buf + strlen (buf);
+
+	if (u_param->gvalue==NULL)
+	  plen = strlen (u_param->gname) + 2;
+	else
+	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
+        len = len + plen;
+        buf = (char *) realloc (buf, len);
+        tmp = buf;
+        tmp = tmp + strlen (tmp);
+	if (u_param->gvalue==NULL)
+	  sprintf (tmp, ";%s", u_param->gname);
+	else
+	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
         pos++;
       }
   }
+  *dest = buf;
   return 0;
 }
 

@@ -432,10 +432,10 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i =
-    strcat_simple_header (message, sip->www_authenticate, "WWW-Authenticate: ", 18,
-                          ((int (*)(void *, char **)) &www_authenticate_2char),
-                          &next);
+  i = strcat_headers_one_per_line (message, sip->www_authenticates,
+				   "WWW-Authenticate: ", 18,
+				   ((int (*)(void *, char **)) &www_authenticate_2char),
+				   &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -444,10 +444,10 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->proxy_authenticate,
-                            "Proxy-Authenticate: ", 20,
-                            ((int (*)(void *, char **)) &www_authenticate_2char),
-                            &next);
+  i = strcat_headers_one_per_line (message, sip->proxy_authenticates,
+				   "Proxy-Authenticate: ", 20,
+				   ((int (*)(void *, char **)) &www_authenticate_2char),
+				   &next);
   if (i != 0)
     {
       sfree (*dest);

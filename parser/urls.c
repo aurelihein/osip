@@ -17,18 +17,6 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* HISTORY:
-
-   v0.5.0: created.
-
-   v0.6.0: 14/07/2001 complete support for url:
-   new structure
-   new url_parse() method
-
-   TODO:
-   add support for optionnal value for paramaters
- */
-
 #include <osip/port.h>
 #include <osip/smsg.h>
 #include <stdlib.h>
@@ -42,6 +30,7 @@ int
 url_init (url_t ** url)
 {
   *url = (url_t *) smalloc (sizeof (url_t));
+  if (*url==NULL) return -1;
   (*url)->scheme = NULL;
   (*url)->username = NULL;
   (*url)->password = NULL;
@@ -49,9 +38,22 @@ url_init (url_t ** url)
   (*url)->port = NULL;
 
   (*url)->url_params = (list_t *) smalloc (sizeof (list_t));
+  if ((*url)->url_params==NULL)
+    {
+      sfree(*url);
+      *url=NULL;
+      return -1;
+    }
   list_init ((*url)->url_params);
 
   (*url)->url_headers = (list_t *) smalloc (sizeof (list_t));
+  if ((*url)->url_headers==NULL)
+    {
+      sfree((*url)->url_params);
+      sfree(*url);
+      *url=NULL;
+      return -1;
+    }
   list_init ((*url)->url_headers);
 
   (*url)->string = NULL;
@@ -128,6 +130,7 @@ url_parse (url_t * url, char *buf)
   if (tmp - buf < 2)
     return -1;
   url->scheme = (char *) smalloc (tmp - buf + 1);
+  if (url->scheme==NULL) return -1;
   sstrncpy (url->scheme, buf, tmp - buf);
 
 #ifndef WIN32
@@ -140,6 +143,7 @@ url_parse (url_t * url, char *buf)
       if (i < 2)
         return -1;
       url->string = (char *) smalloc (i + 1);
+      if (url->string==NULL) return -1;
       sstrncpy (url->string, tmp + 1, i);
       return 0;
     }
@@ -153,6 +157,7 @@ url_parse (url_t * url, char *buf)
       if (i < 2)
         return -1;
       url->string = (char *) smalloc (i + 1);
+      if (url->string==NULL) return -1;
       sstrncpy (url->string, tmp + 1, i);
       return 0;
     }
@@ -188,6 +193,7 @@ url_parse (url_t * url, char *buf)
           if (host - password < 2)
             return -1;
           url->password = (char *) smalloc (host - password);
+	  if (url->password==NULL) return -1;
           sstrncpy (url->password, password + 1, host - password - 1);
           url_unescape (url->password);
         }
@@ -195,6 +201,7 @@ url_parse (url_t * url, char *buf)
         return -1;
       {
         url->username = (char *) smalloc (password - username);
+	if (url->username==NULL) return -1;
         sstrncpy (url->username, username + 1, password - username - 1);
         url_unescape (url->username);
       }
@@ -221,6 +228,7 @@ url_parse (url_t * url, char *buf)
       if (headers - params + 1 < 2)
         return -1;
       tmp = smalloc (headers - params + 1);
+      if (tmp==NULL) return -1;
       tmp = sstrncpy (tmp, params, headers - params);
       url_parse_params (url, tmp);
       sfree (tmp);
@@ -238,6 +246,7 @@ url_parse (url_t * url, char *buf)
           if ((params - port < 2) || (params - port > 8))
             return -1;          /* error cases */
           url->port = (char *) smalloc (params - port);
+	  if (url->port==NULL) return -1;
           sstrncpy (url->port, port + 1, params - port - 1);
           sclrspace (url->port);
         }
@@ -259,6 +268,7 @@ url_parse (url_t * url, char *buf)
   if (port - host < 2)
     return -1;
   url->host = (char *) smalloc (port - host);
+  if (url->host==NULL) return -1;
   sstrncpy (url->host, host + 1, port - host - 1);
   sclrspace (url->host);
 
@@ -357,6 +367,7 @@ url_parse_headers (url_t * url, char *headers)
       char *hvalue;
 
       hname = (char *) smalloc (equal - headers);
+      if (hname==NULL) return -1;
       sstrncpy (hname, headers + 1, equal - headers - 1);
       url_unescape (hname);
 
@@ -368,6 +379,11 @@ url_parse_headers (url_t * url, char *headers)
               return -1;
             }
           hvalue = (char *) smalloc (and - equal);
+	  if (hvalue==NULL)
+            {
+              sfree (hname);
+              return -1;
+            }
           sstrncpy (hvalue, equal + 1, and - equal - 1);
           url_unescape (hvalue);
       } else
@@ -378,6 +394,11 @@ url_parse_headers (url_t * url, char *headers)
               return -1;
             }
           hvalue = (char *) smalloc (headers + strlen (headers) - equal + 1);
+	  if (hvalue==NULL)
+            {
+              sfree (hname);
+              return -1;
+            }
           sstrncpy (hvalue, equal + 1, headers + strlen (headers) - equal);
           url_unescape (hvalue);
         }
@@ -425,6 +446,7 @@ url_parse_params (url_t * url, char *params)
           if (comma - equal < 2)
             return -1;
           pvalue = (char *) smalloc (comma - equal);
+	  if (pvalue==NULL) return -1;
           sstrncpy (pvalue, equal + 1, comma - equal - 1);
           url_unescape (pvalue);
         }
@@ -435,6 +457,10 @@ url_parse_params (url_t * url, char *params)
           return -1;
         }
       pname = (char *) smalloc (equal - params);
+      if (pname==NULL) {
+	sfree(pvalue);
+	return -1;
+      }
       sstrncpy (pname, params + 1, equal - params - 1);
       url_unescape (pname);
 
@@ -457,6 +483,7 @@ url_parse_params (url_t * url, char *params)
       if (comma - equal < 2)
         return -1;
       pvalue = (char *) smalloc (comma - equal);
+      if (pvalue==NULL) return -1;
       sstrncpy (pvalue, equal + 1, comma - equal - 1);
     }
 
@@ -466,6 +493,11 @@ url_parse_params (url_t * url, char *params)
       return -1;
     }
   pname = (char *) smalloc (equal - params);
+  if (pname==NULL)
+    {
+      sfree (pvalue);
+      return -1;
+    }
   sstrncpy (pname, params + 1, equal - params - 1);
 
   url_uparam_add (url, pname, pvalue);
@@ -476,9 +508,12 @@ url_parse_params (url_t * url, char *params)
 int
 url_2char (url_t * url, char **dest)
 {
-
   char *buf;
+  int len;
+  int plen;
+  char *tmp;
 
+  *dest = NULL;
   if (url == NULL)
     return -1;
   if (url->host == NULL && url->string == NULL)
@@ -488,10 +523,11 @@ url_2char (url_t * url, char **dest)
   if (url->string == NULL && url->scheme == NULL)
     url->scheme = sgetcopy ("sip");     /* default is sipurl */
 
-  buf = (char *) smalloc (200 * sizeof (char));
-  *dest = buf;
   if (url->string != NULL)
     {
+      buf = (char *) smalloc ( strlen(url->scheme) + strlen(url->string) +3 );
+      if (buf==NULL) return -1;
+      *dest = buf;
       sprintf (buf, "%s:", url->scheme);
       buf = buf + strlen (url->scheme) + 1;
       sprintf (buf, "%s", url->string);
@@ -499,65 +535,89 @@ url_2char (url_t * url, char **dest)
       return 0;
     }
 
-  sprintf (buf, "%s:", url->scheme);
-  buf = buf + strlen (url->scheme) + 1;
+  len = strlen(url->scheme) +1 + strlen(url->host) +5;
+  if (url->username!=NULL)
+    len = len + strlen(url->username) +10; /* count escaped char */
+  if (url->password!=NULL)
+    len = len + strlen(url->password) +10;
+  if (url->port!=NULL)
+    len = len + strlen(url->port) + 3;
+
+  buf = (char *) smalloc ( len );
+  if (buf==NULL) return -1;
+  tmp = buf;
+
+  sprintf (tmp, "%s:", url->scheme);
+  tmp = tmp + strlen (tmp);
 
   if (url->username != NULL)
     {
-      char *tmp = url_escape_userinfo (url->username);
+      char *tmp2 = url_escape_userinfo (url->username);
 
-      sprintf (buf, "%s", tmp);
-      sfree (tmp);
-      buf = buf + strlen (buf);
+      sprintf (tmp, "%s", tmp2);
+      sfree (tmp2);
+      tmp = tmp + strlen (tmp);
     }
   if ((url->password != NULL) && (url->username != NULL))
-    {                           /* be sure that when a password is given, a username is also given */
-      char *tmp = url_escape_password (url->password);
+    { /* be sure that when a password is given, a username is also given */
+      char *tmp2 = url_escape_password (url->password);
 
-      sprintf (buf, ":%s", tmp);
-      sfree (tmp);
-      buf = buf + strlen (buf);
+      sprintf (tmp, ":%s", tmp2);
+      sfree (tmp2);
+      tmp = tmp + strlen (tmp);
     }
   if (url->username != NULL)
-    {                           /* we add a '@' only when username is present... */
-      sprintf (buf, "@");
-      buf++;
+    { /* we add a '@' only when username is present... */
+      sprintf (tmp, "@");
+      tmp++;
     }
-  /*   if (url->host!=NULL)  mandatory */
   if (strchr (url->host, ':') != NULL)
     {
-      sprintf (buf, "[%s]", url->host);
-      buf = buf + strlen (url->host) + 2;
-  } else
+      sprintf (tmp, "[%s]", url->host);
+      tmp = tmp + strlen (tmp);
+    }
+  else
     {
-      sprintf (buf, "%s", url->host);
-      buf = buf + strlen (url->host);
+      sprintf (tmp, "%s", url->host);
+      tmp = tmp + strlen (tmp);
     }
   if (url->port != NULL)
     {
-      sprintf (buf, ":%s", url->port);
-      buf = buf + strlen (buf);
+      sprintf (tmp, ":%s", url->port);
+      tmp = tmp + strlen (tmp);
     }
+
   {
     int pos = 0;
     url_param_t *u_param;
 
     while (!list_eol (url->url_params, pos))
       {
-        char *tmp;
-
+        char *tmp1;
+	char *tmp2 = NULL;
+	
         u_param = (url_param_t *) list_get (url->url_params, pos);
-        tmp = url_escape_uri_param (u_param->gname);
-        if (u_param->gvalue != NULL)
-          {
-            char *tmp2 = url_escape_uri_param (u_param->gvalue);
 
-            sprintf (buf, ";%s=%s", tmp, tmp2);
-            sfree (tmp2);
-        } else
-          sprintf (buf, ";%s", tmp);
-        sfree (tmp);
-        buf = buf + strlen (buf);
+        tmp1 = url_escape_uri_param (u_param->gname);
+	if (u_param->gvalue==NULL)
+	  plen = strlen (tmp1) + 2;
+	else
+	  {
+            tmp2 = url_escape_uri_param (u_param->gvalue);
+	    plen = strlen (tmp1) + strlen (tmp2) + 3;
+	  }
+        len = len + plen;
+        buf = (char *) realloc (buf, len);
+        tmp = buf;
+        tmp = tmp + strlen (tmp);
+	if (u_param->gvalue==NULL)
+	  sprintf (tmp, ";%s", tmp1);
+	else
+	  {
+	    sprintf (tmp, ";%s=%s", tmp1, tmp2);
+	    sfree (tmp2);
+	  }
+        sfree (tmp1);
         pos++;
       }
   }
@@ -568,27 +628,32 @@ url_2char (url_t * url, char **dest)
 
     while (!list_eol (url->url_headers, pos))
       {
-        char *tmp;
+        char *tmp1;
         char *tmp2;
 
         u_header = (url_header_t *) list_get (url->url_headers, pos);
-        tmp = url_escape_header_param (u_header->gname);
+        tmp1 = url_escape_header_param (u_header->gname);
         tmp2 = url_escape_header_param (u_header->gvalue);
+
+	if (tmp1==NULL||tmp2==NULL) { sfree(buf); return -1; }
+	plen = strlen (tmp1) + strlen (tmp2) + 4;
+
+        len = len + plen;
+        buf = (char *) realloc (buf, len);
+        tmp = buf;
+        tmp = tmp + strlen (tmp);
         if (pos == 0)
           {
-            sprintf (buf, "?%s=%s", u_header->gname, u_header->gvalue);
+            sprintf (tmp, "?%s=%s", u_header->gname, u_header->gvalue);
         } else
-          sprintf (buf, "&%s=%s", u_header->gname, u_header->gvalue);
-        sfree (tmp);
+          sprintf (tmp, "&%s=%s", u_header->gname, u_header->gvalue);
+        sfree (tmp1);
         sfree (tmp2);
-        buf = buf + strlen (buf);
         pos++;
       }
   }
 
-  /* we should free useless memory by reallocating a new */
-  /*  char * wich is the right size and copy result into it? */
-
+  *dest = buf;
   return 0;
 }
 

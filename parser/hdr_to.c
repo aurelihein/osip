@@ -41,12 +41,20 @@ msg_setto (sip_t * sip, char *hvalue)
   if (sip->to != NULL)
     return -1;
   i = to_init (&(sip->to));
-  if (i == -1)
+  if (i!=0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return to_parse (sip->to, hvalue);
+  i = to_parse (sip->to, hvalue);
+  if (i!=0)
+    {
+      to_free(sip->to);
+      sfree(sip->to);
+      sip->to=NULL;
+      return -1;
+    }
+  return 0;
 }
 
 /* returns the to header.            */

@@ -384,13 +384,13 @@ extern "C"
     list_t *error_infos;
     from_t *from;
     mime_version_t *mime_version;
-    proxy_authenticate_t *proxy_authenticate;
+    list_t *proxy_authenticates;
     list_t *proxy_authorizations;
     list_t *record_routes;
     list_t *routes;
     to_t *to;
     list_t *vias;
-    www_authenticate_t *www_authenticate;
+    list_t *www_authenticates;
 
     list_t *headers;
 

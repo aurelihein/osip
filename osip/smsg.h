@@ -406,8 +406,10 @@ extern "C"
 /**
  * Get the Proxy-authenticate header.
  * @param sip The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
  */
-  proxy_authenticate_t *msg_getproxy_authenticate (sip_t * sip);
+  int msg_getproxy_authenticate (sip_t * sip, int pos, proxy_authenticate_t **dest);
 /**
  * Set the Proxy-authorization header.
  * @param sip The element to work on.
@@ -481,8 +483,10 @@ extern "C"
 /**
  * Get one Www-authenticate header.
  * @param sip The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
  */
-  www_authenticate_t *msg_getwww_authenticate (sip_t * sip);
+  int msg_getwww_authenticate (sip_t * sip, int pos, www_authenticate_t **dest);
 
 /**
  * Allocate and Add an "unknown" header (not defined in oSIP).

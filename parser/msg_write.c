@@ -105,7 +105,8 @@ msg_init (sip_t ** sip)
   list_init ((*sip)->error_infos);
   (*sip)->from = NULL;
   (*sip)->mime_version = NULL;
-  (*sip)->proxy_authenticate = NULL;
+  (*sip)->proxy_authenticates = (list_t *) smalloc (sizeof (list_t));
+  list_init ((*sip)->proxy_authenticates);
   (*sip)->proxy_authorizations = (list_t *) smalloc (sizeof (list_t));
   list_init ((*sip)->proxy_authorizations);
   (*sip)->record_routes = (list_t *) smalloc (sizeof (list_t));
@@ -115,7 +116,8 @@ msg_init (sip_t ** sip)
   (*sip)->to = NULL;
   (*sip)->vias = (list_t *) smalloc (sizeof (list_t));
   list_init ((*sip)->vias);
-  (*sip)->www_authenticate = NULL;
+  (*sip)->www_authenticates = (list_t *) smalloc (sizeof (list_t));
+  list_init ((*sip)->www_authenticates);
 
   (*sip)->bodies = (list_t *) smalloc (sizeof (list_t));
   list_init ((*sip)->bodies);
@@ -334,11 +336,18 @@ msg_free (sip_t * sip)
       mime_version_free (sip->mime_version);
       sfree (sip->mime_version);
     }
-  if (sip->proxy_authenticate != NULL)
-    {
-      proxy_authenticate_free (sip->proxy_authenticate);
-      sfree (sip->proxy_authenticate);
-    }
+  {
+    proxy_authenticate_t *al;
+
+    while (!list_eol (sip->proxy_authenticates, pos))
+      {
+        al = (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
+        list_remove (sip->proxy_authenticates, pos);
+        proxy_authenticate_free (al);
+        sfree (al);
+      }
+    sfree (sip->proxy_authenticates);
+  }
   {
     proxy_authorization_t *proxy_authorization;
 
@@ -393,12 +402,18 @@ msg_free (sip_t * sip)
       }
     sfree (sip->vias);
   }
-  if (sip->www_authenticate != NULL)
-    {
-      www_authenticate_free (sip->www_authenticate);
-      sfree (sip->www_authenticate);
-    }
+  {
+    www_authenticate_t *al;
 
+    while (!list_eol (sip->www_authenticates, pos))
+      {
+        al = (www_authenticate_t *) list_get (sip->www_authenticates, pos);
+        list_remove (sip->www_authenticates, pos);
+        www_authenticate_free (al);
+        sfree (al);
+      }
+    sfree (sip->www_authenticates);
+  }
 
   {
     header_t *header;
@@ -692,13 +707,22 @@ msg_clone (sip_t * sip, sip_t ** dest)
       if (i != 0)
         goto mc_error1;
     }
-  if (sip->proxy_authenticate != NULL)
-    {
-      i = proxy_authenticate_clone (sip->proxy_authenticate,
-                                    &(copy->proxy_authenticate));
-      if (i != 0)
-        goto mc_error1;
-    }
+  {
+    proxy_authenticate_t *proxy_authenticate;
+    proxy_authenticate_t *proxy_authenticate2;
+
+    pos = 0;
+    while (!list_eol (sip->proxy_authenticates, pos))
+      {
+        proxy_authenticate =
+          (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
+        i = proxy_authenticate_clone (proxy_authenticate, &proxy_authenticate2);
+        if (i != 0)
+          goto mc_error1;
+        list_add (copy->proxy_authenticates, proxy_authenticate2, -1);
+        pos++;
+      }
+  }
   {
     proxy_authorization_t *proxy_authorization;
     proxy_authorization_t *proxy_authorization2;
@@ -766,12 +790,22 @@ msg_clone (sip_t * sip, sip_t ** dest)
         pos++;
       }
   }
-  if (sip->www_authenticate != NULL)
-    {
-      www_authenticate_clone (sip->www_authenticate, &(copy->www_authenticate));
-      if (i != 0)
-        goto mc_error1;
-    }
+  {
+    www_authenticate_t *www_authenticate;
+    www_authenticate_t *www_authenticate2;
+
+    pos = 0;
+    while (!list_eol (sip->www_authenticates, pos))
+      {
+        www_authenticate =
+          (www_authenticate_t *) list_get (sip->www_authenticates, pos);
+        i = www_authenticate_clone (www_authenticate, &www_authenticate2);
+        if (i != 0)
+          goto mc_error1;
+        list_add (copy->www_authenticates, www_authenticate2, -1);
+        pos++;
+      }
+  }
 
   {
     header_t *header;

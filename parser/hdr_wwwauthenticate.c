@@ -28,6 +28,7 @@ int
 www_authenticate_init (www_authenticate_t ** dest)
 {
   *dest = (www_authenticate_t *) smalloc (sizeof (www_authenticate_t));
+  if (*dest==NULL) return -1;
   (*dest)->auth_type = NULL;
   (*dest)->realm = NULL;
   (*dest)->domain = NULL;       /* optionnal */
@@ -46,17 +47,26 @@ www_authenticate_init (www_authenticate_t ** dest)
 int
 msg_setwww_authenticate (sip_t * sip, char *hvalue)
 {
+  www_authenticate_t *www_authenticate;
   int i;
+  if (sip==NULL||sip->www_authenticates == NULL)
+    return -1;
+  i = www_authenticate_init (&www_authenticate);
+  if (i != 0)
+    return -1;
+  i = www_authenticate_parse (www_authenticate, hvalue);
+  if (i != 0)
+    {
+      www_authenticate_free(www_authenticate);
+      sfree(www_authenticate);
+      return -1;
+    }
 
-  if (sip->www_authenticate != NULL)
-    return -1;
-  i = www_authenticate_init (&(sip->www_authenticate));
-  if (i == -1)
-    return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return www_authenticate_parse (sip->www_authenticate, hvalue);
+  list_add (sip->www_authenticates, www_authenticate, -1);
+  return 0;
 }
 
 int
@@ -89,7 +99,6 @@ quoted_string_set (char *name, char *str, char **result, char **next)
           hack--;
         if (hack - str != strlen (name))
           {
-            printf ("PARAMETER NEARLY FOUND!!: %s \n", name);
             *next = str;
             return 0;
           }
@@ -111,6 +120,7 @@ quoted_string_set (char *name, char *str, char **result, char **next)
           return 0;
         }
       *result = (char *) smalloc (quote2 - quote1 + 2);
+      if (*result==NULL) return -1;
       sstrncpy (*result, quote1, quote2 - quote1 + 1);
       *next = quote2 + 1;       /* next element start here */
       if (strlen (quote2) <= 6)
@@ -159,6 +169,7 @@ token_set (char *name, char *str, char **result, char **next)
       if (end - beg < 2)
         return -1;
       *result = (char *) smalloc (end - beg);
+      if (*result==NULL) return -1;
       sstrncpy (*result, beg + 1, end - beg - 1);
       sclrspace (*result);
       if (strlen (end) <= 6)
@@ -193,6 +204,7 @@ www_authenticate_parse (www_authenticate_t * wwwa, char *hvalue)
   if (space - hvalue + 1 < 2)
     return -1;
   wwwa->auth_type = (char *) smalloc (space - hvalue + 1);
+  if (wwwa->auth_type==NULL) return -1;
   sstrncpy (wwwa->auth_type, hvalue, space - hvalue);
 
   for (;;)
@@ -297,10 +309,20 @@ www_authenticate_parse (www_authenticate_t * wwwa, char *hvalue)
 /* returns the www_authenticate header.            */
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
-www_authenticate_t *
-msg_getwww_authenticate (sip_t * sip)
+int
+msg_getwww_authenticate (sip_t * sip, int pos, www_authenticate_t **dest)
 {
-  return sip->www_authenticate;
+  www_authenticate_t *www_authenticate;
+
+  *dest = NULL;
+  if (list_size (sip->www_authenticates) <= pos)
+    return -1;                  /* does not exist */
+
+  www_authenticate = (www_authenticate_t *)
+    list_get(sip->www_authenticates, pos);
+
+  *dest = www_authenticate;
+  return pos;
 }
 
 char *
@@ -437,6 +459,7 @@ www_authenticate_2char (www_authenticate_t * wwwa, char **dest)
     len = len + strlen (wwwa->qop_options) + 6;
 
   tmp = (char *) smalloc (len);
+  if (tmp==NULL) return -1;
   *dest = tmp;
 
   sstrncpy (tmp, wwwa->auth_type, strlen (wwwa->auth_type));

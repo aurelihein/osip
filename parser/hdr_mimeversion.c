@@ -36,12 +36,20 @@ msg_setmime_version (sip_t * sip, char *hvalue)
   if (sip->mime_version != NULL)
     return -1;
   i = mime_version_init (&(sip->mime_version));
-  if (i == -1)
+  if (i != 0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return mime_version_parse (sip->mime_version, hvalue);
+  i = mime_version_parse (sip->mime_version, hvalue);
+  if (i!=0)
+    {
+      mime_version_free(sip->mime_version);
+      sfree(sip->mime_version);
+      sip->mime_version = NULL;
+      return -1;
+    }
+  return 0;
 }
 
 /* returns the mime_version header.            */

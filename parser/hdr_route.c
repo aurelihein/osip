@@ -49,11 +49,15 @@ msg_setroute (sip_t * sip, char *hvalue)
 #else
   i = route_init (&route);
 #endif
-  if (i == -1)                  /* allocation failed */
+  if (i != 0)
     return -1;
   i = route_parse (route, hvalue);
-  if (i == -1)
-    return -1;
+  if (i != 0)
+    {
+      route_free(route);
+      sfree(route);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

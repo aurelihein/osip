@@ -236,19 +236,18 @@ from_parse (from_t * from, char *hvalue)
   /* set the url */
   {
     char *tmp;
+    int i;
 
     if (url_end - url + 2 < 7)
       return -1;
-    url_init (&(from->url));
+    i = url_init (&(from->url));
+    if (i!=0) return -1;
     tmp = (char *) smalloc (url_end - url + 2);
     if (tmp==NULL) return -1;
     sstrncpy (tmp, url, url_end - url + 1);
-    if (url_parse (from->url, tmp) == -1)
-      {
-        sfree (tmp);
-        return -1;
-      }
+    i = url_parse (from->url, tmp);
     sfree (tmp);
+    if (i != 0) return -1;
   }
   return 0;
 }
@@ -256,7 +255,7 @@ from_parse (from_t * from, char *hvalue)
 
 /* returns the from header as a string.  */
 /* INPUT : from_t *from | from header.   */
-/* returns null on error. */
+/* returns -1 on error. */
 int
 from_2char (from_t * from, char **dest)
 {
@@ -279,7 +278,7 @@ from_2char (from_t * from, char **dest)
     len = strlen(url) + strlen(from->displayname) +5;
 
   buf = (char *) smalloc (len);
-  if (buf==NULL) return -1;
+  if (buf==NULL) { sfree(url); return -1; }
 
   if (from->displayname != NULL)
     sprintf (buf, "%s <%s>", from->displayname, url);

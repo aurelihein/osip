@@ -37,11 +37,15 @@ msg_setproxy_authorization (sip_t * sip, char *hvalue)
   int i;
 
   i = proxy_authorization_init (&proxy_authorization);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = proxy_authorization_parse (proxy_authorization, hvalue);
-  if (i == -1)
-    return -1;
+  if (i != 0)
+    {
+      proxy_authorization_free(proxy_authorization);
+      sfree(proxy_authorization);
+      return -1;
+    }
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif

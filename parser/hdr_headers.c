@@ -37,18 +37,33 @@ msg_setheader (sip_t * sip, char *hname, char *hvalue)
   header_t *h;
   int i;
 
-  i = header_init (&h);
-
   if (hname == NULL)
     return -1;
 
+  i = header_init (&h);
+  if (i!=0)
+      return -1;
+
   h->hname = (char *) smalloc (strlen (hname) + 1);
+
+  if (h->hname == NULL)
+    {
+      header_free(h);
+      sfree(h);
+      return -1;
+    }
   sstrncpy (h->hname, hname, strlen (hname));
   sclrspace (h->hname);
 
   if (hvalue != NULL)
     {                           /* some headers can be null ("subject:") */
       h->hvalue = (char *) smalloc (strlen (hvalue) + 1);
+      if (h->hvalue == NULL)
+	{
+	  header_free(h);
+	  sfree(h);
+	  return -1;
+	}
       sstrncpy (h->hvalue, hvalue, strlen (hvalue));
       sclrspace (h->hvalue);
   } else
@@ -112,6 +127,7 @@ int
 header_init (header_t ** header)
 {
   *header = (header_t *) smalloc (sizeof (header_t));
+  if (*header==NULL) return -1;
   (*header)->hname = NULL;
   (*header)->hvalue = NULL;
   return 0;
@@ -145,10 +161,12 @@ header_2char (header_t * header, char **dest)
     len = strlen (header->hvalue);
 
   *dest = (char *) smalloc (strlen (header->hname) + len + 3);
+  if (*dest==NULL) return -1;
+
   if (header->hvalue != NULL)
     sprintf (*dest, "%s: %s", header->hname, header->hvalue);
   else
-    sprintf (*dest, "%s:", header->hname);
+    sprintf (*dest, "%s: ", header->hname);
   return 0;
 }
 
@@ -193,7 +211,7 @@ header_clone (header_t * header, header_t ** dest)
     return -1;
 
   i = header_init (&he);
-  if (i == -1)                  /* allocation failed */
+  if (i != 0)                  /* allocation failed */
     return -1;
   he->hname = sgetcopy (header->hname);
   if (header->hvalue != NULL)
