@@ -469,7 +469,7 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
 		       "SIP message does not end with CRLFCRLF\n"));
 	  return -1;
 	}
-      /* find the headere name */
+      /* find the header name */
       colon_index = strchr (start_of_header, ':');
       if (colon_index == NULL)
 	{
@@ -480,6 +480,13 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
 	}
       if (colon_index - start_of_header + 1 < 2)
 	return -1;
+      if (end_of_header <= colon_index)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		       "Malformed message\n"));
+	  return -1;
+	}
       hname = (char *) smalloc (colon_index - start_of_header + 1);
       sstrncpy (hname, start_of_header, colon_index - start_of_header);
       sclrspace (hname);

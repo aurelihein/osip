@@ -1,13 +1,3 @@
-REGISTER sip:bell-tel.com SIP/2.0
-
-Via: SIP/2.0/UDP pluto.bell-tel.com
-From: <sip:jon.diligent@bell-tel.com>;tag=7
-To: sip:watson@bell-tel.com
-Call-ID: 17320@pluto.bell-tel.com
-CSeq: 1 REGISTER
-Contact: sip:tawatson@example.com
-
-|
 MESSAGE sip:ominjeonaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@165.213.114.67 SIP/2.0
 Via: SIP/2.0/UDP 165.213.114.66:10507; viaparm
 Via: SIP/2.0/UDP 165.213.114.66:10507; viaparm
