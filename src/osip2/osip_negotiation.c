@@ -1024,18 +1024,10 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
 				  osip_strdup (config->c_addr_multicast_ttl),
 				  osip_strdup (config->c_addr_multicast_int));
 
-  {				/* offer-answer draft says we must copy the "t=" line */
-    int now = time (NULL);
-    char *tmp = osip_malloc (15);
-    char *tmp2 = osip_malloc (15);
+  i = sdp_message_t_time_descr_add (*sdp, osip_strdup("0"), osip_strdup("0"));
+  if (i != 0)
+    return -1;
 
-    sprintf (tmp, "%i", now);
-    sprintf (tmp2, "%i", now + 3600);
-
-    i = sdp_message_t_time_descr_add (*sdp, tmp, tmp2);
-    if (i != 0)
-      return -1;
-  }
   if (config->fcn_set_attributes != NULL)
     config->fcn_set_attributes (con, *sdp, -1);
 
