@@ -48,14 +48,15 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
     if (proto == NULL)
       goto ii_error_1;
 
-    i = osip_strncasecmp (proto, "TCP", 3);
-    if (i != 0)
+    if (osip_strcasecmp (proto, "TCP") != 0
+	&& osip_strcasecmp (proto, "TLS") !=0
+	&& osip_strcasecmp (proto, "SCTP") !=0)
       {
 	(*nist)->timer_j_length = 64 * DEFAULT_T1;
 	(*nist)->timer_j_start.tv_sec = -1;	/* not started */
       }
     else
-      {				/* TCP is used: */
+      {				/* reliable protocol is used: */
 	(*nist)->timer_j_length = 0;	/* MUST do the transition immediatly */
 	(*nist)->timer_j_start.tv_sec = -1;	/* not started */
       }

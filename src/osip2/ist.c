@@ -47,8 +47,9 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
     if (proto == NULL)
       goto ii_error_1;
 
-    i = osip_strncasecmp (proto, "TCP", 3);
-    if (i != 0)
+    if (osip_strcasecmp (proto, "TCP") != 0
+	&& osip_strcasecmp (proto, "TLS") !=0
+	&& osip_strcasecmp (proto, "SCTP") !=0)
       {				/* for other reliable protocol than TCP, the timer
 				   must be desactived by the external application */
 	(*ist)->timer_g_length = DEFAULT_T1;
@@ -57,7 +58,7 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
 	(*ist)->timer_i_start.tv_sec = -1;	/* not started */
       }
     else
-      {				/* TCP is used: */
+      {				/* reliable protocol is used: */
 	(*ist)->timer_g_length = -1;	/* A is not ACTIVE */
 	(*ist)->timer_i_length = 0;	/* MUST do the transition immediatly */
 	(*ist)->timer_g_start.tv_sec = -1;	/* not started */

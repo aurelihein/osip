@@ -52,8 +52,9 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
     if (proto == NULL)
       goto ii_error_1;
 
-    i = osip_strncasecmp (proto, "TCP", 3);
-    if (i != 0)
+    if (osip_strcasecmp (proto, "TCP") != 0
+	&& osip_strcasecmp (proto, "TLS") !=0
+	&& osip_strcasecmp (proto, "SCTP") !=0)
       {
 	(*nict)->timer_e_length = DEFAULT_T1;
 	(*nict)->timer_k_length = DEFAULT_T4;
@@ -62,7 +63,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
 	(*nict)->timer_k_start.tv_sec = -1;	/* not started */
       }
     else
-      {				/* TCP is used: */
+      {				/* reliable protocol is used: */
 	(*nict)->timer_e_length = -1;	/* E is not ACTIVE */
 	(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
 	(*nict)->timer_e_start.tv_sec = -1;
