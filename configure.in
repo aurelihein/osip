@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.47 $)dnl
+AC_REVISION($Revision: 1.48 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -134,16 +134,18 @@ else
 fi
 
 case $OS in
-  linux)
+  linux*)
      SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"
      ;;
-  hpux)
+  irix*)
      ;;
-  aix)
+  hpux* | hp-ux*)
      ;;
-  osf)
+  aix*)
      ;;
-  sunos)
+  osf*)
+     ;;
+  sunos*)
      ;;
   darwin*)
      ;;
