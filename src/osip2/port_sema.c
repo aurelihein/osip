@@ -81,7 +81,7 @@ osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
-  if (sem_init (sem, 0, value) != SEM_FAILED)
+  if (sem_init (sem, 0, value) == 0)
     return (struct osip_sem *) sem;
   osip_free (sem);
   return NULL;
