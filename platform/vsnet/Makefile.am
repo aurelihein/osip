@@ -1,2 +1,2 @@
-EXTRA_DIST = osip.sln osip2fsm.vcproj osip2parser.vcproj
+EXTRA_DIST = osip.sln osip2.vcproj osipparser2.vcproj
 
