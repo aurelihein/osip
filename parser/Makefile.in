@@ -89,12 +89,12 @@ ac_aux_dir = @ac_aux_dir@
 
 EXTRA_DIST = msg.h
 
-lib_LTLIBRARIES = libosipparser.la
+lib_LTLIBRARIES = libosip.la
 
-libosipparser_la_SOURCES =  hdr_mimeversion.c    hdr_recordroute.c        hdr_route.c hdr_contentlength.c  hdr_contenttype.c        hdr_cseq.c hdr_body.c     hdr_via.c      hdr_callid.c    hdr_contact.c hdr_from.c     hdr_headers.c  hdr_to.c        hdr_wwwauthenticate.c hdr_authorization.c hdr_proxyauthorization.c  hdr_proxyauthenticate.c hdr_accept.c   hdr_acceptencoding.c hdr_acceptlanguage.c  msg_cparser.c hdr_callinfo.c hdr_alertinfo.c hdr_errorinfo.c hdr_allow.c hdr_contentencoding.c hdr_contentdisposition.c msg_parser.c   msg_read.c     msg_write.c     port_misc.c port_list.c    port_malloc.c  urls.c md5c.c         sdp_rfc2327.c  sdp_accessor.c
+libosip_la_SOURCES =  hdr_mimeversion.c    hdr_recordroute.c        hdr_route.c hdr_contentlength.c  hdr_contenttype.c        hdr_cseq.c hdr_body.c     hdr_via.c      hdr_callid.c    hdr_contact.c hdr_from.c     hdr_headers.c  hdr_to.c        hdr_wwwauthenticate.c hdr_authorization.c hdr_proxyauthorization.c  hdr_proxyauthenticate.c hdr_accept.c   hdr_acceptencoding.c hdr_acceptlanguage.c  msg_cparser.c hdr_callinfo.c hdr_alertinfo.c hdr_errorinfo.c hdr_allow.c hdr_contentencoding.c hdr_contentdisposition.c msg_parser.c   msg_read.c     msg_write.c     port_misc.c port_list.c    port_malloc.c  urls.c md5c.c         sdp_rfc2327.c  sdp_accessor.c
 
 
-libosipparser_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) -release $(OSIP_RELEASE) @PARSER_LIB@ @EXTRA_LIB@
+libosip_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) -release $(OSIP_RELEASE) @PARSER_LIB@ @EXTRA_LIB@
 
 
 INCLUDES = -I$(top_srcdir)
@@ -109,11 +109,11 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libosipparser_la_LIBADD = 
-libosipparser_la_OBJECTS =  hdr_mimeversion.lo hdr_recordroute.lo \
-hdr_route.lo hdr_contentlength.lo hdr_contenttype.lo hdr_cseq.lo \
-hdr_body.lo hdr_via.lo hdr_callid.lo hdr_contact.lo hdr_from.lo \
-hdr_headers.lo hdr_to.lo hdr_wwwauthenticate.lo hdr_authorization.lo \
+libosip_la_LIBADD = 
+libosip_la_OBJECTS =  hdr_mimeversion.lo hdr_recordroute.lo hdr_route.lo \
+hdr_contentlength.lo hdr_contenttype.lo hdr_cseq.lo hdr_body.lo \
+hdr_via.lo hdr_callid.lo hdr_contact.lo hdr_from.lo hdr_headers.lo \
+hdr_to.lo hdr_wwwauthenticate.lo hdr_authorization.lo \
 hdr_proxyauthorization.lo hdr_proxyauthenticate.lo hdr_accept.lo \
 hdr_acceptencoding.lo hdr_acceptlanguage.lo msg_cparser.lo \
 hdr_callinfo.lo hdr_alertinfo.lo hdr_errorinfo.lo hdr_allow.lo \
@@ -144,8 +144,8 @@ DEP_FILES =  .deps/hdr_accept.P .deps/hdr_acceptencoding.P \
 .deps/msg_cparser.P .deps/msg_parser.P .deps/msg_read.P \
 .deps/msg_write.P .deps/port_list.P .deps/port_malloc.P \
 .deps/port_misc.P .deps/sdp_accessor.P .deps/sdp_rfc2327.P .deps/urls.P
-SOURCES = $(libosipparser_la_SOURCES)
-OBJECTS = $(libosipparser_la_OBJECTS)
+SOURCES = $(libosip_la_SOURCES)
+OBJECTS = $(libosip_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -221,8 +221,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libosipparser.la: $(libosipparser_la_OBJECTS) $(libosipparser_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libosipparser_la_LDFLAGS) $(libosipparser_la_OBJECTS) $(libosipparser_la_LIBADD) $(LIBS)
+libosip.la: $(libosip_la_OBJECTS) $(libosip_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libosip_la_LDFLAGS) $(libosip_la_OBJECTS) $(libosip_la_LIBADD) $(LIBS)
 
 tags: TAGS
 

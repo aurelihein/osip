@@ -1,9 +1,9 @@
 
 EXTRA_DIST = msg.h
 
-lib_LTLIBRARIES = libosipparser.la
+lib_LTLIBRARIES = libosip.la
 
-libosipparser_la_SOURCES =  \
+libosip_la_SOURCES =  \
 hdr_mimeversion.c    hdr_recordroute.c        hdr_route.c \
 hdr_contentlength.c  hdr_contenttype.c        hdr_cseq.c \
 hdr_body.c     hdr_via.c      hdr_callid.c    hdr_contact.c \
@@ -17,7 +17,7 @@ port_list.c    port_malloc.c  urls.c \
 md5c.c         sdp_rfc2327.c  sdp_accessor.c
 
 
-libosipparser_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
+libosip_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
 -release $(OSIP_RELEASE) @PARSER_LIB@ @EXTRA_LIB@
 
 
