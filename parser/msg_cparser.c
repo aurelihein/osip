@@ -145,12 +145,14 @@ parser_isknownheader (char *hname)
 	    return i + 1;
 	  else
 	    return -1;
+/* Unreachable code??
 	  if ((i > 0) && (length == strlen (pconfig[i - 1].hname))
 	      && strncmp ((const char *) hname,
 			  (const char *) pconfig[i - 1].hname, length) == 0)
 	    return i - 1;
 	  else
 	    return -1;
+*/
 	}
       if (0 < strncmp ((const char *) hname,
 		       (const char *) pconfig[i].hname, length))

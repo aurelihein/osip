@@ -201,14 +201,16 @@ list_remove (list_t * li, int pos)
     }
 
   /* if pos==nb_elt next node is the last one */
+/* Unreachable code!
   if (pos == li->nb_elt)
     {
       sfree (ntmp->next);
       li->nb_elt--;
       return li->nb_elt;
     }
+*/
 
-  /* here pos==i so next node is where we want to insert new node */
+  /* insert new node */
   {
     node_t *remnode;
 
