@@ -490,7 +490,10 @@ extern "C"
  */
   int osip_negotiation_sdp_message_put_off_hold (sdp_message_t * sdp);
 
-/** @} */
+/**
+ * @internal
+ * @}
+ */
 
 
 #ifdef __cplusplus
