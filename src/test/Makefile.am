@@ -4,7 +4,7 @@ SUBDIRS = res
 EXTRA_DIST = tst tst_sdp tst_rfc3264 CHECK
 
 noinst_PROGRAMS = torture_rfc3264 torture_test torture_sdp_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/src/osipparser2
 AM_CFLAGS = $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
 
 twwwa_SOURCES =  twwwa.c
