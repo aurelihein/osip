@@ -24,6 +24,7 @@
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
 
+extern const char *osip_protocol_version;
 
 static int
 __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)

@@ -435,12 +435,6 @@ extern "C"
  */
   char *osip_generic_param_get_value (const osip_generic_param_t * generic_param);
 
-/**
- * The SIP protocol version oSIP conforms to.
- */
-  extern const char *osip_protocol_version;
-
-
 /** @} */
 
 
