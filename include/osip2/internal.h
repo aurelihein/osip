@@ -77,28 +77,39 @@ void __payload_free (__payload_t * payload);
 
 /* Thread abstraction layer definition */
 
-#ifdef __VXWORKS_OS__
-#include <taskLib.h>
+/* Is there any thread implementation available? */
+/* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
+#if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
+	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
+    !defined(HAVE_PTHREAD) && !defined(HAVE_PTHREAD_H) && !defined(HAVE_PTH_PTHREAD_H)
+#error No thread implementation found!
 #endif
 
-#if defined(WIN32) || defined(_WIN32_WCE)
+/* Pthreads support: */
+/* - Unix: native Pthreads. */
+/* - Win32: Pthreads for Win32 (http://sources.redhat.com/pthreads-win32). */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H) || \
+	defined(HAVE_PTHREAD_WIN32)
+#include <pthread.h>
+typedef pthread_t osip_thread_t;
+#endif
+
+/* Windows without Pthreads for Win32 */
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 /* Prevent the inclusion of winsock.h */
 #define _WINSOCKAPI_
 #include <windows.h>
 #undef _WINSOCKAPI_
-#endif
-
-#if !defined(WIN32) && !defined(_WIN32_WCE) && defined(__PSOS__)
-#include <psos.h>
-#endif
-
-/* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
-#include <pthread.h>
-typedef pthread_mutex_t osip_mutex_t;
+typedef struct
+{
+  HANDLE h;
+  unsigned id;
+}
+osip_thread_t;
 #endif
 
 #ifdef __VXWORKS_OS__
+#include <taskLib.h>
 typedef struct
 {
   int id;
@@ -106,15 +117,8 @@ typedef struct
 osip_thread_t;
 #endif
 
-#if defined(WIN32) || defined(_WIN32_WCE)
-typedef struct
-{
-  HANDLE h;
-  unsigned id;
-}
-osip_thread_t;
-
-#elif defined(__PSOS__)
+#ifdef __PSOS__
+#include <psos.h>
 typedef struct
 {
   unsigned long tid;
@@ -122,54 +126,20 @@ typedef struct
 osip_thread_t;
 #endif
 
-#if !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__VXWORKS_OS__) && !defined(__POS__)
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
-typedef pthread_t osip_thread_t;
-#else
-#error no thread implementation found!
-#endif
-#endif
-
 
 /* Semaphore and Mutex abstraction layer definition */
 
-#if defined(WIN32) || defined(_WIN32_WCE)
-/* Prevent the inclusion of winsock.h */
-#define _WINSOCKAPI_
-#include <windows.h>
-#undef _WINSOCKAPI_
-typedef struct
-{
-  HANDLE h;
-}
-osip_mutex_t;
-typedef struct
-{
-  HANDLE h;
-}
-osip_sem_t;
+/* Is there any semaphore implementation available? */
+#if !defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && \
+    !defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
+    !defined(__PSOS__) && !defined(__VXWORKS_OS__)
+#error No semaphore implementation found
 #endif
 
-#if (!(defined(WIN32) || defined (_WIN32_WCE)) && defined(__PSOS__))
-#include <Types.h>
-#include <os.h>
-typedef struct
-{
-  UInt32 id;
-}
-osip_mutex_t;
-typedef struct
-{
-  UInt32 id;
-}
-osip_sem_t;
-#endif
-
-#ifdef __VXWORKS_OS__
-#include <semaphore.h>
-#include <semLib.h>
-typedef struct semaphore osip_mutex_t;
-typedef sem_t osip_sem_t;
+/* Pthreads */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H) || \
+	defined(HAVE_PTHREAD_WIN32)
+typedef pthread_mutex_t osip_mutex_t;
 #endif
 
 #ifdef __sun__
@@ -178,8 +148,7 @@ typedef sem_t osip_sem_t;
 #include <synch.h>
 #endif
 
-
-#if defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)
+#if (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
 #include <semaphore.h>
 #ifdef __sun__
 #undef getdate
@@ -202,35 +171,61 @@ typedef struct
 osip_sem_t;
 #endif
 
-#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__PSOS__) && !defined(__VXWORKS_OS__))
-#error No semaphore implementation found
+/* Windows without Pthreads for Win32 */
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+/* Prevent the inclusion of winsock.h */
+#define _WINSOCKAPI_
+#include <windows.h>
+#undef _WINSOCKAPI_
+typedef struct
+{
+  HANDLE h;
+}
+osip_mutex_t;
+typedef struct
+{
+  HANDLE h;
+}
+osip_sem_t;
 #endif
 
-/* Condition variable abstraction layer definition */
+#ifdef __VXWORKS_OS__
+#include <semaphore.h>
+#include <semLib.h>
+typedef struct semaphore osip_mutex_t;
+typedef sem_t osip_sem_t;
+#endif
 
-#if defined(__PSOS__) || defined(__VXWORKS_OS__)
-
-typedef struct osip_cond
+#ifdef __PSOS__
+#include <Types.h>
+#include <os.h>
+typedef struct
 {
-  struct osip_sem *sem;
-} osip_cond_t;
+  UInt32 id;
+}
+osip_mutex_t;
+typedef struct
+{
+  UInt32 id;
+}
+osip_sem_t;
+#endif
 
 
-#else
+/* Condition variable abstraction layer definition */
 
 /**
  * Structure for referencing a condition variable element.
  * @var osip_cond_t
  */
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
 typedef struct osip_cond
 {
   pthread_cond_t cv;
 } osip_cond_t;
-
 #endif
 
-#if defined(WIN32) || defined(_WIN32_WCE)
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 typedef struct osip_cond
 {
   struct osip_mutex *mut;
@@ -238,7 +233,12 @@ typedef struct osip_cond
 } osip_cond_t;
 #endif
 
-#endif /* #if defined(__PSOS__) || defined(__VXWORKS_OS__) */
+#if defined(__PSOS__) || defined(__VXWORKS_OS__)
+typedef struct osip_cond
+{
+  struct osip_sem *sem;
+} osip_cond_t;
+#endif
 
 #endif /* #ifdef OSIP_MT */
 

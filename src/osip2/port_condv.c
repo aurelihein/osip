@@ -19,9 +19,6 @@
 
 #ifdef OSIP_MT
 
-#ifndef __PORT_CONDV_H__
-#define __PORT_CONDV_H__
-
 #ifdef ENABLE_MPATROL
 #include <mpatrol.h>
 #endif
@@ -30,9 +27,14 @@
 #include <osip2/osip_mt.h>
 #include <osip2/osip_condv.h>
 
-#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__PSOS__)
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 
+#if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
+	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
+    !defined(HAVE_PTHREAD) && !defined(HAVE_PTH_PTHREAD_H)
+#error No thread implementation found!
+#endif
+
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
 /*
   #include <sys/types.h>
   #include <sys/timeb.h>
@@ -57,6 +59,7 @@ osip_cond_destroy (struct osip_cond *_cond)
 {
   int ret;
 
+  if (!_cond) return -1;
   ret = pthread_cond_destroy (&_cond->cv);
   osip_free (_cond);
   return ret;
@@ -65,6 +68,7 @@ osip_cond_destroy (struct osip_cond *_cond)
 int
 osip_cond_signal (struct osip_cond *_cond)
 {
+  if (!_cond) return -1;
   return pthread_cond_signal (&_cond->cv);
 }
 
@@ -72,6 +76,7 @@ osip_cond_signal (struct osip_cond *_cond)
 int
 osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 {
+  if (!_cond) return -1;
   return pthread_cond_wait (&_cond->cv, (pthread_mutex_t *) _mut);
 }
 
@@ -80,22 +85,24 @@ int
 osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
 		     const struct timespec *abstime)
 {
+  if (!_cond) return -1;
   return pthread_cond_timedwait (&_cond->cv, (pthread_mutex_t *) _mut,
 				 (const struct timespec *) abstime);
 }
-#else
-#error NO thread implementation found
-#endif
+
 #endif
 
-#if defined (WIN32) || defined (_WIN32_WCE)
+
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+
 #include <sys/types.h>
 #include <sys/timeb.h>
+
 struct osip_cond *
 osip_cond_init ()
 {
   osip_cond_t *cond = (osip_cond_t *) osip_malloc (sizeof (osip_cond_t));
-  if ((cond->mut = osip_mutex_init ()) != NULL)
+  if (cond && (cond->mut = osip_mutex_init ()) != NULL)
     {
       cond->sem = osip_sem_init (0);	/* initially locked */
       return (struct osip_cond *) (cond);
@@ -108,6 +115,7 @@ osip_cond_init ()
 int
 osip_cond_destroy (struct osip_cond *_cond)
 {
+  if (!_cond) return 0;
   if (_cond->sem == NULL)
     return 0;
 
@@ -124,6 +132,7 @@ osip_cond_destroy (struct osip_cond *_cond)
 int
 osip_cond_signal (struct osip_cond *_cond)
 {
+  if (!_cond) return -1;
   return osip_sem_post (_cond->sem);
 }
 
@@ -132,6 +141,8 @@ int
 osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 {
   int ret1 = 0, ret2 = 0, ret3 = 0;
+
+  if (!_cond) return -1;
 
   if (osip_mutex_lock (_cond->mut))
     return -1;
@@ -174,6 +185,8 @@ _delta_time (const struct timespec *start, const struct timespec *end)
 {
   int difx;
 
+  if (start == NULL || end == NULL) return 0;
+
   difx = ((end->tv_sec - start->tv_sec) * 1000) +
     ((end->tv_nsec - start->tv_nsec) / 1000000);
 
@@ -188,7 +201,11 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   DWORD dwRet;
   struct timespec now;
   int timeout_ms;
-  HANDLE sem = *((HANDLE *) _cond->sem);
+  HANDLE sem;
+
+  if (!_cond) return -1;
+
+  sem = *((HANDLE *) _cond->sem);
 
   if (sem == NULL)
     return -1;
@@ -342,7 +359,6 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   return _cond_wait(_cond, _mut, ticks);
 }
 
+#endif
 
-#endif
-#endif
-#endif
+#endif /* #ifdef OSIP_MT */

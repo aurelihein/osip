@@ -24,18 +24,21 @@
 #include <osip2/internal.h>
 #include <osip2/osip_mt.h>
 
-#if defined _WIN32_WCE
-#include <winbase.h>
-#define _beginthreadex	CreateThread
-#define	_endthreadex	ExitThread
-#elif defined WIN32
-#include <process.h>
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+#  if defined _WIN32_WCE
+#    include <winbase.h>
+#    define _beginthreadex	CreateThread
+#    define	_endthreadex	ExitThread
+#  elif defined WIN32
+#    include <process.h>
+#  endif
 #endif
 
 /* stack size is only needed on VxWorks. */
 
 #ifndef __VXWORKS_OS__
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
+
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
@@ -80,7 +83,9 @@ osip_thread_exit ()
 #endif
 #endif
 
-#if defined(WIN32) || defined(_WIN32_WCE)
+
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
@@ -231,6 +236,7 @@ osip_thread_exit ()
 {
   /*?? */
 }
-#endif
 
 #endif
+
+#endif /* #ifdef OSIP_MT */

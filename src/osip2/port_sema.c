@@ -27,8 +27,14 @@
 #include <osip2/internal.h>
 #include <osip2/osip_mt.h>
 
-#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__PSOS__)
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
+
+#if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
+	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
+    !defined(HAVE_PTHREAD) && !defined(HAVE_PTH_PTHREAD_H)
+#error No thread implementation found!
+#endif
+
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
 
 struct osip_mutex *
 osip_mutex_init ()
@@ -69,17 +75,17 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   return pthread_mutex_unlock (mut);
 }
 
-#else
-#error NO thread implementation found
 #endif
 
-#if defined (HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)
+#if (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
 
 /* Counting Semaphore is initialized to value */
 struct osip_sem *
 osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+  if (sem == NULL)
+    return NULL;
 
   if (sem_init (sem, 0, value) == 0)
     return (struct osip_sem *) sem;
@@ -136,6 +142,9 @@ osip_sem_init (unsigned int value)
   union semun val;
   int i;
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
+  if (sem == NULL)
+    return NULL;
 
   sem->semid = semget (IPC_PRIVATE, 1, IPC_CREAT | SEM_PERM);
   if (sem->semid == -1)
@@ -209,11 +218,13 @@ osip_sem_trywait (struct osip_sem *_sem)
   sb.sem_flg = IPC_NOWAIT;
   return semop (sem->semid, &sb, 1);
 }
+
 #endif
-#endif
+
 
 /* use VxWorks implementation */
 #ifdef __VXWORKS_OS__
+
 struct osip_mutex *
 osip_mutex_init ()
 {
@@ -300,17 +311,21 @@ osip_sem_trywait (struct osip_sem *_sem)
     return -1;
   return semTake (sem->semId, NO_WAIT);
 }
+
 #endif
 
-#if defined (WIN32) || defined (_WIN32_WCE)
+
+#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 
 #include <limits.h>
+
 struct osip_mutex *
 osip_mutex_init ()
 {
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
-
-  if ((mut->h = CreateMutex (NULL, FALSE, NULL)) != NULL)
+  if (mut == NULL)
+    return NULL;
+  if (mut->h = CreateMutex (NULL, FALSE, NULL) != NULL)
     return (struct osip_mutex *) (mut);
   osip_free (mut);
   return (NULL);
@@ -353,8 +368,10 @@ struct osip_sem *
 osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+  if (sem == NULL)
+    return NULL;
 
-  if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
+  if (sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL) != NULL)
     return (struct osip_sem *) (sem);
   osip_free (sem);
   return (NULL);
@@ -509,6 +526,7 @@ osip_sem_trywait (struct osip_sem *_sem)
     return (-1);
   return (0);
 }
-#endif
 
 #endif
+
+#endif /* #ifdef OSIP_MT */
