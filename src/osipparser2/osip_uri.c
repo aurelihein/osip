@@ -1001,8 +1001,19 @@ __osip_uri_unescape (char *string)
 	  if (sscanf (ptr + 1, "%02X", &hex))
 	    {
 	      in = (unsigned char) hex;
-	      ptr += 2;
-	      alloc -= 2;
+              if (*(ptr+2) &&
+                  ((*(ptr+2) >= '0' && *(ptr+2) <= '9') ||
+                   (*(ptr+2) >= 'a' && *(ptr+2) <= 'f') ||
+                   (*(ptr+2) >= 'A' && *(ptr+2) <= 'F')))
+                {
+                  alloc -= 2;
+                  ptr += 2;
+                }
+              else
+                {
+                  alloc -= 1;
+                  ptr += 1;
+                }
 	    }
 	}
 
@@ -1012,13 +1023,9 @@ __osip_uri_unescape (char *string)
   string[index] = 0;		/* terminate it */
 }
 
-/* 
-   Robin Nayathodan <roooot@softhome.net> 
-   N.K Electronics INDIA
 
-   RFC3261 16.5 
+/* RFC3261 16.5 
  */
-
 int
 osip_uri_to_str_canonical (const osip_uri_t * url, char **dest)
 {
