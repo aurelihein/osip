@@ -214,7 +214,7 @@ osip_sem_trywait (struct osip_sem * _sem)
 struct osip_mutex *
 osip_mutex_init ()
 {
-  return (struct sosip_mutex_t *)semMCreate (0);
+  return (struct osip_mutex *)semMCreate (0);
 }
 
 void
@@ -352,7 +352,7 @@ osip_sem_init (unsigned int value)
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
   if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
-    return (struct osip_mutex *)(sem);
+    return (struct osip_sem *)(sem);
   osip_free (sem);
   return (NULL);
 }
@@ -460,7 +460,7 @@ osip_sem_init (unsigned int value)
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
   if (sm_create ("sem", value, 0, &sem->id) == 0)
-    return (struct osip_mutex *)(sem);
+    return (struct osip_sem *)(sem);
   osip_free (sem);
   return (NULL);
 }
