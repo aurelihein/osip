@@ -45,15 +45,15 @@
  */
   struct osip_www_authenticate
   {
-    char *auth_type;		/* ( "Basic" | "Digest" )      */
-    char *realm;		/* mandatory ( quoted-string ) */
-    char *domain;		/* optional  <"> 1#URI <">     */
-    char *nonce;		/* mandatory */
-    char *opaque;		/* optional  */
-    char *stale;		/* optional  ( "true" | "false" ) */
-    char *algorithm;		/* optional  ( "MD5"  | token   ) */
-    char *qop_options;		/* optional  */
-    char *auth_param;		/* optional  */
+    char *auth_type;		/**< Authentication Type (Basic or Digest */
+    char *realm;		/**< realm (as a quoted-string) */
+    char *domain;		/**< domain (optional) */
+    char *nonce;		/**< nonce (optional)*/
+    char *opaque;		/**< opaque (optional) */
+    char *stale;		/**< stale (optional) */
+    char *algorithm;		/**< algorythm (optional) */
+    char *qop_options;		/**< qop option (optional)  */
+    char *auth_param;		/**< other parameters (optional) */
   };
 
 

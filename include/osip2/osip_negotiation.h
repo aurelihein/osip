@@ -540,14 +540,20 @@ extern "C"
   int osip_negotiation_ctx_execute_negotiation (osip_negotiation_t *,
 						osip_negotiation_ctx_t * ctx);
 
+/** Put the SDP message on hold in outgoing invite
+ * @param ctx The element to work on.
+ * @param sdp The sdp message to build.
+ * @param audio_port The port for audio stream.
+ * @param video_port The port for video stream.
+ */
   int osip_negotiation_sdp_build_offer (osip_negotiation_t *,
-					osip_negotiation_ctx_t * con,
+					osip_negotiation_ctx_t * ctx,
 					sdp_message_t ** sdp,
 					char *audio_port, char *video_port);
 
 #ifndef DOXYGEN
   int __osip_negotiation_sdp_build_offer (osip_negotiation_t *,
-					  osip_negotiation_ctx_t * con,
+					  osip_negotiation_ctx_t * ctx,
 					  sdp_message_t ** sdp,
 					  char *audio_port, char *video_port,
 					  char *audio_codec,

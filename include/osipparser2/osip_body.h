@@ -73,7 +73,7 @@ extern "C"
  * Parse a osip_body_t element.
  * @param body The element to work on.
  * @param buf The buffer to parse.
- * @param lentgh The length of the buffer to parse.
+ * @param length The length of the buffer to parse.
  */
   int osip_body_parse (osip_body_t * body, const char *buf, size_t length);
 /**
