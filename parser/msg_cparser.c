@@ -34,10 +34,12 @@ static parser_config_t pconfig[NUMBER_OF_HEADERS];
   l: Content-Length   => ok
   c: Content-Type   => ok
   f: From   => ok
-  s: Subject   => NOT A SUPPORTED HEADER! will be
+  s: Subject   => NOT A KNOWN HEADER! will be
                  available in the list of unknown headers
   t: To   => ok
   v: Via   => ok
+  k: Supported  -> NOT A KNOWN HEADER! will be
+                 available in the list of unknown headers
 */
 /* This method must be called before using the parser */
 int
