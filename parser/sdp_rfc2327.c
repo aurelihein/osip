@@ -1248,6 +1248,17 @@ sdp_parse(sdp_t *sdp, const char *buf)
       return -1;
     ptr = next_buf;
 
+    /* adtech phone use the wrong ordering and place "s" before "o" */
+    i = sdp_parse_s(sdp,ptr,&next_buf);
+    if (i==-1) /* header is bad */
+      return -1;
+    /* else if (0==i) header is not "s" */
+    /* else ADTECH PHONE DETECTED */
+      
+    ptr = next_buf;
+
+
+
     i = sdp_parse_o(sdp,ptr,&next_buf);
     if (i==-1) /* header is bad */
       return -1;
@@ -1258,7 +1269,7 @@ sdp_parse(sdp_t *sdp, const char *buf)
     i = sdp_parse_s(sdp,ptr,&next_buf);
     if (i==-1) /* header is bad */
       return -1;
-    else if (0==i) /* header is not "o" */
+    else if (0==i) /* header is not "s" */
       /* return -1; */
       {
 	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,stdout,"The \"s\" parameter is mandatory, but this packet does not contain any! - anyway, we don't mind about it.\n"));

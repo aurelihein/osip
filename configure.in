@@ -7,20 +7,14 @@ dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=0
 OSIP_MINOR_VERSION=8
-OSIP_MICRO_VERSION=2
+OSIP_MICRO_VERSION=3
 
 dnl Library extension
-OSIP_RELEASE=0.8.2
+OSIP_RELEASE=0.8.3
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
-#
-# +1 : ? : +1  == new interface that does not break old one
-# +1 : ? : 0   == new interface that breaks old one
-#  ? : ? : 0   == no new interfaces, but breaks apps
-#  ? :+1 : ?   == just some internal changes, nothing breaks but might work 
-#                 better
-# CURRENT : REVISION : AGE
+dnl ??
 LIBOSIP_SO_VERSION=0:0:0
 
 AC_SUBST(LIBOSIP_SO_VERSION, $LIBOSIP_SO_VERSION)
@@ -55,57 +49,78 @@ AC_ENABLE_STATIC(no)
 
 dnl declare --enable-* args and collect ac_help strings
 
+AC_ARG_ENABLE(debug,
+[  --disable-debug         turn off debugging.],
+disable_debug=$enableval,disable_debug="yes")
+
+AC_ARG_ENABLE(trace,
+[  --disable-trace         turn off trace.],
+disable_trace=$enableval,disable_trace="yes")
+
+AC_ARG_ENABLE(mleak,
+[  --enable-mleak          turn on memory leak detection.],
+enable_mleak=$enableval,enable_mleak="no")
+
 dnl build with multithreaded support (need semaphore).
 AC_ARG_ENABLE(mt,
-[  --disable-mt              compile oSIP without multi-thread support.],
+[  --disable-mt            compile oSIP without multi-thread support.],
 enable_mt=$enableval,enable_mt="yes")
 
 dnl md5 support.
 AC_ARG_ENABLE(md5,
-[  --disable-md5             compile oSIP without MD5 support.],
+[  --disable-md5           compile oSIP without MD5 support.],
 enable_md5=$enableval,enable_md5="yes")
 
 dnl buffer save mode support.
 AC_ARG_ENABLE(buffermode,
-[  --disable-buffermode      compile oSIP without buffer save mode support.],
+[  --disable-buffermode    compile oSIP without buffer save mode support.],
 enable_buffermode=$enableval,enable_buffermode="yes")
 
 dnl support for linux-thread or posix thread (pthread.h)
 AC_ARG_ENABLE(pthread,
-[  --disable-pthread         disable support for POSIX threads.],
-enable_pthread=$enableval,enable_pthread="yes")
+[  --enable-pthread        enable support for POSIX threads. (default=yes)],
+enable_pthread=$enableval,enable_pthread="no")
 
 dnl support for GNU Portable Threads
 AC_ARG_ENABLE(pth,
-[  --enable-pth              enable support for GNU portable thread.],
+[  --enable-pth            enable support for GNU portable thread.],
 enable_pth=$enableval,enable_pth="no")
 
-AC_ARG_ENABLE(debug,
-[  --disable-debug           turn off debugging.],
-disable_debug=$enableval,disable_debug="yes")
+dnl support for semaphore.h (linux/sun...)
+AC_ARG_ENABLE(semaphore,
+[  --enable-semaphore      enable support for semaphore (semaphore.h)],
+enable_semaphore=$enableval,enable_semaphore="no")
 
-AC_ARG_ENABLE(trace,
-[  --disable-trace           turn off trace.],
-disable_trace=$enableval,disable_trace="yes")
-
-AC_ARG_ENABLE(mleak,
-[  --enable-mleak            turn on memory leak detection.],
-enable_mleak=$enableval,enable_mleak="no")
-
+dnl support for sysV semaphore in sys/sem.h (BSD/linux...)
+AC_ARG_ENABLE(sysv,
+[  --enable-sysv           enable support for sysV semaphore (sys/sem.h).],
+enable_sysv=$enableval,enable_sysv="no")
 
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
-
-  SIP_FLAGS="$SIP_FLAGS -DOSIP_MT"
   if test "x$enable_pth" = "xyes"; then
-    SIP_FSM_FLAGS="$SIP_FSM_FLAGS `pth-config --cflags` -DTHREAD_PTH"
-    FSM_LIB="$FSM_LIB `pth-config --ldflags` `pth-config --libs`"
+    SIP_PARSER_FLAGS="-DHAVE_PTH_PTHREAD_H `pthread-config --cflags`"
+    SIP_FSM_FLAGS="-DOSIP_MT -DHAVE_PTH_PTHREAD_H `pthread-config --cflags`"
+    FSM_LIB="`pthread-config --ldflags` `pthread-config --libs`"
+    PARSER_LIB="`pthread-config --ldflags` `pthread-config --libs`"
+  elif test "x$enable_pthread" = "xyes"; then
+    SIP_FSM_FLAGS="-DOSIP_MT -DHAVE_PTHREAD_H"
+    FSM_LIB="-lpthread"
   else
-    if test "x$enable_pthread" = "xyes"; then
-      SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DTHREAD_PTHREAD"
-      FSM_LIB="$FSM_LIB -lpthread"
-    fi
+    SIP_FSM_FLAGS="-DOSIP_MT"
+    FSM_LIB="-lpthread"
   fi
+fi
+
+if test "x$enable_semaphore" = "xyes"; then
+  SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DHAVE_SEMAPHORE_H"
+  AC_CHECK_HEADERS(semaphore.h)
+elif test "x$enable_sysv" = "xyes"; then
+  SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DHAVE_SYS_SEM_H"
+  AC_CHECK_HEADERS(sys/sem.h)
+else
+  AC_CHECK_HEADERS(semaphore.h)
+  AC_CHECK_HEADERS(sys/sem.h)
 fi
 
 SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"
@@ -131,7 +146,7 @@ if test "x$enable_mleak" = "xyes"; then
 fi
 
 
-dnl Checks for libraries.
+dnl Checks for libraries. (those one are needed for sun)
 AC_CHECK_LIB(posix4,sem_open,[FSM_LIB="$FSM_LIB -lposix4 -mt"])
 AC_CHECK_LIB(nsl,nis_add,[FSM_LIB="$FSM_LIB -lnsl"])
 AC_CHECK_LIB(socket,sendto,[FSM_LIB="$FSM_LIB -lsocket"])
@@ -153,7 +168,6 @@ AC_ENABLE_STATIC(no)
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(ctype.h)
-AC_CHECK_HEADERS(pthread.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
 AC_CHECK_HEADERS(stdio.h)
@@ -161,8 +175,14 @@ AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(varargs.h)
-AC_CHECK_HEADERS(fcntl.h sys/time.h assert.h signal.h sys/signal.h malloc.h) 
-
+AC_CHECK_HEADERS(fcntl.h)
+AC_CHECK_HEADERS(sys/time.h)
+AC_CHECK_HEADERS(assert.h)
+AC_CHECK_HEADERS(signal.h)
+AC_CHECK_HEADERS(sys/signal.h)
+AC_CHECK_HEADERS(malloc.h)
+AC_CHECK_HEADERS(pth/pthread.h)
+AC_CHECK_HEADERS(pthread.h)
 
 AC_OUTPUT(Makefile parser/Makefile fsm/Makefile test/Makefile osip/Makefile scripts/Makefile doc/Makefile conf/Makefile windows/Makefile)
 

@@ -38,7 +38,7 @@
 /* OUTPUT:  pthread_t *thread | thread ID.   */
 /* returns SIP_NULL on error */
 #ifndef __VXWORKS_OS__
-#ifdef THREAD_PTHREAD
+#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 sthread_t *
 sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
@@ -60,13 +60,12 @@ sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *ar
 int sthread_setpriority(sthread_t *thread, int priority)
 { return 0; }
 int sthread_join(sthread_t *thread)
-{ return pthread_join(*thread,NULL); }
+{ if (thread==NULL) return -1;return pthread_join(*thread,NULL); }
 void sthread_exit()
 { pthread_exit(NULL); }
 #endif
 #endif
 
-#ifndef __VXWORKS_OS__
 #ifdef WIN32
 sthread_t *sthread_create(int stacksize, sthread_t *thread,
                           void *(*func)(void *),  void *arg)
@@ -92,6 +91,7 @@ int sthread_setpriority(sthread_t *thread, int priority)
 
 int sthread_join(sthread_t *thread)
 {  
+  if (thread==NULL) return -1;
    if (GetThreadPriority((HANDLE)thread->h) != THREAD_PRIORITY_ERROR_RETURN)
        TerminateThread((HANDLE)thread->h, 0);
 
@@ -104,6 +104,7 @@ void sthread_exit()
 }
 #endif
 
+#ifndef __VXWORKS_OS__
 #ifdef __PSOS__
 sthread_t *sthread_create(int stacksize, sthread_t *thread,
                           void *(*func)(void *),  void *arg)
@@ -128,77 +129,53 @@ sthread_t *sthread_create(int stacksize, sthread_t *thread,
 int sthread_setpriority(sthread_t *thread, int priority)
 { 
   unsigned long oldprio;
-
+  if (thread==NULL) return -1;
   t_setpri(thread->tid, priority, &oldprio);
   return 0;
 }
 
 int sthread_join(sthread_t *thread)
 {  
-   t_delete(thread->tid);
-
-   return(0);
+  if (thread==NULL) return -1;
+  t_delete(thread->tid);
+  
+  return(0);
 }
 void sthread_exit()
 { 
    t_delete(0);
 }
 #endif
-#ifdef THREAD_PTH
-sthread_t *
+#endif
+
+#ifdef __VXWORKS_OS__
+sthread_t 
 sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
-  int i;
   if (thread!=NULL)
-    DEBUG(fprintf(stdout,"<port_thread.c> Never use sthread_create with thread!=NULL under vxworks\n"));
-  
-  pth_spawn(NULL, func, (void *)arg);
-  if (i!=0)
-    {
-    DEBUG(fprintf(stdout,"<port_thread.c> Error while creating a new thread %i\n",i));
-    return NULL;
-    }
+    thread = (sthread_t *) smalloc(sizeof(sthread_t));
+  thread->id = taskSpawn(NULL,5,0,stacksize,(FUNCPTR)func,(int)arg,0,0,0,0,0,0,0,0,0);
+  if (thread->id<0) sfree(thread);
   return thread;
 }
 int
 sthread_setpriority(sthread_t *thread, int priority)
-{ /* .PTH_PRIO_MIN and PTH_PRIO_MAX. default is PTH_PRIO_STD. */
-  return 0;
-}
-int sthread_join(sthread_t *thread)
-{ return pth_join(thread,NULL); }
-void sthread_exit()
-{  pth_exit(NULL); }
-
-#endif
-#endif
-#ifdef __VXWORKS_OS__
-int
-sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
-  if (thread!=NULL)
-    /* thread = (sthread_t *) smalloc(sizeof(sthread_t)); */
-    DEBUG(fprintf(stdout, "<port_thread.c> Never use sthread_create with thread!=NULL under vxworks\n"));
-
-  /* return ERROR (==-1?) if it fails */
-  return taskSpawn(NULL,5,0,stacksize,(FUNCPTR)func,(int)arg,0,0,0,0,0,0,0,0,0);
-}
-int
-sthread_setpriority(int thread, int priority)
-{
-  taskPrioritySet(dest->threadid, 1);
+  if (thread==NULL) return -1;
+  taskPrioritySet(thread->id, 1);
   return 0;
 }
 int
-sthread_join(int thread)
+sthread_join(sthread_t *thread)
 {
-  return taskDelete(thread);
+  if (thread==NULL) return -1;
+  return taskDelete(thread->id);
 }
 void
 sthread_exit()
 {
+  /*??*/
 }
 #endif
-
 
 #endif

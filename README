@@ -1,5 +1,5 @@
 Project    : "The GNU oSIP library" is an implementation of SIP - rfc2543. 
-Last update: 0.8.1
+Last update: 0.8.3
 Email      : jack@atosc.org
 License    : LGPL (http://www.gnu.org)
 Home Page  : http://www.fsf.org/software/osip/osip.html
@@ -15,7 +15,7 @@ SIP is described in the RFC2543 which is available at
 http://www.ietf.org/rfc/rfc2543.txt.
 
 
-FEATURES: (version 0.8.1)
+FEATURES: (version 0.8.3)
 ---------
 
 The oSIP library consists of 2 parts:

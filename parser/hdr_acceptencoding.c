@@ -132,6 +132,7 @@ accept_encoding_2char(accept_encoding_t *accept_encoding, char **dest)
 void
 accept_encoding_free(accept_encoding_t *accept_encoding)
 {
+  if (accept_encoding==NULL) return;
   sfree(accept_encoding->element);
 
   generic_param_freelist(accept_encoding->gen_params);

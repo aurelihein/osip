@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 #ifdef OSIP_MT
@@ -51,6 +52,82 @@ osip_global_init()
   nist_fastmutex = smutex_init();  
 #endif
   return 0;
+}
+
+int
+osip_ict_lock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_lock(ict_fastmutex);
+#else
+  return 0;
+#endif
+}
+int
+osip_ict_unlock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_unlock(ict_fastmutex);
+#else
+  return 0;
+#endif
+}
+
+int
+osip_ist_lock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_lock(ist_fastmutex);
+#else
+  return 0;
+#endif
+}
+int
+osip_ist_unlock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_unlock(ist_fastmutex);
+#else
+  return 0;
+#endif
+}
+
+int
+osip_nict_lock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_lock(nict_fastmutex);
+#else
+  return 0;
+#endif
+}
+int
+osip_nict_unlock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_unlock(nict_fastmutex);
+#else
+  return 0;
+#endif
+}
+
+int
+osip_nist_lock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_lock(nist_fastmutex);
+#else
+  return 0;
+#endif
+}
+int
+osip_nist_unlock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return smutex_unlock(nist_fastmutex);
+#else
+  return 0;
+#endif
 }
 
 int

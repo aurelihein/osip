@@ -22,7 +22,9 @@
 
 #ifdef OSIP_MT
 
+#include <osip/port.h>
 #include <errno.h>
+
 #ifdef WIN32
 #include <Windows.h>
 typedef struct {
@@ -31,8 +33,9 @@ typedef struct {
 typedef struct {
     HANDLE h;
 } ssem_t;
-#else
-#ifdef __PSOS__
+#endif
+
+#if !defined(WIN32) && defined(__PSOS__)
 #include <Types.h>
 #include <os.h>
 typedef struct {
@@ -41,33 +44,46 @@ typedef struct {
 typedef struct {
     UInt32 id;
 } ssem_t;
-#else
-#include <semaphore.h>
-#endif
 #endif
 
 #ifdef __VXWORKS_OS__
+#include <semaphore.h>
 #include <semLib.h>
 typedef struct semaphore smutex_t;
 typedef sem_t ssem_t;
-#else
+#endif
 
 #ifdef __sun__
+#include <semaphore.h>
 #undef getdate
 #include <synch.h>
 #endif
 
-#ifdef THREAD_PTHREAD
+#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
 typedef pthread_mutex_t smutex_t;
-typedef sem_t  ssem_t;
-#endif
-#ifdef THREAD_PTH
-#include <pth.h>
-typedef pth_rwlock_t smutex_t;
-typedef pth_mutex_t  ssem_t;
 #endif
 
+#if defined(HAVE_SEMAPHORE_H)
+#include <semaphore.h>
+#ifdef __sun__
+#undef getdate
+#include <synch.h>
+#endif
+typedef sem_t  ssem_t;
+#endif
+
+#if !defined(HAVE_SEMAPHORE_H) && defined(HAVE_SYS_SEM_H)
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+typedef struct _ssem_t {
+  int semid;
+} ssem_t;
+#endif
+
+#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(__PSOS__) && !defined(__VXWORKS_OS_))
+#error No semaphore implementation found
 #endif
 
 smutex_t     *smutex_init();

@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 static statemachine_t *nict_fsm;

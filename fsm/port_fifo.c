@@ -20,8 +20,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <osip/fifo.h>
 #include <osip/port.h>
+#include <osip/fifo.h>
 
 
 /* always use this method to initiate fifo_t.
@@ -79,7 +79,8 @@ void*
 fifo_get(fifo_t *ff)
 {
   void *el;
-  ssem_wait(ff->qisempty);
+  int i = ssem_wait(ff->qisempty);
+  if (i!=0) return NULL;
   smutex_lock(ff->qislocked);
 
   if (ff->etat != vide)
@@ -152,6 +153,7 @@ fifo_tryget(fifo_t *ff)
 void
 fifo_free(fifo_t *ff)
 {
+  if (ff==NULL) return;
 #ifdef OSIP_MT
   smutex_destroy(ff->qislocked);
 #ifndef __VXWORKS_OS__

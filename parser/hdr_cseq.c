@@ -136,6 +136,7 @@ cseq_2char(cseq_t *cseq, char **dest)
 void
 cseq_free(cseq_t *cseq)
 {
+  if (cseq==NULL) return;
   sfree(cseq->method);
   sfree(cseq->number);
 }

@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
 #include "fsm.h"
 
 static statemachine_t *ict_fsm;
@@ -373,7 +373,7 @@ ict_retransmit_ack(transaction_t *ict, sipevent_t *evt)
     {
       if (osip->cb_ict_ack_sent2!=NULL)
 	osip->cb_ict_ack_sent2(ict, ict->ack);
-      transaction_set_state(ict, ICT_CALLING);
+      transaction_set_state(ict, ICT_COMPLETED);
     }
   else
     {

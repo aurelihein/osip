@@ -19,9 +19,9 @@
 
 #include <stdio.h>
 
+#include <osip/port.h>
 #include <osip/fifo.h>
 #include <osip/osip.h>
-#include <osip/port.h>
 #include "fsm.h"
 
 

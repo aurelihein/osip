@@ -511,7 +511,7 @@ void
 url_free(url_t *url)
 {
    int pos = 0;
-
+   if (url==NULL) return;
    sfree(url->scheme);
    sfree(url->username);
    sfree(url->password);

@@ -18,8 +18,14 @@
 /* Define if you have the <malloc.h> header file.  */
 #undef HAVE_MALLOC_H
 
+/* Define if you have the <pth/pthread.h> header file.  */
+#undef HAVE_PTH_PTHREAD_H
+
 /* Define if you have the <pthread.h> header file.  */
 #undef HAVE_PTHREAD_H
+
+/* Define if you have the <semaphore.h> header file.  */
+#undef HAVE_SEMAPHORE_H
 
 /* Define if you have the <signal.h> header file.  */
 #undef HAVE_SIGNAL_H
@@ -38,6 +44,9 @@
 
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
+
+/* Define if you have the <sys/sem.h> header file.  */
+#undef HAVE_SYS_SEM_H
 
 /* Define if you have the <sys/signal.h> header file.  */
 #undef HAVE_SYS_SIGNAL_H

@@ -62,6 +62,7 @@ call_id_init(call_id_t **callid)
 void
 call_id_free(call_id_t *callid)
 {
+  if (callid==NULL) return;
   sfree(callid->number);
   sfree(callid->host);
 

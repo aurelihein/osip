@@ -38,6 +38,10 @@
 #include <selectLib.h>
 #endif
 
+#ifdef HAVE_PTH_PTHREAD_H
+#include <pthread.h>
+#endif
+
 static FILE *logfile = NULL;
 static int tracing_table[END_TRACE_LEVEL];
 
@@ -159,6 +163,7 @@ int stolowercase(char *word)
   for (i=0 ; i<=len-1 ; i++) {
   if ('A' <= word[i] && word[i] <= 'Z')
     word[i] = word[i]+32;
+  }
 #endif
   return 0;
 }

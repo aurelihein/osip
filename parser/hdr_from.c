@@ -77,6 +77,7 @@ from_init(from_t **from)
 void
 from_free(from_t *from)
 {
+  if (from==NULL) return;
   if (from->url!=NULL)
     {
       url_free(from->url);

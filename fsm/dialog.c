@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 #include <osip/dialog.h>
 
@@ -219,6 +220,14 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
   int i;
   int pos;
   generic_param_t *tag;
+
+  i = to_get_tag(response->to,&tag);
+  if (i!=0)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems is not compliant with the latest draft!\n"));
+      return -1;;
+    }
+
   (*dialog) = (dialog_t*)smalloc(sizeof(dialog_t));
   if (*dialog==NULL) return -1;
 
@@ -408,6 +417,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
 void
 dialog_free(dialog_t *dialog)
 {
+  if (dialog==NULL) return;
   contact_free(dialog->remote_contact_uri);
   sfree(dialog->remote_contact_uri);
   from_free(dialog->local_uri);

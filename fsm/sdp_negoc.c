@@ -33,6 +33,7 @@ int sdp_context_init(sdp_context_t **con) {
 }
 
 void sdp_context_free(sdp_context_t *con) {
+  if (con==NULL) return;
   sdp_free(con->remote);
   sfree(con->remote);
   sdp_free(con->local);
@@ -91,6 +92,7 @@ int  payload_init(payload_t **payload) {
 }
 
 void payload_free(payload_t *payload) {
+  if (payload==NULL) return;
   sfree(payload->payload);
   sfree(payload->number_of_port);
   sfree(payload->proto);
@@ -138,6 +140,7 @@ int sdp_config_init() {
 }
 
 void sdp_config_free() {
+  if (config==NULL) return;
   sfree(config->o_username);
   sfree(config->o_session_id);
   sfree(config->o_session_version);

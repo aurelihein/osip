@@ -319,7 +319,7 @@ body_2char(body_t *body, char **dest)
 void
 body_free(body_t *body)
 {
-
+  if (body==NULL) return;
   sfree(body->body);
   if (body->content_type!=NULL)
     {

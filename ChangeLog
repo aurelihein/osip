@@ -1,6 +1,13 @@
+libosip (0.8.3)
+	* add lock/unlock methods for searching in transactions
+	* improve reliability when a NULL pointer is given to *_free methods.
+	* many bugs fixes in fsm/*
+	* parser/hdr_via.c: support for ipv6. Previous version are not compliant.
+	
 libosip (0.8.2)
 	* ipv6 support (need more testing.)  - Thanks to tomohide.
 	* support for any scheme in url. (Use with care with applications.)
+	* support for sysv semaphore.
 	
 libosip (0.8.1) testing ;urgency=high
 	* new finite state machines for TRANSACTION LAYER compliant with

@@ -85,7 +85,7 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\fsm\evt_server.c
+SOURCE=..\fsm\sipevent.c
 # End Source File
 # Begin Source File
 
@@ -93,19 +93,35 @@ SOURCE=..\fsm\fsm_misc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\fsm_uac4inv.c
+SOURCE=..\fsm\ict.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\fsm_uac4req.c
+SOURCE=..\fsm\ist.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\fsm_uas4inv.c
+SOURCE=..\fsm\nict.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\fsm_uas4req.c
+SOURCE=..\fsm\nist.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\fsm\ict_fsm.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\fsm\ist_fsm.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\fsm\nict_fsm.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\fsm\nist_fsm.c
 # End Source File
 # Begin Source File
 
@@ -125,7 +141,7 @@ SOURCE=..\fsm\port_thread.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\trn_manager.c
+SOURCE=..\fsm\transaction.c
 # End Source File
 # Begin Source File
 
@@ -133,7 +149,7 @@ SOURCE=..\fsm\sdp_negoc.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\fsm\trn_timers.c
+SOURCE=..\fsm\dialog.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -142,18 +158,6 @@ SOURCE=..\fsm\trn_timers.c
 # Begin Source File
 
 SOURCE=..\fsm\fsm.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\osip\sdp_negoc.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\osip\osip.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\osip\sdp.h
 # End Source File
 # End Group
 # End Target

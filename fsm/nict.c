@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 int
@@ -26,7 +27,7 @@ nict_init(nict_t **nict, osip_t *osip, sip_t *request)
 {
   int i;
   time_t now;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: allocating NICT context\n"));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating NICT context\n"));
 
   *nict = (nict_t *)smalloc(sizeof(nict_t));
   if (*nict==NULL) return -1;
@@ -85,7 +86,7 @@ int
 nict_free(nict_t *nict)
 {
   if (nict==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: free nict ressource\n"));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free nict ressource\n"));
 
   sfree(nict->destination);
   return 0;

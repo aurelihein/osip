@@ -134,6 +134,7 @@ call_info_2char(call_info_t *call_info, char **dest)
 void
 call_info_free(call_info_t *call_info)
 {
+  if (call_info==NULL) return;
   sfree(call_info->element);
 
   generic_param_freelist(call_info->gen_params);

@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 int
@@ -30,7 +31,7 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   int i;
   time_t now;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: allocating transaction ressource %i\n",transactionid));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating transaction ressource %i\n",transactionid));
 
   *transaction = (transaction_t *)smalloc(sizeof(transaction_t));
   if (*transaction==NULL) return -1;
@@ -131,7 +132,7 @@ transaction_free(transaction_t *transaction)
 {
   int i;
   if (transaction==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: free transaction ressource %i\n",transaction->transactionid));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free transaction ressource %i\n",transaction->transactionid));
   if (transaction->ctx_type==ICT)
     {
       i = osip_remove_ict(transaction->config, transaction);
@@ -160,7 +161,7 @@ transaction_free(transaction_t *transaction)
   if (i!=0) /* yet removed ??? */
     {
       TRACE(trace(__FILE__,__LINE__,
-		  TRACE_LEVEL3,stdout,
+		  TRACE_LEVEL3,NULL,
 		  "BUG: transaction already removed from list %i!!\n",
 		  transaction->transactionid));
     }
@@ -390,7 +391,7 @@ cseq_match(cseq_t *cseq1,cseq_t *cseq2)
 
   if (0==strcmp(cseq1->number,cseq2->number))
     {
-      if (0==strcmp(cseq2->method,"INVITE"))
+      if (0==strcmp(cseq2->method,"INVITE")||0==strcmp(cseq2->method,"ACK"))
 	{
 	  if (0==strcmp(cseq1->method,"INVITE")||
 	      0==strcmp(cseq1->method,"ACK"))

@@ -26,54 +26,41 @@
 
 #ifdef __VXWORKS_OS__
 #include <taskLib.h>
-typedef int sthread_t;
-#else
+typedef struct _sthread_t {
+  int id;
+} sthread_t;
+#endif
+
 #ifdef WIN32
 #include <windows.h>
 typedef struct {
     unsigned long h;
     unsigned int ID;
 } sthread_t;
-#else
-#ifdef __PSOS__
+#endif
+
+#if !defined(WIN32) && defined(__PSOS__)
 #include <psos.h>
 typedef struct {
     unsigned long tid;
 } sthread_t;
-#else
-#ifdef THREAD_PTHREAD
+#endif
+
+#if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
+#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
 typedef pthread_t sthread_t;
-#endif
-#ifdef THREAD_PTH
-#include <pth.h>
-typedef struct pth_st sthread_t;
-#endif
+#else
+#error no thread implementation found!
 #endif
 #endif
 
-#endif
-
-#ifdef __VXWORKS_OS__
-int sthread_create(int stacksize,
-                   sthread_t *thread,  /* MUST BE NULL ON VxWorks */
-                   void *(*func)(void *), void *arg);
-int sthread_join(int thread);
-int sthread_setpriority(int thread, int priority);
-void sthread_exit();
-#endif
-#if !defined(__VXWORKS_OS__)
-#if defined(THREAD_PTH) || defined(THREAD_PTHREAD) || defined(WIN32)
 sthread_t *sthread_create(int stacksize, sthread_t *thread,
                           void *(*func)(void *),  void *arg);
 int sthread_join(sthread_t *thread);
-/* WARNING UNUSED METHOD */
+/* this method is not implemented on all systems */
 int sthread_setpriority(sthread_t *thread, int priority);
 void sthread_exit();
-#endif
-#endif
-
-
 
 
 #endif /* end of _THREAD_H */

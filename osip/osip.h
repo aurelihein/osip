@@ -355,11 +355,23 @@ int transaction_set_in_socket(transaction_t *transaction, int sock);
 int transaction_set_out_socket(transaction_t *transaction, int sock);
 int transaction_set_config(transaction_t *transaction, osip_t *osip);
 
+int callleg_match(to_t *to1,from_t *from1,to_t *to2,from_t *from2);
+int call_id_match(call_id_t *callid1,call_id_t *callid2);
+int cseq_match(cseq_t *cseq1,cseq_t *cseq2);
+
 /* start the oSIP stack */
 int  osip_global_init();
 
 /* create a context for a SIP Agent */
 int  osip_init(osip_t **osip);
+int  osip_ict_lock(osip_t *osip);
+int  osip_ict_unlock(osip_t *osip);
+int  osip_ist_lock(osip_t *osip);
+int  osip_ist_unlock(osip_t *osip);
+int  osip_nict_lock(osip_t *osip);
+int  osip_nict_unlock(osip_t *osip);
+int  osip_nist_lock(osip_t *osip);
+int  osip_nist_unlock(osip_t *osip);
 int  osip_add_ict(osip_t *osip, transaction_t *ict);
 int  osip_add_ist(osip_t *osip, transaction_t *ist);
 int  osip_add_nict(osip_t *osip, transaction_t *nict);

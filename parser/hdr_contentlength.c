@@ -80,6 +80,7 @@ content_length_2char(content_length_t *cl, char **dest)
 void
 content_length_free(content_length_t *content_length)
 {
+  if (content_length==NULL) return;
   sfree(content_length->value);
 }
 

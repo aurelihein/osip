@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 static statemachine_t *ist_fsm;
@@ -171,8 +172,13 @@ ist_rcv_invite(transaction_t *ist, sipevent_t *evt)
 	{
 	  via_t *via;
 	  via = (via_t*)list_get(ist->last_response->vias, 0);
-	  i = osip->cb_send_message(ist, ist->last_response, via->host,
-				    atoi(via->port), ist->out_socket);
+	  {
+	    int port;
+	    if (via->port==NULL) port=5060;
+	    else port = atoi(via->port); /* we should use strtol to handle errors */
+	    i = osip->cb_send_message(ist, ist->last_response, via->host,
+				      port, ist->out_socket);
+	  }
 	  if (i!=0)
 	    {
 	      osip->cb_ist_transport_error(ist, i);
@@ -197,8 +203,13 @@ ist_rcv_invite(transaction_t *ist, sipevent_t *evt)
      via_t *via;
      ist->last_response=resp_100;
      via = (via_t*)list_get(resp_100->vias, 0);
+     {
+     int port;
+     if (via->port==NULL) port=5060;
+     else port = atoi(via->port);
      i = osip->cb_send_message(ist, resp_100, via->host,
-     atoi(via->port), ist->out_socket);
+     port, ist->out_socket);
+     }
      if (i!=0)
      {
      osip->cb_ist_transport_error(ist, i);
@@ -233,8 +244,13 @@ ist_timeout_g_event(transaction_t *ist, sipevent_t *evt)
 
   /* retransmit RESPONSE */
   via = (via_t*)list_get(ist->last_response->vias, 0);
-  i = osip->cb_send_message(ist, ist->last_response, via->host,
-			    atoi(via->port), ist->out_socket);
+  {
+    int port;
+    if (via->port==NULL) port=5060;
+    else port = atoi(via->port); /* we should use strtol to handle errors */
+    i = osip->cb_send_message(ist, ist->last_response, via->host,
+			      port, ist->out_socket);
+  }
   if (i!=0)
     {
       osip->cb_ist_transport_error(ist, i);
@@ -286,8 +302,13 @@ ist_snd_1xx(transaction_t *ist, sipevent_t *evt)
   ist->last_response = evt->sip;
 
   via = (via_t*)list_get(ist->last_response->vias, 0);
-  i = osip->cb_send_message(ist, ist->last_response, via->host,
-			    atoi(via->port), ist->out_socket);
+  {
+    int port;
+    if (via->port==NULL) port=5060;
+    else port = atoi(via->port); /* we should use strtol to handle errors */
+    i = osip->cb_send_message(ist, ist->last_response, via->host,
+			      port, ist->out_socket);
+  }
   if (i!=0)
     {
       osip->cb_ist_transport_error(ist, i);
@@ -318,8 +339,13 @@ ist_snd_2xx(transaction_t *ist, sipevent_t *evt)
   ist->last_response = evt->sip;
 
   via = (via_t*)list_get(ist->last_response->vias, 0);
-  i = osip->cb_send_message(ist, ist->last_response, via->host,
-			    atoi(via->port), ist->out_socket);
+  {
+    int port;
+    if (via->port==NULL) port=5060;
+    else port = atoi(via->port); /* we should use strtol to handle errors */
+    i = osip->cb_send_message(ist, ist->last_response, via->host,
+			      port, ist->out_socket);
+  }
   if (i!=0)
     {
       osip->cb_ist_transport_error(ist, i);
@@ -351,8 +377,13 @@ ist_snd_3456xx(transaction_t *ist, sipevent_t *evt)
   ist->last_response = evt->sip;
 
   via = (via_t*)list_get(ist->last_response->vias, 0);
-  i = osip->cb_send_message(ist, ist->last_response, via->host,
-			    atoi(via->port), ist->out_socket);
+  {
+    int port;
+    if (via->port==NULL) port=5060;
+    else port = atoi(via->port); /* we should use strtol to handle errors */
+    i = osip->cb_send_message(ist, ist->last_response, via->host,
+			      port, ist->out_socket);
+  }
   if (i!=0)
     {
       osip->cb_ist_transport_error(ist, i);

@@ -17,8 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <osip/osip.h>
 #include <osip/port.h>
+#include <osip/osip.h>
+
 #include "fsm.h"
 
 int
@@ -26,7 +27,7 @@ ist_init(ist_t **ist, osip_t *osip, sip_t *invite)
 {
   int i;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: allocating IST context\n"));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating IST context\n"));
 
   *ist = (ist_t *)smalloc(sizeof(ist_t));
   if (*ist==NULL) return -1;
@@ -83,7 +84,7 @@ int
 ist_free(ist_t *ist)
 {
   if (ist==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,stdout,"INFO: free ist ressource\n"));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free ist ressource\n"));
 
   return 0;
 }

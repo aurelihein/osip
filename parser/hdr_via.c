@@ -115,7 +115,8 @@ via_init(via_t **via)
 
 void
 via_free(via_t *via)
-{  
+{
+  if (via==NULL) return;
   sfree(via->version);
   sfree(via->protocol);
   sfree(via->host);
@@ -138,6 +139,7 @@ via_parse(via_t *via, char *hvalue)
   char *version;
   char *protocol;
   char *host;
+  char *ipv6host;
   char *port;
   char *via_params;
   char *comment;
@@ -172,7 +174,7 @@ via_parse(via_t *via, char *hvalue)
 
   /* Here: we avoid matching a additionnal space */
   host = strchr (protocol+1,' ');
-  if (protocol==NULL) return -1;
+  if (host==NULL) return -1; /* fixed in 0.8.4 */
   if (host==protocol+1) /* there are extra SPACE characters */
     {
       while (0==strncmp(host," ",1))
@@ -182,6 +184,7 @@ via_parse(via_t *via, char *hvalue)
 	}
       /* here we match the real space located after the protocol name*/
       host = strchr (host+1,' ');
+      if (host==NULL) return -1; /* fixed in 0.8.4 */
     }
 
   /* set the protocol */
@@ -190,7 +193,7 @@ via_parse(via_t *via, char *hvalue)
   sstrncpy(via->protocol, protocol+1, host-protocol-1);
   sclrspace(via->protocol);
 
-
+  /* comments in Via are not allowed any more in the latest draft (09)*/
   comment    = strchr(host,'(');
 
   if (comment!=NULL)
@@ -221,8 +224,27 @@ via_parse(via_t *via, char *hvalue)
 
   if (via_params==NULL)
     via_params = comment;
-  
-  port       = strchr(host,':');
+
+  /* add ipv6 support (0.8.4) */
+  /* Via: SIP/2.0/UDP [mlke::zeezf:ezfz:zef:zefzf]:port;.... */
+  ipv6host   = strchr(host,'[');
+  if (ipv6host!=NULL&&ipv6host<via_params)
+    {
+      port       = strchr(ipv6host,']');
+      if (port==NULL||port>via_params) return -1;
+
+      if (port-ipv6host<2) return -1;
+      via->host = (char *)smalloc(port-ipv6host);
+      sstrncpy(via->host, ipv6host+1,port-ipv6host-1);
+      sclrspace(via->host);
+
+      port       = strchr(port,':');
+    }
+  else
+    {
+      port       = strchr(host,':');
+      ipv6host=NULL;
+    }
 
   if ((port!=NULL)&&(port<via_params))
     {
@@ -234,10 +256,15 @@ via_parse(via_t *via, char *hvalue)
   else
     port = via_params;
 
+  /* host is already set in the case of ipv6 */
+  if (ipv6host!=NULL)
+    return 0;
+
   if (port-host<2) return -1;
   via->host = (char *)smalloc(port-host);
   sstrncpy(via->host, host+1,port-host-1);
   sclrspace(via->host);
+
   return 0;
 }
 
@@ -257,13 +284,24 @@ via_2char(via_t *via, char **dest) {
   buf = (char *)smalloc(200);
   *dest = buf;
 
-  if (via->port==NULL)
-    sprintf(buf,"SIP/%s/%s %s", via->version, via->protocol, via->host);
+  if (strchr(via->host,':')!=NULL)
+    {
+      if (via->port==NULL)
+	sprintf(buf,"SIP/%s/%s [%s]", via->version, via->protocol, via->host);
+      else
+	sprintf(buf,"SIP/%s/%s [%s]:%s",via->version, via->protocol,
+		via->host,via->port);
+    }
   else
-    sprintf(buf,"SIP/%s/%s %s:%s",via->version, via->protocol,
-	    via->host,via->port);
-  
+    {
+      if (via->port==NULL)
+	sprintf(buf,"SIP/%s/%s %s", via->version, via->protocol, via->host);
+      else
+	sprintf(buf,"SIP/%s/%s %s:%s",via->version, via->protocol,
+		via->host,via->port);
+    }
   buf = buf + strlen(buf);
+
 
   {
     int pos = 0;

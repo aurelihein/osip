@@ -115,6 +115,7 @@ header_init(header_t **header)
 void
 header_free(header_t *header)
 {
+  if (header==NULL) return;
   sfree(header->hname);
   sfree(header->hvalue);
   header->hname  = NULL;

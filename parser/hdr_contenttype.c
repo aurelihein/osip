@@ -160,6 +160,7 @@ content_type_2char(content_type_t *content_type, char **dest)
 void
 content_type_free(content_type_t *content_type)
 {
+  if (content_type==NULL) return;
   sfree(content_type->type);
   sfree(content_type->subtype);
 
