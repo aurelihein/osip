@@ -1,5 +1,6 @@
 libosip2 (2.0.2)
 	* fix a bug when Mime-version is present but Content-type is undefined.
+	* fix when Call-Id is missing.
 	
 libosip2 (2.0.1)
 	* fix bug in osip_message_to_str() for too long messages.

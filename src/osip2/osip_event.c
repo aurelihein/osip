@@ -78,9 +78,12 @@ osip_parse (char *buf)
     }
   else
     {
-      OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_INFO3, NULL,
-		   "MESSAGE REC. CALLID:%s\n", se->sip->call_id->number));
+      if (se->sip->call_id!=NULL && se->sip->call_id->number!=NULL)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO3, NULL,
+		       "MESSAGE REC. CALLID:%s\n", se->sip->call_id->number));
+	}
       se->type = evt_set_type_incoming_sipmessage (se->sip);
       return se;
     }
