@@ -316,9 +316,9 @@ osip_remove_nist(osip_t *osip, transaction_t *nist)
    any call to this method should be replace this way:
 
    //osip_distribute(osip, evt);
-   transaction_t *transaction = osip_find_transaction(osip, evt);
+   transaction_t *transaction = osip_find_transaction_and_add_event(osip, evt);
 
-   if (transaction==NULL) // in case it's a new request
+   if (i!=0) // in case it's a new request
      {
         if (evt is an ACK)
             evt could be an ACK for INVITE (not handled by oSIP)
@@ -330,6 +330,10 @@ osip_remove_nist(osip_t *osip, transaction_t *nist)
            if (transaction==NULL)
              printf("failed to create a transaction\");
           }
+    }
+    else
+    {
+    // here, the message as been taken by the stack.
     }
 */
 
@@ -446,8 +450,26 @@ osip_distribute_event(osip_t *osip,sipevent_t* evt)
 }
 #endif
 
+int
+osip_find_transaction_and_add_event(osip_t *osip,sipevent_t* evt)
+{
+  transaction_t *transaction = __osip_find_transaction(osip, evt, 1);
+  if (transaction==NULL)
+    return -1;
+  return 0;
+}
+
 transaction_t *
 osip_find_transaction(osip_t *osip,sipevent_t* evt)
+{
+#ifdef OSIP_MT
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL0,NULL,"\n\n\n\n BUG! You are using a multithreaded application, but this method is not allowed! Use osip_find_transaction_add_add_event() instead.\n\n\\n"));
+#endif
+  return __osip_find_transaction(osip, evt, 0);
+}
+
+transaction_t *
+__osip_find_transaction(osip_t *osip,sipevent_t* evt, int consume)
 {
   transaction_t *transaction = NULL;
   list_t *transactions;
@@ -538,11 +560,22 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
   smutex_lock(mut);
 #endif
   transaction = osip_transaction_find(transactions, evt);
+  if (consume==1)
+    { /* we add the event before releasing the mutex!! */
+      if (transaction!=NULL)
+	{
+	  transaction_add_event(transaction, evt);
+#ifdef OSIP_MT
+	  smutex_unlock(mut);
+#endif
+	  return transaction;
+	}
+    }
 #ifdef OSIP_MT
   smutex_unlock(mut);
 #endif
 
-  return transaction; /* can be NULL */
+  return transaction;
 }
 
 transaction_t *

@@ -1229,11 +1229,25 @@ transaction_t *osip_transaction_find(list_t *transactions, sipevent_t *evt);
 */
 
 /**
- * Search for a transaction that match this event (MUST be a MESSAGE event).
+ * OBSOLETE!! -> some race conditions can happen in multi threaded applications.
+ * <BR>Search for a transaction that match this event (MUST be a MESSAGE event).
  * @param osip The element to work on.
  * @param evt The element representing the SIP MESSAGE.
  */
+#ifndef OSIP_MT
 transaction_t *osip_find_transaction(osip_t *osip, sipevent_t *evt);
+#endif
+
+transaction_t *__osip_find_transaction(osip_t *osip, sipevent_t *evt, int consume);
+
+/**
+ * Search for a transaction that match this event (MUST be a MESSAGE event)
+ * and add this event if a transaction is found..
+ * @param osip The element to work on.
+ * @param evt The element representing the SIP MESSAGE.
+ */
+int osip_find_transaction_and_add_event(osip_t *osip,sipevent_t* evt);
+
 /**
  * Create a transaction for this event (MUST be a SIP REQUEST event).
  * @param osip The element to work on.
