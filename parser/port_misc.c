@@ -624,7 +624,7 @@ osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 	 }
 #endif
 
-#endif
        va_end (ap);
+#endif
        return 0;
      }
