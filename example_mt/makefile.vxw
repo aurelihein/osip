@@ -1,0 +1,17 @@
+
+include ../makedef.vxw
+
+OBJS=app.o             example_callbackuas.o  msg_bye.o       \
+example_agentlogic.o   example_rcfile.o       msg_invite.o    \
+example_callbackuac.o  msg_ack.o              msg_register.o  \
+example_design.o       udp_send.o             udp_listen.o     \
+port_net.o             transaction_mt.o
+
+
+
+
+all: $(OBJS)
+
+
+
+

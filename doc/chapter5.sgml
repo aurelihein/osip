@@ -1,0 +1,695 @@
+<chapter>
+<title>The oSIP state machines</title>
+<sect1>
+<title>files</title>
+<para><varname>./libosip-x.x.x/fsm </varname>is the source directory for the SIP finite state machines.</para>
+<para><varname>-losipfsm-x.x.x </varname>is the library containing the SIP finite state machines</para>
+<para><varname>#include &#60;osip/osip.h> </varname>is the include file describing the external SIP parser API</para>
+</sect1>
+<sect1>
+<title>Transaction and events</title>
+<sect2>
+<title>Definition and purpose of transaction</title>
+<para>Transactions are used to store the context of one "SIP transactions" as defined in the rfc2543. oSIP uses the <type>transaction_t</type> internally so you probably don't need to understand each attribute.</para>
+<example>
+<title>oSIP model for transactions</title>
+<para>Managing a transaction consists in building modules that can send events to control the transaction </para>
+<programlisting>
+       User module
+        +------------+
+        |            |
+        +------------+
+            |        msg to send
+            +--------------------+        Transaction
+       Timer module              |         contexts
+        +------------+           |
+        |            |           |        +----------+
+        +------------+           +------->| TRANSAC. |
+            |        timeout evt |        |    1     |
+            +--------------------+        +----------+
+       Transport module          |
+        +------------+           |        +----------+
+        |            |           +------->| TRANSAC. |
+        +------------+           |        |    2     |
+            |      incoming msg  |        +----------+
+            +--------------------+
+</programlisting>
+</example>
+<para>The attribute <varname>your_instance</varname> is not used by oSIP. You can use it to store a pointer on your own context.</para>
+<para>You can use the <varname>transactionid</varname> as a unique id for the transaction.</para>
+<para><varname>transactionff</varname> is a FIFO used to receive all events (sipevent_t) which concern this transaction.</para>
+<para>The <varname>proxy</varname> attribute give the host and port to be used for requests. (all requests will be forced to go to the proxy whatever the request-uri contains.</para>
+<example>
+<title>type definition of <type>transaction_t</type>.</title>
+<programlisting>
+typedef struct _transaction_t {
+  void *your_instance;       /* add whatever you want here.       */
+  int transactionid;         /* simple id used to identify the tr.*/
+  fifo_t *transactionff;     /* events must be added in this FIFO */
+  url_t *proxy;              /* url used to send requests        */    
+
+  from_t    *from;           /* CALL-LEG definition */
+  to_t      *to;
+  call_id_t *callid;
+  cseq_t    *cseq;
+  sip_t *lastrequest;        /* last request received or sent     */
+  sip_t *lastresponse;       /* last response received or sent    */
+
+  state_t state;             /* state of transaction              */
+  statemachine_t *statemachine; /* state-machine of transaction   */
+
+  time_t birth_time;         /* birth_date of transaction         */
+  time_t completed_time;     /* end   date of transaction         */
+  int retransmissioncounter; /* facilities for internal timer     */
+
+  void *config;              /* transaction is managed by config */
+                             /* of type osip_t */
+} transaction_t;
+</programlisting>
+</example>
+</sect2>
+
+<sect2>
+<title>Definition and purpose of sipevent</title>
+<para>sipevents objects are used to control the context of one "SIP transaction" element. There is 3 types of SIP events for the finite state machines:</para>
+<simplelist>
+<member>incoming SIP messages. (requests and responses)</member>
+<member>outgoing SIP messages. (requests and responses)</member>
+<member>timers events. (retransmissions and context removal)</member>
+</simplelist>
+<para>The attribute <varname>type</varname> always contains the type of the event.</para>
+<para><varname>transactionid</varname> is now for internal use.</para>
+<para>When the event is a SIP message, <varname>sip</varname> is the parsed message.</para>
+<example>
+<title>type definition of <type>sipevent_t</type>.</title>
+<programlisting>
+typedef struct _sipevent_t {
+  type_t type;
+  int transactionid;
+  sip_t *sip;
+} sipevent_t;
+</programlisting>
+</example>
+</sect2>
+
+<sect2>
+<title>API</title>
+
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &#60;osip.h>
+</funcsynopsisinfo>
+</funcsynopsis>
+
+<refentry id="function.osip-init">
+<refnamediv>
+<refname>osip_init</refname>
+<refpurpose>Allocate and initialize the <parameter>osip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>osip_init</function>
+</funcdef>
+<paramdef>
+osip_t **<parameter>osip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-free">
+<refnamediv>
+<refname>osip_free</refname>
+<refpurpose>free resources contained in <parameter>osip</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>osip_free</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-init-proxy">
+<refnamediv>
+<refname>osip_init_proxy</refname>
+<refpurpose>set the default proxy to be used for all transactions related to <parameter>osip</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>osip_init_proxy</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+url_t *<parameter>url</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-execute">
+<refnamediv>
+<refname>osip_execute</refname>
+<refpurpose>consumes all SIP events from the list of transactions contained in <parameter>osip</parameter>. (This method is only designed for NON-MULTI THREADED application.)</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>osip_execute</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-distribute-event">
+<refnamediv>
+<refname>osip_distribute_event</refname>
+<refpurpose>distribute a SIP event (message) in the right FIFO of <parameter>osip</parameter> This method has to be used for incoming message.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+transaction_t *<function>osip_distribute_event</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+sipevent_t *<parameter>se</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-parse">
+<refnamediv>
+<refname>osip_parse</refname>
+<refpurpose>parse <parameter>buf</parameter> and create an SIP incoming message event.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+sipevent_t *<function>osip_parse</function>
+</funcdef>
+<paramdef>
+char *<parameter>buf</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-new-event">
+<refnamediv>
+<refname>osip_new_event</refname>
+<refpurpose>create a new SIP event with attributes <type>type</type> and <type>transactionid</type>. (This method is used by the timer module)</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+sipevent_t *<function>osip_new_event</function>
+</funcdef>
+<paramdef>
+type_t <parameter>type</parameter>
+int <parameter>transactionid</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-new-incoming-event">
+<refnamediv>
+<refname>osip_new_incoming_event</refname>
+<refpurpose>create a new SIP event for an incoming SIP message.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+sipevent_t *<function>osip_new_incoming_event</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-new-outgoing-event">
+<refnamediv>
+<refname>osip_new_outgoing_event</refname>
+<refpurpose>create a new SIP event for an outgoing SIP message.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+sipevent_t *<function>osip_new_outgoing_event</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-find-asincomingmessage">
+<refnamediv>
+<refname>osip_find_asincomingmessage</refname>
+<refpurpose>find (or create) the transaction related to the SIP incoming event.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+transaction_t *<function>osip_find_asincomingmessage</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+sipevent_t *<parameter>sipevent</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-find-asoutgoingmessage">
+<refnamediv>
+<refname>osip_find_asoutgoingmessage</refname>
+<refpurpose>find the transaction related to the SIP outgoing event.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+transaction_t *<function>osip_find_asoutgoingmessage</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+sipevent_t *<parameter>sipevent</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-find-byid">
+<refnamediv>
+<refname>osip_find_byid</refname>
+<refpurpose>find the transaction with <parameter>transactionid</parameter> attribute.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+transaction_t *<function>osip_find_byid</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+int <parameter>transactionid</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.osip-remove-byid">
+<refnamediv>
+<refname>osip_remove_byid</refname>
+<refpurpose>remove the transaction with <parameter>transactionid</parameter> attribute.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>osip_remove_byid</function>
+</funcdef>
+<paramdef>
+osip_t *<parameter>osip</parameter>
+int <parameter>transactionid</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.transaction-init">
+<refnamediv>
+<refname>transaction_init</refname>
+<refpurpose>Allocate and initialize the <parameter>transaction</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>transaction_init</function>
+</funcdef>
+<paramdef>
+transaction_t **<parameter>transaction</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.transaction-free">
+<refnamediv>
+<refname>transaction_free</refname>
+<refpurpose>free resources contained in <parameter>transaction</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>transaction_free</function>
+</funcdef>
+<paramdef>
+transaction_t *<parameter>transaction</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.transaction-execute">
+<refnamediv>
+<refname>transaction_execute</refname>
+<refpurpose>consume sipevent in the context of <parameter>transaction</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>transaction_execute</function>
+</funcdef>
+<paramdef>
+transaction_t *<parameter>transaction</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+</sect2>
+<sect2>
+<title>The callbacks.</title>
+<para>oSIP uses a set of callbacks to announce the evolution of SIP transactions. For example, when receiving an INVITE request, the method registered by "osip_setcb_rcvinvite(...)" will be called by the stack and used by the developer to create a provisional response and start actions to build a final one.</para>
+
+<para>The following methods allow you to register, on initialization of the osip stack, the methods that will be used to handle transactions. Some of those methods are mandatory (announcements of requests, and final responses) and some are optional (announcements of provisional responses and retransmissions).</para>
+
+<programlisting>
+void osip_setcb_rcvinvite  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvack     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvbye     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvcancel  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvinfo    (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvoptions (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvregister(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvprack   (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcvunkrequest(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+
+void osip_setcb_sndinvite  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndack     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndbye     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndcancel  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndinfo    (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndoptions (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndregister(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndprack   (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_sndunkrequest(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+
+void osip_setcb_rcv1xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcv2xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcv3xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcv4xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcv5xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_rcv6xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+
+void osip_setcb_snd1xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_snd2xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_snd3xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_snd4xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_snd5xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+void osip_setcb_snd6xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+
+void osip_setcb_rcvresp_retransmission(osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_sndreq_retransmission (osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_sndresp_retransmission(osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_rcvreq_retransmission (osip_t *cf,void (*cb)(transaction_t*));
+
+void osip_setcb_killtransaction   (osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_endoftransaction  (osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_connection_refused(osip_t *cf,void (*cb)(transaction_t*));
+void osip_setcb_network_error     (osip_t *cf,void (*cb)(transaction_t*));
+</programlisting>
+</sect2>
+
+<sect2>
+<title>Useful MACROs.</title>
+<para>You can also use the following list of MACROs. It is recommended to use them if you want your application to keep full compatibility over oSIP releases.
+</para>
+<programlisting><![CDATA[
+/* FOR INCOMING TRANSACTION */
+#define EVT_IS_RCV_INVITE(event)       (event->type==RCV_REQINVITE)
+#define EVT_IS_RCV_ACK(event)          (event->type==RCV_REQACK)
+#define EVT_IS_RCV_REQUEST(event)      (event->type==RCV_REQUEST)
+#define EVT_IS_RCV_STATUS_1XX(event)   (event->type==RCV_STATUS_1XX)
+#define EVT_IS_RCV_STATUS_23456XX(event)   (event->type==RCV_STATUS_23456XX)
+
+/* FOR OUTGOING TRANSACTION */
+#define EVT_IS_SND_INVITE(event)       (event->type==SND_REQINVITE)
+#define EVT_IS_SND_ACK(event)          (event->type==SND_REQACK)
+#define EVT_IS_SND_REQUEST(event)      (event->type==SND_REQUEST)
+#define EVT_IS_SND_STATUS_1XX(event)   (event->type==SND_STATUS_1XX)
+#define EVT_IS_SND_STATUS_23456XX(event)   (event->type==SND_STATUS_23456XX)
+
+#define EVT_IS_INCOMINGMSG(event)      (event->type>=RCV_REQINVITE \
+                	               &&event->type<=RCV_STATUS_23456XX)
+#define EVT_IS_INCOMINGREQ(event)      (EVT_IS_RCV_INVITE(event) \
+                                       ||EVT_IS_RCV_ACK(event) \
+                                       ||EVT_IS_RCV_REQUEST(event))
+#define EVT_IS_INCOMINGRESP(event)     (EVT_IS_RCV_STATUS_1XX(event) \
+                                       ||EVT_IS_RCV_STATUS_23456XX(event))
+#define EVT_IS_OUTGOINGMSG(event)      (event->type>=SND_REQINVITE \
+                	               &&event->type<=SND_STATUS_23456XX)
+#define EVT_IS_OUTGOINGREQ(event)      (EVT_IS_SND_INVITE(event) \
+                                       ||EVT_IS_SND_ACK(event) \
+                                       ||EVT_IS_SND_REQUEST(event))
+#define EVT_IS_OUTGOINGRESP(event)     (EVT_IS_SND_STATUS_1XX(event) \
+                                       ||EVT_IS_SND_STATUS_23456XX(event))
+#define EVT_IS_MSG(event)              (event->type>=RCV_REQINVITE \
+                	               &&event->type<=SND_STATUS_23456XX)
+#define EVT_IS_KILL_TRANSACTION(event) (event->type==KILL_TRANSACTION)
+#define EVT_IS_UNKNOWN_EVT(event)      (event->type==UNKNOWN_EVT)
+#define EVT_IS_TIMEOUT(event)          (event->type==TIMEOUT)
+]]></programlisting>
+
+
+</sect2>
+</sect1>
+
+
+<sect1>
+<title>The finite state machines HOW-TO</title>
+<para>oSIP contains 4 finite state machines. SIP defines 2 kinds of transactions. INVITE and other than INVITE transactions differs slightly. INVITE transactions must be followed by an ACK which is part of the state machine for INVITE. Also, different rules apply for retransmission mechanism.
+</para>
+<para>A finite state machine is an ideal way to implement the transaction layer. Threads are waiting for events. Events come from the user layer, transport layer or the timer management facility. The stack always provides information about the state of the transaction to the application layer. This is done through the set of dynamic callbacks.
+<example>
+<title>SIP events are distributed to fifo.</title>
+<programlisting>
+                                                    Transaction
+          User Layer                                  contexts
+        +------------+                             +-----------+
+        |            |    events          +--------|           |
+        |            |-----+------------->| FIFO 1 |     1     |
+        +------------+     |              +--------|           |
+                           |                       +-----------+
+                           |
+                           |                       +-----------+
+                           |              +--------|           |
+                           +------------->| FIFO N |     N     |
+                                          +--------|           |
+                                                   +-----------+
+</programlisting>
+</example>
+</para>
+<sect2>
+<title>Initialise the osip stack</title>
+<para>The oSIP stack needs to be initialised at run time. This is done by first calling the following method before using the oSIP stack. (This method MUST only be called once). Calling this method also initialise the parser.</para>
+<para>int <methodname>osip_global_init()</methodname>;</para>
+</sect2>
+
+<sect2>
+<title>Allocate and initialize an osip_t element</title>
+<para>The osip_t structure is a container for a list of transactions. This element represents an instance of a SIP agent. osip_t can be used for UAS/UAC, registrar and redirect server.</para>
+<para>The following code is used to build a complete osip_t element. First, you have to register a set of mandatory and optional callbacks. You can also configure the stack to use a proxy for all outgoing requests.</para>
+<programlisting><![CDATA[
+  osip_t  *osip;
+
+  if (-1==osip_global_init())
+    return -1; /* mutex is not initialized properly */
+
+  osip_init(&osip);
+  osip_init_proxy(osip,url_of_proxy);
+
+  osip_setcb_rcvresp_retransmission(cf,&cb_rcvresp_retransmission);
+  osip_setcb_sndreq_retransmission(cf,&cb_sndreq_retransmission);
+  osip_setcb_sndresp_retransmission(cf,&cb_sndresp_retransmission);
+  osip_setcb_rcvreq_retransmission(cf,&cb_rcvreq_retransmission);
+  
+  osip_setcb_killtransaction(cf,&cb_killtransaction);
+  osip_setcb_endoftransaction(cf,&cb_endoftransaction);
+  
+  osip_setcb_connection_refused(cf,&cb_connection_refused);
+  osip_setcb_network_error(cf,&cb_network_error);
+  
+  osip_setcb_rcv1xx(cf,&cb_rcv1xx);
+  osip_setcb_rcv2xx(cf,&cb_rcv2xx);
+  osip_setcb_rcv3xx(cf,&cb_rcv3xx);
+  osip_setcb_rcv4xx(cf,&cb_rcv4xx);
+  osip_setcb_rcv5xx(cf,&cb_rcv5xx);
+  osip_setcb_rcv6xx(cf,&cb_rcv6xx);
+  
+  osip_setcb_sndinvite  (cf,&cb_sndinvite);
+  osip_setcb_sndack     (cf,&cb_sndack);
+  osip_setcb_sndbye     (cf,&cb_sndbye);
+  osip_setcb_sndcancel  (cf,&cb_sndcancel);
+  osip_setcb_sndinfo    (cf,&cb_sndinfo);
+  osip_setcb_sndoptions (cf,&cb_sndoptions);
+  osip_setcb_sndregister(cf,&cb_sndregister);
+  osip_setcb_sndprack   (cf,&cb_sndprack);
+  osip_setcb_sndunkrequest(cf,&cb_sndunkrequest);
+
+  osip_setcb_snd1xx(cf,&cb_snd1xx);
+  osip_setcb_snd2xx(cf,&cb_snd2xx);
+  osip_setcb_snd3xx(cf,&cb_snd3xx);
+  osip_setcb_snd4xx(cf,&cb_snd4xx);
+  osip_setcb_snd5xx(cf,&cb_snd5xx);
+  osip_setcb_snd6xx(cf,&cb_snd6xx);
+
+  osip_setcb_rcvinvite  (cf,&cb_rcvinvite);
+  osip_setcb_rcvack     (cf,&cb_rcvack);
+  osip_setcb_rcvbye     (cf,&cb_rcvbye);
+  osip_setcb_rcvcancel  (cf,&cb_rcvcancel);
+  osip_setcb_rcvinfo    (cf,&cb_rcvinfo);
+  osip_setcb_rcvoptions (cf,&cb_rcvoptions);
+  osip_setcb_rcvregister(cf,&cb_rcvregister);
+  osip_setcb_rcvprack   (cf,&cb_rcvprack);
+  osip_setcb_rcvunkrequest(cf,&cb_rcvunkrequest);
+]]></programlisting>
+</sect2>
+
+
+<sect2>
+<title>Send events to control transaction</title>
+<para>Here is a sample to initiate a transaction. The initial event sent to the FIFO contains the first INVITE request. The creation of the message is not shown here.
+</para>
+<programlisting><![CDATA[
+int
+create_session(osip_t *osip)
+{
+  sip_t         *invite;
+  transaction_t *transaction;
+
+  /* You must create your own SIP message. */
+  msg_init (&invite);
+  your_own_method_to_setup_messages(invite);
+
+  /* When it is the first invite, allocate    */
+  /* and start a new transaction (prepare the
+  /* context and start a thread.)             */
+  trn_init(&transaction,
+	   osip,
+	   invite->to,
+	   invite->from,
+	   invite->callid,
+	   invite->cseq);
+
+  /* The thread is now waiting on its FIFO  */
+  /* The following method allocate an event */
+  /* and send it to the transaction.        */
+  osip_sendmsg(transaction,invite);
+}
+
+int
+osip_sendmsg(transaction_t *transaction,sip_t *msg)
+{
+    sipevent_t *sipevent;
+
+    sipevent = osip_new_outgoing_sipmessage(msg);
+    sipevent->transactionid =  transaction->transactionid;
+
+/* depending on your application model, you can choose */
+/* either to consume the event are add it in the fifo  */
+/* and delay the operations */
+
+#ifdef OSIP_MT
+    fifo_add(transaction->transactionff,sipevent);
+#else
+    transaction_execute(transaction,sipevent);
+#endif
+
+    return 0;
+}
+
+]]></programlisting>
+</sect2>
+
+<sect2>
+<title>Notes for proxy implementation</title>
+<para>The transaction layer provided for oSIP is usable by user agents, registrar, redirect server and some type of conference server. A state machine for statefull proxy will be added in the future. The existing state machines are not easily usable for proxy implementation!</para>
+<para>For stateless proxy, a state machine is very simple (No state is needed!). Nevertheless, A state machine will be implemented. its only role will be to cache results for a short time.</para>
+</sect2>
+</sect1>
+<sect1>
+<title>Build your own architecture</title>
+<para>Since release 0.7.0, the stack can be used without semaphore and thread support. The design is completely up to you. You have to choose a design that fit the type of application. Here are the different aspect that you need to take care of:</para>
+<simplelist>
+<member>choose which transport protocol you want (UDP is recommended)</member>
+<member>use one socket for all transactions or one per each.</member>
+<member>choose a multi thread design or not.</member>
+<member>choose how to start timers.</member>
+</simplelist>
+<para>By now, UDP is recommended for SIP for servers as well as other user agents. When implementing a server, you may face many parallel transactions. If you use one connection per each transaction, the application may run quickly out of resources. (Also, you can't always guess if other applications on the same computer require many sockets too). For servers, you may also take care when using a multi threaded architecture with one thread per transactions. For a highly used server, you may quickly run out of thread resources. (Specifically, the standard kernel from debian support a low number of threads).</para>
+<para>If your application wants to access a database and make IP address resolution, this could leave your application in a blocked state for a while. In this case, a multi threaded application could be very useful and avoid some issues. It worth to say that performance of your application will heavily rely on how you will deal with those issue.</para>
+</sect1>
+</chapter>

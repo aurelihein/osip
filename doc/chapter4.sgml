@@ -1,0 +1,1858 @@
+<chapter>
+<title>The oSIP parser</title>
+<sect1>
+<title>files</title>
+<para><varname>./libosip-x.x.x/parser </varname>is the source directory for the SIP parser.</para>
+<para><varname>-losipparser-x.x.x </varname>is the library containing the SIP parser</para>
+<para><varname>#include &#60;osip/smsg.h> </varname>is the include file describing the external SIP parser API</para>
+</sect1>
+<sect1>
+<title>SIP-URL</title>
+<sect2>
+<title>Definition and purpose</title>
+<para>URL are used to describe entirely a SIP entity: user, registrar, proxy have their own urls. oSIP uses the <type>url_t</type> type definition in the request-uri and in the following headers: "to", "from", "contact", "route", and "record-route".</para>
+<para>type definition of <type>url_t</type>.</para>
+<programlisting>
+typedef struct _sipurl_t {
+  char *scheme;
+  char *username;
+  char *password;
+  char *host;
+  char *port;
+  list_t *url_params;
+  list_t *url_headers;
+} url_t ;
+</programlisting>
+
+</sect2>
+<sect2>
+<title>API for SIP-URL</title>
+
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &#60;smsg.h>
+</funcsynopsisinfo>
+</funcsynopsis>
+
+<refentry id="function.url-init">
+<refnamediv>
+<refname>url_init</refname>
+<refpurpose>Allocate and initialize the <parameter>url</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_init</function>
+</funcdef>
+<paramdef>
+url_t **<parameter>url</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-free">
+<refnamediv>
+<refname>url_free</refname>
+<refpurpose>free resources contained in <parameter>url</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_free</function>
+</funcdef>
+<paramdef>
+url_t ** <parameter>url</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-parse">
+<refnamediv>
+<refname>url_parse</refname>
+<refpurpose>Parse <parameter>field_value</parameter> and store results in <parameter>url</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_parse</function>
+</funcdef>
+<paramdef>
+url_t * <parameter>url</parameter>
+char * <parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-2char">
+<refnamediv>
+<refname>url_2char</refname>
+<refpurpose>Allocate a string in <parameter>field_value</parameter> with the information stored in the <parameter>url</parameter> parameter.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_2char</function>
+</funcdef>
+<paramdef>
+url_t *<parameter>url</parameter>
+char **<parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-clone">
+<refnamediv>
+<refname>url_clone</refname>
+<refpurpose>duplicate the <parameter>url</parameter> element in a new dest element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_clone</function>
+</funcdef>
+<paramdef>
+url_t *<parameter>url</parameter>
+url_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-uparam-add">
+<refnamediv>
+<refname>url_uparam_add</refname>
+<refpurpose>allocate and add a new url parameter in the <parameter>url</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_uparam_add</function>
+</funcdef>
+<paramdef>
+url_t *<parameter>url</parameter>
+char *<parameter>pname</parameter>
+char *<parameter>pvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-uheader-add">
+<refnamediv>
+<refname>url_uheader_add</refname>
+<refpurpose>allocate and add a new url header element in the <parameter>url</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_uheader_add</function>
+</funcdef>
+<paramdef>
+url_t *<parameter>url</parameter>
+char *<parameter>hname</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-uparam-getbyname">
+<refnamediv>
+<refname>url_uparam_getbyname</refname>
+<refpurpose>Find a url parameter with <parameter>pname</parameter> in the <parameter>url</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_uparam_getbyname</function>
+</funcdef>
+<paramdef>
+url_t *<parameter>url</parameter>
+char *<parameter>pname</parameter>
+url_param_t **<parameter>url_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+</sect2>
+
+
+<sect2>
+<title>API for url_param_t and url_header_t</title>
+<para>url_param_t and url_header_t are data types used inside a SIP-URL. Methods are provided to allocate, free or clone resources.</para>
+
+<important>
+<para>The API is the same for url parameters and header parameters. You just have to replace "url_" with "header_".</para>
+</important>
+
+<example>
+<title>type definitions of url_param_t and header_param_t.</title>
+<programlisting><![CDATA[
+  typedef struct _url_param_t {
+    char *pname;
+    char *pvalue;
+  } url_param_t;
+
+  typedef struct _url_header_t {
+    char *hname;
+    char *hvalue;
+  } url_header_t;
+]]></programlisting>
+</example>
+
+<refentry id="function.url-param-init">
+<refnamediv>
+<refname>url_param_init</refname>
+<refpurpose>Allocate and initialize the <parameter>url_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>url_param_init</function>
+</funcdef>
+<paramdef>
+url_param_t **<parameter>url_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-param-free">
+<refnamediv>
+<refname>url_param_free</refname>
+<refpurpose>free resources contained in <parameter>url_param</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_param_free</function>
+</funcdef>
+<paramdef>
+url_param_t **<parameter>url_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-param-set">
+<refnamediv>
+<refname>url_param_set</refname>
+<refpurpose>Set <parameter>name</parameter> and <parameter>value</parameter> in the <parameter>url_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_param_set</function>
+</funcdef>
+<paramdef>
+url_param_t *<parameter>url_param</parameter>
+char *<parameter>pname</parameter>
+char *<parameter>pvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-param-freelist">
+<refnamediv>
+<refname>url_param_freelist</refname>
+<refpurpose>free resources contained in the list <parameter>url_params</parameter> elements.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_param_freelist</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>url_params</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-param-add">
+<refnamediv>
+<refname>url_param_add</refname>
+<refpurpose>add <parameter>url_param</parameter> in the list <parameter>url_params</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_param_add</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>url_params</parameter>
+char *<parameter>pname</parameter>
+char *<parameter>pvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.url-param-getbyname">
+<refnamediv>
+<refname>url_param_getbyname</refname>
+<refpurpose>Find the <parameter>url_param</parameter> with <parameter>name</parameter> in the list <parameter>url_params</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>url_param_getbyname</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>url_params</parameter>
+char *<parameter>pname</parameter>
+url_param_t **<parameter>url_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+</sect2>
+</sect1>
+
+<sect1>
+<title>SIP headers</title>
+<sect2>
+<title>Definition and purpose</title>
+<para>The rfc2543 defines around 40 headers. SIP Messages are mainly composed of a list of headers. This first part documents the API to create, allocate, parse and print the SIP headers elements. The second one shows that headers also have a extended API only applicable for one type of header. The extended API presented below is for the "To" header. Nevertheless, the extended API for the "To" header is also valid for the "From", "Contact", "Route" and "Record-Route" headers.</para>
+<example>
+<title>type definition of to_t</title>
+<programlisting><![CDATA[
+typedef struct _to_t {
+  char *displayname;
+  url_t *url;
+  list_t *gen_params;
+} to_t;
+]]></programlisting>
+</example>
+</sect2>
+<sect2>
+<title>Common API for all implemented header.</title>
+<para>The SIP parser can parse entirely the following headers: Via, To, From, CSeq, Call-Id, Contact, Route, Record-Route, Content-Type, Content-length, Mime-Version. The other headers are accessible as strings through a special API.</para>
+<important>
+<para>This API presented below is applicable for all known headers: Simply replace "to_" by one of the following list: "via_", "to_", "from_", "contact", "route_", "record_route_", "content_type_", "content_length_", "mime_version_", "cseq_", "call_id_"
+</para>
+</important>
+<remark>If you are interested in developing new headers, you just have to re-use the API proposed below. Contributions are welcomed...</remark>
+<para>As an example, the following methods concern the API to manipulate a <type>to_t</type> structure.</para>
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &#60;smsg.h>
+</funcsynopsisinfo>
+</funcsynopsis>
+
+<refentry id="function.to-init">
+<refnamediv>
+<refname>to_init</refname>
+<refpurpose>Allocate and initialize the structure <parameter>to</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_init</function>
+</funcdef>
+<paramdef>
+to_t **<parameter>to</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-free">
+<refnamediv>
+<refname>to_free</refname>
+<refpurpose>free resources contained in <parameter>to</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>to_free</function>
+</funcdef>
+<paramdef>
+to_t **<parameter>to</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-parse">
+<refnamediv>
+<refname>to_parse</refname>
+<refpurpose>Parse <parameter>field_value</parameter> and store results in <parameter>to</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_parse</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char *<parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-2char">
+<refnamediv>
+<refname>to_2char</refname>
+<refpurpose>Allocate a string in <parameter>field_value</parameter> with the information stored in the <parameter>to</parameter> parameter.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_2char</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char **<parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-clone">
+<refnamediv>
+<refname>to_clone</refname>
+<refpurpose>duplicate the <parameter>to</parameter> element in a new dest element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_clone</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+to_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+</sect2>
+<sect2>
+<title>Specific API for "To" header</title>
+<para>In addition to the common API shared by all known implemented header, there is a specific API valid only for each header. The following methods concern the "To" header.</para>
+
+<refentry id="function.to-setdisplayname">
+<refnamediv>
+<refname>to_setdisplayname</refname>
+<refpurpose>set the display name in the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>to_setdisplayname</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char *<parameter>value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-getdisplayname">
+<refnamediv>
+<refname>to_getdisplayname</refname>
+<refpurpose>return the display name from the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+char *<function>to_getdisplayname</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-seturl">
+<refnamediv>
+<refname>to_seturl</refname>
+<refpurpose>set the <parameter>url</parameter> in the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>to_seturl</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+url_t *<parameter>url</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+<refentry id="function.to-geturl">
+<refnamediv>
+<refname>to_geturl</refname>
+<refpurpose>return the <parameter>url</parameter> from the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+url_t *<function>to_geturl</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-param-add">
+<refnamediv>
+<refname>to_param_add</refname>
+<refpurpose>add a <parameter>gen_param</parameter> in the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_param_add</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char *<parameter>name</parameter>
+char *<parameter>value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-param-get">
+<refnamediv>
+<refname>to_param_get</refname>
+<refpurpose>return the <parameter>param</parameter> at index <parameter>pos</parameter> from the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_param_get</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+int <parameter>pos</parameter>
+generic_param_t **<parameter>gp</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-gettag">
+<refnamediv>
+<refname>to_gettag</refname>
+<refpurpose>return the value associated with the tag parameter from the <parameter>to</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>to_gettag</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+generic_param_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-settag">
+<refnamediv>
+<refname>to_settag</refname>
+<refpurpose>set the <parameter>tag</parameter> parameter int the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>to_settag</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char *<parameter>tag</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.to-param-getbyname">
+<refnamediv>
+<refname>to_param_getbyname</refname>
+<refpurpose>get the parameter with <parameter>pname</parameter> from the <parameter>to</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>to_param_getbyname</function>
+</funcdef>
+<paramdef>
+to_t *<parameter>to</parameter>
+char *<parameter>pname</parameter>
+generic_param_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+
+</sect2>
+
+
+<sect2>
+<title>API for generic param</title>
+<para>Generic parameter are components of many headers such as To, From, Contact, Route, Record-Route, and Content-Type.</para>
+<example>
+<title>The To header has a list of generic_param_t</title>
+<programlisting><![CDATA[
+  typedef struct _generic_param_t {
+      char *pname;
+      char *pvalue;
+  } generic_param_t;
+
+  /* to, from and contact headers are defined as below */ 
+  typedef struct _to_t {
+      char *displayname;
+      url_t *url;
+      list_t *gen_params;
+  }
+]]></programlisting>
+</example>
+<example>
+<title>A To header with the "tag" parameter</title>
+<programlisting><![CDATA[
+  to: "jack" <sip:atosc.org>;tag=ae56fr-dz-23
+]]></programlisting>
+</example>
+
+<refentry id="function.generic-param-init">
+<refnamediv>
+<refname>generic_param_init</refname>
+<refpurpose>Allocate and initialize the structure <parameter>gen_param</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>generic_param_init</function>
+</funcdef>
+<paramdef>
+generic_param_t * <parameter>gen_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-free">
+<refnamediv>
+<refname>generic_param_free</refname>
+<refpurpose>free resources contained in the structure <parameter>gen_param</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>generic_param_free</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-set">
+<refnamediv>
+<refname>generic_param_set</refname>
+<refpurpose>Set <parameter>name</parameter> and <parameter>value</parameter> in the <parameter>gen_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>generic_param_set</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+char *<parameter>pname</parameter>
+char *<parameter>pvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-getname">
+<refnamediv>
+<refname>generic_param_getname</refname>
+<refpurpose>Get <parameter>name</parameter> from the <parameter>gen_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+char *<function>generic_param_getname</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on error, return NULL.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-setname">
+<refnamediv>
+<refname>generic_param_setname</refname>
+<refpurpose>set <parameter>name</parameter> in the <parameter>gen_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>generic_param_setname</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+char *<parameter>pname</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-getvalue">
+<refnamediv>
+<refname>generic_param_getvalue</refname>
+<refpurpose>Get <parameter>value</parameter> from the <parameter>gen_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+char *<function>generic_param_getvalue</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on error, return NULL.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-setvalue">
+<refnamediv>
+<refname>generic_param_setvalue</refname>
+<refpurpose>set <parameter>value</parameter> in the <parameter>gen_param</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>generic_param_setvalue</function>
+</funcdef>
+<paramdef>
+generic_param_t *<parameter>gen_param</parameter>
+char *<parameter>pvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-add">
+<refnamediv>
+<refname>generic_param_add</refname>
+<refpurpose>Allocate a new generic param with <parameter>name</parameter> and <parameter>value</parameter> and add the element in the list <parameter>gen_params</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>generic_param_add</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>gen_params</parameter>
+char *<parameter>name</parameter>
+char *<parameter>value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-getbyname">
+<refnamediv>
+<refname>generic_param_getbyname</refname>
+<refpurpose>find element containing <parameter>name</parameter> from the list <parameter>gen_params</parameter> and return it in <parameter>gen_param</parameter> .</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>generic_param_getbyname</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>gen_params</parameter>
+char *<parameter>name</parameter>
+generic_param_t **<parameter>gen_param</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.generic-param-freelist">
+<refnamediv>
+<refname>generic_param_freelist</refname>
+<refpurpose>free resources contained in the list <parameter>gen_params</parameter> elements.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>generic_param_freelist</function>
+</funcdef>
+<paramdef>
+list_t *<parameter>gen_params</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+
+
+</sect2>
+</sect1>
+<sect1>
+<title>SIP messages</title>
+<sect2>
+<title>definition and purpose</title>
+<para>The messages are based at this level on three parts. The first line is either the request-uri for requests or the status code for responses. This first line corresponds to the first attribute of oSIP: startline_t. The second valuable part of a SIP message is a list of headers. The last attribute (list of body) is a possible list of attachments found in the message.</para>
+<para>Currently this structure <type>sip_t</type> is not complete. All other header than "From", "To", "Call-Id", "CSeq", "via", "contact", "route", "record-route", mime-version", "content-type" and "content-length" are stored as string in a list of generic headers. This structure will be completed while improving the parser capabilities.
+</para>
+<example>
+<title>type definition for <type>sip_t</type>.</title>
+<programlisting><![CDATA[
+typedef struct _sip_t {
+  startline_t  *strtline;
+
+  /* for all header fully implemented by oSIP */
+  from_t           *from;
+  to_t             *to;
+  call_id_t        *call_id;
+  cseq_t           *cseq;
+  list_t           *vias;
+  list_t           *contacts;
+  list_t           *record_routes;
+  list_t           *routes;
+  content_type_t   *content_type;
+  content_length_t *contentlength;
+  mime_version_t   *mime_version;
+
+  /* for all other headers */
+  list_t           *headers;
+
+  /* for all attachments */
+  list_t           *bodies;
+
+} sip_t;
+]]></programlisting>
+</example>
+</sect2>
+<sect2>
+<title>API for SIP message</title>
+
+<funcsynopsis>
+<funcsynopsisinfo>
+#include &#60;smsg.h>
+</funcsynopsisinfo>
+</funcsynopsis>
+
+<refentry id="function.msg-init">
+<refnamediv>
+<refname>msg_init</refname>
+<refpurpose>Allocate and initialize the structure <parameter>msg</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_init</function>
+</funcdef>
+<paramdef>
+sip_t **<parameter>msg</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-free">
+<refnamediv>
+<refname>msg_free</refname>
+<refpurpose>free resources contained in <parameter>msg</parameter></refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+void <function>msg_free</function>
+</funcdef>
+<paramdef>
+sip_t **<parameter>msg</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-parse">
+<refnamediv>
+<refname>msg_parse</refname>
+<refpurpose>Parse <parameter>field_value</parameter> and store results in <parameter>msg</parameter>.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_parse</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>msg</parameter>
+char *<parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-2char">
+<refnamediv>
+<refname>msg_2char</refname>
+<refpurpose>Allocate a string in <parameter>field_value</parameter> with the information stored in the <parameter>msg</parameter> parameter.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_2char</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>msg</parameter>
+char **<parameter>field_value</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-clone">
+<refnamediv>
+<refname>msg_clone</refname>
+<refpurpose>duplicate the <parameter>msg</parameter> element in a new dest element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_clone</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>msg</parameter>
+sip_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setheader">
+<refnamediv>
+<refname>msg_setheader</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and add a new header in <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setheader</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hname</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getheader">
+<refnamediv>
+<refname>msg_getheader</refname>
+<refpurpose>set in <parameter>dest</parameter> the header at index <parameter>pos</parameter> from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_getheader</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+header_t **<parameter>header</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-header-getbyname">
+<refnamediv>
+<refname>msg_header_getbyname</refname>
+<refpurpose>find the first header (after index <parameter>pos</parameter>) with <parameter>hname</parameter> from the list of header in the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_header_getbyname</function>
+</funcdef>
+<paramdef>
+char *<parameter>hname</parameter>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+header_t **<parameter>dest</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setcall-id">
+<refnamediv>
+<refname>msg_setcall_id</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the call_id attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setcall_id</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getcall-id">
+<refnamediv>
+<refname>msg_getcall_id</refname>
+<refpurpose>return the call_id attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+call_id_t *<function>msg_getcall_id</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setcseq">
+<refnamediv>
+<refname>msg_setcseq</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the cseq attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setcseq</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getcseq">
+<refnamediv>
+<refname>msg_getcseq</refname>
+<refpurpose>return the cseq attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+cseq_t *<function>msg_getcseq</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setcontact">
+<refnamediv>
+<refname>msg_setcontact</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and add a new contact attribute in the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setcontact</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getcontact">
+<refnamediv>
+<refname>msg_getcontact</refname>
+<refpurpose>set in <parameter>dest</parameter> the contact at index <parameter>pos</parameter> from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_getcontact</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+contact_t **<parameter>contact</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setfrom">
+<refnamediv>
+<refname>msg_setfrom</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the from attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setfrom</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getfrom">
+<refnamediv>
+<refname>msg_getfrom</refname>
+<refpurpose>return the from attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+from_t *<function>msg_getfrom</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setto">
+<refnamediv>
+<refname>msg_setto</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the to attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setto</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getto">
+<refnamediv>
+<refname>msg_getto</refname>
+<refpurpose>return the <parameter>to</parameter> attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+to_t *<function>msg_getto</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setvia">
+<refnamediv>
+<refname>msg_setvia</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and add a new via in <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setvia</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getvia">
+<refnamediv>
+<refname>msg_getvia</refname>
+<refpurpose>set in <parameter>dest</parameter> the via at index <parameter>pos</parameter> from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_getvia</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+via_t **<parameter>via</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setrecord-route">
+<refnamediv>
+<refname>msg_setrecord_route</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and add a new record_route in the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setrecord_route</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getrecord-route">
+<refnamediv>
+<refname>msg_getrecord_route</refname>
+<refpurpose>set in <parameter>dest</parameter> the record_route at index <parameter>pos</parameter> from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_getrecord_route</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+record_route_t **<parameter>record_route</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setroute">
+<refnamediv>
+<refname>msg_setroute</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and add a new route in the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setroute</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getroute">
+<refnamediv>
+<refname>msg_getroute</refname>
+<refpurpose>set in <parameter>dest</parameter> the route at index <parameter>pos</parameter> from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_getroute</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+int <parameter>pos</parameter>
+route_t **<parameter>route</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setcontent-length">
+<refnamediv>
+<refname>msg_setcontent_length</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the content_length attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setcontent_length</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getcontent-length">
+<refnamediv>
+<refname>msg_getcontent_length</refname>
+<refpurpose>return the content_length attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+content_length_t * <function>msg_getcontent_length</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setcontent-type">
+<refnamediv>
+<refname>msg_setcontent_type</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the content_type attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setcontent_type</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getcontent-type">
+<refnamediv>
+<refname>msg_getcontent_type</refname>
+<refpurpose>return the content_type attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+content_type_t * <function>msg_getcontent_type</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-setmime-version">
+<refnamediv>
+<refname>msg_setmime_version</refname>
+<refpurpose>Parse <parameter>hvalue</parameter>, allocate and set the mime_version attribute of the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+int <function>msg_setmime_version</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+char *<parameter>hvalue</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>on success, return 0.</para>
+</refsect1>
+</refentry>
+
+<refentry id="function.msg-getmime-version">
+<refnamediv>
+<refname>msg_getmime_version</refname>
+<refpurpose>return the mime_version attribute from the <parameter>sip</parameter> element.</refpurpose>
+</refnamediv>
+<refsect1>
+<title>Description</title>
+<funcsynopsis>
+<funcprototype>
+<funcdef>
+mime_version_t * <function>msg_getmime_version</function>
+</funcdef>
+<paramdef>
+sip_t *<parameter>sip</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+</refsect1>
+</refentry>
+</sect2>
+
+<sect2>
+<title>MACROs</title>
+<para>Other helpful MACROs are defined. They are used to test characteristics of messages such as the type of a message, the method of a request and the status code of a response.
+</para>
+<example>
+<title>List of MACROs</title>
+<programlisting>
+/* a few MACROS to ease readability of code */
+#define MSG_IS_RESPONSE(resp)     (resp->strtline->statuscode!=NULL)
+#define MSG_IS_REQUEST(req)       (req->strtline->statuscode==NULL)
+
+#define MSG_IS_INVITE(msg)  (0==strncmp(msg->strtline->sipmethod,"INVITE",6))
+#define MSG_IS_ACK(msg)     (0==strncmp(msg->strtline->sipmethod,"ACK",6))
+#define MSG_IS_BYE(msg)     (0==strncmp(msg->strtline->sipmethod,"BYE",6))
+#define MSG_IS_REGISTER(msg) (0==strncmp(msg->strtline->sipmethod,"REGISTER",6))
+#define MSG_IS_CANCEL(msg)  (0==strncmp(msg->strtline->sipmethod,"CANCEL",6))
+#define MSG_IS_OPTIONS(msg) (0==strncmp(msg->strtline->sipmethod,"OPTIONS",6))
+#define MSG_IS_INFO(msg)    (0==strncmp(msg->strtline->sipmethod,"INFO",6))
+#define MSG_IS_PRACK(msg)   (0==strncmp(msg->strtline->sipmethod,"PRACK",6))
+
+#define MSG_IS_STATUS_1XX(msg)    (0==strncmp(msg->strtline->statuscode,"1",1))
+#define MSG_IS_STATUS_2XX(msg)    (0==strncmp(msg->strtline->statuscode,"2",1))
+#define MSG_IS_STATUS_3XX(msg)    (0==strncmp(msg->strtline->statuscode,"3",1))
+#define MSG_IS_STATUS_4XX(msg)    (0==strncmp(msg->strtline->statuscode,"4",1))
+#define MSG_IS_STATUS_5XX(msg)    (0==strncmp(msg->strtline->statuscode,"5",1))
+#define MSG_IS_STATUS_6XX(msg)    (0==strncmp(msg->strtline->statuscode,"6",1))
+#define MSG_TEST_CODE(resp, code) (resp->strtline->statuscode!=NULL \
+				   && code==(int)satoi(resp->strtline->statuscode))
+#define MSG_IS_RESPONSEFOR(resp,requestname) \
+                                  (0==strcmp(resp->cseq->method,requestname))
+</programlisting>
+</example>
+</sect2>
+
+
+</sect1>
+<sect1>
+<title>The parser HOW-TO.</title>
+<para>Building a message is not a complex task and does not require to be a C expert. Nevertheless, it requires you to be a SIP expert! The document describing SIP (rfc2543.txt) provides all you need to build correct requests and response. You will have to know which header MUST be included ("To", "From", "Call-ID", "Cseq" are the most common...), which header MUST NOT be included, and which header MAY appear in the message.  </para>
+<sect2>
+<title>Initialise the parser</title>
+<para>The oSIP parser need to be initialised at run time. This is done by first calling the following method before using the oSIP parser. (This method MUST only be called once.)</para>
+<para>int <methodname>parser_init()</methodname>;</para>
+</sect2>
+
+<sect2>
+<title>Allocate a structure</title>
+<para>oSIP has a standard approach to request allocation of structures. For each SIP related one, (like <type>sip_t</type>, or <type>from_t</type>) a method "xxxx_init()" exists and MUST be used to request allocation. Using this method with the correspondent "xxxx_free()" allows a competitive memory management thus avoiding as many memory leaks as possible.</para>
+<example>
+<title>allocation of sip_t and url_t.</title>
+<programlisting>
+ sip_t  *msg;
+ msg_init(&#38;msg);
+
+ msg_free(msg);
+ free(msg);
+
+ url_t *url;
+ url_init(&#38;url);
+
+ url_free(url);
+ free(url);
+</programlisting>
+</example>
+</sect2>
+<sect2>
+<title>create a URL and a Request-URI.</title>
+<para>The following code is used to build a request line for an INVITE message. This line will be: "INVITE sip:jack@atosc.org SIP/2.0".</para>
+<programlisting>
+ /* make a request line. */
+ url_t  *uri;
+ url_init(&#38;uri);
+ url_setscheme(url,sstrdup("sip"));
+ url_setuserinfo(url,sstrdup("jack"));
+ url_sethost(url,sstrdup("atosc.org"));
+
+ msg_setmethod(msg,sstrdup("INVITE"));
+ msg_seturi(msg,uri);
+ msg_setversion(msg,sstrdup("2.0"));
+</programlisting>
+</sect2>
+<sect2>
+<title>Add headers in a message</title>
+<para>This example shows the code required to allocate headers and add each of them in the <type>sip_t</type> structure. You should take a look at the RFC when building messages.</para>
+<para>For INVITE requests,the following headers are mandatory:</para>
+<simplelist>
+<member>Via</member>
+<member>CSeq</member>
+<member>Call-Id</member>
+<member>To</member>
+<member>From</member>
+<member>Contact</member>
+<member>Content-length</member>
+<member>Content-Type (if a body is attached)</member>
+</simplelist>
+
+<example>
+<title>Add header</title>
+<programlisting>
+ {
+  url_t    *url;
+  to_t     *to;
+  url_init(&#38;url);
+  url_setusername(url,sstrdup("jack"));
+  url_sethost(url,sstrdup("atosc.org"));
+
+  to_init(&#38;to);
+  to_seturl(to,url);
+  to_setdisplayname(to,sstrdup("jack..."));
+
+  msg_setto(msg, to);
+ }
+
+  /* the same API is available for the from_t structure */
+ {
+  from_t   *from;
+  /* allocate a url_t */
+  url_init(&#38;url);
+  url_setusername(url,sstrdup("cha"));
+  url_sethost(url,sstrdup("anywhere.org"));
+
+  /* allocate a from_t */
+  from_init(&#38;from);
+  from_seturl(from,url);
+  from_setdisplayname(from,sstrdup("My love"));
+  from_set_tag(from,sstrdup("a48a"));
+
+  msg_setfrom(msg, from);
+ }
+
+ {
+  via_t    *via;
+  via_init(&#38;via);
+
+  via_setversion(via,sstrdup("2.0"));
+  via_setprotocol(via,sstrdup("UDP"));
+  via_sethost(via,sstrdup("137.137.137.137"));
+  via_set_branch(via,sstrdup("branch"),sstrdup("a7c6a8dlze.1"));
+
+  msg_setvia(msg, via);
+ }
+
+ {
+  cseq_t   *cseq;
+  cseq_init(&#38;cseq);
+  ...
+
+  msg_setcseq(msg, cseq);
+ }
+
+ {
+  callid_t *callid;
+  callid_init(&#38;callid);
+
+  callid_setnumber(callid,sstrdup("f81d4"));
+  callid_sethost(callid,sstrdup("foo.atosc.org"));
+
+  msg_setcallid(msg, callid);
+ }
+
+ /* this API can also be used, but it is much more time consuming! */
+ msg_setcontact(msg,"sip:jacK@office.atosc.org");
+
+ /* Let's add some headers */
+ msg_setheader(msg,sstrdup("SuBjecT"),sstrdup("Need support for oSIP!"));
+
+ /* add a body */
+ msg_setbody(msg,"v=0\r\no=user1 53655765 2353687637 IN IP4 128.3.4.5\r\ns=Mbone Audio\r\ni=Discussion of Mbone Engineering Issues\r\ne=mbone@somewhere.com\r\nc=IN IP4 128.3.4.5\r\nt=0 0\r\nm=audio 3456 RTP/AVP 0\r\na=rtpmap:0 PCMU/8000\r\n");
+</programlisting>
+</example>
+</sect2>
+<sect2>
+<title>make a string from a structure</title>
+<para>For sip_t like for the structure used for the headers (to_t, from_t, call_id_t...), a method exist to retrieve printed version of the element.</para>
+<example>
+<title>Method xxxx_2char</title>
+<programlisting>
+  char *astring;
+  astring = sip_2char(msg);
+  free(astring);
+</programlisting>
+</example>
+</sect2>
+<sect2>
+<title>free resource in a structure</title>
+<example>
+<title>Method xxxx_free</title>
+<para>This is how you must free all memory.</para>
+<programlisting>
+ sip_free(msg);
+ free(msg);
+</programlisting>
+</example>
+<para>The parser may sometimes be too much tolerant. It will accept silently some of your mistakes. As an example, the parser should accept a display name (for a "To" header) with a comma inside. The developer MUST enclose the string between quotes. To keep the application interoperable, please always keep an eye on the rfc and control every characters you put in SIP message.
+</para>
+</sect2>
+</sect1>
+
+<sect1>
+<title>How to improve the parser performance</title>
+
+<para>To improve stack performance, you can configure the parser at link time by choosing which headers must ALWAYS be completely decoded. (It could also be possible at run time with minimal work!). You may find this useful in terms of performance when implementing proxies.
+</para>
+</sect1>
+</chapter>

@@ -1,0 +1,162 @@
+# makefile 27/10/00
+
+include ./makedef.vxw
+
+
+all: libosipparser libosipfsm examples tests
+
+libosipparser:
+	cd parser     ; $(MAKE) -f makefile.vxw all
+
+PARSER_FILES=./parser/port_malloc.o   \
+./parser/hdr_headers.o     ./parser/port_misc.o  \
+./parser/hdr_mimeversion.o ./parser/hdr_to.o \
+./parser/hdr_via.o         ./parser/hdr_from.o   \
+./parser/sdp_rfc2327.o     ./parser/hdr_body.o  \
+./parser/msg_cparser.o     ./parser/hdr_callid.o  \
+./parser/msg_parser.o      ./parser/hdr_contact.o  \
+./parser/msg_read.o        ./parser/hdr_contentlength.o  \
+./parser/msg_write.o       ./parser/hdr_contenttype.o  \
+./parser/hdr_cseq.o        ./parser/port_list.o  \
+./parser/urls.o            ./parser/sdp_accessor.o \
+./parser/hdr_accept.o \
+./parser/hdr_acceptencoding.o \
+./parser/hdr_acceptlanguage.o ./parser/hdr_authorization.o \
+./parser/hdr_alertinfo.o ./parser/hdr_callinfo.o \
+./parser/hdr_allow.o ./parser/hdr_contentdisposition.o \
+./parser/hdr_errorinfo.o ./parser/hdr_contentencoding.o \
+./parser/hdr_proxyauthenticate.o ./parser/hdr_proxyauthorization.o \
+./parser/hdr_recordroute.o ./parser/hdr_route.o \
+./parser/hdr_wwwauthenticate.o 
+
+libosipfsm:
+	cd fsm     ; $(MAKE) -f makefile.vxw all
+
+FSM_FILES=           ./fsm/fsm_misc.o   \
+./fsm/fsm_uas4req.o  ./fsm/fsm_uas4inv.o   \
+./fsm/fsm_uac4req.o  ./fsm/fsm_uac4inv.o   \
+./fsm/port_fifo.o    ./fsm/trn_timers.o    \
+./fsm/trn_manager.o  ./fsm/port_thread.o   \
+./fsm/port_sema.o    ./fsm/evt_server.o    \
+./fsm/sdp_negoc.o
+
+EXAMPLE_FILES=./example/app.o       ./example/msg_ack.o       \
+./example/example_agentlogic.o      ./example/msg_bye.o       \
+./example/example_callbackuac.o     ./example/msg_invite.o    \
+./example/example_callbackuas.o     ./example/msg_register.o  \
+./example/example_rcfile.o          ./example/transaction_mt.o \
+./example/udp_send.o                ./example/udp_listen.o    \
+./example/example_design.o          ./example/port_net.o
+
+TEST_FILES=./test/tcallid.o    ./test/tcontentt.o \
+./test/torture.o    ./test/turls.o  \
+./test/tcontact.o   ./test/tfrom.o  \
+./test/tto.o        ./test/tvia.o
+
+examples: libosipfsm libosipparser
+	cd example ; $(MAKE) -f makefile.vxw all
+	$(CC) $(FLAGS) $(LIBS) $(EXAMPLE_FILES) $(PARSER_FILES) $(FSM_FILES) -o partial_link.lnk
+	$(NM) partial_link.lnk | $(MUNCH) > ctdt.c
+	$(CC) -c -x c $(FLAGS) $(DEFS) ctdt.c -o ctdt.o
+	$(CC) $(LIBS) partial_link.lnk ctdt.o -o example/osip_stack.out
+	$(RM) ctdt.c ctdt.o partial_link.lnk
+
+common_tests:
+	cd test  ; $(MAKE) -f makefile.vxw all
+
+tests: libosipparser common_tests tcontact.out turl.out tfrom.out tto.out \
+tvia.out tcallid.out tcontentt.out torture_test.out
+
+URL_FILES=./parser/port_list.o     ./parser/urls.o    \
+./parser/port_malloc.o   ./parser/port_misc.o
+
+turl.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(URL_FILES) test/turls.o -o turl.out
+
+FROM_FILES=./parser/port_list.o     ./parser/urls.o    \
+./parser/port_malloc.o   ./parser/port_misc.o  \
+./parser/hdr_headers.o   ./parser/hdr_from.o
+
+tfrom.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(FROM_FILES) test/tfrom.o -o tfrom.out
+
+TO_FILES=./parser/port_list.o     ./parser/urls.o    \
+./parser/port_malloc.o   ./parser/port_misc.o  \
+./parser/hdr_headers.o   ./parser/hdr_to.o   \
+./parser/hdr_from.o
+
+tto.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(TO_FILES) test/tto.o -o tto.out
+
+VIA_FILES=./parser/port_list.o     ./parser/urls.o    \
+./parser/port_malloc.o   ./parser/port_misc.o  \
+./parser/hdr_headers.o   ./parser/hdr_via.o
+
+tvia.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(VIA_FILES) test/tvia.o -o tvia.out
+
+CALLID_FILES=./parser/port_list.o     ./parser/urls.o    \
+./parser/port_malloc.o   ./parser/port_misc.o  \
+./parser/hdr_callid.o
+
+tcallid.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(CALLID_FILES) test/tcallid.o -o tcallid.out
+
+CONTACT_FILES=./parser/port_list.o   ./parser/urls.o    \
+./parser/port_malloc.o               ./parser/port_misc.o  \
+./parser/hdr_headers.o               ./parser/hdr_from.o \
+./parser/hdr_to.o                    ./parser/hdr_contact.o
+
+tcontact.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(CONTACT_FILES) test/tcontact.o -o tcontact.out
+
+
+CONTENTT_FILES=./parser/port_list.o  ./parser/urls.o \
+./parser/port_malloc.o               ./parser/port_misc.o \
+./parser/hdr_contenttype.o 
+
+tcontentt.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(CONTENTT_FILES) test/tcontentt.o -o tcontentt.out
+
+TORTURE_FILES=./parser/port_list.o   \
+./parser/port_malloc.o   ./parser/port_misc.o  \
+./fsm/port_sema.o        ./parser/sdp_accessor.o  \
+./fsm/sdp_negoc.o  \
+./parser/hdr_body.o      ./parser/hdr_callid.o   \
+./parser/hdr_contact.o   ./parser/hdr_contentlength.o   \
+./parser/hdr_from.o      ./parser/hdr_headers.o   \
+./parser/hdr_to.o        ./parser/hdr_via.o  \
+./parser/hdr_cseq.o      ./parser/msg_cparser.o   \
+./parser/msg_parser.o    ./parser/msg_read.o   \
+./parser/msg_write.o     ./parser/urls.o    \
+./parser/sdp_rfc2327.o   ./example/example_rcfile.o \
+./parser/hdr_contenttype.o ./parser/hdr_accept.o \
+./parser/hdr_mimeversion.o ./parser/hdr_acceptencoding.o \
+./parser/hdr_acceptlanguage.o ./parser/hdr_authorization.o \
+./parser/hdr_alertinfo.o ./parser/hdr_callinfo.o \
+./parser/hdr_allow.o ./parser/hdr_contentdisposition.o \
+./parser/hdr_errorinfo.o ./parser/hdr_contentencoding.o \
+./parser/hdr_proxyauthenticate.o ./parser/hdr_proxyauthorization.o \
+./parser/hdr_recordroute.o ./parser/hdr_route.o \
+./parser/hdr_wwwauthenticate.o 
+
+torture_test.out: libosipparser common_tests
+	$(CC) $(FLAGS) $(LIBS) $(TORTURE_FILES) test/torture.o -o torture_test.out
+
+
+clean:
+	rm -rf ./example/osip_stack.out
+	rm -rf ./ua_*
+	rm -rf ./tfrom.out
+	rm -rf ./torture_test.out
+	rm -rf ./tto.out
+	rm -rf ./tcallid.out
+	rm -rf ./tcontact.out
+	rm -rf ./tcontentt.out
+	rm -rf ./tvia.out
+	rm -rf ./turl.out
+	rm -rf ./core
+	rm -rf ./*~
+	rm -rf ./*/*~
+	rm -rf ./*/*.o
+

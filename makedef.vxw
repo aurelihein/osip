@@ -1,0 +1,44 @@
+# This is the definitions for VXWORKS
+
+#this MUST be in your path
+DEP=cc386
+CC=cc386
+AR=ar386
+LD=ld386
+NM=nm386
+
+# wind system base
+WIND_PWD = /var/vobs/wind
+
+
+FLAGS = -O  -Wall
+
+# if you want to compile for VxWorks, this is mandatory
+DEFS  += -D__VXWORKS_OS__ -DTHREAD_PTHREAD
+
+# this is also mandatory
+DEFS += -D_REENTRANT
+
+# for memory leak detection
+#DEFS += -DENABLE_LEAKD
+
+# some other options
+DEFS  += -B$(WIND_PWD)/sun4-solaris2/lib/gcc-lib/ -mpentium -ansi -nostdinc -DRW_MULTI_THREAD -O2 -fvolatile -nostdlib -fno-builtin -fno-defer-pop -DVXWORKS -D__32BITS__=1 -D__VXWORKS_OS__=1 -DVXWORKS=1 -DBSC_ARCH=2
+
+CROSS_COMPILE=1
+
+# -U__STDC__ this is needed but it should not! (correction needed?!)
+INC   = -I../ -I$(WIND_PWD)/target/h/ -D__vxworks -DCPU=PENTIUM -DTOOL=gnu -U__STDC__
+LIBS  =  -L$(WIND_PWD)/target/lib/ -L$(WIND_PWD)/host/sun4-solaris2/lib/gcc-lib/i386-wrs-vxworks/cygnus-2.7.2-960126 -nostdlib -r -Wl,-X
+
+MUNCH_FLAGS = -asm 586
+MUNCH  =       wtxtcl $(WIND_BASE)/host/src/hutils/munch.tcl $(MUNCH_FLAGS)
+
+
+##############################################
+These are the rules:
+
+.SUFFIXES:      .c
+
+.c.o:
+	$(CC) -c -x c $(FLAGS) $(DEFS) $(INC) $<

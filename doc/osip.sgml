@@ -1,0 +1,84 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+<!entity chap1 SYSTEM "chapter1.sgml">
+<!entity chap2 SYSTEM "chapter2.sgml">
+<!entity chap3 SYSTEM "chapter3.sgml">
+<!entity chap4 SYSTEM "chapter4.sgml">
+<!entity chap5 SYSTEM "chapter5.sgml">
+]>
+<book>
+
+<bookinfo>
+
+<title>oSIP user Manual
+</title>
+<subtitle>A guide to implement SIP agents with the oSIP stack.
+</subtitle>
+<author>
+<firstname>Aymeric</firstname>
+<surname>Moizard</surname>
+<affiliation>
+<address><email>jacK@atosc.org</email></address>
+</affiliation> 
+</author>
+<revhistory>
+      <revision>
+        <revnumber>0.9</revnumber>
+        <date>June, 15th 2000</date>
+        <authorinitials>AM</authorinitials>
+        <revremark>Initial version.</revremark>
+      </revision>
+</revhistory>
+    <legalnotice>
+      <para>Copyright (c)  2001  Aymeric MOIZARD.
+      Permission is granted to copy, distribute and/or modify this document
+      under the terms of the GNU Free Documentation License, Version 1.1
+      or any later version published by the Free Software Foundation;
+      with the Invariant Sections being LIST THEIR TITLES, with the
+      Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
+      A copy of the license is included in the section entitled "GNU
+      Free Documentation License".</para>
+    </legalnotice>
+
+    <keywordset>
+      <keyword>oSIP</keyword>
+      <keyword>SIP</keyword>
+      <keyword>rfc2543</keyword>
+      <keyword>library</keyword>
+      <keyword>telephony</keyword>
+      <keyword>GPL</keyword>
+      <keyword>Linux</keyword>
+    </keywordset>
+<abstract>
+<title>Abstract</title>
+<para>
+<quote>The Session Initiation Protocol (SIP) is an application-layer control (signaling) protocol for creating, modifying and terminating sessions with one or more participants. These sessions include Internet multimedia conferences, Internet telephone calls and multimedia distribution. Members in a session can communicate via multicast or via a mesh of unicast relations, or a combination of these.
+</quote>
+</para>
+<para><corpauthor>IETF - rfc 2543
+</corpauthor>
+</para>
+</abstract>
+</bookinfo>
+
+&chap1
+&chap2
+&chap3
+&chap4
+&chap5
+
+
+<bibliography>
+<biblioentry>
+<titleabbrev>SIP</titleabbrev>
+<title>Session Initiation Protocole - rfc2543.txt</title>
+<authorgroup>
+<corpauthor>ietf</corpauthor></authorgroup>
+</biblioentry>
+<biblioentry>
+<titleabbrev>SDP</titleabbrev>
+<title>Session Description Protocole - rfc2327.txt</title>
+<authorgroup>
+<corpauthor>ietf</corpauthor></authorgroup>
+</biblioentry>
+</bibliography>
+</book>

@@ -1,0 +1,68 @@
+<chapter>
+<title>The oSIP Library</title>
+<para>Having a good knowledge of SIP is recommended for this section. If you plan to use SIP, you should read more carefully the rfc2543 from <ulink URL="http://www.ietf.org/">ietf.org.</ulink></para>
+
+<sect1>
+<title>The goals
+</title>
+<para>The oSIP project has started in July 2000. The first official and public release (0.5.0) was published in May 2001.</para>
+<para>The oSIP library is at first a free software project. In the context of the third generation network, more and more telecom operators will use IP technology, the favorite land of Linux. One aspect of this evolution is that the future of Linux is highly dependent on the multimedia tools that will be available. oSIP, as a SIP implementation, will allow building interoperable registrar, user-agent (software phones), and proxy thus giving more chance to Linux to be part of the next generation telephony products.</para>
+<para>But oSIP is not only targeted towards PC applications. oSIP is enough flexible and tiny to be used on small OS with low requirements. From the 0.7.0 release, the thread support is now optional and the design of the application is entirely chosen by the end-developer. oSIP will now perfectly fit cellulars or any embeded systems. oSIP is known to run on the real time OS VxWorks and other ports should be simple.
+</sect1>
+<sect1>
+<title>The development level
+</title>
+<sect2>
+<title>The parser
+</title>
+<para>oSIP now supports utf8 and the full SIP grammar. The release 0.7.0 contains a compliant SIP parser with minimal exceptions. Also, the new parser has just been released (25th of July 2001) and may have some bugs. Please report them to <email>osip@atosc.org</email>, I'll fix them.
+</para>
+<remark>To get more information, see next section
+</remark>
+</sect2>
+<sect2>
+<title>The state machines
+</title>
+<para>The 4 finite state machines have been tested during weeks and have also been tested with around 30 products at the 8th SIPit in Cardiff (SIP Interoperability tests). They appear to be stable.</para>
+</sect2>
+</sect1>
+<sect1>
+<title>The parser</title>
+<para>oSIP contains a parser which is able to read and write any SIP message as described in the RFC. Currently oSIP is able to parse only a minimal set of headers such as Via, Call-ID, To, From, Contact, CSeq, Route, Record-Route, mime-version, Content-Type, and Content-Length. All other headers are stored as strings. Efforts will be done to support more headers.
+</para>
+<para>By now, the SIP parser supports multiple attachments through the MIME format. (this part is new and remains untested)
+</para>
+<remark>Unwanted behaviors may happen sometimes. Messages could be somewhat transformed after being analyzed by oSIP. oSIP cannot maintain reliability: (Nevertheless, oSIP remains fully SIP compliant)</remark>
+<simplelist>
+<member>the order of header</member>
+<member>the presence of multiple headers on the same line</member>
+<member>the presence of extra SPACEs between tokens</member>
+<member>the presence of LWS (internal CRLF)</member>
+<member>the presence of bracket in to,from,contact... headers</member>
+</simplelist>
+</sect1>
+
+<sect1>
+<title>The transaction manager</title>
+<para>oSIP presents an easy to use interface. Transactions are modeled through 4 finite state machines which is the core of the oSIP library. Each transaction uses a separate FIFO filled by external modules. Events are processed on demand by user. A set of dynamic callback registered by user allow the application to be informed of each transaction's evolution.
+</para>
+
+<graphic fileref="osip_model.png" format="png" align="center">
+<para>Building an application on the top of oSIP will require to build several modules as shown in the above graphic. First, you'll have to build a module to manage the transport facilities. This way, oSIP is independent from any transport layer. Then, you'll be required to build a module for timers management (a basic and far from excellent sample is provided). This module will be responsible of retransmission and will decide when the transaction context can be deleted safely. The third required module is the biggest part of the multimedia application. This modules will have to maintain and update the state of SIP sessions over transactions.</para>
+
+<para>The transaction manager has been heavily tested and is already stable. Also, oSIP does not require much memory and runs fast. Since release 0.7.0, the library can be used either in multi-threaded mode or not!
+</para>
+</sect1>
+
+<sect1>
+<title>Who will benefit from oSIP</title>
+<para>oSIP offers a simple interface to add SIP capabilities in multimedia applications. Also, oSIP is not tight to any kind of SIP agents or OSs. You can build either end-user agents, stateless proxy and gateway. If you want to implement a proxy, please read "notes for proxy implementation" in the chapter called "the transaction manager".
+</para>
+</sect1>
+<sect1>
+<title>Available ports</title>
+<para>The library has been built with portability in mind and should be quickly usable on most posix systems. It has already been built under Solaris, HP unix and the RT OS VxWorks. GNU/Linux (2.2.16 and 2.4.7) has been used for initial developments.
+</para>
+</sect1>
+
+</chapter>

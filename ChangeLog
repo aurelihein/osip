@@ -1,0 +1,18 @@
+libosip (0.7.9) testing ;urgency=low
+        * hdr_authorization.c/hdr_wwwauthenticate.c:
+          Interoperability issue with Vovida.
+        * hdr_via.c: add the via_appendtopvia(...) as required by users...
+        * Windows updates makefiles (VC6++, tested on NT4).
+        * gcc-3.0 updates and ANSI modifications:
+        * Thanks to marko for little improvments.
+
+libosip (0.7.8) testing ;urgency=high
+        * this version is full SIP compliant with some excetions. Ask
+          osip@atosc.org for current status.
+        * HNY :-)
+        * Thanks to contributors for patches:
+           Vytautas Vysniauskas
+           Rick Flott.
+
+libosip (?.?.?) testing ;urgency=low
+        * oSIP is the official name!!!

@@ -1,0 +1,324 @@
+Project: oSIP is an implementation of SIP - rfc2543. 
+Last update: 0.8.0
+Email  : jack@atosc.org
+License: LGPL (http://www.gnu.org)
+
+This is the oSIP library (for Omnibus SIP). It has been
+designed to provide the Internet Community a simple
+way to support the Session Initiation Protocol.
+SIP is described in the RFC2543 which is available at
+http://www.ietf.org/rfc/rfc2543.txt.
+
+
+FEATURES: (version 0.8.0)
+---------
+
+The oSIP library consists of 2 parts:
+
+PARSER:
+  *  SIP URL parser.
+  *  SIP message parser. (and accessor API)
+  *  SDP message parser. (and accessor API)
+  *  MIME support for message with multiple attachments.
+
+TRANSACTION MANAGER:
+  *  2 states machines for UAC (INVITE and other).
+  *  2 states machines for UAS, registrar and redirect server (INVITE and other).
+  *  user controls the application with events.
+  *  events managed by the oSIP stack are announced through callbacks.
+  *  2 timers manager for unreliable protocol such as UDP.
+  *  A SDP framework for quick negociation.
+
+EXTRA:
+  *  Porting the library is done through the "port_" files.
+     keep in mind that you can replace the libraries where
+     you find the threads, mutex and semaphore facilities.
+     Please redistribute your ports to jack@atosc.org.
+  *  osip is not tight to any design! You can use the library
+     either in a multi-thread environment or not, use your
+     own interuption's mechanism for timer, or use your own
+     transport protocol...
+
+Documentation:
+--------------
+
+Yet available:
+  *  this README file.
+  *  ./doc/osip.html: oSIP User Manual (for 0.7.X releases).
+	(Under the FDL license)
+
+Installation procedure:
+-----------------------
+
+The library is known to compile on various platform:
+  *  GNU/Linux
+	(2.2.16, 2.4.7, 2.4.12, 2.4.17 with gcc 2.95.2)
+	gcc-3.0.3 from libosip-0.7.8
+  *  Windows NT (95, 2000, ???)
+        VC++6.0 (?)
+
+Extra set of OS where some version of oSIP has been ported.
+  *  Solaris (2.5)
+  *  HP-Unix (??) (with a missing -lrt, if I remember)
+  *  VxWorks(5.4?).
+
+*** I Need testers and maintainers for all OS: UNIX/VxWorks/Windows. ***
+    write jack@atosc.org if this is of interest to you.
+
+
+For VxWorks :
+============>   Makefiles are not up to date!
+                Please send them back if you made it.
+
+                $> make -f makefile.mai
+
+Unix and Linux :
+============>   $>configure
+                $>make
+                $>make install
+
+Here is a list of options you can give to the 'configure' command line:
+
+configure --disable-mt             ==> disable any thread support,
+flags: "-UOSIP_MT"
+                                   Rq: If you use this option, the binaries
+                                   samples created in example_mt and example
+                                   will be identical to each other (without
+                                   multithread support)
+
+configure --disable-debug          ==> disable debug.
+flags: "-UENABLE_DEBUG"
+
+configure --disable-debug          ==> disable the trace in the logfile.
+flags: "-UENABLE_TRACE"
+
+configure --enable_mleak           ==> enable the memory leak detection.
+flags: "-DENABLE_MLEAK"
+
+configure --enable-pth             ==> use GNU pth library. (never tested yet!!)
+flags: "-DTHREAD_PTH -UTHREAD_PTHREAD"
+
+configure --prefix=/your/local     ==> install in '$prefix' (default is /usr/local)
+
+For Windows :
+============>    Makefiles are located in ./windows
+
+
+Tests programs:
+---------------
+
+  *  ./example/ua    : mono-processed sample
+  *  ./example_mt/ua : multi-threaded sample
+     Those 2 tests applications are used to test the oSIP library in both
+     multithreaded and non-multithreaded mode. See the 'EXAMPLE' Section
+     for info about using the examples.
+
+     CAUTION! In fact, code is identical in each './example/*' directory.
+     if '-disable-mt' (-UOSIP_MT) has not been used in the compilation process,
+     the library can be used either by a multithreaded application or not.
+     If '-disable-mt' has been used, don't think ./example_mt/ua is a
+     multi-threaded application: IT'S NOT. (work should be done to avoid
+     compilation of this directory in this special case).
+
+  *  ./test/torture_test: test the SIP parser.
+  *  ./test/torture_sdp: test the SDP parser, its accessor API and the
+                          framework for negociation.
+
+  *  ./test/turl      : test the sip-urls parser.
+  *  ./test/tto       : test some 'to' fields
+  *  ./test/tfrom     : test some 'from' fields
+  *  ./test/tcontact  : test some 'contact' fields
+  *  ./test/tvia      : test some 'via' fields
+  *  ./test/tcallid   : test some 'call-id' fields
+  *  ./test/tcontentt : test some 'content-type' fields
+
+How to use the test programs:
+
+  Some SIP and SDP samples are provided in conf/torture_msgs
+                                           conf/torture_msgs2
+                                           conf/torture_sdps
+
+	./test/torture_test conf/torture_msgs 0
+	./test/torture_test conf/torture_msgs 1 -v
+	./test/torture_test conf/torture_msgs 3
+
+	./test/torture_sdp conf/torture_sdps 3
+	./test/torture_sdp conf/torture_sdps 3 -v
+
+	./test/tcallid conf/callids.txt
+	./test/tfrom  conf/froms.txt
+	./test/tto conf/tos.txt
+	./test/tvia conf/vias.txt
+	./test/tcontact conf/contacts.txt
+	./test/turl conf/urls.txt
+
+
+Known issues:
+-------------
+
+  *  Lack of thread resources: (especially on Debian?)
+	The actual architecture makes use of an impressing
+	number of threads. The maximal number of thread may
+	not be the same on all platforms. On Debian
+	distribution, the applications cannot launch as
+	many threads as on other systems. Once the kernel
+	re-compiled, the issue dissapeared.
+
+Known Limitation:
+-----------------
+
+  *  Only main headers are entirely defined:
+	Via, To, From, Call-Id, CSeq, Contact,
+	Content-Type, Content-Length, mime-version,
+	route, record-route.
+	All other headers are considered to be
+	strings. (but there are all fully usable
+	by the application layer)
+
+  NEW HEADERS:  (since version 0.7.2)
+    contentencoding, allow, errorinfo, callinfo, alertinfo, acceptenconding
+    acceptlanguage, accept, proxyauthorization, proxyauthenticate, authorization,
+    wwwauthenticate.
+
+EXAMPLE:
+--------
+
+The directory './example' contains a test application
+of the library. Code is not clean, but it's a good start.
+
+This utility mainly tests the finite state machines
+of INVITE transactions for UAS and UAC. A few tests are
+also available for REGISTER and BYE transactions.
+
+During the test, transactions are always closed properly
+even if one application is killed. It seems there is no
+left memory leaks. (This has been tested with
+-DMEMORY_LEAK in port_malloc.c!)
+
+Warning: This is a test application so:
+ *  some undefined behaviours may happen. For example,
+    if you start 2 BYE transactions at the same time.
+ *  the SDP answer or body attachment is totally dummy.
+ *  wrong parameter will make the application crash...
+    not the library...
+
+
+1.How to start the './example/ua' test:
+2.How to start the './example_mt/ua' test:
+-------------------------------------
+
+You must always launch two SIP agents. One will
+act as a server (User Agent Server or UAS) and another
+as a client (User Agent Client or UAC).
+
+There are many ways to do it!
+
+UA1: mode 0/1/2/3 (you should use 0 or 3 for at least one User Agent)
+===
+   $> ./example/ua -m 0 -f conf/siprc -d 2  -t "<sip:cha@127.0.0.1:5070>"
+   $> ./example_mt/ua -m 0 -f conf/siprc -d 2  -t "<sip:cha@127.0.0.1:5070>"
+
+UA2: mode 0/1/2 to initiate some transactions
+===  Note that only the multithreaded sample can initiate
+     transaction by the time of writing those lines.
+
+   $> ./example_mt/ua -m 0 -f conf/siprc2 -d 2 -t "<sip:jack@127.0.0.1>"
+   $> ./example_mt/ua -m 1 -f conf/siprc2 -d 2 -t "<sip:jack@127.0.0.1>"
+   $> ./example_mt/ua -m 2 -f conf/siprc2 -d 2 -t "<sip:jack@127.0.0.1>"
+
+
+command line OPTIONS:
+	-m : this is a facility to select a behavior for the UA.
+	     Modes are explained below.
+
+	Using mode 2 may make your process run out of ressources. A real
+	SIP application should limit the number of transaction initiated.
+	(your server may be spammed!)
+
+	-d : This is the debug options. You should give a number
+	     between 0 and 5.
+		Example: -d 3 -> enable trace_level:0,1,2
+
+	-t : this is where you can put the address of the callee
+		(where you want to send the request)
+		This will be the url used in the request-URI and
+		the to field.
+
+	-f : You MUST provide a configuration. The config file
+	     MUST provide the
+		* UDP port where the application is listening
+		* username
+		* localip
+		* contact field
+		* ... some other fields (NOT all are currently used)
+	     If the config file contains the 'sipproxy' attribute,
+	     its url will be used to send all messages.
+
+How to use the multi-threaded test application:
+----------------------------------------------
+
+    in mode 0 (command line) you can type:
+	i: new invite transaction.
+	t: specify number of concurrent new invite transactions.
+	b: new bye transaction 
+	r: new register transaction
+
+    in mode 1 and 2, you can stop and restart the application:
+	s: stop test
+	r: restart test
+
+	Using mode 2 may make your process run out of ressources. A real
+	SIP application should limit the number of transaction initiated.
+	(your server may be spammed!)
+
+    in all modes, you can change on the fly the trace level
+	0,1,2,3,4,5: to enable a special trace level.
+	d: disable all levels.
+
+    in all modes, you can also change the code for SIP answers.
+	c: new static return code wanted
+
+The following Use Cases are executed:
+-------------------------------------
+
+INVITE TRANSACTION
+       UA1                    UA2
+        |   INVITE->           |
+        |   +retransmissions-> |
+        |                      |
+        | <- 180 Ringing       |
+        |                      |
+        | <- 200 Ok            |
+        | <-retransmissions+   |
+        |                      |
+        |   ACK   ->           |
+        |                      |
+
+BYE TRANSACTION
+
+       UA1                    UA2
+        |   BYE->              |
+        |   +retransmissions-> |
+        |                      |
+        | <- 200 Ok            |
+        | <-retransmissions+   |
+        |                      |
+
+BYE TRANSACTION
+
+       UA1                              REISTRAR
+        |   REGISTER->                     |
+        |   +retransmissions->             |
+        |                                  |
+        | <- 200 Ok                        |
+        | <-retransmissions+               |
+        |                                  |
+
+Contact information:
+--------------------
+
+For more information on the SIP stack, or any contributions,
+you can contact the author at <jack@atosc.org>.
+
+Latest version is available at
+http://osip.atosc.org

@@ -1,0 +1,12 @@
+TODO file for oSIP.
+
+  *  Make the Documentation more up to date...
+        * current is about 0.7.X.
+  *  Transport layer that can reconnect to another port at run time.
+	*  add a list_t of descriptor for UDP and another for TCP
+		in the osip_t structure.
+  *  Support for multiple header on the same line (partially done)
+	* Some nasty behavior can still exist for unknown header
+	that accept ',' in their definition.
+  *  Support for FreeBSD (semget, semop...)
+  *  fsm for proxy.

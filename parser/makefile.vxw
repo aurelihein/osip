@@ -1,0 +1,23 @@
+
+include ../makedef.vxw
+
+OBJS=hdr_body.o      hdr_mimeversion.o  msg_read.o \
+hdr_callid.o         hdr_recordroute.o  msg_write.o \
+hdr_contact.o        hdr_route.o        port_list.o \
+hdr_contentlength.o  hdr_to.o           port_malloc.o \
+hdr_contenttype.o    hdr_via.o          port_misc.o \
+hdr_cseq.o           hdr_from.o         hdr_headers.o \
+sdp_rfc2327.o        msg_cparser.o      msg_parser.o \
+urls.o hdr_accept.o  hdr_acceptencoding.o hdr_acceptlanguage.o
+hdr_authorization.o  hdr_alertinfo.o    hdr_callinfo.o \
+hdr_allow.o hdr_contentdisposition.o    hdr_errorinfo.o \
+hdr_contentencoding.o hdr_proxyauthenticate.o hdr_proxyauthorization.o \
+hdr_recordroute.o    hdr_wwwauthenticate.o hdr_route.o \
+sdp_accessor.o
+
+
+all: $(OBJS)
+
+
+
+

@@ -1,0 +1,14 @@
+
+include ../makedef.vxw
+
+OBJS=fsm_misc.o  fsm_uas4inv.o  port_sema.o  \
+fsm_uac4inv.o    fsm_uas4req.o  port_thread.o  \
+fsm_uac4req.o    port_fifo.o    trn_manager.o  \
+trn_timers.o     evt_server.o   osip.o \
+sdp_negoc.o
+
+all: $(OBJS)
+
+
+
+

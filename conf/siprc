@@ -1,0 +1,30 @@
+# this file is used to store user config values
+#
+# empty lines are not accepted
+# comments starts with #
+#
+# !!!!!!! extra SPACES may lead to unknown behavior!!!!!!
+#
+# duplicates feilds are discarded...
+# no other restrictions 
+#
+#
+#
+displayname=Aymeric
+username=jack
+localip=127.0.0.1
+contact=<sip:jack@127.0.0.1>
+from=<sip:jack@127.0.0.1>;tag=12gtr38erf7-1dfw
+#
+localport=5060
+#
+# MUST BE COMMENTED IF YOU DON't WANT TO USE THE PROXY
+#
+#sipproxy=sip:127.0.0.1:5080
+#
+sipregistrar=sip:127.0.0.1:5080
+#
+#SDP config
+networktype=IN
+addr_type=IP4
+#
