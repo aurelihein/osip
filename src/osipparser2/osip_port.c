@@ -296,7 +296,14 @@ osip_tolower (char *word)
 int
 osip_strcasecmp (const char *s1, const char *s2)
 {
-#if (!defined WIN32 && !defined _WIN32_WCE)
+#if defined(__VXWORKS_OS__)
+  while ( (*s1 != '\0') && (tolower(*s1) == tolower(*s2)) )
+  {
+    s1++;
+    s2++;
+  }
+  return (tolower(*s1) - tolower(*s2));
+#elif (!defined WIN32 && !defined _WIN32_WCE)
   return strcasecmp (s1, s2);
 #else
   return _stricmp (s1, s2);
@@ -306,7 +313,18 @@ osip_strcasecmp (const char *s1, const char *s2)
 int
 osip_strncasecmp (const char *s1, const char *s2, size_t len)
 {
-#if (!defined WIN32 && !defined _WIN32_WCE)
+#if defined(__VXWORKS_OS__)
+  if ( len == 0 ) return 0;
+  while ( (len > 0) && (tolower(*s1) == tolower(*s2)) )
+  {
+    len--;
+    if ( (len == 0) || (*s1 == '\0') || (*s2 == '\0') )
+            break;
+    s1++;
+    s2++;
+  }
+  return tolower(*s1) - tolower(*s2);
+#elif (!defined WIN32 && !defined _WIN32_WCE)
   return strncasecmp (s1, s2, len);
 #else
   return _strnicmp (s1, s2, len);
