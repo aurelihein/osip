@@ -878,6 +878,8 @@ msg_getreason (int replycode)
 	return sgetcopy ("Request Cancelled");
       if (replycode == 488)
 	return sgetcopy ("Not Acceptable Here");
+      if (replycode == 489)
+	return sgetcopy ("Bad Event");
     }
   if (i == 5)
     {				/* 5xx */
