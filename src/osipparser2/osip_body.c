@@ -297,6 +297,7 @@ osip_body_parse (osip_body_t * body, const char *start_of_body, size_t length)
   if (body->body == NULL)
     return -1;
   memcpy(body->body,start_of_body,length);
+  body->body[length]='\0';
   body->length = length;
   return 0;
 }
