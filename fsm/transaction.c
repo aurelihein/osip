@@ -343,7 +343,7 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
 
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO4, NULL,
-               "sipevent evt->transactionid: %i\n", evt->transactionid));
+               "sipevent tr->transactionid: %i\n", transaction->transactionid));
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO4, NULL, "sipevent tr->state: %i\n",
                transaction->state));

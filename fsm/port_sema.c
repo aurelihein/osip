@@ -234,7 +234,15 @@ smutex_unlock (smutex_t * mut)
 ssem_t *
 ssem_init (unsigned int value)
 {
-  return semCCreate (SEM_Q_FIFO, value);
+   SEM_ID initsem;
+   ssem_t *x;
+   x = (ssem_t *)smalloc(sizeof(ssem_t));
+   if (x==NULL) return NULL;
+   initsem =  semCCreate (SEM_Q_FIFO, value);
+   x->semId = initsem;
+   x->refCnt = value;
+   x->sem_name = NULL;
+   return x;
 }
 
 int
@@ -242,7 +250,7 @@ ssem_destroy (ssem_t * sem)
 {
   if (sem == NULL)
     return 0;
-  semDelete (sem);
+  semDelete (sem->semId);
   return 0;
 }
 
@@ -251,7 +259,7 @@ ssem_post (ssem_t * sem)
 {
   if (sem == NULL)
     return -1;
-  return semGive (sem);
+  return semGive (sem->semId);
 }
 
 int
@@ -259,7 +267,7 @@ ssem_wait (ssem_t * sem)
 {
   if (sem == NULL)
     return -1;
-  return semTake (sem, WAIT_FOREVER);
+  return semTake (sem->semId, WAIT_FOREVER);
 }
 
 int
@@ -267,7 +275,7 @@ ssem_trywait (ssem_t * sem)
 {
   if (sem == NULL)
     return -1;
-  return semTake (sem, NO_WAIT);
+  return semTake (sem->semId, NO_WAIT);
 }
 #endif
 

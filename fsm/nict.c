@@ -135,7 +135,7 @@ nict_need_timer_e_event (nict_t * nict, state_t state, int transactionid)
     {
       if (nict->timer_e_start == -1)
         return NULL;
-      if ((now - nict->timer_e_start) * 1000 > nict->timer_e_length)
+      if ((now - nict->timer_e_start-1) * 1000 > nict->timer_e_length)
         return osip_new_event (TIMEOUT_E, transactionid);
     }
   return NULL;
@@ -152,7 +152,7 @@ nict_need_timer_f_event (nict_t * nict, state_t state, int transactionid)
     {
       if (nict->timer_f_start == -1)
         return NULL;
-      if ((now - nict->timer_f_start) * 1000 > nict->timer_f_length)
+      if ((now - nict->timer_f_start-1) * 1000 > nict->timer_f_length)
         return osip_new_event (TIMEOUT_F, transactionid);
     }
   return NULL;
@@ -169,7 +169,7 @@ nict_need_timer_k_event (nict_t * nict, state_t state, int transactionid)
     {
       if (nict->timer_k_start == -1)
         return NULL;
-      if ((now - nict->timer_k_start) * 1000 > nict->timer_k_length)
+      if ((now - nict->timer_k_start-1) * 1000 > nict->timer_k_length)
         return osip_new_event (TIMEOUT_K, transactionid);
     }
   return NULL;
