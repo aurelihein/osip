@@ -929,6 +929,15 @@ extern "C"
  */
   void *transaction_get_your_instance (transaction_t * transaction);
 
+/**
+ * Get target ip and port for this request.
+ * (automaticly set by transaction_init() for ict and nict)
+ * @param transaction The element to work on.
+ * @param The host where to send initial request.
+ * @param The port where to send initial request.
+ */
+  int transaction_get_destination(transaction_t * transaction, char **ip, int *port);
+
 #ifndef DOXYGEN
 
 /**

@@ -276,3 +276,4 @@ EXPORTS
     sdp_build_offer  @275
     sdp_put_on_hold  @276
     sdp_put_off_hold  @277
+    transaction_get_destination  @278

@@ -1,5 +1,6 @@
 libosip (0.9.3)
 	* fsm/port_sema.c: (windows only) sem_trywait was never returning 0.
+	* add a method to get possible destination and port for a request.
 
 libosip (0.9.2)
 	* add support for the received and rport parameters inside the osip stack.

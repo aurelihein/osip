@@ -78,6 +78,8 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
       }
   }
 
+  /* for PROXY, the destination MUST be set by the application layer,
+     this one may not be correct. */
   msg_getroute (request, 0, &route);
   if (route != NULL)
     {

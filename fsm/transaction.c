@@ -401,6 +401,27 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
 }
 
 int
+transaction_get_destination(transaction_t * transaction, char **ip, int *port)
+{
+  *ip=NULL;
+  *port=0;
+  if (transaction==NULL) return -1;
+  if (transaction->ict_context!=NULL)
+    {
+      *ip = transaction->ict_context->destination;
+      *port = transaction->ict_context->port;
+      return 0;
+    }
+  else if (transaction->nict_context!=NULL)
+    {
+      *ip = transaction->nict_context->destination;
+      *port = transaction->nict_context->port;
+      return 0;
+    }
+  return -1;
+}
+
+int
 transaction_set_your_instance (transaction_t * transaction, void *instance)
 {
   if (transaction == NULL)

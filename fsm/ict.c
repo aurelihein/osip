@@ -81,6 +81,8 @@ ict_init (ict_t ** ict, osip_t * osip, sip_t * invite)
       }
   }
 
+  /* for PROXY, the destination MUST be set by the application layer,
+     this one may not be correct. */
   msg_getroute (invite, 0, &route);
   if (route != NULL)
     {
