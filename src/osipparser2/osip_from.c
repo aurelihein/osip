@@ -31,6 +31,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 /* adds the from header to message.              */
@@ -269,7 +270,7 @@ osip_from_to_str (const osip_from_t * from, char **dest)
   char *url;
   char *buf;
   int i;
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((from == NULL) || (from->url == NULL))
@@ -303,7 +304,7 @@ osip_from_to_str (const osip_from_t * from, char **dest)
   {
     int pos = 0;
     osip_generic_param_t *u_param;
-    int plen;
+    size_t plen;
     char *tmp;
 
     while (!osip_list_eol (from->gen_params, pos))

@@ -77,7 +77,7 @@ extern "C"
 /**
  * Exit from a thread.
  */
-  void osip_thread_exit ();
+  void osip_thread_exit (void);
 
 #ifdef __cplusplus
 }
@@ -157,7 +157,7 @@ extern "C"
 /**
  * Allocate and Initialise a semaphore.
  */
-  struct osip_mutex *osip_mutex_init ();
+  struct osip_mutex *osip_mutex_init (void);
 /**
  * Destroy the mutex.
  * @param mut The mutex to destroy.

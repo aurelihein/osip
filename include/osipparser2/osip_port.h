@@ -33,6 +33,12 @@
 #define HAVE_TIME_H 1
 #define HAVE_STDARG_H 1
 
+/* use win32 crypto routines for random number generation */
+/* only use for vs .net (compiler v. 1300) or greater */
+#if _MSC_VER >= 1300
+#define WIN32_USE_CRYPTO 1
+#endif
+
 #elif defined _WIN32_WCE
 
 #define STDC_HEADERS 1
@@ -139,7 +145,7 @@ extern "C"
 /* MALLOC redirections    */
 /**************************/
 
-  void *osip_malloc (int size);
+  void *osip_malloc (size_t size);
   void  osip_free (void *ptr);
 #ifdef WIN32
 #define alloca _alloca
@@ -149,7 +155,7 @@ extern "C"
 /* RANDOM number support  */
 /**************************/
 
-  unsigned int osip_build_random_number ();
+  unsigned int osip_build_random_number (void);
 
 /**************************/
 /* TIMER support          */
@@ -164,19 +170,21 @@ extern "C"
 /**************************/
 
   int   osip_atoi (const char *number);
-  char *osip_strncpy (char *dest, const char *src, int length);
+  char *osip_strncpy (char *dest, const char *src, size_t length);
   char *osip_strdup (const char *ch);
   char *osip_strdup_without_quote (const char *ch);
   int   osip_tolower (char *word);
   int   osip_clrspace (char *word);
-  char *__osip_sdp_append_string (char *string, int size,
+  char *__osip_sdp_append_string (char *string, size_t size,
 			   char *cur, char *string_osip_to_append);
   int   __osip_set_next_token (char **dest, char *buf, int end_separator, char **next);
   /* find the next unescaped quote and return its index. */
   char *__osip_quote_find (const char *qstring);
+  char *osip_enquote(const char *s);
+  void  osip_dequote(char *s);
 
   int   osip_strcasecmp (const char *s1, const char *s2);
-  int   osip_strncasecmp (const char *s1, const char *s2, unsigned int len);
+  int   osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
 /**************************/
 /* LOG&DEBUG support      */

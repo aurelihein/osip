@@ -938,6 +938,10 @@ extern "C"
  * @param lower_tv The minimum timer when the application should wake up.
  */
   void osip_timers_gettimeout(osip_t * osip, struct timeval *lower_tv);
+#ifdef WIN32
+  int gettimeofday(struct timeval *tp, void *tz);
+#endif
+
 #endif
 /**
  * Check if an ict transactions needs a timer event.

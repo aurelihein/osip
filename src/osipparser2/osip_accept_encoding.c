@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 
@@ -127,7 +128,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, cha
 {
   char *buf;
   char *tmp;
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((accept_encoding == NULL) || (accept_encoding->element == NULL))
@@ -141,7 +142,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, cha
   sprintf (buf, "%s", accept_encoding->element);
   {
     int pos = 0;
-    int plen;
+    size_t plen;
     osip_generic_param_t *u_param;
 
     while (!osip_list_eol (accept_encoding->gen_params, pos))

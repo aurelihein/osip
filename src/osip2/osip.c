@@ -39,7 +39,12 @@ static struct osip_mutex *ixt_fastmutex;
 
 #endif
 
-int
+static int  __osip_global_init (void);
+static void __osip_global_free (void);
+static int  increase_ref_count (void);
+static void decrease_ref_count (void);
+
+static int
 __osip_global_init ()
 {
   /* load the fsm configuration */
@@ -65,7 +70,7 @@ __osip_global_init ()
   return 0;
 }
 
-void
+static void
 __osip_global_free ()
 {
   __ict_unload_fsm ();
@@ -724,16 +729,13 @@ osip_find_transaction_and_add_event (osip_t * osip, osip_event_t * evt)
   return 0;
 }
 
+#ifndef OSIP_MT
 osip_transaction_t *
 osip_find_transaction (osip_t * osip, osip_event_t * evt)
 {
-#ifdef OSIP_MT
-  OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_BUG, NULL,
-	       "\n\n\n\nYou are using a multithreaded application, but this method is not allowed! Use osip_find_transaction_add_add_event() instead.\n\n\\n"));
-#endif
   return __osip_find_transaction (osip, evt, 0);
 }
+#endif
 
 osip_transaction_t *
 __osip_find_transaction (osip_t * osip, osip_event_t * evt, int consume)
@@ -965,7 +967,7 @@ static int ref_count = 0;
 static struct osip_mutex * ref_mutex = NULL;
 #endif
 
-int
+static int
 increase_ref_count (void)
 {
 #ifdef OSIP_MT
@@ -984,7 +986,7 @@ increase_ref_count (void)
   return 0;
 }
 
-void
+static void
 decrease_ref_count (void)
 {
 #ifdef OSIP_MT

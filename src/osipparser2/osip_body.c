@@ -22,7 +22,13 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
+#include <osipparser2/osip_body.h>
 #include "parser.h"
+
+static int osip_body_parse_header (osip_body_t * body,
+				   const char *start_of_osip_body_header,
+				   const char **next_body);
 
 int
 osip_body_init (osip_body_t ** body)
@@ -207,9 +213,9 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf)
   return 0;
 }
 
-int
+static int
 osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_header,
-		   const char **next_body)
+			const char **next_body)
 {
   const char *start_of_line;
   const char *end_of_line;
@@ -251,7 +257,6 @@ osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_heade
       osip_clrspace (hvalue);
 
       /* really store the header in the sip structure */
-      /* i = osip_message_set__header(sip, hname, hvalue); */
       if (osip_strncasecmp (hname, "content-type", 12) == 0)
 	i = osip_body_set_contenttype (body, hvalue);
       else
@@ -275,7 +280,7 @@ osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_heade
 int
 osip_body_parse (osip_body_t * body, const char *start_of_body)
 {
-  int i;
+  size_t i;
 
   if (body == NULL)
     return -1;
@@ -354,7 +359,7 @@ osip_body_to_str (const osip_body_t * body, char **dest)
   char *ptr;
   int pos;
   int i;
-  unsigned length;
+  size_t length;
 
   *dest = NULL;
   if (body == NULL)
@@ -382,7 +387,7 @@ osip_body_to_str (const osip_body_t * body, char **dest)
 	}
       if (length < tmp_body - ptr + strlen (tmp) + 4)
 	{
-	  int len;
+	  size_t len;
 
 	  len = tmp_body - ptr;
 	  length = length + strlen (tmp) + 4;
@@ -411,7 +416,7 @@ osip_body_to_str (const osip_body_t * body, char **dest)
 	}
       if (length < tmp_body - ptr + strlen (tmp) + 4)
 	{
-	  int len;
+	  size_t len;
 
 	  len = tmp_body - ptr;
 	  length = length + strlen (tmp) + 4;
@@ -433,7 +438,7 @@ osip_body_to_str (const osip_body_t * body, char **dest)
     }
   if (length < tmp_body - ptr + strlen (body->body) + 4)
     {
-      int len;
+      size_t len;
 
       len = tmp_body - ptr;
       length = length + strlen (body->body) + 4;

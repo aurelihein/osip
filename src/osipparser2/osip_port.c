@@ -40,6 +40,9 @@
 #include <sys/time.h>
 #elif defined(WIN32)
 #include <windows.h>
+#ifdef WIN32_USE_CRYPTO
+#include <Wincrypt.h>
+#endif
 #endif
 
 #if defined (HAVE_SYS_UNISTD_H)
@@ -68,8 +71,12 @@ static int use_syslog = 0;
 
 static unsigned int random_seed_set = 0;
 
+#ifndef WIN32_USE_CRYPTO
 unsigned int
 osip_build_random_number ()
+#else
+static unsigned int osip_fallback_random_number()
+#endif
 {
     if (!random_seed_set) {
 #ifndef WIN32
@@ -85,6 +92,29 @@ osip_build_random_number ()
 
     return rand();
 }
+
+#ifdef WIN32_USE_CRYPTO
+
+unsigned int osip_build_random_number()
+{
+   HCRYPTPROV crypto;
+   BOOL err;
+   unsigned int num;
+
+   err = CryptAcquireContext(&crypto, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
+   if (err) 
+   {
+      err = CryptGenRandom(crypto, sizeof(num), (BYTE *) &num);
+      CryptReleaseContext(crypto, 0);
+   }
+   if (!err) 
+   {
+      num = osip_fallback_random_number();
+   }
+   return num;
+}
+
+#endif                                                                        
 
 #if defined(__linux)
 #include <limits.h>
@@ -106,7 +136,7 @@ osip_atoi (const char *number)
 }
 
 char *
-osip_strncpy (char *dest, const char *src, int length)
+osip_strncpy (char *dest, const char *src, size_t length)
 {
 #ifdef WIN32
   memcpy (dest, src, length);
@@ -121,13 +151,13 @@ osip_strncpy (char *dest, const char *src, int length)
    size is the current allocated size of the element
 */
 char *
-__osip_sdp_append_string (char *string, int size, char *cur, char *string_osip_to_append)
+__osip_sdp_append_string (char *string, size_t size, char *cur, char *string_osip_to_append)
 {
-  int length = strlen (string_osip_to_append);
+  size_t length = strlen (string_osip_to_append);
 
-  if (cur + length - string > size)
+  if (cur - string + length > size)
     {
-      int length2;
+      size_t length2;
 
       length2 = cur - string;
       string = realloc (string, size + length + 10);
@@ -166,7 +196,7 @@ char *
 osip_strdup (const char *ch)
 {
   char *copy;
-  int length;
+  size_t length;
   if (ch == NULL)
     return NULL;
   length = strlen (ch);
@@ -199,7 +229,7 @@ osip_tolower (char *word)
     *word = (char) tolower (*word);
 #else
   int i;
-  int len = strlen (word);
+  size_t len = strlen (word);
 
   for (i = 0; i <= len - 1; i++)
     {
@@ -236,7 +266,7 @@ osip_clrspace (char *word)
 {
   char *pbeg;
   char *pend;
-  int len;
+  size_t len;
 
   if (word == NULL)
     return -1;
@@ -409,7 +439,7 @@ __osip_quote_find (const char *qstring)
 }
 
 char *
-__osip_enquote(const char *s)
+osip_enquote(const char *s)
 {
   char *rtn;
   char *t;
@@ -439,9 +469,9 @@ __osip_enquote(const char *s)
 }
 
 void
-__osip_dequote(char *s)
+osip_dequote(char *s)
 {
-  int len;
+  size_t len;
 
   if (*s == '\0')
     return;
@@ -684,7 +714,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 
 
 void *
-osip_malloc (int size)
+osip_malloc (size_t size)
 {
   void *value;
 

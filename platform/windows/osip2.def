@@ -50,9 +50,6 @@ EXPORTS
      osip_negotiation_ctx_set_local_sdp     @46
      osip_negotiation_ctx_set_mycontext     @47
      osip_negotiation_ctx_set_remote_sdp     @48
-     osip_negotiation_find_audio_payload     @49
-     osip_negotiation_find_other_payload     @50
-     osip_negotiation_find_video_payload     @51
      osip_negotiation_free     @52
      osip_negotiation_init     @53
      osip_negotiation_remove_audio_payloads     @54

@@ -22,6 +22,8 @@
 
 #ifdef NEW_TIMER
 
+#include "fsm.h"
+
 void
 add_gettimeofday(struct timeval *atv, int ms)
 {
@@ -44,5 +46,21 @@ min_timercmp(struct timeval *tv1, struct timeval *tv2)
       tv1->tv_usec = tv2->tv_usec;
     }
 }
+
+#ifdef WIN32
+
+#include <time.h>
+#include <sys/timeb.h>
+
+int gettimeofday(struct timeval *tp, void *tz)
+{
+   struct _timeb timebuffer;
+
+   _ftime(&timebuffer);
+   tp->tv_sec = timebuffer.time;
+   tp->tv_usec = timebuffer.millitm * 1000;
+   return 0;
+}
+#endif
 
 #endif

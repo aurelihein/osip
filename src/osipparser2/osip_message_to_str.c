@@ -26,6 +26,22 @@
 
 extern const char *osip_protocol_version;
 
+static int strcat_simple_header (char **_string, size_t *malloc_size,
+				 char **_message, void *ptr_header,
+				 char *header_name, size_t size_of_header,
+				 int (*xxx_to_str) (void *, char **),
+				 char **next);
+static int strcat_headers_one_per_line (char **_string, size_t *malloc_size,
+					char **_message, osip_list_t * headers,
+					char *header, size_t size_of_header,
+					int (*xxx_to_str) (void *, char **),
+					char **next);
+static int strcat_headers_all_on_one_line (char **_string, size_t *malloc_size,
+					   char **_message, osip_list_t * headers,
+					   char *header, size_t size_of_header,
+					   int (*xxx_to_str) (void *, char **),
+					   char **next);
+
 static int
 __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
 {
@@ -148,10 +164,10 @@ osip_message_get_uri (const osip_message_t * sip)
   return sip->req_uri;
 }
 
-int
-strcat_simple_header (char **_string, int *malloc_size,
+static int
+strcat_simple_header (char **_string, size_t *malloc_size,
 		      char **_message, void *ptr_header, char *header_name,
-		      int size_of_header, int (*xxx_to_str) (void *, char **),
+		      size_t size_of_header, int (*xxx_to_str) (void *, char **),
 		      char **next)
 {
   char *string;
@@ -167,7 +183,7 @@ strcat_simple_header (char **_string, int *malloc_size,
       if (*malloc_size < message - string + 100 + size_of_header)
 	/* take some memory avoid to realloc too much often */
 	{			/* should not happen often */
-	  int size = message - string;
+	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
 	  string = realloc (string, *malloc_size);
 	  if (string == NULL)
@@ -188,9 +204,9 @@ strcat_simple_header (char **_string, int *malloc_size,
 	  *next = NULL;
 	  return -1;
 	}
-      if (*malloc_size < message - string + (int) strlen (tmp) + 100)
+      if (*malloc_size < message - string + strlen (tmp) + 100)
 	{
-	  int size = message - string;
+	  size_t size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
 	  string = realloc (string, *malloc_size);
 	  if (string == NULL)
@@ -213,10 +229,10 @@ strcat_simple_header (char **_string, int *malloc_size,
   return 0;
 }
 
-int
-strcat_headers_one_per_line (char **_string, int *malloc_size,
+static int
+strcat_headers_one_per_line (char **_string, size_t *malloc_size,
 			     char **_message, osip_list_t * headers,
-			     char *header, int size_of_header,
+			     char *header, size_t size_of_header,
 			     int (*xxx_to_str) (void *, char **), char **next)
 {
   char *string;
@@ -237,7 +253,7 @@ strcat_headers_one_per_line (char **_string, int *malloc_size,
       if (*malloc_size < message - string + 100 + size_of_header)
 	/* take some memory avoid to realloc too much often */
 	{			/* should not happen often */
-	  int size = message - string;
+	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
 	  string = realloc (string, *malloc_size);
 	  if (string == NULL)
@@ -259,9 +275,9 @@ strcat_headers_one_per_line (char **_string, int *malloc_size,
 	}
       message = message + strlen (message);
 
-      if (*malloc_size < message - string + (int) strlen (tmp) + 100)
+      if (*malloc_size < message - string + strlen (tmp) + 100)
 	{
-	  int size = message - string;
+	  size_t size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
 	  string = realloc (string, *malloc_size);
 	  if (string == NULL)
@@ -285,10 +301,10 @@ strcat_headers_one_per_line (char **_string, int *malloc_size,
   return 0;
 }
 
-int
-strcat_headers_all_on_one_line (char **_string, int *malloc_size,
+static int
+strcat_headers_all_on_one_line (char **_string, size_t *malloc_size,
 				char **_message, osip_list_t * headers,
-				char *header, int size_of_header,
+				char *header, size_t size_of_header,
 				int (*xxx_to_str) (void *, char **),
 				char **next)
 {
@@ -307,7 +323,7 @@ strcat_headers_all_on_one_line (char **_string, int *malloc_size,
       if (*malloc_size < message - string + 100 + size_of_header)
 	/* take some memory avoid to realloc too much often */
 	{			/* should not happen often */
-	  int size = message - string;
+	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
 	  string = realloc (string, *malloc_size);
 	  if (string == NULL)
@@ -334,9 +350,9 @@ strcat_headers_all_on_one_line (char **_string, int *malloc_size,
 	      *next = NULL;
 	      return -1;
 	    }
-	  if (*malloc_size < message - string + (int) strlen (tmp) + 100)
+	  if (*malloc_size < message - string + strlen (tmp) + 100)
 	    {
-	      int size = message - string;
+	      size_t size = message - string;
 	      *malloc_size = message - string + (int) strlen (tmp) + 100;
 	      string = realloc (string, *malloc_size);
 	      if (string == NULL)
@@ -395,7 +411,7 @@ osip_message_force_update (osip_message_t * sip)
 int
 osip_message_to_str (osip_message_t * sip, char **dest)
 {
-  int malloc_size;
+  size_t malloc_size;
   /* Added at SIPit day1 */
   char *start_of_bodies;
   char *content_length_to_modify = NULL;
@@ -632,9 +648,9 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	  return -1;
 	}
 
-      if (malloc_size < message - *dest + 100 + 16 )
+      if (malloc_size < (size_t) (message - *dest + 100 + 16) )
 	{
-	  int size = message - *dest;
+	  size_t size = message - *dest;
 	  malloc_size = message - *dest + 16 + 100;
 	  *dest = realloc (*dest, malloc_size);
 	  if (*dest == NULL)
@@ -786,9 +802,9 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
   /* we have to create the body before adding the contentlength */
   /* add enough lenght for "Content-Length: " */
-  if (malloc_size < message - *dest + 100 + 16 )
+  if (malloc_size < (size_t) (message - *dest + 100 + 16) )
     {
-      int size = message - *dest;
+      size_t size = message - *dest;
       malloc_size = message - *dest + 16 + 100;
       *dest = realloc (*dest, malloc_size);
       if (*dest == NULL)
@@ -875,7 +891,7 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
       if (malloc_size < message - *dest + 100 + strlen(tmp) )
 	{
-	  int size = message - *dest;
+	  size_t size = message - *dest;
 	  malloc_size = message - *dest + strlen(tmp) + 100;
 	  *dest = realloc (*dest, malloc_size);
 	  if (*dest == NULL)
@@ -911,7 +927,7 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
   /* we NOW have the length of bodies: */
   {
-    int size = strlen (start_of_bodies);
+    size_t size = strlen (start_of_bodies);
     char tmp[15];
 
     sprintf (tmp, "%i", size);

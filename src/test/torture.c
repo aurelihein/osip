@@ -29,9 +29,9 @@
 #include <osip2/internal.h>
 
 int test_message (char *msg, int verbose, int clone);
+static void usage(void);
 
-void
-usage ()
+static void usage ()
 {
   fprintf (stderr, "Usage: ./torture_test torture_file number [-v] [-c]\n");
   exit (1);

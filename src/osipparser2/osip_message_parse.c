@@ -24,6 +24,15 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+static void osip_util_replace_all_lws (char *sip_message);
+static int osip_message_set__header (osip_message_t * sip, const char *hname,
+				     const char *hvalue);
+static int msg_handle_multiple_values (osip_message_t * sip, char *hname,
+				       char *hvalue);
+static int msg_headers_parse (osip_message_t * sip, const char *start_of_header,
+			      const char **body);
+static int msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
+				const char **next_body);
 
 
 static int
@@ -177,7 +186,7 @@ __osip_find_next_occurence (const char *str, const char *buf,
 /* This method replace all LWS with SP located before the
    initial CRLFCRLF found or the end of the string.
 */
-void
+static void
 osip_util_replace_all_lws(char *sip_message)
 {
   const char *end_of_message;
@@ -315,7 +324,7 @@ __osip_find_next_crlfcrlf (const char *start_of_part, const char **end_of_part)
     }
 }
 
-int
+static int
 osip_message_set__header (osip_message_t * sip, const char *hname, const char *hvalue)
 {
   int my_index;
@@ -352,7 +361,7 @@ osip_message_set__header (osip_message_t * sip, const char *hname, const char *h
   return 0;
 }
 
-int
+static int
 msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
 {
   int i;
@@ -472,7 +481,7 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
 }
 
 /* set all headers */
-int
+static int
 msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 		   const char **body)
 {
@@ -576,9 +585,9 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 
 
 /* internal method to parse the body */
-int
+static int
 msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
-		const char **next_body)
+		     const char **next_body)
 {
   const char *start_of_body;
   const char *end_of_body;

@@ -44,7 +44,6 @@ EXPORTS
      osip_body_free      @40	
      osip_body_init      @41	
      osip_body_parse      @42	
-     osip_body_parse_header      @43	
      osip_body_parse_mime      @44	
      osip_body_set_contenttype      @45	
      osip_body_set_header      @46	
@@ -169,7 +168,6 @@ EXPORTS
      osip_message_header_get_byname        @165	
      osip_message_init        @166	
      osip_message_parse        @167	
-     osip_message_set__header        @168	
      osip_message_set_accept        @169	
      osip_message_set_accept_encoding        @170	
      osip_message_set_accept_language        @171	
@@ -255,7 +253,6 @@ EXPORTS
      osip_uri_to_str        @251	
      osip_uri_to_str_canonical        @252	
      osip_usleep        @253	
-     osip_util_replace_all_lws        @254	
      osip_via_clone        @255	
      osip_via_free        @256	
      osip_via_init        @257	
@@ -362,6 +359,8 @@ EXPORTS
      via_set_port        @358	
      via_set_protocol        @359	
      via_set_version        @360
-	 MD5Update   @362
-	 MD5Final    @363
-	 MD5Init     @364
+     MD5Update   @362
+     MD5Final    @363
+     MD5Init     @364
+     osip_enquote @365
+     osip_dequote @366

@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 int
 osip_content_length_init (osip_content_length_t ** cl)

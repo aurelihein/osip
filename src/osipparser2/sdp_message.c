@@ -28,6 +28,34 @@
 #define ERR_DISCARD  0		/* wrong header */
 #define WF           1		/* well formed header */
 
+static int sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_z (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next);
+
+static int sdp_append_media (char *string, int size, char *tmp,
+			     sdp_media_t * media, char **next_tmp);
+static int sdp_append_attribute (char *string, int size, char *tmp,
+				 sdp_attribute_t * attribute, char **next_tmp);
+static int sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
+			   char **next_tmp);
+static int sdp_append_time_descr (char *string, int size, char *tmp,
+				  sdp_time_descr_t * time_descr, char **next_tmp);
+static int sdp_append_bandwidth (char *string, int size, char *tmp,
+				 sdp_bandwidth_t * bandwidth, char **next_tmp);
+static int sdp_append_connection (char *string, int size, char *tmp,
+				  sdp_connection_t * conn, char **next_tmp);
 
 int
 sdp_bandwidth_init (sdp_bandwidth_t ** b)
@@ -243,7 +271,7 @@ sdp_message_init (sdp_message_t ** sdp)
   return 0;
 }
 
-int
+static int
 sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -279,8 +307,7 @@ sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-
-int
+static int
 sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -359,7 +386,7 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -400,7 +427,7 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -457,7 +484,7 @@ sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -496,7 +523,12 @@ sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next);
+static int sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next);
+static int
 sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -538,7 +570,7 @@ sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -580,7 +612,7 @@ sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -721,7 +753,7 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -796,7 +828,7 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -862,8 +894,7 @@ sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-
-int
+static int
 sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -912,7 +943,7 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_z (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -953,7 +984,7 @@ sdp_message_parse_z (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -1051,7 +1082,7 @@ sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -1154,7 +1185,7 @@ sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-int
+static int
 sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
 {
   char *equal;
@@ -1563,8 +1594,7 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
   return 0;
 }
 
-/* internal facility */
-int
+static int
 sdp_append_connection (char *string, int size, char *tmp,
 		       sdp_connection_t * conn, char **next_tmp)
 {
@@ -1596,8 +1626,7 @@ sdp_append_connection (char *string, int size, char *tmp,
   return 0;
 }
 
-/* internal facility */
-int
+static int
 sdp_append_bandwidth (char *string, int size, char *tmp,
 		      sdp_bandwidth_t * bandwidth, char **next_tmp)
 {
@@ -1616,7 +1645,7 @@ sdp_append_bandwidth (char *string, int size, char *tmp,
   return 0;
 }
 
-int
+static int
 sdp_append_time_descr (char *string, int size, char *tmp,
 		       sdp_time_descr_t * time_descr, char **next_tmp)
 {
@@ -1650,7 +1679,7 @@ sdp_append_time_descr (char *string, int size, char *tmp,
   return 0;
 }
 
-int
+static int
 sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
 		char **next_tmp)
 {
@@ -1669,8 +1698,7 @@ sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
   return 0;
 }
 
-/* internal facility */
-int
+static int
 sdp_append_attribute (char *string, int size, char *tmp,
 		      sdp_attribute_t * attribute, char **next_tmp)
 {
@@ -1691,7 +1719,7 @@ sdp_append_attribute (char *string, int size, char *tmp,
 }
 
 /* internal facility */
-int
+static int
 sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
 		  char **next_tmp)
 {

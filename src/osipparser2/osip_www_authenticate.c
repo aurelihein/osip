@@ -23,6 +23,8 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
+#include "parser.h"
 
 int
 osip_www_authenticate_init (osip_www_authenticate_t ** dest)
@@ -497,7 +499,7 @@ osip_www_authenticate_set_qop_options (osip_www_authenticate_t * www_authenticat
 int
 osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa, char **dest)
 {
-  int len;
+  size_t len;
   char *tmp;
 
   *dest = NULL;

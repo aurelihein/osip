@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 int
@@ -126,8 +127,8 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
 {
   char *buf;
   char *tmp;
-  int len;
-  int plen;
+  size_t len;
+  size_t plen;
 
   *dest = NULL;
   if ((call_info == NULL) || (call_info->element == NULL))

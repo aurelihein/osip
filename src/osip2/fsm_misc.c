@@ -24,10 +24,12 @@
 #include <osip2/osip.h>
 #include "fsm.h"
 
+static transition_t *fsm_findmethod (type_t type, state_t state,
+				     osip_statemachine_t * statemachine);
 
 /* find the transition for state and type in statemachine */
 /* return NULL; if transition is not found.               */
-transition_t *
+static transition_t *
 fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
 {
   int pos;

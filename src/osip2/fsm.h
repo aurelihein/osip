@@ -23,6 +23,8 @@
 #include <osipparser2/osip_message.h>
 #include <osip2/osip.h>
 
+#include "xixt.h"
+
 #ifdef NEW_TIMER
 void add_gettimeofday(struct timeval *atv, int ms);
 void min_timercmp(struct timeval *tv1, struct timeval *tv2);
@@ -54,22 +56,22 @@ int udp_send_request (osip_message_t * request, osip_uri_t * proxy);
 /* send a response on UDP.                       */
 int udp_send_response (osip_message_t * response);
 
-void __ict_load_fsm ();
-void __ist_load_fsm ();
-void __nict_load_fsm ();
-void __nist_load_fsm ();
+void __ict_load_fsm (void);
+void __ist_load_fsm (void);
+void __nict_load_fsm (void);
+void __nist_load_fsm (void);
 
-void __ict_unload_fsm ();
-void __ist_unload_fsm ();
-void __nict_unload_fsm ();
-void __nist_unload_fsm ();
+void __ict_unload_fsm (void);
+void __ist_unload_fsm (void);
+void __nict_unload_fsm (void);
+void __nist_unload_fsm (void);
 
 /* load state machine structure for (UAC || UAS) for (INVITE || REQUEST) */
-osip_statemachine_t *__ict_get_fsm ();
-osip_statemachine_t *__ist_get_fsm ();
+osip_statemachine_t *__ict_get_fsm (void);
+osip_statemachine_t *__ist_get_fsm (void);
 
-osip_statemachine_t *__nict_get_fsm ();
-osip_statemachine_t *__nist_get_fsm ();
+osip_statemachine_t *__nict_get_fsm (void);
+osip_statemachine_t *__nist_get_fsm (void);
 
 typedef struct _transition_t
 {

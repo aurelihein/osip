@@ -23,6 +23,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 int
 osip_cseq_init (osip_cseq_t ** cseq)
@@ -142,7 +143,7 @@ osip_cseq_set_method (osip_cseq_t * cseq, char *method)
 int
 osip_cseq_to_str (const osip_cseq_t * cseq, char **dest)
 {
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((cseq == NULL) || (cseq->number == NULL) || (cseq->method == NULL))

@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 /* adds the via header to message.              */
@@ -58,7 +59,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
 /* OUTPUT: osip_message_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_appendtopvia (osip_message_t * sip, const char *hvalue)
+osip_message_append_via (osip_message_t * sip, const char *hvalue)
 {
   osip_via_t *via;
   int i;
@@ -294,8 +295,8 @@ int
 osip_via_to_str (const osip_via_t * via, char **dest)
 {
   char *buf;
-  int len;
-  int plen;
+  size_t len;
+  size_t plen;
   char *tmp;
 
   *dest = NULL;

@@ -21,6 +21,21 @@
 #include <osip2/osip_negotiation.h>
 #include <osip2/internal.h>
 
+static int sdp_partial_clone (osip_negotiation_t *config,
+			      osip_negotiation_ctx_t *con,
+			      sdp_message_t *remote, sdp_message_t **dest);
+static int sdp_confirm_media (osip_negotiation_t *config,
+			      osip_negotiation_ctx_t *context,
+			      sdp_message_t *remote, sdp_message_t **dest);
+static __payload_t *osip_negotiation_find_audio_payload (osip_negotiation_t *cfg,
+							 char *payload);
+static __payload_t *osip_negotiation_find_video_payload (osip_negotiation_t *cfg,
+							 char *payload);
+static __payload_t *osip_negotiation_find_other_payload (osip_negotiation_t *cfg,
+							 char *payload);
+
+
+
 int
 osip_negotiation_ctx_init (osip_negotiation_ctx_t ** con)
 {
@@ -412,7 +427,7 @@ osip_negotiation_remove_other_payloads (osip_negotiation_t *config)
   return 0;
 }
 
-__payload_t *
+static __payload_t *
 osip_negotiation_find_audio_payload (osip_negotiation_t *config, char *payload)
 {
   __payload_t *my;
@@ -432,7 +447,7 @@ osip_negotiation_find_audio_payload (osip_negotiation_t *config, char *payload)
   return NULL;
 }
 
-__payload_t *
+static __payload_t *
 osip_negotiation_find_video_payload (osip_negotiation_t *config, char *payload)
 {
   __payload_t *my;
@@ -452,7 +467,7 @@ osip_negotiation_find_video_payload (osip_negotiation_t *config, char *payload)
   return NULL;
 }
 
-__payload_t *
+static __payload_t *
 osip_negotiation_find_other_payload (osip_negotiation_t *config, char *payload)
 {
   __payload_t *my;
@@ -588,7 +603,7 @@ osip_negotiation_set_fcn_get_other_port (osip_negotiation_t *config,
   return 0;
 }
 
-int
+static int
 sdp_partial_clone (osip_negotiation_t *config,
 		   osip_negotiation_ctx_t * con, sdp_message_t * remote, sdp_message_t ** dest)
 {
@@ -635,7 +650,7 @@ sdp_partial_clone (osip_negotiation_t *config,
   return 0;
 }
 
-int
+static int
 sdp_confirm_media (osip_negotiation_t *config,
 		   osip_negotiation_ctx_t * context, sdp_message_t * remote, sdp_message_t ** dest)
 {

@@ -72,7 +72,7 @@ extern "C"
 /*
  * Allocate and Initialise a condition variable
  */
-  struct osip_cond *osip_cond_init ();
+  struct osip_cond *osip_cond_init (void);
 /*
  * Destroy a condition variable
  * @param cond The condition variable to destroy.

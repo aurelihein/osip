@@ -23,7 +23,13 @@
 #include "fsm.h"
 #include "xixt.h"
 
-int
+static int __osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * topvia);
+static int __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * from);
+static int __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to);
+static int __osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t * call_id);
+static int __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cseq);
+
+static int
 __osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * topvia)
 {
   int i;
@@ -37,7 +43,7 @@ __osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * to
   return -1;
 }
 
-int
+static int
 __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * from)
 {
   int i;
@@ -51,7 +57,7 @@ __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * fro
   return -1;
 }
 
-int
+static int
 __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to)
 {
   int i;
@@ -65,7 +71,7 @@ __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to)
   return -1;
 }
 
-int
+static int
 __osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t * call_id)
 {
   int i;
@@ -79,7 +85,7 @@ __osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t
   return -1;
 }
 
-int
+static int
 __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cseq)
 {
   int i;
@@ -555,8 +561,8 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
   osip_generic_param_t *b_origrequest;
   osip_generic_param_t *b_request;
   osip_via_t *topvia_request;
-  int length_br;
-  int length_br2;
+  size_t length_br;
+  size_t length_br2;
 
   /* some checks to avoid crashing on bad requests */
   if (tr == NULL || (tr->ist_context == NULL && tr->nist_context == NULL) ||

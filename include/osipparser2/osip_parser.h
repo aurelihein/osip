@@ -43,7 +43,7 @@ extern "C"
 /**
  * Initialise the oSIP parser.
  */
-  int parser_init ();
+  int parser_init (void);
 
 /**
  * Fix the via header for INCOMING requests only.
@@ -365,6 +365,12 @@ extern "C"
  * @param hvalue The string describing the element.
  */
   int osip_message_set_via (osip_message_t * sip, const char *hvalue);
+/**
+ * Append a Via header.
+ * @param sip The element to work on.
+ * @param hvalue The string describing the element.
+ */
+  int osip_message_append_via (osip_message_t * sip, const char *hvalue);
 /**
  * Get one Via header.
  * @param sip The element to work on.

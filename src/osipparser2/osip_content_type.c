@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 
@@ -153,7 +154,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
 {
   char *buf;
   char *tmp;
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((content_type == NULL) || (content_type->type == NULL)
@@ -181,7 +182,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
       }
     while (!osip_list_eol (content_type->gen_params, pos))
       {
-	int tmp_len;
+	size_t tmp_len;
 
 	u_param =
 	  (osip_generic_param_t *) osip_list_get (content_type->gen_params, pos);

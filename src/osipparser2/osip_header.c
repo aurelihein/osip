@@ -23,6 +23,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 
 /* Add a header to a SIP message.                           */
@@ -194,7 +195,7 @@ osip_header_free (osip_header_t * header)
 int
 osip_header_to_str (const osip_header_t * header, char **dest)
 {
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((header == NULL) || (header->hname == NULL))

@@ -22,6 +22,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 int
 osip_record_route_init (osip_record_route_t ** record_route)
@@ -89,7 +90,7 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
   char *url;
   char *buf;
   int i;
-  int len;
+  size_t len;
 
   *dest = NULL;
   if ((record_route == NULL) || (record_route->url == NULL))
@@ -121,7 +122,7 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
   {
     int pos = 0;
     osip_generic_param_t *u_param;
-    int plen;
+    size_t plen;
     char *tmp;
 
     while (!osip_list_eol (record_route->gen_params, pos))

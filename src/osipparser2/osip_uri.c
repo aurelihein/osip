@@ -140,7 +140,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
       (0 != osip_strncasecmp (url->scheme, "sip", 3)
        && 0 != osip_strncasecmp (url->scheme, "sips", 4)))
     {				/* Is not a sipurl ! */
-      int i = strlen (tmp + 1);
+      size_t i = strlen (tmp + 1);
 
       if (i < 2)
 	return -1;
@@ -511,8 +511,8 @@ int
 osip_uri_to_str (const osip_uri_t * url, char **dest)
 {
   char *buf;
-  int len;
-  int plen;
+  size_t len;
+  size_t plen;
   char *tmp;
   const char *scheme;
 
@@ -890,11 +890,11 @@ osip_uri_param_clone (const osip_uri_param_t * uparam, osip_uri_param_t ** dest)
 char *
 __osip_uri_escape_nonascii_and_nondef (const char *string, const char *def)
 {
-  int alloc = strlen (string) + 1;
-  int length;
+  size_t alloc = strlen (string) + 1;
+  size_t length;
   char *ns = osip_malloc (alloc);
   unsigned char in;
-  int newlen = alloc;
+  size_t newlen = alloc;
   int index = 0;
   const char *tmp;
   int i;
@@ -974,7 +974,7 @@ __osip_uri_escape_header_param (char *string)
 void
 __osip_uri_unescape (char *string)
 {
-  int alloc = strlen (string) + 1;
+  size_t alloc = strlen (string) + 1;
   unsigned char in;
   int index = 0;
   unsigned int hex;

@@ -23,6 +23,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 #include "parser.h"
 
 int
@@ -412,7 +413,7 @@ osip_authorization_set_nonce_count (osip_authorization_t * authorization,
 int
 osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
 {
-  int len;
+  size_t len;
   char *tmp;
 
   *dest = NULL;

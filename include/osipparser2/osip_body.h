@@ -89,6 +89,20 @@ extern "C"
  */
   int osip_body_to_str (const osip_body_t * body, char **dest);
 
+/**
+ * Set the Content-Type header in the osip_body_t element.
+ * @param body The element to work on.
+ * @param hvalue The content type string value.
+ */
+  int osip_body_set_contenttype (osip_body_t * body, const char *hvalue);
+
+/**
+ * Add a header in the osip_body_t element.
+ * @param body The element to work on.
+ * @param hvalue The header string value.
+ */
+  int osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue);
+
 #ifdef __cplusplus
 }
 #endif

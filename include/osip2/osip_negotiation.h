@@ -379,15 +379,15 @@ extern "C"
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_audio_payloads ();
+  int osip_negotiation_remove_audio_payloads (osip_negotiation_t *config);
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_video_payloads ();
+  int osip_negotiation_remove_video_payloads (osip_negotiation_t *config);
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_other_payloads ();
+  int osip_negotiation_remove_other_payloads (osip_negotiation_t *config);
 #endif
 
 /**
