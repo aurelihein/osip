@@ -333,7 +333,7 @@ EXPORTS
     to_init  @331      
     to_parse  @332      
     token_set  @333      
-    trace  @334      
+    osip_trace  @334      
     trace_disable_level  @335      
     trace_enable_level  @336      
     trace_initialize  @337      
