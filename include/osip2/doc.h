@@ -82,7 +82,14 @@
  * 
  * If you are using the CVS:
  * <PRE>
- *   $> cvs -d 
+ *   $> export CVS_RSH="ssh"
+ *   $> cvs -z3 -d:ext:anoncvs@savannah.gnu.org:/webcvs/osip co osip
+ *      
+ *   The SSHv2 public key fingerprints for the machine hosting the cvs trees are:
+ *
+ *    RSA: 1024 80:5a:b0:0c:ec:93:66:29:49:7e:04:2b:fd:ba:2c:d5
+ *    DSA: 1024 4d:c8:dc:9a:99:96:ae:cc:ce:d3:2b:b0:a3:a4:95:a5
+ *
  *   $> ./autogen.sh
  * </PRE>
  *
