@@ -624,7 +624,7 @@ transaction_matching_response_to_xict_17_1_3 (transaction_t * tr,
 	return -1;
       // the Cseq field
       if (cseq_match(tr->cseq, response->cseq)!=0)
-	return 0;
+	return -1;
       // the To field
       if (response->to->url->username==NULL && tr->from->url->username!=NULL)
 	return -1;
