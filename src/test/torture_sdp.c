@@ -30,7 +30,7 @@
 #include <osip2/osip_negotiation.h>
 
 int test_sdp_message (char *msg, int verbose);
-int test_accessor_get_api (sdp_message_t * sdp);
+int test_accessor_get_api (sdp_message_t * sdp, int verbose);
 int test_accessor_set_api (sdp_message_t * sdp);
 
 
@@ -114,6 +114,8 @@ ua_sdp_get_audio_port (osip_negotiation_ctx_t * context, int pos_media)
 int
 main (int argc, char **argv)
 {
+  int success = 1;
+
   int i;
   int verbose = 0;		/* 0: verbose, 1 (or nothing: not verbose) */
   char *marker;
@@ -148,7 +150,7 @@ main (int argc, char **argv)
     {
       fprintf (stderr, "Failed to initialize the SDP negociator\n");
       fclose (torture_file);
-      exit (1);
+      exit (-1);
     }
   osip_negotiation_set_o_username (osip_negotiation, osip_strdup ("userX"));
   osip_negotiation_set_o_session_id (osip_negotiation,
@@ -240,6 +242,7 @@ main (int argc, char **argv)
       marker = fgets (tmp, 500, torture_file);
     }
 
+  success = test_sdp_message (msg, verbose);
   if (verbose)
     {
       fprintf (stdout, "test %s : ============================ \n", argv[2]);
@@ -252,13 +255,6 @@ main (int argc, char **argv)
 	fprintf (stdout, "test %s : ============================ FAILED\n",
 		 argv[2]);
     }
-  else
-    {
-      if (0 == test_sdp_message (msg, verbose))
-	fprintf (stdout, "test %s : OK\n", argv[2]);
-      else
-	fprintf (stdout, "test %s : FAILED\n", argv[2]);
-    }
 
   osip_free (msg);
   osip_free (tmp);
@@ -267,109 +263,141 @@ main (int argc, char **argv)
   osip_free (ua_context->m_video_port);
   osip_free (ua_context);
   fclose (torture_file);
-  return 0;
+  exit (success);
+  return success;
 }
 
 int
 test_sdp_message (char *msg, int verbose)
 {
   sdp_message_t *sdp;
+  char *result;
+  int i;
+  
+  sdp_message_init (&sdp);
+  if (sdp_message_parse (sdp, msg) != 0)
+    {
+      if (verbose)
+	fprintf (stdout, "ERROR: failed while parsing!\n");
+      sdp_message_free (sdp);
+      return 2;
+    }
+
+      
+  i = sdp_message_to_str (sdp, &result);
+  test_accessor_get_api (sdp, verbose);
+  if (i == -1)
+    {
+      if (verbose)
+	fprintf (stdout, "ERROR: failed while printing message!\n");
+      sdp_message_free (sdp);
+      return 3;
+    }
+
+  if (verbose)
+    fprintf (stdout, "%s", result);
+  if (strlen (result) != strlen (msg))
+    {
+      if (verbose)
+	fprintf (stdout, "length differ from original message!\n");
+    }
+  if (0 == strncmp (result, msg, strlen (result)))
+    {
+      if (verbose)
+	fprintf (stdout, "result equals msg!!\n");
+    }
+  osip_free (result);
+  
 
   {
-    char *result;
-
-    sdp_message_init (&sdp);
-    if (sdp_message_parse (sdp, msg) != 0)
+    osip_negotiation_ctx_t *context;
+    sdp_message_t *dest;
+    sdp_message_t *sdp2;
+    
+    i = osip_negotiation_ctx_init (&context);
+    i = osip_negotiation_ctx_set_mycontext (context,
+					    (void *) ua_context);
+    
+    osip_negotiation_sdp_build_offer (osip_negotiation,
+				      context, &sdp2,
+				      ua_context->m_audio_port,
+				      ua_context->m_video_port);
+    if (i!=0)
       {
-	fprintf (stdout, "ERROR: failed while parsing!\n");
-	sdp_message_free (sdp);	/* try to free msg, even if it failed! */
-	/* this seems dangerous..... */
+	sdp_message_free (sdp2);
+	if (verbose)
+	  fprintf (stdout, "Error: Cannot build offer\n");
 	return -1;
       }
-    else
+
+    i = sdp_message_to_str (sdp2, &result);
+    if (i!=0)
       {
-	int i;
-
-	i = sdp_message_to_str (sdp, &result);
-	test_accessor_get_api (sdp);
-	if (i == -1)
-	  {
-	    fprintf (stdout, "ERROR: failed while printing message!\n");
-	    sdp_message_free (sdp);
-	    return -1;
-	  }
-	else
-	  {
-	    if (verbose)
-	      fprintf (stdout, "%s", result);
-	    if (strlen (result) != strlen (msg))
-	      fprintf (stdout, "length differ from original message!\n");
-	    if (0 == strncmp (result, msg, strlen (result)))
-	      fprintf (stdout, "result equals msg!!\n");
-	    osip_free (result);
-	    {
-	      osip_negotiation_ctx_t *context;
-
-	      sdp_message_t *dest;
-
-	      i = osip_negotiation_ctx_init (&context);
-	      i =
-		osip_negotiation_ctx_set_mycontext (context,
-						    (void *) ua_context);
-
-	      {
-		sdp_message_t *sdp;
-
-		osip_negotiation_sdp_build_offer (osip_negotiation,
-						  context, &sdp,
-						  ua_context->m_audio_port,
-						  ua_context->m_video_port);
-		sdp_message_to_str (sdp, &result);
-		fprintf (stdout, "Here is the offer:\n%s\n", result);
-		osip_free (result);
-		osip_negotiation_sdp_message_put_on_hold (sdp);
-		sdp_message_to_str (sdp, &result);
-		fprintf (stdout, "Here is the offer on hold:\n%s\n", result);
-		osip_free (result);
-		sdp_message_free (sdp);
-	      }
-
-
-
-	      i = osip_negotiation_ctx_set_remote_sdp (context, sdp);
-	      if (i != 0)
-		{
-		  fprintf (stdout,
-			   "Initialisation of context failed. Could not negociate\n");
-		}
-	      else
-		{
-		  fprintf (stdout, "Trying to execute a SIP negotiation:\n");
-		  i =
-		    osip_negotiation_ctx_execute_negotiation
-		    (osip_negotiation, context);
-		  fprintf (stdout, "return code: %i\n", i);
-		  if (i == 200)
-		    {
-		      dest = osip_negotiation_ctx_get_local_sdp (context);
-		      fprintf (stdout, "SDP answer:\n");
-		      i = sdp_message_to_str (dest, &result);
-		      if (i != 0)
-			fprintf (stdout,
-				 "Error found in SDP answer while printing\n");
-		      else
-			fprintf (stdout, "%s\n", result);
-		      osip_free (result);
-		    }
-		  osip_negotiation_ctx_free (context);
-		  return 0;
-		}
-	    }
-	  }
-	sdp_message_free (sdp);
+	sdp_message_free (sdp2);
+	if (verbose)
+	  fprintf (stdout, "Error: Cannot print offer\n");
+	return -1;
       }
+
+    osip_free (result);
+
+    osip_negotiation_sdp_message_put_on_hold (sdp);
+    i = sdp_message_to_str (sdp2, &result);
+    if (i!=0)
+      {
+	sdp_message_free (sdp2);
+	if (verbose)
+	  fprintf (stdout, "Error: Cannot put offer on hold\n");
+	return -1;
+      }
+
+    if (verbose)
+      fprintf (stdout, "Here is the offer on hold:\n%s\n", result);
+    osip_free(result);
+    sdp_message_free (sdp2);
+    
+    i = osip_negotiation_ctx_set_remote_sdp (context, sdp);
+    if (i != 0)
+      {
+	if (verbose)
+	  fprintf (stdout,
+		   "Initialisation of context failed. Could not negociate\n");
+	return -1;
+      }
+
+    {
+      int success=4;
+      if (verbose)
+	fprintf (stdout, "Trying to execute a SIP negotiation:\n");
+      i =
+	osip_negotiation_ctx_execute_negotiation
+	(osip_negotiation, context);
+      if (verbose)
+	fprintf (stdout, "return code: %i\n", i);
+      if (i == 200)
+	{
+	  success=0;
+	  dest = osip_negotiation_ctx_get_local_sdp (context);
+	  if (verbose)
+	    fprintf (stdout, "SDP answer:\n");
+	  i = sdp_message_to_str (dest, &result);
+	  if (verbose)
+	    {
+	      if (i != 0)
+		fprintf (stdout,
+			 "Error found in SDP answer while printing\n");
+	      else
+		fprintf (stdout, "%s\n", result);
+	    }
+	  osip_free (result);
+	}
+      osip_negotiation_ctx_free (context);
+      return success;
+    }
   }
-  return 0;
+  sdp_message_free (sdp);
+  
+  return 4; // negotiation failed
 }
 
 int
@@ -379,7 +407,7 @@ test_accessor_set_api (sdp_message_t * sdp)
 }
 
 int
-test_accessor_get_api (sdp_message_t * sdp)
+test_accessor_get_api (sdp_message_t * sdp, int verbose)
 {
   char *tmp;
   char *tmp2;
@@ -389,168 +417,135 @@ test_accessor_get_api (sdp_message_t * sdp)
   int i;
   int k;
 
-  if (sdp_message_v_version_get (sdp))
-    printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
-  if (sdp_message_o_username_get (sdp))
-    printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
-  if (sdp_message_o_sess_id_get (sdp))
-    printf (" |%s|", sdp_message_o_sess_id_get (sdp));
-  if (sdp_message_o_sess_version_get (sdp) != NULL)
-    printf (" |%s|", sdp_message_o_sess_version_get (sdp));
-  if (sdp_message_o_nettype_get (sdp))
-    printf (" |%s|", sdp_message_o_nettype_get (sdp));
-  if (sdp_message_o_addrtype_get (sdp))
-    printf (" |%s|", sdp_message_o_addrtype_get (sdp));
-  if (sdp_message_o_addr_get (sdp))
-    printf (" |%s|\n", sdp_message_o_addr_get (sdp));
-  if (sdp_message_s_name_get (sdp))
-    printf ("s_name:         |%s|\n", sdp_message_s_name_get (sdp));
-  if (sdp_message_i_info_get (sdp, -1))
-    printf ("i_info:         |%s|\n", sdp_message_i_info_get (sdp, -1));
-  if (sdp_message_u_uri_get (sdp))
-    printf ("u_uri:          |%s|\n", sdp_message_u_uri_get (sdp));
-
-  i = 0;
-  do
+  if (verbose)
     {
-      tmp = sdp_e_email_get (sdp, i);
-      if (tmp != NULL)
-	printf ("e_email:        |%s|\n", tmp);
-      i++;
-    }
-  while (tmp != NULL);
-  i = 0;
-  do
-    {
-      tmp = sdp_message_p_phone_get (sdp, i);
-      if (tmp != NULL)
-	printf ("p_phone:        |%s|\n", tmp);
-      i++;
-    }
-  while (tmp != NULL);
-
-  k = 0;
-  tmp = sdp_message_c_nettype_get (sdp, -1, k);
-  tmp2 = sdp_message_c_addrtype_get (sdp, -1, k);
-  tmp3 = sdp_message_c_addr_get (sdp, -1, k);
-  tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, -1, k);
-  tmp5 = sdp_message_c_addr_multicast_int_get (sdp, -1, k);
-  if (tmp != NULL && tmp4 != NULL && tmp5 != NULL)
-    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-	    tmp, tmp2, tmp3, tmp4, tmp5);
-  else if (tmp != NULL && tmp4 != NULL)
-    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-	    tmp, tmp2, tmp3, tmp4, "(null)");
-  else if (tmp != NULL && tmp5 != NULL)
-    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-	    tmp, tmp2, tmp3, "(null)", tmp5);
-  k = 0;
-  do
-    {
-      tmp = sdp_message_b_bwtype_get (sdp, -1, k);
-      tmp2 = sdp_message_b_bandwidth_get (sdp, -1, k);
-      if (tmp != NULL && tmp2 != NULL)
-	printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
-      else if (tmp != NULL)
-	printf ("b_bandwidth:    |%s|:|%s|\n", tmp, "(null)");
-      k++;
-    }
-  while (tmp != NULL);
-
-  k = 0;
-  do
-    {
-      tmp = sdp_message_t_start_time_get (sdp, k);
-      tmp2 = sdp_message_t_stop_time_get (sdp, k);
-      if (tmp != NULL && tmp2 != NULL)
-	printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
-      else if (tmp != NULL)
-	printf ("t_descr_time:   |%s| |%s|\n", tmp, "(null)");
+      if (sdp_message_v_version_get (sdp))
+	printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
+      if (sdp_message_o_username_get (sdp))
+	printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
+      if (sdp_message_o_sess_id_get (sdp))
+	printf (" |%s|", sdp_message_o_sess_id_get (sdp));
+      if (sdp_message_o_sess_version_get (sdp) != NULL)
+	printf (" |%s|", sdp_message_o_sess_version_get (sdp));
+      if (sdp_message_o_nettype_get (sdp))
+	printf (" |%s|", sdp_message_o_nettype_get (sdp));
+      if (sdp_message_o_addrtype_get (sdp))
+	printf (" |%s|", sdp_message_o_addrtype_get (sdp));
+      if (sdp_message_o_addr_get (sdp))
+	printf (" |%s|\n", sdp_message_o_addr_get (sdp));
+      if (sdp_message_s_name_get (sdp))
+	printf ("s_name:         |%s|\n", sdp_message_s_name_get (sdp));
+      if (sdp_message_i_info_get (sdp, -1))
+	printf ("i_info:         |%s|\n", sdp_message_i_info_get (sdp, -1));
+      if (sdp_message_u_uri_get (sdp))
+	printf ("u_uri:          |%s|\n", sdp_message_u_uri_get (sdp));
+      
       i = 0;
       do
 	{
-	  tmp2 = sdp_message_r_repeat_get (sdp, k, i);
+	  tmp = sdp_e_email_get (sdp, i);
+	  if (tmp != NULL)
+	    printf ("e_email:        |%s|\n", tmp);
 	  i++;
-	  if (tmp2 != NULL)
-	    printf ("r_repeat:    |%s|\n", tmp2);
 	}
-      while (tmp2 != NULL);
-      k++;
-    }
-  while (tmp != NULL);
-
-  /* TODO r */
-
-  if (sdp_message_z_adjustments_get (sdp) != NULL)
-    printf ("z_adjustments:  |%s|\n", sdp_message_z_adjustments_get (sdp));
-
-  tmp = sdp_message_k_keytype_get (sdp, -1);
-  tmp2 = sdp_message_k_keydata_get (sdp, -1);
-  if (tmp != NULL && tmp2 != NULL)
-    printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
-  else if (tmp != NULL)
-    printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
-
-  k = 0;
-  do
-    {
-      tmp = sdp_message_a_att_field_get (sdp, -1, k);
-      tmp2 = sdp_message_a_att_value_get (sdp, -1, k);
-      if (tmp != NULL && tmp2 != NULL)
-	printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
-      if (tmp != NULL)
-	printf ("a_attribute:    |%s|:|%s|\n", tmp, "(null)");
-      k++;
-    }
-  while (tmp != NULL);
-
-  i = 0;
-  while (!sdp_message_endof_media (sdp, i))
-    {
-
-      tmp = sdp_message_m_media_get (sdp, i);
-      tmp2 = sdp_message_m_port_get (sdp, i);
-      tmp3 = sdp_message_m_number_of_port_get (sdp, i);
-      tmp4 = sdp_message_m_proto_get (sdp, i);
-      if (tmp != NULL)
-	printf ("m_media:        |%s|", tmp);
-      else
-	printf ("m_media:        |%s|", "(null)");
-      if (tmp2 != NULL)
-	printf (" |%s|", tmp2);
-      else
-	printf (" |%s|", "(null)");
-      if (tmp3 != NULL)
-	printf (" |%s|", tmp3);
-      else
-	printf (" |%s|", "(null)");
-      if (tmp4 != NULL)
-	printf (" |%s|", tmp4);
-      else
-	printf (" |%s|", "(null)");
+      while (tmp != NULL);
+      i = 0;
+      do
+	{
+	  tmp = sdp_message_p_phone_get (sdp, i);
+	  if (tmp != NULL)
+	    printf ("p_phone:        |%s|\n", tmp);
+	  i++;
+	}
+      while (tmp != NULL);
+      
+      k = 0;
+      tmp = sdp_message_c_nettype_get (sdp, -1, k);
+      tmp2 = sdp_message_c_addrtype_get (sdp, -1, k);
+      tmp3 = sdp_message_c_addr_get (sdp, -1, k);
+      tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, -1, k);
+      tmp5 = sdp_message_c_addr_multicast_int_get (sdp, -1, k);
+      if (tmp != NULL && tmp4 != NULL && tmp5 != NULL)
+	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+		tmp, tmp2, tmp3, tmp4, tmp5);
+      else if (tmp != NULL && tmp4 != NULL)
+	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+		tmp, tmp2, tmp3, tmp4, "(null)");
+      else if (tmp != NULL && tmp5 != NULL)
+	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+		tmp, tmp2, tmp3, "(null)", tmp5);
       k = 0;
       do
 	{
-	  tmp = sdp_message_m_payload_get (sdp, i, k);
-	  if (tmp != NULL)
-	    printf (" |%s|", tmp);
+	  tmp = sdp_message_b_bwtype_get (sdp, -1, k);
+	  tmp2 = sdp_message_b_bandwidth_get (sdp, -1, k);
+	  if (tmp != NULL && tmp2 != NULL)
+	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+	  else if (tmp != NULL)
+	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, "(null)");
 	  k++;
 	}
       while (tmp != NULL);
-      printf ("\n");
+      
       k = 0;
       do
 	{
-	  tmp = sdp_message_c_nettype_get (sdp, i, k);
-	  tmp2 = sdp_message_c_addrtype_get (sdp, i, k);
-	  tmp3 = sdp_message_c_addr_get (sdp, i, k);
-	  tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, i, k);
-	  tmp5 = sdp_message_c_addr_multicast_int_get (sdp, i, k);
+	  tmp = sdp_message_t_start_time_get (sdp, k);
+	  tmp2 = sdp_message_t_stop_time_get (sdp, k);
+	  if (tmp != NULL && tmp2 != NULL)
+	    printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
+	  else if (tmp != NULL)
+	    printf ("t_descr_time:   |%s| |%s|\n", tmp, "(null)");
+	  i = 0;
+	  do
+	    {
+	      tmp2 = sdp_message_r_repeat_get (sdp, k, i);
+	      i++;
+	      if (tmp2 != NULL)
+		printf ("r_repeat:    |%s|\n", tmp2);
+	    }
+	  while (tmp2 != NULL);
+	  k++;
+	}
+      while (tmp != NULL);
+      
+      /* TODO r */
+      
+      if (sdp_message_z_adjustments_get (sdp) != NULL)
+	printf ("z_adjustments:  |%s|\n", sdp_message_z_adjustments_get (sdp));
+      
+      tmp = sdp_message_k_keytype_get (sdp, -1);
+      tmp2 = sdp_message_k_keydata_get (sdp, -1);
+      if (tmp != NULL && tmp2 != NULL)
+	printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
+      else if (tmp != NULL)
+	printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
+      
+      k = 0;
+      do
+	{
+	  tmp = sdp_message_a_att_field_get (sdp, -1, k);
+	  tmp2 = sdp_message_a_att_value_get (sdp, -1, k);
+	  if (tmp != NULL && tmp2 != NULL)
+	    printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
 	  if (tmp != NULL)
-	    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-		    tmp, tmp2, tmp3, tmp4, tmp5);
+	    printf ("a_attribute:    |%s|:|%s|\n", tmp, "(null)");
+	  k++;
+	}
+      while (tmp != NULL);
+      
+      i = 0;
+      while (!sdp_message_endof_media (sdp, i))
+	{
+	  
+	  tmp = sdp_message_m_media_get (sdp, i);
+	  tmp2 = sdp_message_m_port_get (sdp, i);
+	  tmp3 = sdp_message_m_number_of_port_get (sdp, i);
+	  tmp4 = sdp_message_m_proto_get (sdp, i);
+	  if (tmp != NULL)
+	    printf ("m_media:        |%s|", tmp);
 	  else
-	    printf ("c_connection:   |%s|", "(null)");
+	    printf ("m_media:        |%s|", "(null)");
 	  if (tmp2 != NULL)
 	    printf (" |%s|", tmp2);
 	  else
@@ -563,69 +558,105 @@ test_accessor_get_api (sdp_message_t * sdp)
 	    printf (" |%s|", tmp4);
 	  else
 	    printf (" |%s|", "(null)");
-	  if (tmp5 != NULL)
-	    printf (" |%s|", tmp5);
-	  else
-	    printf (" |%s|", "(null)");
+	  k = 0;
+	  do
+	    {
+	      tmp = sdp_message_m_payload_get (sdp, i, k);
+	      if (tmp != NULL)
+		printf (" |%s|", tmp);
+	      k++;
+	    }
+	  while (tmp != NULL);
 	  printf ("\n");
+	  k = 0;
+	  do
+	    {
+	      tmp = sdp_message_c_nettype_get (sdp, i, k);
+	      tmp2 = sdp_message_c_addrtype_get (sdp, i, k);
+	      tmp3 = sdp_message_c_addr_get (sdp, i, k);
+	      tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, i, k);
+	      tmp5 = sdp_message_c_addr_multicast_int_get (sdp, i, k);
+	      if (tmp != NULL)
+		printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+			tmp, tmp2, tmp3, tmp4, tmp5);
+	      else
+		printf ("c_connection:   |%s|", "(null)");
+	      if (tmp2 != NULL)
+		printf (" |%s|", tmp2);
+	      else
+		printf (" |%s|", "(null)");
+	      if (tmp3 != NULL)
+		printf (" |%s|", tmp3);
+	      else
+		printf (" |%s|", "(null)");
+	      if (tmp4 != NULL)
+		printf (" |%s|", tmp4);
+	      else
+		printf (" |%s|", "(null)");
+	      if (tmp5 != NULL)
+		printf (" |%s|", tmp5);
+	      else
+		printf (" |%s|", "(null)");
+	      printf ("\n");
 
+	      if (tmp != NULL)
+		k++;
+	    }
+	  while (tmp != NULL);
+
+	  k = 0;
+	  do
+	    {
+	      tmp = sdp_message_b_bwtype_get (sdp, i, k);
+	      tmp2 = sdp_message_b_bandwidth_get (sdp, i, k);
+	      if (tmp != NULL)
+		printf ("b_bandwidth:    |%s|", tmp);
+	      else
+		printf ("b_bandwidth:    |%s|", "(null)");
+	      if (tmp2 != NULL)
+		printf (":|%s|\n", tmp2);
+	      else
+		printf (":|%s|", "(null)");
+	      printf ("\n");
+
+	      k++;
+	    }
+	  while (tmp != NULL);
+
+
+	  tmp = sdp_message_k_keytype_get (sdp, i);
+	  tmp2 = sdp_message_k_keydata_get (sdp, i);
 	  if (tmp != NULL)
-	    k++;
-	}
-      while (tmp != NULL);
-
-      k = 0;
-      do
-	{
-	  tmp = sdp_message_b_bwtype_get (sdp, i, k);
-	  tmp2 = sdp_message_b_bandwidth_get (sdp, i, k);
-	  if (tmp != NULL)
-	    printf ("b_bandwidth:    |%s|", tmp);
+	    printf ("k_key:          |%s|", tmp);
 	  else
-	    printf ("b_bandwidth:    |%s|", "(null)");
-	  if (tmp2 != NULL)
-	    printf (":|%s|\n", tmp2);
-	  else
-	    printf (":|%s|", "(null)");
-	  printf ("\n");
-
-	  k++;
-	}
-      while (tmp != NULL);
-
-
-      tmp = sdp_message_k_keytype_get (sdp, i);
-      tmp2 = sdp_message_k_keydata_get (sdp, i);
-      if (tmp != NULL)
-	printf ("k_key:          |%s|", tmp);
-      else
-	printf ("k_key:          |%s|", "(null)");
-      if (tmp2 != NULL)
-	printf (":|%s|", tmp2);
-      else
-	printf (":|%s|", "(null)");
-      printf ("\n");
-
-      k = 0;
-      do
-	{
-	  tmp = sdp_message_a_att_field_get (sdp, i, k);
-	  tmp2 = sdp_message_a_att_value_get (sdp, i, k);
-	  if (tmp != NULL)
-	    printf ("a_attribute:    |%s|", tmp);
-	  else
-	    printf ("a_attribute:    |%s|", "(null)");
+	    printf ("k_key:          |%s|", "(null)");
 	  if (tmp2 != NULL)
 	    printf (":|%s|", tmp2);
 	  else
 	    printf (":|%s|", "(null)");
 	  printf ("\n");
 
-	  k++;
-	}
-      while (tmp != NULL);
+	  k = 0;
+	  do
+	    {
+	      tmp = sdp_message_a_att_field_get (sdp, i, k);
+	      tmp2 = sdp_message_a_att_value_get (sdp, i, k);
+	      if (tmp != NULL)
+		printf ("a_attribute:    |%s|", tmp);
+	      else
+		printf ("a_attribute:    |%s|", "(null)");
+	      if (tmp2 != NULL)
+		printf (":|%s|", tmp2);
+	      else
+		printf (":|%s|", "(null)");
+	      printf ("\n");
 
-      i++;
+	      k++;
+	    }
+	  while (tmp != NULL);
+
+	  i++;
+	}
     }
 
   return 0;
