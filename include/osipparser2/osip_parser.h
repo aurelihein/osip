@@ -459,7 +459,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_date(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"date",value)
+#define osip_message_set_date(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Date",value)
 /**
  * Find a Date header.
  * @param sip The element to work on.
@@ -472,7 +472,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_encryption(sip,value)      osip_message_set_header((osip_message_t *)sip,(const char *)"encryption",value)
+#define osip_message_set_encryption(sip,value)      osip_message_set_header((osip_message_t *)sip,(const char *)"Encryption",value)
 /**
  * Find an Encryption header.
  * @param sip The element to work on.
@@ -485,7 +485,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_organization(sip,value)    osip_message_set_header((osip_message_t *)sip,(const char *)"organization",value)
+#define osip_message_set_organization(sip,value)    osip_message_set_header((osip_message_t *)sip,(const char *)"Organization",value)
 /**
  * Find an Organization header.
  * @param sip The element to work on.
@@ -498,7 +498,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_require(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"require",value)
+#define osip_message_set_require(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"Require",value)
 /**
  * Find a Require header.
  * @param sip The element to work on.
@@ -511,7 +511,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_supported(sip,value)       osip_message_set_header((osip_message_t *)sip,(const char *)"supported",value)
+#define osip_message_set_supported(sip,value)       osip_message_set_header((osip_message_t *)sip,(const char *)"Supported",value)
 /**
  * Find a Supported header.
  * @param sip The element to work on.
@@ -524,7 +524,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_timestamp(sip,value)       osip_message_set_header((osip_message_t *)sip,(const char *)"timestamp",value)
+#define osip_message_set_timestamp(sip,value)       osip_message_set_header((osip_message_t *)sip,(const char *)"Timestamp",value)
 /**
  * Find a Timestamp header.
  * @param sip The element to work on.
@@ -537,7 +537,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_user_agent(sip,value)      osip_message_set_header((osip_message_t *)sip,(const char *)"user-agent",value)
+#define osip_message_set_user_agent(sip,value)      osip_message_set_header((osip_message_t *)sip,(const char *)"User-Agent",value)
 /**
  * Find a User-Agent header.
  * @param sip The element to work on.
@@ -550,7 +550,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_content_language(sip,value) osip_message_set_header((osip_message_t *)sip,(const char *)"content-language",value)
+#define osip_message_set_content_language(sip,value) osip_message_set_header((osip_message_t *)sip,(const char *)"Content-Language",value)
 /**
  * Find a Content-Language header.
  * @param sip The element to work on.
@@ -563,7 +563,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_expires(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"expires",value)
+#define osip_message_set_expires(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"Expires",value)
 /**
  * Find a Expires header.
  * @param sip The element to work on.
@@ -576,7 +576,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_in_reply_to(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"in-reply-to",value)
+#define osip_message_set_in_reply_to(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"In-Reply-To",value)
 /**
  * Find a In-Reply-To header.
  * @param sip The element to work on.
@@ -589,7 +589,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_max_forwards(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"max-forwards",value)
+#define osip_message_set_max_forwards(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"Max-Forwards",value)
 /**
  * Find a Max-Forward header.
  * @param sip The element to work on.
@@ -602,7 +602,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_priority(sip,value)        osip_message_set_header((osip_message_t *)sip,(const char *)"priority",value)
+#define osip_message_set_priority(sip,value)        osip_message_set_header((osip_message_t *)sip,(const char *)"Priority",value)
 /**
  * Find a Priority header.
  * @param sip The element to work on.
@@ -615,7 +615,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_proxy_require(sip,value)   osip_message_set_header((osip_message_t *)sip,(const char *)"proxy-require",value)
+#define osip_message_set_proxy_require(sip,value)   osip_message_set_header((osip_message_t *)sip,(const char *)"Proxy-Require",value)
 /**
  * Find a Proxy-Require header.
  * @param sip The element to work on.
@@ -628,7 +628,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_response_key(sip,value)    osip_message_set_header((osip_message_t *)sip,(const char *)"response-key",value)
+#define osip_message_set_response_key(sip,value)    osip_message_set_header((osip_message_t *)sip,(const char *)"Response-Key",value)
 /**
  * Find a Response-Key header.
  * @param sip The element to work on.
@@ -641,7 +641,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_subject(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"subject",value)
+#define osip_message_set_subject(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"Subject",value)
 /**
  * Find a Subject header.
  * @param sip The element to work on.
@@ -654,7 +654,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_retry_after(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"retry-after",value)
+#define osip_message_set_retry_after(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"Retry-After",value)
 /**
  * Find a Retry-After header.
  * @param sip The element to work on.
@@ -667,7 +667,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_server(sip,value)          osip_message_set_header((osip_message_t *)sip,(const char *)"server",value)
+#define osip_message_set_server(sip,value)          osip_message_set_header((osip_message_t *)sip,(const char *)"Server",value)
 /**
  * Find a Server header.
  * @param sip The element to work on.
@@ -680,7 +680,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_unsupported(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"unsupported",value)
+#define osip_message_set_unsupported(sip,value)     osip_message_set_header((osip_message_t *)sip,(const char *)"Unsupported",value)
 /**
  * Find a Unsupported header.
  * @param sip The element to work on.
@@ -693,7 +693,7 @@ extern "C"
  * @param sip The element to work on.
  * @param value the value of the new header.
  */
-#define osip_message_set_warning(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"warning",value)
+#define osip_message_set_warning(sip,value)         osip_message_set_header((osip_message_t *)sip,(const char *)"Warning",value)
 /**
  * Find a Warning header.
  * @param sip The element to work on.
