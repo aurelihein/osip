@@ -90,6 +90,24 @@ dialog_update_route_set_as_uac(dialog_t *dialog, sip_t *response)
     {
       TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n"));
     }
+
+  if (dialog->state == DIALOG_EARLY && list_size(dialog->route_set)!=0)
+    { /* update the route set */
+      int pos=0;
+      while (!list_eol(response->record_routes, pos))
+	{
+	  record_route_t *rr;
+	  record_route_t *rr2;
+	  rr = (record_route_t*) list_get(response->record_routes, pos);
+	  i = record_route_clone(rr, &rr2);
+	  if (i!=0) return -1;
+	  list_add(dialog->route_set, rr2, -1);
+	  pos++;
+	}
+    }
+
+  if (MSG_IS_STATUS_2XX(response))
+    dialog->state = DIALOG_CONFIRMED;
   return 0;
 }
 
