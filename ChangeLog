@@ -1,4 +1,5 @@
 libosip (0.8.4)
+	* ist_fsm.c: start timer i while entering CONFIRMED state
 	* urls.c: bug in line 210.
 	* msg_cparser.c: switch CONTACT_SHORT & CONTENT_LENGTH_SHORT in table.
 	* osip_distribute_event(): obsolete!

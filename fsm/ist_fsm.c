@@ -444,5 +444,7 @@ ist_rcv_ack(transaction_t *ist, sipevent_t *evt)
       if (osip->cb_ist_ack_received2!=NULL)
 	osip->cb_ist_ack_received2(ist, ist->ack);
     }
+  /* set the timer to 0 for reliable, and T4 for unreliable (already set) */
+  ist->ist_context->timer_i_start = time(NULL); /* not started */
   transaction_set_state(ist, IST_CONFIRMED);
 }
