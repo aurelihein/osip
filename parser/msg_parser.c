@@ -360,6 +360,7 @@ msg_handle_multiple_values (sip_t * sip, char *hname, char *hvalue)
       return 0;
     }
 
+  quote2 = NULL;
   while (comma != NULL)
     {
       quote1 = quote_find (ptr);
@@ -610,7 +611,7 @@ msg_body_parse (sip_t * sip, char *start_of_buf, char **next_body)
 
   *next_body = NULL;
   start_of_body = start_of_buf;
-  while (1)
+  for (;;)
     {
       i = find_next_occurence (sep_boundary, start_of_body, &start_of_body);
       if (i == -1)

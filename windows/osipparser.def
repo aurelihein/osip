@@ -316,7 +316,6 @@ EXPORTS
     sdp_z_adjustments_get  @314      
     sdp_z_adjustments_set  @315      
     set_next_token  @316      
-    set_next_token_better  @317      
     sfree  @318      
     sgetcopy  @319      
     sgetcopy_unquoted_string  @320      
