@@ -1,4 +1,5 @@
 libosip2 (2.0.6)
+	* Two memory bug fix in the parser.
 	* allow missing tag in To header of incoming request.
 	* reindentation of all code.
 	* improve configure.in file

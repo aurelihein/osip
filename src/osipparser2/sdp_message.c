@@ -289,6 +289,9 @@ sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
   if (*equal == '\0')
     return ERR_ERROR;
 
+  if (equal == buf)
+    return ERR_DISCARD;
+  
   /* check if header is "v" */
   if (equal[-1] != 'v')
     return ERR_DISCARD;
@@ -527,11 +530,6 @@ sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next)
   return WF;
 }
 
-static int sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next);
-static int sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next);
-static int sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next);
-static int sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next);
-static int sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next);
 static int
 sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
 {
