@@ -1,4 +1,6 @@
 libosip2 (2.0.3)
+	* new method to create dialog from NOTIFY requests.
+	* fix random number generation to avoid possible guess of random numbers.
 	* fix a bug for media line with number_of_port specified
 	* fix compile issue with --disable-trace & --disable-debug
 

@@ -348,6 +348,88 @@ diau_error_0:
   return -1;
 }
 
+#if 1 /* SIPIT13 */
+int
+osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog, osip_message_t *next_request, int local_cseq)
+{
+  int i;
+  osip_generic_param_t *tag;
+
+  *dialog = NULL;
+  i = osip_to_get_tag (next_request->from, &tag);
+  if (i != 0)
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		   "Remote UA is not compliant: missing a tag in next request!\n"));
+      return -1;
+    }
+
+  (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
+  if (*dialog == NULL)
+    return -1;
+
+  (*dialog)->type = CALLER;
+#if 0
+  (*dialog)->state = DIALOG_CONFIRMED;
+#endif
+  (*dialog)->state = DIALOG_EARLY;
+
+  i = osip_call_id_to_str (next_request->call_id, &((*dialog)->call_id));
+  if (i != 0)
+    goto diau_error_0;
+
+  i = osip_from_get_tag (next_request->to, &tag);
+  if (i != 0)
+    goto diau_error_1;
+  (*dialog)->local_tag = osip_strdup (tag->gvalue);
+
+  i = osip_to_get_tag (next_request->from, &tag);
+  if (i != 0)
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		   "Remote UA is not compliant: missing a tag in next request!\n"));
+      (*dialog)->remote_tag = NULL;
+    }
+  else
+    (*dialog)->remote_tag = osip_strdup (tag->gvalue);
+
+  (*dialog)->route_set = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  osip_list_init ((*dialog)->route_set);
+
+  (*dialog)->local_cseq = local_cseq; /* -1 osip_atoi (xxx->cseq->number); */
+  (*dialog)->remote_cseq = osip_atoi (next_request->cseq->number);
+
+  i = osip_to_clone (next_request->from, &((*dialog)->remote_uri));
+  if (i != 0)
+    goto diau_error_3;
+
+  i = osip_from_clone (next_request->to, &((*dialog)->local_uri));
+  if (i != 0)
+    goto diau_error_4;
+
+  (*dialog)->secure = -1;	/* non secure */
+
+  return 0;
+
+diau_error_4:
+  osip_from_free ((*dialog)->remote_uri);
+diau_error_3:
+  osip_free ((*dialog)->remote_tag);
+  osip_free ((*dialog)->local_tag);
+diau_error_1:
+  osip_free ((*dialog)->call_id);
+diau_error_0:
+  OSIP_TRACE (osip_trace
+	      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+	       "Could not establish dialog!\n"));
+  osip_free (*dialog);
+  *dialog = NULL;
+  return -1;
+}
+#endif
+
 int
 osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite, osip_message_t * response)
 {

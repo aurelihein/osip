@@ -148,6 +148,16 @@ extern "C"
  */
   int osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response);
 /**
+ * Allocate a osip_dialog_t element as a UAC.
+ * <UL><LI>This could be used to initiate dialog with a NOTIFY coming
+ * before the answer for a subscribe has reached us.</LI>
+ * @param dialog The element to allocate.
+ * @param next_request The response containing the informations.
+ * @param local_cseq The local cseq
+ */
+  int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog, osip_message_t *next_request, int local_cseq);
+
+/**
  * Allocate a osip_dialog_t element as a UAS.
  * NOTE1: Only INVITE transactions can create a dialog.
  * NOTE2: The dialog should be created when the first response is sent.
