@@ -49,7 +49,7 @@ ua_context_t *ua_context = NULL;
 
 osip_negotiation_t *osip_negotiation = NULL;
 
-int
+static int
 ua_sdp_accept_audio_codec (osip_negotiation_ctx_t * context,
 			   char *port, char *number_of_port,
 			   int audio_qty, char *payload)
@@ -65,7 +65,7 @@ ua_sdp_accept_audio_codec (osip_negotiation_ctx_t * context,
   return -1;
 }
 
-int
+static int
 ua_sdp_accept_video_codec (osip_negotiation_ctx_t * context,
 			   char *port, char *number_of_port,
 			   int video_qty, char *payload)
@@ -80,7 +80,7 @@ ua_sdp_accept_video_codec (osip_negotiation_ctx_t * context,
   return -1;
 }
 
-int
+static int
 ua_sdp_accept_other_codec (osip_negotiation_ctx_t * context,
 			   char *type, char *port,
 			   char *number_of_port, char *payload)
@@ -89,7 +89,7 @@ ua_sdp_accept_other_codec (osip_negotiation_ctx_t * context,
   return -1;
 }
 
-char *
+static char *
 ua_sdp_get_video_port (osip_negotiation_ctx_t * context, int pos_media)
 {
   ua_context_t *ua_con;
@@ -100,7 +100,7 @@ ua_sdp_get_video_port (osip_negotiation_ctx_t * context, int pos_media)
   /* If there is more than one audio line, this may fail :( */
 }
 
-char *
+static char *
 ua_sdp_get_audio_port (osip_negotiation_ctx_t * context, int pos_media)
 {
   ua_context_t *ua_con;

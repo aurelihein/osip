@@ -724,25 +724,3 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 }
 
 
-void *
-osip_malloc (size_t size)
-{
-  void *value;
-
-  value = malloc (size);
-  if (value == 0)
-    {
-      fprintf (stdout, "<port_malloc.c> virtual memory exhausted\n");
-      /* How can I handle that case properly? */
-      exit (0);
-    }
-
-  return value;
-}
-
-void
-osip_free (void *ptr)
-{
-  if (ptr != NULL)
-    free (ptr);
-}

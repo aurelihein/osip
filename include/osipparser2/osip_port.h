@@ -145,8 +145,13 @@ extern "C"
 /* MALLOC redirections    */
 /**************************/
 
-  void *osip_malloc (size_t size);
-  void osip_free (void *ptr);
+#ifndef osip_malloc
+#define osip_malloc(S) malloc(S)
+#endif
+#ifndef osip_free
+#define osip_free(P) { if (P!=NULL) free(P); }
+#endif
+
 #ifdef WIN32
 #define alloca _alloca
 #endif
