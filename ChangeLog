@@ -1,4 +1,7 @@
 libosip (0.9.0)
+	* "nc" value is not a quoted_string in authentication headers (rfc2617).
+
+libosip (0.9.0)
 	* a few warnings fix for win32.
 	* Change *_2char methods so they use realloc. (not yet finished!)
 	* Update the API and sip_t to support multiple "Authorization" headers.

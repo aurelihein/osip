@@ -192,7 +192,7 @@ authorization_parse (authorization_t * auth, char *hvalue)
           space = next;
           parse_ok++;
         }
-      if (quoted_string_set ("nc", space, &(auth->nonce_count), &next))
+      if (token_set ("nc", space, &(auth->nonce_count), &next))
         return -1;
       if (next == NULL)
         return 0;               /* end of header detected! */
