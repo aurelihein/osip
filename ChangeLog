@@ -2,6 +2,9 @@ libosip (0.8.9)
 	* smsg.h: fix max_forward to max_forwards.
 	* osip/osip.h: you can now attach an application pointer to osip_t
 	* osip/dialog.h: fix prototype for hp-ux compiler.
+	* fsm/transaction.c: add transaction_free2(). A usefull method to
+	  free a transaction without removing it from the osip stack. (To
+	  be used when it has been already removed earlier.)
 	
 libosip (0.8.8)
 	* windows: The windows contributions was wrong. Thread were killed

@@ -240,7 +240,6 @@ int
 transaction_free2(transaction_t *transaction)
 {
   sipevent_t *evt;
-  int i;
   if (transaction==NULL) return -1;
   if (transaction->orig_request!=NULL)
     {

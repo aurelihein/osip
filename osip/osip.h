@@ -861,6 +861,16 @@ int transaction_init(transaction_t **transaction, context_type_t ctx_type,
  */
 int transaction_free(transaction_t *transaction);
 /**
+ * Free all resource in a transaction_t element.
+ * This method does the same than transaction_free() but it assumes
+ * that the transaction is already removed from the list of transaction
+ * in the osip stack. (to remove it use osip_xixt_remove(osip, transaction);
+ * @param transaction The element to free.
+ */
+/*  */
+int transaction_free2(transaction_t *transaction);
+
+/**
  * Add a SIP event in the fifo of a transaction_t element.
  * @param transaction The element to work on.
  * @param evt The event to add.
