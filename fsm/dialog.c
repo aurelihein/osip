@@ -240,7 +240,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACELEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
       (*dialog)->remote_tag = NULL;
     }
   else
