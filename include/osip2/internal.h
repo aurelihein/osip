@@ -176,7 +176,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-  typedef
+  typedef struct
   {
     int semid;
   }
