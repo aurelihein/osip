@@ -49,7 +49,7 @@ extern "C"
  * Fix the via header for INCOMING requests only.
  * a copy of ip_addr is done.
  */
-  int osip_message_fix_last_via_header (osip_message_t * request, char *ip_addr, int port);
+  int osip_message_fix_last_via_header (osip_message_t * request, const char *ip_addr, int port);
 
 
 /**

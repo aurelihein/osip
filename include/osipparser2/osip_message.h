@@ -438,7 +438,7 @@ extern "C"
 /**
  * The SIP protocol version oSIP conforms to.
  */
-  const char *osip_protocol_version;
+  extern const char *osip_protocol_version;
 
 
 /** @} */

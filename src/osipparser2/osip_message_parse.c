@@ -646,6 +646,9 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	}
     }
 
+  if (sip->content_type==NULL)
+    return -1;
+    
   /* find the boundary */
   i = osip_generic_param_get_byname (sip->content_type->gen_params,
 			       "boundary", &ct_param);
@@ -775,7 +778,7 @@ osip_message_parse (osip_message_t * sip, const char *buf)
 /* This method just add a received parameter in the Via
    as requested by rfc3261 */
 int
-osip_message_fix_last_via_header (osip_message_t * request, char *ip_addr, int port)
+osip_message_fix_last_via_header (osip_message_t * request, const char *ip_addr, int port)
 {
   osip_generic_param_t *rport;
   osip_via_t *via;
