@@ -190,7 +190,7 @@ extern "C"
 					   osip_message_t * response);
 
 /**
- * Match a request (response sent??) received with a dialog.
+ * Match a request (response sent?) received with a dialog.
  * @param dialog The element to work on.
  * @param request The request received.
  */

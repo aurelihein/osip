@@ -910,7 +910,7 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 	{
 	  size_t size = message - *dest;
 	  int offset_of_body;
-	  int offset_content_length_to_modify;
+	  int offset_content_length_to_modify = 0;
 	  offset_of_body = start_of_bodies - *dest;
 	  if (content_length_to_modify != NULL)
 	    offset_content_length_to_modify = content_length_to_modify - *dest;

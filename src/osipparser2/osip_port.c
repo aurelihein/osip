@@ -706,8 +706,8 @@ int
 osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 	    ...)
 {
-  va_list ap;
 #ifdef ENABLE_TRACE
+  va_list ap;
 
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
   if (logfile == NULL && use_syslog == 0 && trace_func == NULL)
