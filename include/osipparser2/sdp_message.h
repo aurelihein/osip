@@ -581,6 +581,15 @@ extern "C"
  */
   int sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, 
 				   char *att_field);
+/**
+ * delete one specific attribute fields specified by att_field.
+ * @param sdp The element to work on.
+ * @param pos_media The line number.
+ * @param att_field The value to remove.
+ * @param att_field The index of attribute to remove.
+ */
+  int sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media, 
+					    char *att_field, int pos_attr);
  /**
  * Get one of the attribute ('a' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -634,6 +643,13 @@ extern "C"
  */
   char *sdp_message_m_port_get (sdp_message_t * sdp, int pos_media);
 /**
+ * Set the port number ('m' field) of a SDP packet.
+ * @param sdp The element to work on.
+ * @param pos_media The line number.
+ * @param port The new port to set (must be allocated with osip_malloc)
+ */
+  int sdp_message_m_port_set (sdp_message_t * sdp, int pos_media, char *port);
+ /**
  * Get the number of port ('m' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The line number.
@@ -661,6 +677,14 @@ extern "C"
  */
   char *sdp_message_m_payload_get (sdp_message_t * sdp, int pos_media,
 				   int pos);
+/**
+ * Remove a payload in a SDP packet.
+ * @param sdp The element to work on.
+ * @param pos_media The line number.
+ * @param pos The position of the payload in the media line.
+ */
+  int sdp_message_m_payload_del (sdp_message_t * sdp, int pos_media,
+ 				 int pos);
 
 
 /** @} */
