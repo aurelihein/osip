@@ -104,6 +104,14 @@ SOURCE=..\..\src\osipparser2\osip_accept_language.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osipparser2\osip_authentication_info.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osipparser2\osip_proxy_authentication_info.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osipparser2\osip_alert_info.c
 # End Source File
 # Begin Source File
