@@ -1,4 +1,5 @@
 libosip2 (2.1.0)
+	* Fix lookup of generic/uri parameter (use case-insensitive comparison)
 	* Initial release of the new SDP negociator. (old one will be removed)
 	
 libosip2 (2.0.8)
