@@ -25,9 +25,6 @@
 #include <osipparser2/osip_message.h>
 
 /* enable logging of memory accesses */
-#ifdef MEMORY_LEAKS
-static int freesipcptr = 0;
-#endif
 
 const char *osip_protocol_version = "SIP/2.0";
 
@@ -35,25 +32,10 @@ const char *osip_protocol_version = "SIP/2.0";
 int
 osip_message_init (osip_message_t ** sip)
 {
-#ifdef MEMORY_LEAKS
-  static int comptr = 0;
-
-  comptr++;
-  freesipcptr++;
-#endif
   *sip = (osip_message_t *) osip_malloc (sizeof (osip_message_t));
-#ifdef MEMORY_LEAKS
-  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL,
-	      "<msg_write.c> osip_message_init() = %i, malloc-free = %i, address = %x\n",
-	      comptr, freesipcptr, *sip);
-  fflush (stdout);
-#endif
-
-  (*sip)->sip_method = NULL;
-  (*sip)->sip_version = NULL;
-  (*sip)->status_code = 0;
-  (*sip)->reason_phrase = NULL;
-  (*sip)->req_uri = NULL;
+  if (*sip==NULL)
+    return -1;
+  memset(*sip, 0, sizeof(osip_message_t));
 
   (*sip)->accepts = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->accepts);
@@ -161,17 +143,6 @@ osip_message_free (osip_message_t * sip)
 {
   int pos = 0;
 
-#ifdef MEMORY_LEAKS
-  static int comptr = 0;
-
-  if (sip == NULL)
-    return;
-  comptr--;
-  freesipcptr--;
-  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL,
-	      "<msg_write.c> osip_message_free() = %i, malloc-free = %i, address = %x\n",
-	      comptr, freesipcptr, sip);
-#endif
   if (sip == NULL)
     return;
 

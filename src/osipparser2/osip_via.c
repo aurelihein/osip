@@ -101,11 +101,8 @@ osip_via_init (osip_via_t ** via)
   *via = (osip_via_t *) osip_malloc (sizeof (osip_via_t));
   if (*via == NULL)
     return -1;
-  (*via)->version = NULL;
-  (*via)->protocol = NULL;
-  (*via)->host = NULL;
-  (*via)->port = NULL;
-  (*via)->comment = NULL;
+
+  memset(*via, 0, sizeof(osip_via_t));
 
   (*via)->via_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*via)->via_params == NULL)

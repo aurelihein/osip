@@ -26,7 +26,9 @@
 int
 osip_list_init (osip_list_t * li)
 {
-  li->nb_elt = 0;
+  if (li==NULL)
+    return -1;
+  memset(li, 0, sizeof(osip_list_t));
   return 0;			/* ok */
 }
 
