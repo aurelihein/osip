@@ -1,3 +1,7 @@
+libosip2 (2.2.1)
+	* remove use of alloca in the parser.
+	* fix memory bug when realloc is needed on large message.
+	
 libosip2 (2.2.0)
 	* remove useless prototypes.
 	* fix memory access in parser.
