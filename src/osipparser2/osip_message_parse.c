@@ -829,6 +829,7 @@ osip_message_get_reason (int replycode)
   };
   static const struct code_to_reason reasons2xx[] = {
     { 200, "OK" },
+    { 202, "Accepted" },
   };
   static const struct code_to_reason reasons3xx[] = {
     { 300, "Multiple Choices" },

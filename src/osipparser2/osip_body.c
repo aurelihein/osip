@@ -252,7 +252,7 @@ osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_heade
 
       /* really store the header in the sip structure */
       /* i = osip_message_set__header(sip, hname, hvalue); */
-      if (strncmp (hname, "content-type", 12) == 0)
+      if (osip_strncasecmp (hname, "content-type", 12) == 0)
 	i = osip_body_set_contenttype (body, hvalue);
       else
 	i = osip_body_set_header (body, hname, hvalue);
