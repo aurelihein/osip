@@ -170,7 +170,7 @@ strcat_simple_header (char **_string, int *malloc_size,
 	  *next = NULL;
 	  return -1;
 	}
-      if (*malloc_size < message - string + (int)strlen (tmp) + 100)
+      if (*malloc_size < message - string + (int) strlen (tmp) + 100)
 	{
 	  int size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
@@ -241,7 +241,7 @@ strcat_headers_one_per_line (char **_string, int *malloc_size,
 	}
       message = message + strlen (message);
 
-      if (*malloc_size < message - string + (int)strlen (tmp) + 100)
+      if (*malloc_size < message - string + (int) strlen (tmp) + 100)
 	{
 	  int size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
@@ -317,10 +317,10 @@ strcat_headers_all_on_one_line (char **_string, int *malloc_size,
 	      *next = NULL;
 	      return -1;
 	    }
-	  if (*malloc_size < message - string + (int)strlen (tmp) + 100)
+	  if (*malloc_size < message - string + (int) strlen (tmp) + 100)
 	    {
 	      int size = message - string;
-	      *malloc_size = message - string + (int)strlen (tmp) + 100;
+	      *malloc_size = message - string + (int) strlen (tmp) + 100;
 	      string = realloc (string, *malloc_size);
 	      if (string == NULL)
 		{

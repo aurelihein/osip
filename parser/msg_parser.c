@@ -750,7 +750,7 @@ msg_fix_last_via_header (sip_t * request, char *ip_addr, int port)
 #ifdef WIN32
 	  _snprintf (rport->gvalue, 8, "%i", port);
 #else
-          snprintf (rport->gvalue, 8, "%i", port);
+	  snprintf (rport->gvalue, 8, "%i", port);
 #endif
 	}			/* else bug? */
     }
