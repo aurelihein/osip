@@ -1,3 +1,12 @@
+libosip (0.9.4-1) unstable; urgency=low
+  * fix win32 compilation for Debug release.
+  * re-fix(?) the parsing of the Date header.
+  * verify log strings are NULL terminated.
+  * add syslog support.
+  * continue WINCE port.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 31 Jan 2003 13:04:32 +0100
+
 libosip (0.9.3-1) unstable; urgency=low
   * fix a bug for quoted strings starting with an escaped char.
   * initial commit for WinCE support. (uncomplete)
