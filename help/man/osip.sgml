@@ -3,12 +3,12 @@
 
   <!ENTITY dhfirstname "<firstname>Aymeric</firstname>">
   <!ENTITY dhsurname   "<surname>MOIZARD</surname>">
-  <!ENTITY dhdate      "<date>May 15, 2002</date>">
+  <!ENTITY dhdate      "<date>Jan 15, 2005</date>">
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>jack@atosc.org</email>">
   <!ENTITY dhusername  "Aymeric Moizard">
-  <!ENTITY dhucpackage "<refentrytitle>LIBOSIP</refentrytitle>">
-  <!ENTITY dhpackage   "libosip">
+  <!ENTITY dhucpackage "<refentrytitle>libosip</refentrytitle>">
+  <!ENTITY dhpackage   "libosip2">
 
   <!ENTITY debian      "<productname>Debian</productname>">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
@@ -42,24 +42,63 @@
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
-      <command>#include &#60;smsg.h&#62;</command>
+      <command>#include &#60;include/osipparser2/osip_const.h&#62;</command>
       </cmdsynopsis>
     <cmdsynopsis>
-      <command>#include &#60;url.h&#62;</command>
+      <command>#include &#60;include/osipparser2/osip_md5.h&#62;</command>
       </cmdsynopsis>
     <cmdsynopsis>
-      <command>#include &#60;sdp.h&#62;</command>
+      <command>#include &#60;include/osipparser2/osip_list.h&#62;</command>
       </cmdsynopsis>
     <cmdsynopsis>
-      <command>-losip</command>
-      <arg><option>The url, SIP and SDP parsers</option></arg>
+      <command>#include &#60;include/osipparser2/osip_uri.h&#62;</command>
       </cmdsynopsis>
     <cmdsynopsis>
-      <command>#include &#60;osip.h&#62;</command>
+      <command>#include &#60;include/osipparser2/osip_message.h&#62;</command>
       </cmdsynopsis>
     <cmdsynopsis>
-      <command>-lfsmtl</command>
-      <arg><option>The SIP transaction manager, the dialog manager</option></arg>
+      <command>#include &#60;include/osipparser2/osip_port.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osipparser2/sdp_message.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osipparser2/osip_headers.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osipparser2/osip_body.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osipparser2/osip_rfc3264.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osipparser2/osip_parser.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>-losipparser2</command>
+      <arg><option>The uri, SIP and SDP parsers</option></arg>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip_fifo.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip_dialog.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip_mt.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip_condv.h&#62;</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>#include &#60;include/osip2/osip_negotiation.h&#62;  //OBSOLETE</command>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>-losip2</command>
+      <arg><option>The SIP transaction and the dialog API</option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -68,82 +107,32 @@
     <para>This manual page documents briefly the
       <command>&dhpackage;</command> library.</para>
 
-    <para>API reference & FAQ can be found at http://www.fsf.org/software/osip/</para>
-
-<!--    <para><command>&dhpackage;</command> is a program that...</para>
--->
-
   </refsect1>
-
-<!--
   <refsect1>
-    <title>OPTIONS</title>
+    <title>API and Reference Documentation</title>
 
-    <para>These programs follow the usual GNU command line syntax,
-      with long options starting with two dashes (`-').  A summary of
-      options is included below.  For a complete description, see the
-      <application>Info</application> files.</para>
-
--->
-
-<!--
-    <variablelist>
-      <varlistentry>
-        <term><option>-h</option>
-          <option>-help</option>
-        </term>
-        <listitem>
-          <para>Show summary of options.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>-v</option>
-          <option>-version</option>
-        </term>
-        <listitem>
-          <para>Show version of program.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-
+    <para>API reference & Doxygen documentation is available for
+       osip at http://www.fsf.org/software/osip/</para>
 
   </refsect1>
--->
+  <refsect1>
+    <title>osip general overview.</title>
 
-<!--
+    <para>At that time, the file is obsolete but the file help/man/osip.html
+       in the source distribution should give you a nice amount of informations
+       about the osip stack.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>Free software projects -send me your project name-</title>
+    <para>antisip, linphone, bayonne</para>
+  </refsect1>
 
   <refsect1>
-    <title>SEE ALSO</title>
-    <para>bar (1), baz (1).</para>
-
-    <para>The programs are documented fully by <citetitle>The Rise and
-      Fall of a Fooish Bar</citetitle> available via the
-      <application>Info</application> system.</para>
-
-
-    <variablelist>
-      <varlistentry>
-        <term><option>-h</option>
-          <option>-help</option>
-        </term>
-        <listitem>
-          <para>Show summary of options.</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term><option>-v</option>
-          <option>-version</option>
-        </term>
-        <listitem>
-          <para>Show version of program.</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+    <title>BUGS</title>
+    <para>Please use the mailing list osip@atosc.org</para>
 
   </refsect1>
-
--->
-
   <refsect1>
     <title>AUTHOR</title>
 
