@@ -36,7 +36,7 @@
 
 /**
  * Structure for Content-Type headers.
- * @defvar osip_content_type_t
+ * @var osip_content_type_t
  */
   typedef struct osip_content_type osip_content_type_t;
 

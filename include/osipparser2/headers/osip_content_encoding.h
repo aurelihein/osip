@@ -36,7 +36,7 @@
 
 /**
  * Structure for Content-Encoding headers.
- * @defvar osip_content_encoding_t
+ * @var osip_content_encoding_t
  */
   typedef osip_content_length_t osip_content_encoding_t;
 

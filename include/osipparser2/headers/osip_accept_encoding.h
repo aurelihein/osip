@@ -36,7 +36,7 @@
 
 /**
  * Structure for Accept-Encoding header.
- * @defvar osip_accept_encoding_t
+ * @var osip_accept_encoding_t
  */
   typedef struct osip_accept_encoding osip_accept_encoding_t;
 

@@ -23,10 +23,12 @@
 #ifndef _INTERNAL_H_
 #define _INTERNAL_H_
 
+#ifndef DOXYGEN
+
 /**
  * Structure for payload management. Each payload element
  * represents one codec of a media line.
- * @defvar __payload_t
+ * @var __payload_t
  */
 typedef struct __payload __payload_t;
 
@@ -167,7 +169,7 @@ typedef sem_t osip_sem_t;
 #endif
 /**
  * Structure for referencing a semaphore element.
- * @defvar osip_sem_t
+ * @var osip_sem_t
  */
 typedef sem_t osip_sem_t;
 
@@ -194,7 +196,7 @@ osip_sem_t;
 
 /**
  * Structure for referencing a condition variable element.
- * @defvar struct osip_cond
+ * @var osip_cond_t
  */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 typedef struct osip_cond
@@ -210,6 +212,8 @@ typedef struct osip_cond
   struct osip_mutex *mut;
   struct osip_sem *sem;
 } osip_cond_t;
+#endif
+
 #endif
 
 #endif

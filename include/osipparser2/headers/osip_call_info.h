@@ -36,7 +36,7 @@
 
 /**
  * Structure for Call-Info headers.
- * @defvar osip_call_info_t
+ * @var osip_call_info_t
  */
   typedef struct osip_call_info osip_call_info_t;
 

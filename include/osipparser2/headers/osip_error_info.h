@@ -36,7 +36,7 @@
 
 /**
  * Structure for Error-Info headers.
- * @defvar osip_error_info_t
+ * @var osip_error_info_t
  */
   typedef osip_call_info_t osip_error_info_t;
 

@@ -129,10 +129,14 @@ extern "C"
  *      2.  A remote SDP packet (generally from the INVITE)
  * The result is the creation of a local answer to
  * the remote SDP packet.
- * @defvar osip_negotiation_ctx_t
+ * @var osip_negotiation_ctx_t
  */
   typedef struct osip_negotiation_ctx osip_negotiation_ctx_t;
 
+/**
+ * Structure for applying the SDP offer/answer negotiation.
+ * @struct osip_negotiation_ctx
+ */
   struct osip_negotiation_ctx
   {
     void *mycontext;		/* add the pointer to your personal context */
@@ -206,10 +210,14 @@ extern "C"
  *      are refused without any indication to the application layer.
  *    * In any case, you can still modify the entire SDP packet after
  *      a negotiation if you are not satisfied by the negotiation result.
- * @defvar osip_negotiation_t
+ * @var osip_negotiation_t
  */
   typedef struct osip_negotiation osip_negotiation_t;
 
+/**
+ * Structure for storing the global configuration management.
+ * @struct osip_negotiation
+ */
   struct osip_negotiation
   {
 

@@ -36,7 +36,7 @@
 
 /**
  * Structure for accept headers.
- * @defvar osip_accept_t
+ * @var osip_accept_t
  */
   typedef osip_content_type_t osip_accept_t;
 

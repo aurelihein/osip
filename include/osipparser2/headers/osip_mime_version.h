@@ -37,7 +37,7 @@
 
 /**
  * Structure for Mime-Version headers.
- * @defvar osip_mime_version_t
+ * @var osip_mime_version_t
  */
   typedef osip_content_length_t osip_mime_version_t;
 

@@ -35,7 +35,7 @@
 
 /**
  * Structure for Authorization headers.
- * @defvar osip_authorization_t
+ * @var osip_authorization_t
  */
   typedef struct osip_authorization osip_authorization_t;
 

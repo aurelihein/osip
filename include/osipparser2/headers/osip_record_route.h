@@ -35,8 +35,8 @@
  */
 
 /**
- * Structure for Route headers.
- * @defvar osip_route_t
+ * Structure for Record-Route headers.
+ * @var osip_record_route_t
  */
   typedef osip_from_t osip_record_route_t;
 

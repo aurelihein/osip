@@ -36,7 +36,7 @@
 
 /**
  * Structure for Contact headers.
- * @defvar osip_contact_t
+ * @var osip_contact_t
  */
   typedef osip_from_t osip_contact_t;
 

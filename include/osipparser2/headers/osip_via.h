@@ -36,7 +36,7 @@
 
 /**
  * Structure for Via headers.
- * @defvar osip_via_t
+ * @var osip_via_t
  */
   typedef struct osip_via osip_via_t;
 

@@ -36,7 +36,7 @@
 
 /**
  * Structure for Allow headers.
- * @defvar osip_allow_t
+ * @var osip_allow_t
  */
   typedef osip_content_length_t osip_allow_t;
 

@@ -35,7 +35,7 @@
 
 /**
  * Structure for WWW-Authenticate headers.
- * @defvar osip_www_authenticate_t
+ * @var osip_www_authenticate_t
  */
   typedef struct osip_www_authenticate osip_www_authenticate_t;
 

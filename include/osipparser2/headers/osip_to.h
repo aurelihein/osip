@@ -36,7 +36,7 @@
 
 /**
  * Structure for To headers.
- * @defvar osip_to_t
+ * @var osip_to_t
  */
   typedef osip_from_t osip_to_t;
 

@@ -34,7 +34,7 @@
 
 /**
  * Structure for CSeq headers.
- * @defvar osip_cseq_t
+ * @var osip_cseq_t
  */
   typedef struct osip_cseq osip_cseq_t;
 

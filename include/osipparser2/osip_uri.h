@@ -45,7 +45,7 @@ extern "C"
 
 /**
  * Structure for referencing url parameters.
- * @defvar osip_uri_param_t
+ * @var osip_uri_param_t
  */
   typedef struct osip_uri_param osip_uri_param_t;
 
@@ -61,7 +61,7 @@ extern "C"
 
 /**
  * Structure for referencing url headers.
- * @defvar osip_uri_header_t
+ * @var osip_uri_header_t
  */
   typedef osip_uri_param_t osip_uri_header_t;
 
@@ -160,7 +160,7 @@ extern "C"
 
 /**
  * Structure for referencing SIP urls.
- * @defvar osip_uri_t
+ * @var osip_uri_t
  */
   typedef struct osip_uri osip_uri_t;
 

@@ -41,7 +41,7 @@
  * defined by oSIP in the osip_message_t structure. This means that all
  * 'unknown' header has to be handled with the API related to this 
  * structure.
- * @defvar osip_header_t
+ * @var osip_header_t
  */
   typedef struct osip_header osip_header_t;
 
@@ -60,7 +60,7 @@
  * Generic parameter are used in a lot of headers. (To, From, Route,
  * Record-Route...) All those headers use a common API but this is
  * hidden by MACROs that you can be found in smsg.h.
- * @defvar osip_cseq_t
+ * @var osip_cseq_t
  */
   typedef osip_uri_param_t osip_generic_param_t;
 

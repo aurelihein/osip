@@ -50,7 +50,7 @@ extern "C"
 
 /**
  * Structure for referencing a thread
- * @var osip_thread_t
+ * @struct osip_thread
  */
   struct osip_thread;
 
@@ -99,7 +99,7 @@ extern "C"
 
 /**
  * Structure for referencing a semaphore element.
- * @defvar struct osip_sem
+ * @struct osip_sem
  */
   struct osip_sem;
 
@@ -151,7 +151,7 @@ extern "C"
 
 /**
  * Structure for referencing a semaphore element.
- * @defvar struct osip_mutex
+ * @struct osip_mutex
  */
   struct osip_mutex;
 

@@ -62,7 +62,7 @@ extern "C"
 
 /**
  * Structure for referencing a fifo.
- * @var osip_fifo
+ * @struct osip_fifo
  */
   struct osip_fifo
   {

@@ -36,7 +36,7 @@
 
 /**
  * Structure for Proxy-Authorization headers.
- * @defvar osip_proxy_authorization_t
+ * @var osip_proxy_authorization_t
  */
   typedef osip_authorization_t osip_proxy_authorization_t;
 

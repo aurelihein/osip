@@ -21,6 +21,8 @@
 #ifndef _MSG_H_
 #define _MSG_H_
 
+#ifndef DOXYGEN
+
 #define NUMBER_OF_HEADERS 31
 
 /* internal type for parser's config */
@@ -50,5 +52,6 @@ int __osip_token_set (const char *name, const char *str,
 
 int __osip_generic_param_parseall (osip_list_t * gen_params,
 				   const char *params);
+#endif
 
 #endif

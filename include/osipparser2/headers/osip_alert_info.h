@@ -36,7 +36,7 @@
 
 /**
  * Structure for Alert-Info headers.
- * @defvar osip_alert_info_t
+ * @var osip_alert_info_t
  */
   typedef osip_call_info_t osip_alert_info_t;
 

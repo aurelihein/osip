@@ -35,7 +35,7 @@
 
 /**
  * Structure for Content-Length headers.
- * @defvar osip_content_length_t
+ * @var osip_content_length_t
  */
   typedef struct osip_content_length osip_content_length_t;
 

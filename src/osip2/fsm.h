@@ -25,6 +25,8 @@
 
 #include "xixt.h"
 
+#ifndef DOXYGEN
+
 void add_gettimeofday (struct timeval *atv, int ms);
 void min_timercmp (struct timeval *tv1, struct timeval *tv2);
 #ifdef WIN32
@@ -185,5 +187,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
 							 tr,
 							 osip_message_t *
 							 request);
+
+#endif
 
 #endif

@@ -36,7 +36,7 @@
 
 /**
  * Structure for Proxy-Authenticate headers.
- * @defvar osip_proxy_authenticate_t
+ * @var osip_proxy_authenticate_t
  */
   typedef osip_www_authenticate_t osip_proxy_authenticate_t;
 

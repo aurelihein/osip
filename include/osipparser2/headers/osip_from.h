@@ -37,7 +37,7 @@
 
 /**
  * Structure for From headers.
- * @defvar osip_from_t
+ * @var osip_from_t
  */
   typedef struct osip_from osip_from_t;
 

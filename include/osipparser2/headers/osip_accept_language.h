@@ -36,7 +36,7 @@
 
 /**
  * Structure for Accept-Language headers.
- * @defvar osip_accept_language_t
+ * @var osip_accept_language_t
  */
   typedef osip_accept_encoding_t osip_accept_language_t;
 

@@ -36,7 +36,7 @@
 
 /**
  * Structure for Content-Disposition headers.
- * @defvar osip_content_disposition_t
+ * @var osip_content_disposition_t
  */
   typedef osip_call_info_t osip_content_disposition_t;
 

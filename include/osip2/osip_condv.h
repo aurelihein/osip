@@ -58,7 +58,7 @@ extern "C"
 #if defined(WIN32) || defined(_WIN32_WCE)
 /**
  * timespec structure
- * @defvar struct timespec
+ * @struct timespec
  */
   struct timespec
   {

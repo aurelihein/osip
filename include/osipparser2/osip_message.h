@@ -75,7 +75,7 @@ extern "C"
 
 /**
  * Structure for SIP Message (REQUEST and RESPONSE).
- * @defvar osip_message_t
+ * @var osip_message_t
  */
   typedef struct osip_message osip_message_t;
 
