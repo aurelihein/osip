@@ -1,3 +1,6 @@
+libosip2 (2.0.0)
+	* initial release of libosip2
+	
 libosip2 (1.99.6)
         * complete new organization of files and directories.
         * become libosip2.
