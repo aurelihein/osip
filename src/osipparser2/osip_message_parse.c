@@ -618,7 +618,7 @@ msg_osip_body_parse2 (osip_message_t * sip, const char *start_of_buf,
       ||sip->content_type->subtype==NULL)
     return 0;		/* no body is attached */
   
-  if (0==osip_strcasecmp(sip->content_type->type, "multipart"))
+  if (0!=osip_strcasecmp(sip->content_type->type, "multipart"))
     {
       size_t osip_body_len;
       
