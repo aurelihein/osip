@@ -837,13 +837,6 @@ extern "C"
 #define accept_clone(header, dest) content_type_clone(header, dest)
 
 /**
- * Get a header parameter from an Accept element.
- * @param header The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the element found.
- */
-#define accept_param_get(header,pos,dest) generic_param_get((header)->gen_params, pos, dest)
-/**
  * Allocate and add a header parameter in an Accept element.
  * @param header The element to work on.
  * @param name The token name.
@@ -900,13 +893,6 @@ extern "C"
  */
   char *accept_encoding_getelement (accept_encoding_t * header);
 /**
- * Get a header parameter from an Accept-Encoding element.
- * @param header The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the element found.
- */
-#define accept_encoding_param_get(header,pos,dest) generic_param_get((header)->gen_params, pos, dest)
-/**
  * Allocate and Add a header parameter in an Accept-Encoding element.
  * @param header The element to work on.
  * @param name The token name for the new parameter.
@@ -961,13 +947,6 @@ extern "C"
  * @param value The value to set.
  */
 #define accept_language_setelement(header, value)  accept_encoding_setelement(header, value)
-/**
- * Get a header parameter from an Accept-Language element.
- * @param header The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the element found.
- */
-#define accept_language_param_get(header,pos,dest) generic_param_get((header)->gen_params, pos,dest)
 /**
  * Allocate and add a generic parameter element in an Accept-Language element.
  * @param header The element to work on.
@@ -1507,13 +1486,6 @@ extern "C"
  */
   int content_type_clone (content_type_t * header, content_type_t ** dest);
 
-/**
- * Get a header parameter from a Content-Type element.
- * @param header The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the element found.
- */
-#define content_type_param_get(header,pos,dest) generic_param_get((header)->gen_params, pos,dest)
 /**
  * Allocate and add a generic parameter element in a list.
  * @param header The element to work on.
@@ -2369,13 +2341,6 @@ extern "C"
  */
 #define via_set_branch(header,value)  generic_param_add((header)->via_params,sgetcopy("branch"),value)
 
-/**
- * Get a header parameter from a Via element.
- * @param header The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the element found.
- */
-#define via_param_get(header,pos,dest)       generic_param_get(header,pos,dest)
 /**
  * Allocate and add a generic parameter element in a list.
  * @param header The element to work on.
