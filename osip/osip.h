@@ -238,7 +238,7 @@
  *   }
  * </pre></code>
  * <P>
- * <H2>How the stack will announce the events</H2>
+ * <H2>Step 4: How the stack will announce the events</H2>
  * Looking at the case of a usual outgoing REGISTER transaction, this behaviour
  * is expected.
  * <BR>When an event is seen as useful for the fsm, it means that a transition
@@ -265,17 +265,6 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-
-#ifndef SIP_MESSAGE_MAX_LENGTH
-/**
- * You can re-define your own maximum length for SIP message.
- * <BR>The default value is 20000 characters. (which is much more that the MTU!)
- * <BR>BUG: If you try to build a message string (by calling msg_2char), with
- * a higher length, your application will crash. Anybody building a commercial
- * application should fix that behavior (and hopefully send the code back to me!)
- */
-#define SIP_MESSAGE_MAX_LENGTH 4000
 #endif
 
 

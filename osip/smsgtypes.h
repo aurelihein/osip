@@ -40,6 +40,17 @@
 extern "C" {
 #endif
 
+#ifndef SIP_MESSAGE_MAX_LENGTH
+/**
+ * You can re-define your own maximum length for SIP message.
+ * <BR>The default value is 20000 characters. (which is much more that the MTU!)
+ * <BR>BUG: If you try to build a message string (by calling msg_2char), with
+ * a higher length, your application will crash. Anybody building a commercial
+ * application should fix that behavior (and hopefully send the code back to me!)
+ */
+#define SIP_MESSAGE_MAX_LENGTH 4000
+#endif
+
 #ifndef BODY_MESSAGE_MAX_SIZE
 /**
  * You can define the maximum authorised length for a body inside a SIP message.

@@ -27,6 +27,88 @@
 /**
  * @file sdp_negoc.h
  * @brief oSIP and SDP offer/answer model Routines
+ *
+ * The SDP offer/answer model is where most SIP interoperability issue
+ * comes from.  The SDP specification (rfc2327.txt) is often not fully
+ * respected. As an example, most SIP applications forget to add the
+ * mandatory 's' field in the SDP packet. Another mistake is to assume
+ * that an SDP packet don't need a 'p' and a 'e' field. Even if they
+ * are both optional, at least of those is mandatory! I have never
+ * seen ONE implementation that send at least one 'p' or 'e' field!!
+ * <BR>For all the reasons, that make negotiation a hard task, I have
+ * decided to provide a helpful facility to build SDP answer from an
+ * SDP offer. (This facility does not help to build the compliant offer)
+ * Of course, after the SDP negotiator has been executed and produced
+ * a valid response, you can still modify your SDP answer to add
+ * attributes or modify anything. You always keep the entire control
+ * over it.
+ * <H2>Do you need the negotiator</H2>
+ * If you are planning a simple application, I advise you to use it.
+ * Advanced applications may find it inappropriate, but as you can
+ * modify the SDP answer after running the negotiation, I see no reason
+ * why you should not use it. The only goal of the SDP negotiator is
+ * to make sure only one line of audio codec is accepted (the first one)
+ * and only one line of video codec is accepted (the first one). It
+ * also remove from the media lines, the codec that you don't support
+ * without asking you. (Also, you can still refuse the codec you support.)
+ * <BR>Using the negotiator, your only task is to check/add/remove
+ * the media attributes. 
+ * 
+ * <H2>How-To</H2>
+ * Using the SDP negotiator is simple. An example is provided in the
+ * test directory as 'torture_sdp.c'. It parses a SDP packet from
+ * a file (a sample is available in conf/) and produce the answer
+ * that would be made with a basic configuration where 4 audio codecs
+ * are supported.
+ * <BR>When starting your application, you simply configure the global
+ * sdp_config_t element: you'll set you username, ip address and some
+ * general informations about you that every SDP packet must contain.
+ * As a second action, you will register all the codec you support.
+ * (audio, video and 'other' codecs).
+ * <BR>After that, you will also register a set of method used to
+ * accept the codec. The return code of those method will accept or
+ * refused the supported codec for this specific session.
+ * <pre><code>
+ *  sdp_config_set_fcn_accept_audio_codec(&application_accept_audio_codec);
+ *  sdp_config_set_fcn_accept_video_codec(&application_accept_video_codec);
+ *  sdp_config_set_fcn_accept_other_codec(&application_accept_other_codec);
+ *  sdp_config_set_fcn_get_audio_port(&application_get_audio_port);
+ * </pre></code>
+ * <BR>When you need to create an answer, the following code will create
+ * the SDP packet:
+ * <pre><code>
+ *  sdp_context_t *context;
+ *  
+ *  sdp_t *dest;
+ *  i = sdp_context_init(&context);
+ *  i = sdp_context_set_mycontext(context, (void *)ua_context);
+ *  i = sdp_context_set_remote_sdp(context, sdp);
+ *  if (i!=0) {
+ *    fprintf(stdout, "Initialisation of context failed. Could not negociate");
+ *  } else {
+ *    fprintf(stdout, "Trying to execute a SIP negociation:");
+ *    i = sdp_context_execute_negociation(context);
+ *    fprintf(stdout, "return code: %i",i);
+ *    if (i==200)
+ *     {
+ *       dest = sdp_context_get_local_sdp(context);
+ *       fprintf(stdout, "SDP answer:");
+ *       i = sdp_2char(dest, &result);
+ *       if (i!=0)
+ *         fprintf(stdout, "Error found in SDP answer while printing");
+ *       else
+ *         fprintf(stdout, "%s", result);
+ *       sfree(result);
+ *     }
+ *    sdp_context_free(context);
+ *    sfree(context);
+ *    return 0;
+ *  }
+ * </pre></code>
+ * <BR>Notice the presence of sdp_context_set_mycontext() which can add
+ * a store the address of your own context (probably related to your call).
+ * This is very useful if you need to know inside the callback which call
+ * this negotiation belongs to.
  */
 
 /**

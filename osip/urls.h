@@ -26,6 +26,10 @@
 /**
  * @file urls.h
  * @brief oSIP url parser Routines
+ *
+ * This is the implementation of sip url scheme. It also partially support
+ * any unrecognised scheme (not starting with 'sip:' or 'sips:'). Unrecognised
+ * scheme are stored in url->string.
  */
 
 /**

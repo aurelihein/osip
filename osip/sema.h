@@ -28,6 +28,9 @@
 /**
  * @file sema.h
  * @brief oSIP semaphore definitions
+ *
+ * Those methods are only available if the library is compile
+ * in multi threaded mode. This is the default for oSIP.
  */
 
 /**

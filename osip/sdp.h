@@ -27,6 +27,8 @@
 /**
  * @file sdp.h
  * @brief oSIP SDP parser Routines
+ *
+ * This is the SDP accessor and parser related API.
  */
 
 /**
