@@ -140,5 +140,18 @@
 #define SIP_DOES_NOT_EXIST_ANYWHERE       604
 #define SIP_NOT_ACCEPTABLE                606
 
+/** is the status code informational */
+#define OSIP_IS_SIP_INFO(x)         (((x) >= 100)&&((x) < 200))
+/** is the status code OK ?*/
+#define OSIP_IS_SIP_SUCCESS(x)      (((x) >= 200)&&((x) < 300))
+/** is the status code a redirect */
+#define OSIP_IS_SIP_REDIRECT(x)     (((x) >= 300)&&((x) < 400))
+/** is the status code a error (client or server) */
+#define OSIP_IS_SIP_ERROR(x)        (((x) >= 400)&&((x) < 600))
+/** is the status code a client error  */
+#define OSIP_IS_SIP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
+/** is the status code a server error  */
+#define OSIP_IS_SIP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
+
 
 #endif /*  _CONST_H_ */
