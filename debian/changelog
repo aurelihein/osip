@@ -1,9 +1,9 @@
 libosip (0.9.7-1) unstable; urgency=low
 
- * fix a bug in hdr_wwwauthenticate.c.
- * patch for debian packaging and version management.
- * extra free removed for pSOS (smutex_destroy/ssem_destroy)
- * fix crash when osip can't build ACK for 3456xx to INVITEs.
- * Extra spaces now appear before content-length digits.
+  * bug fix in hdr_wwwauthenticate.c.
+  * patch for debian packaging and version management.
+  * extra free removed for pSOS (smutex_destroy/ssem_destroy)
+  * fix crash when osip can't build ACK for 3456xx to INVITEs.
+  * Extra spaces now appear before content-length digits.
 
  -- Aymeric MOIZARD <jack@atosc.org>  Mon, 06 May 2003 13:04:32 +0100
