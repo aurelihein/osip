@@ -608,7 +608,7 @@ __osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist)
    any call to this method should be replace this way:
 
    //osip_distribute(osip, evt);
-   osip_transaction_t *transaction = osip_find_transaction_and_add_event(osip, evt);
+   int i = osip_find_transaction_and_add_event(osip, evt);
 
    if (i!=0) // in case it's a new request
      {
