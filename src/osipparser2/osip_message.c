@@ -796,6 +796,7 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
       }
   }
 
+  copy->message_length = sip->message_length;
   copy->message = osip_strdup (sip->message);
   copy->message_property = sip->message_property;
 
