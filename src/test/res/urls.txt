@@ -107,3 +107,6 @@ sip:ab@big.com;ab-_.!~*'()[]/:&+$-_.!~*'()=ab-_.!~*'()[]/:&+$-_.!~*'(); cd-_.!~*
 # test allowed values in the header-parameter part of url.
 #
 sip:ab@big.com?ab-_.!~*'()[]/?:+$=-_.!~*'()[]/?:+$&-_.!~*'()[]/?:+$%26%3D%2C%3B?/= -_.!~*'()[]/?:+$%26%3D+$%2C%3B?/
+
+sip:bob@biloxi.example.net?Accept-Contact=sip:bobsdesk.biloxi.example.net&Call-ID%3D55432%40alicepc.atlanta.example.com
+sip:bob@biloxi.example.net?Accept-Contact=sip:bobsdesk.biloxi.example.net&Call-ID=55432alicepc.atlanta.example.
