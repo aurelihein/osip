@@ -1860,7 +1860,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   char *string;
 
   *dest = NULL;
-  if (sdp->v_version == NULL)
+  if (!sdp || sdp->v_version == NULL)
     return -1;
   if (sdp->o_username == NULL ||
       sdp->o_sess_id == NULL ||
