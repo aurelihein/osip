@@ -62,6 +62,7 @@ osip_global_free()
   nict_unload_fsm();
   nist_unload_fsm();
 
+#ifdef OSIP_MT
   smutex_destroy(ict_fastmutex);
   sfree(ict_fastmutex);
   smutex_destroy(ist_fastmutex);
@@ -70,6 +71,7 @@ osip_global_free()
   sfree(nict_fastmutex);
   smutex_destroy(nist_fastmutex);
   sfree(nist_fastmutex);
+#endif
 }
 
 int
@@ -449,7 +451,9 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 {
   transaction_t *transaction = NULL;
   list_t *transactions;
+#ifdef OSIP_MT
   smutex_t *mut;
+#endif
   if (EVT_IS_INCOMINGMSG(evt))
     {
       if (MSG_IS_REQUEST(evt->sip))
@@ -458,12 +462,16 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
 	      transactions = osip->ist_transactions;
+#ifdef OSIP_MT
 	      mut = ist_fastmutex;
+#endif
 	    }
 	  else 
 	    {
 	      transactions = osip->nist_transactions;
+#ifdef OSIP_MT
 	      mut = nist_fastmutex;
+#endif
 	    }
 	}
       else
@@ -472,12 +480,16 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
 	      transactions = osip->ict_transactions;
+#ifdef OSIP_MT
 	      mut = ict_fastmutex;
+#endif
 	    }
 	  else 
 	    {
 	      transactions = osip->nict_transactions;
+#ifdef OSIP_MT
 	      mut = nict_fastmutex;
+#endif
 	    }
 	}
     }
@@ -489,12 +501,16 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
 	      transactions = osip->ist_transactions;
+#ifdef OSIP_MT
 	      mut = ist_fastmutex;
+#endif
 	    }
 	  else 
 	    {
 	      transactions = osip->nist_transactions;
+#ifdef OSIP_MT
 	      mut = nist_fastmutex;
+#endif
 	    }
 	}
       else
@@ -503,12 +519,16 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
 	      transactions = osip->ict_transactions;
+#ifdef OSIP_MT
 	      mut = ict_fastmutex;
+#endif
 	    }
 	  else 
 	    {
 	      transactions = osip->nict_transactions;
+#ifdef OSIP_MT
 	      mut = nict_fastmutex;
+#endif
 	    }
 	}
     }

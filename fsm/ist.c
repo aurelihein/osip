@@ -90,10 +90,10 @@ ist_free(ist_t *ist)
 }
 
 int
-ist_set_auto_send_100(ist_t *ist, int bool)
+ist_set_auto_send_100(ist_t *ist, int flag)
 {
   if (ist==NULL) return -1;
-  if (bool!=0)
+  if (flag!=0)
     ist->auto_send_100 = -1;
   else
     ist->auto_send_100 = 0;

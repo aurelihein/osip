@@ -724,9 +724,9 @@ fi
 
 OSIP_MAJOR_VERSION=0
 OSIP_MINOR_VERSION=8
-OSIP_MICRO_VERSION=4
+OSIP_MICRO_VERSION=5
 
-OSIP_RELEASE=0.8.4
+OSIP_RELEASE=0.8.5
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
@@ -1924,7 +1924,7 @@ else
   if { (eval echo configure:1925: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; }; then
     for file in conftest.*; do
       case $file in
-      *.c | *.o | *.obj) ;;
+      *.$ac_ext | *.c | *.o | *.obj) ;;
       *) ac_cv_exeext=`echo $file | sed -e s/conftest//` ;;
       esac
     done

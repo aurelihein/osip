@@ -249,7 +249,6 @@ ict_create_ack(transaction_t *ict, sip_t *response)
   sfree(ack->cseq->method);
   ack->cseq->method = sgetcopy("ACK");
   
-  /* MUST copy REQUEST-URI from INVITE */
   ack->strtline->sipmethod = (char *)smalloc(5);
   sprintf(ack->strtline->sipmethod,"ACK");
   ack->strtline->sipversion = sgetcopy(ict->orig_request->strtline->sipversion);
@@ -257,6 +256,7 @@ ict_create_ack(transaction_t *ict, sip_t *response)
   ack->strtline->statuscode   = NULL;
   ack->strtline->reasonphrase = NULL;
 
+  /* MUST copy REQUEST-URI from Contact header! */
   url_clone(ict->orig_request->strtline->rquri,
 	    &(ack->strtline->rquri));
 

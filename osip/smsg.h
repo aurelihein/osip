@@ -296,7 +296,7 @@ int     contact_clone(contact_t *contact, contact_t **dest);
 #define contact_geturl(C)         from_geturl((from_t*)C)
 #define contact_seturl(C,U)       from_seturl((from_t*)C,U)
 #define contact_param_get(C,I,GP) from_param_get((from_t*)C,I,GP)
-#define contact_param_add(F,GP)   generic_param_add((F)->gen_params, N,V)
+#define contact_param_add(F,N, GP)   generic_param_add((F)->gen_params, N,GP)
 #define contact_param_getbyname(C,N,GP) generic_param_getbyname((C)->gen_params,N,GP)
 
 #define content_disposition_init(A)      call_info_init(A)

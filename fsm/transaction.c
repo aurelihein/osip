@@ -31,7 +31,7 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   int i;
   time_t now;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating transaction ressource %i\n",transactionid));
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating transaction ressource %i %s\n",transactionid, request->call_id->number));
 
   *transaction = (transaction_t *)smalloc(sizeof(transaction_t));
   if (*transaction==NULL) return -1;
@@ -132,7 +132,10 @@ transaction_free(transaction_t *transaction)
 {
   int i;
   if (transaction==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free transaction ressource %i\n",transaction->transactionid));
+  if (transaction->orig_request!=NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free transaction ressource %i %s\n",transaction->transactionid, transaction->orig_request->call_id->number));
+    }
   if (transaction->ctx_type==ICT)
     {
       i = osip_remove_ict(transaction->config, transaction);
@@ -194,8 +197,11 @@ transaction_execute(transaction_t *transaction, sipevent_t *evt)
   /* to kill the process, simply send this type of event. */
   if (EVT_IS_KILL_TRANSACTION(evt))
       {
-	transaction_free(transaction);
-	sfree(transaction);
+	/* MAJOR CHANGE!
+	   TRANSACTION MUST NOW BE RELEASED BY END-USER:
+	   So Any usefull data can be save and re-used */
+	/* transaction_free(transaction);
+	  sfree(transaction); */
         sfree(evt);
         return 0;
       }

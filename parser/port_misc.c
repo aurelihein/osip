@@ -214,7 +214,7 @@ set_next_token(char **dest, char *buf, int end_separator, char **next)
   sep = buf;
   while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
     sep++;
-  if ((*sep=='\r')&&(*sep=='\n'))
+  if ((*sep=='\r')||(*sep=='\n'))
     { /* we should continue normally only if this is the separator asked! */
       if (*sep!=end_separator) return -1;
     }

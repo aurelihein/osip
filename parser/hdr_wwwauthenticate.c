@@ -65,7 +65,11 @@ quoted_string_set(char *name, char *str, char **result, char **next)
     else return -1; 	/* bad header format */
 	
   if (strlen(str)<=strlen(name)) return -1; /* bad header format... */
-  if (strncmp(name,str,strlen(name))==0)
+#ifndef WIN32
+  if (strncasecmp(name,str,strlen(name))==0)
+#else
+  if (strnicmp(name,str,strlen(name))==0)
+#endif
     {
       char *quote1;
       char *quote2;
@@ -126,7 +130,11 @@ token_set(char *name, char *str, char **result, char **next)
     if (*str) str++;
     else return -1; 	/* bad header format */
 
-  if (strncmp(name,str,strlen(name))==0)
+#ifndef WIN32
+  if (strncasecmp(name,str,strlen(name))==0)
+#else
+  if (strnicmp(name,str,strlen(name))==0)
+#endif
     {
       char *end;
       end = strchr(str,',');

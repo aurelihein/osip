@@ -121,6 +121,24 @@ test_message(char *msg, int verbose, int clone)
   {
     char *result;
 
+    int j=10000;
+    fprintf(stdout, "Trying 10000 sequentials calls to msg_init(), msg_parse() and msg_free()\n");
+    while (j!=0)
+      {
+	j--;
+	msg_init(&sip);
+	if (msg_parse(sip, msg)!=0)
+	  {
+	    fprintf(stdout,"ERROR: failed while parsing!\n");
+	    msg_free(sip);  /* try to free msg, even if it failed! */
+	    sfree(sip);
+	    /* this seems dangerous..... */
+	    return -1;
+	  }
+	msg_free(sip);  /* try to free msg, even if it failed! */
+	sfree(sip);
+      }
+
     msg_init(&sip);
     if (msg_parse(sip, msg)!=0)
       {
@@ -135,10 +153,19 @@ test_message(char *msg, int verbose, int clone)
 	i = msg_2char(sip, &result);
 	if (i == -1)
 	  {
-	  fprintf(stdout,"ERROR: failed while printing message!\n");
-	  msg_free(sip);
-	  sfree(sip);
-	  return -1;
+	    fprintf(stdout,"ERROR: failed while printing message!\n");
+	    msg_free(sip);
+	    sfree(sip);
+	    return -1;
+	  }
+	
+	i = msg_2char(sip, &result);
+	if (i == -1)
+	  {
+	    fprintf(stdout,"ERROR: failed while printing message!\n");
+	    msg_free(sip);
+	    sfree(sip);
+	    return -1;
 	  }
 	else {
 	  if (verbose)
@@ -146,35 +173,45 @@ test_message(char *msg, int verbose, int clone)
 	  if (clone)
 	    {
 	      /* create a clone of message */
-	      sip_t *copy;
-	      i = msg_clone(sip, &copy);
-	      if (i!=0)
+	      int j = 10000;
+	      fprintf(stdout, "Trying 10000 sequentials calls to msg_clone() and msg_free()\n");
+	      while (j!=0)
 		{
-		  fprintf(stdout,"ERROR: failed while creating copy of message!\n");
-		}
-	      else
-		{
-		  char *tmp;
-		  msg_force_update(copy);
-		  i = msg_2char(copy, &tmp);
+		  sip_t *copy;
+		  j--;
+		  i = msg_clone(sip, &copy);
 		  if (i!=0)
 		    {
-		      fprintf(stdout,"ERROR: failed while printing message!\n");
+		      fprintf(stdout,"ERROR: failed while creating copy of message!\n");
 		    }
 		  else
 		    {
-		      if (0==strcmp(result, tmp))
-			printf("The msg_clone method works perfectly\n");
+		      char *tmp;
+		      msg_force_update(copy);
+		      i = msg_2char(copy, &tmp);
+		      if (i!=0)
+			{
+			  fprintf(stdout,"ERROR: failed while printing message!\n");
+			}
 		      else
-			printf("ERROR: The msg_clone method DOES NOT works\n");
-		      if (verbose)
-			printf("Here is the copy: \n%s\n", tmp);
-		      
-		      sfree(tmp);
+			{
+			  if (0==strcmp(result, tmp))
+			    {
+			      if (verbose)
+				printf("The msg_clone method works perfectly\n");
+			    }
+			  else
+			    printf("ERROR: The msg_clone method DOES NOT works\n");
+			  if (verbose)
+			    printf("Here is the copy: \n%s\n", tmp);
+			  
+			  sfree(tmp);
+			}
+		      msg_free(copy);
+		      sfree(copy);
 		    }
-		  msg_free(copy);
-		  sfree(copy);
 		}
+	      fprintf(stdout, "Trying 10000 sequentials calls: done\n");
 	    }
 	  sfree(result);
 	}

@@ -112,7 +112,8 @@ dialog_update_tag_as_uac(dialog_t *dialog, sip_t *response)
 int
 dialog_match_as_uac(dialog_t *dlg, sip_t *answer)
 {
-  generic_param_t *tag_param;
+  generic_param_t *tag_param_local;
+  generic_param_t *tag_param_remote;
   char *tmp;
   int i;
   call_id_2char(answer->call_id, &tmp); 
@@ -122,51 +123,46 @@ dialog_match_as_uac(dialog_t *dlg, sip_t *answer)
       return -1;
     }
   sfree(tmp);
-  /* for UAC, the remote tag is in the from header */
-  if (dlg->type==CALLER)
-    i = to_get_tag(answer->to, &tag_param);
-  else
-    i = from_get_tag(answer->from, &tag_param);
-  if (0!=i)
+
+  /* for INCOMING RESPONSE:
+     To: remote_uri;remote_tag
+     From: local_uri;local_tag           <- LOCAL TAG ALWAYS EXIST
+  */
+  i = from_get_tag(answer->from, &tag_param_local);
+  if (i!=0)
+    return -1;
+  if (dlg->local_tag==NULL)
+    /* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
+    return -1;
+  if (0!=strcmp(tag_param_local->gvalue, dlg->local_tag))
+      return -1;
+
+  i = to_get_tag(answer->to, &tag_param_remote);
+  if (i!=0 && dlg->remote_tag!=NULL)  /* no tag in response but tag in dialog */
+    return -1; /* impossible... */
+  if (i!=0 && dlg->remote_tag==NULL)  /* no tag in response AND no tag in dialog */
     {
-      if (dlg->remote_tag!=NULL)  /* no tag in answer but tag in dialog */
-	return -1;
-      /* no tag in answer AND no tag in dialog! */
-      if (dlg->type==CALLER)
-	{
-	  if (0==from_compare((from_t *)dlg->remote_uri,(from_t *)answer->to)
-	      &&0==from_compare(dlg->local_uri,answer->from))
-	    return 0;
-	}else{
-	  if (0==from_compare(dlg->local_uri,(from_t *)answer->to)
-	      &&0==from_compare((from_t *)dlg->remote_uri,answer->from))
-	    return 0;
-	}
+      if (0==from_compare((from_t *)dlg->local_uri,(from_t *)answer->from)
+	  &&0==from_compare(dlg->remote_uri,answer->to))
+	return 0;
       return -1;
     }
-  else
-    {
-      if (dlg->remote_tag==NULL) return -1;
-      /* AND FOR RFC2543 User Agent??? If an early dialog was created without
-	 a tag, then we can't match it with a 2xx that contains one!! */
-      if (0!=from_compare((from_t *)dlg->remote_uri,(from_t *)answer->to)
-	  ||0!=from_compare(dlg->local_uri,answer->from))
-	{
-	  if (0!=from_compare(dlg->local_uri,(from_t *)answer->to)
-	      ||0!=from_compare((from_t *)dlg->remote_uri,answer->from))
-	    return -1;
-	}
-      if (0==strcmp(tag_param->gvalue, dlg->remote_tag))
-	return 0;
-    }
+
+  /* we don't have to compare
+     remote_uri with from
+     && local_uri with to.    ----> we have both tag recognized, it's enough..
+  */
+  if (0==strcmp(tag_param_remote->gvalue, dlg->remote_tag))
+      return 0;
   return -1;
 }
 
 int
 dialog_match_as_uas(dialog_t *dlg, sip_t *request)
 {
+  generic_param_t *tag_param_local;
+  generic_param_t *tag_param_remote;
   int i;
-  generic_param_t *tag_param;
   char *tmp;
   call_id_2char(request->call_id, &tmp); 
   if (0!=strcmp(dlg->call_id, tmp))
@@ -175,42 +171,38 @@ dialog_match_as_uas(dialog_t *dlg, sip_t *request)
       return -1;
     }
   sfree(tmp);
-  /* for UAS, the remote tag is in the from header */
-  if (dlg->type==CALLEE)
-    i = from_get_tag(request->from, &tag_param);
-  else
-    i = to_get_tag(request->to, &tag_param);
-  if (0!=i)
+
+  /* for INCOMING REQUEST:
+     To: local_uri;local_tag           <- LOCAL TAG ALWAYS EXIST
+     From: remote_uri;remote_tag
+  */
+  i = to_get_tag(request->to, &tag_param_local);
+  if (i!=0)
+    return -1;
+  if (dlg->local_tag==NULL)
+    /* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
+    return -1;
+  if (0!=strcmp(tag_param_local->gvalue, dlg->local_tag))
+      return -1;
+
+  i = from_get_tag(request->from, &tag_param_remote);
+  if (i!=0 && dlg->remote_tag!=NULL)  /* no tag in request but tag in dialog */
+    return -1; /* impossible... */
+  if (i!=0 && dlg->remote_tag==NULL)  /* no tag in request AND no tag in dialog */
     {
-      if (dlg->remote_tag!=NULL)  /* no tag in request but tag in dialog */
-	return -1;
-      /* no tag in request AND no tag in dialog! */
-      /* this test depends if we initiate the call or not! */
-      if (dlg->type==CALLEE) {
-	if (0==from_compare((from_t *)dlg->local_uri,(from_t *)request->to)
-	    &&0==from_compare(dlg->remote_uri,request->from))
-	  return 0;
-      } else { /* I was the CALLER */
-	if (0==from_compare(dlg->remote_uri,(from_t *)request->to)
-	    &&0==from_compare((from_t *)dlg->local_uri,request->from))
-	  return 0;
-      }
-      
+      if (0==from_compare((from_t *)dlg->remote_uri,(from_t *)request->from)
+	  &&0==from_compare(dlg->local_uri,request->to))
+	return 0;
       return -1;
     }
-  else
-    {
-      if (dlg->remote_tag==NULL) return -1;
-      if (0!=from_compare((from_t *)dlg->local_uri,(from_t *)request->to)
-	  ||0!=from_compare(dlg->remote_uri,request->from))
-	{
-	  if (0!=from_compare(dlg->remote_uri,(from_t *)request->to)
-	      ||0!=from_compare((from_t *)dlg->local_uri,request->from))
-	    return -1;
-	}
-      if (0==strcmp(tag_param->gvalue, dlg->remote_tag))
-	return 0;
-    }
+
+  /* we don't have to compare
+     remote_uri with from
+     && local_uri with to.    ----> we have both tag recognized, it's enough..
+  */
+  if (0==strcmp(tag_param_remote->gvalue, dlg->remote_tag))
+      return 0;
+
   return -1;
 }
 
@@ -369,10 +361,11 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
   (*dialog)->local_cseq = -1;
   (*dialog)->remote_cseq = satoi(response->cseq->number);
 
-  i = to_clone(response->from, &((*dialog)->remote_uri));
+
+  i = from_clone(response->to, &((*dialog)->remote_uri));
   if (i!=0) goto diau_error_3;
 
-  i = from_clone(response->to, &((*dialog)->local_uri));
+  i = to_clone(response->from, &((*dialog)->local_uri));
   if (i!=0) goto diau_error_4;
 
   {

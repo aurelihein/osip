@@ -1,10 +1,14 @@
 libosip (0.8.5)
+	* osip_create_transaction: can now be used to create ICT and NICT
+	* contact_param_add: fix MACRO! an argument was missing.
+	* dialog.c: make it more compliant: TO BE TESTED!
+	* transaction.c: MAJOR CHANGE: transaction_free() must now be called by the
+	  application! This way, you can re-use data before releasing the context..
 	* add a failure case when there is no '>' char when '<' is found.
-	* osip_create_transaction is more robust and can now be used for
-	  ICT and NICT (as well as IST and NIST)
+	* fix compilations issue with --disable-mt.
 	
 libosip (0.8.4)
-	* ist_fsm.c: start timer i while entering CONFIRMED state
+	* ist_fsm.c: start timer i while entering CONFIRMED state.
 	* urls.c: bug in line 210.
 	* msg_cparser.c: switch CONTACT_SHORT & CONTENT_LENGTH_SHORT in table.
 	* osip_distribute_event(): obsolete!

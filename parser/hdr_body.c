@@ -198,12 +198,12 @@ body_parse(body_t *body, char *start_of_body)
 
   /*  i = find_next_crlfcrlf(start_of_body, &end_of_body);
       if (i==-1) return -1; 
-      body->body = smalloc(end_of_body-start_of_body+1);
+      body->body = (char *)smalloc(end_of_body-start_of_body+1);
       sstrncpy(body->body, start_of_body, end_of_body-start_of_body);
   */
 
   i = strlen(start_of_body);
-  body->body = smalloc(i+1);
+  body->body = (char *)smalloc(i+1);
   sstrncpy(body->body, start_of_body, i);
   return 0;
 }
@@ -238,7 +238,7 @@ body_parse_mime(body_t *body, char *start_of_body)
     }
 
   end_of_body_header   = end_of_body_header + strlen(end_of_body_header);
-  body->body = smalloc(end_of_body_header-start_of_body_header+1);
+  body->body = (char *)smalloc(end_of_body_header-start_of_body_header+1);
   sstrncpy(body->body, start_of_body_header, end_of_body_header-start_of_body_header);
 
   return 0;
@@ -262,7 +262,7 @@ body_2char(body_t *body, char **dest)
   if (body==NULL) return -1;
   if (body->body==NULL) return -1;
  
-  tmp_body = smalloc(strlen(body->body)+BODY_MESSAGE_MAX_SIZE);
+  tmp_body = (char *)smalloc(strlen(body->body)+BODY_MESSAGE_MAX_SIZE);
   ptr      = tmp_body; /* save the initial address of the string */
   
   if (body->content_type!=NULL)
