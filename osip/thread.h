@@ -78,12 +78,12 @@ extern "C"
 #ifdef WIN32
   typedef struct 
   {
-    HANDLE h;
-    unsigned id;
-   }
-   sthread_t;
-   
-#endif				/*  */
+    HANDLE h;
+    unsigned id;
+   }
+   sthread_t;
+  
+#endif
 #if !defined(WIN32) && defined(__PSOS__)
     typedef struct
   {
