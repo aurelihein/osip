@@ -77,10 +77,10 @@ osip_build_random_number ()
 
         gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
-        random_seed_set = 1;
 #else
 	srand(time(NULL));
 #endif
+        random_seed_set = 1;
     }
 
     return rand();

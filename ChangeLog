@@ -1,4 +1,5 @@
 libosip2 (2.0.4)
+	* fix random number generation on windows.
 	* fix for MingGw compiler
 	* set paramter of sdp_negociation_t structure to NULL on init.
 	
