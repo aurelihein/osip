@@ -40,6 +40,10 @@
  */
   typedef struct osip_via osip_via_t;
 
+/**
+ * Definition of the Via header.
+ * @struct osip_via
+ */
   struct osip_via
   {
     char *version;

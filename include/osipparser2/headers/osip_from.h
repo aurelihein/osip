@@ -41,6 +41,10 @@
  */
   typedef struct osip_from osip_from_t;
 
+/**
+ * Definition of the From header.
+ * @struct osip_from
+ */
   struct osip_from
   {
     char *displayname;

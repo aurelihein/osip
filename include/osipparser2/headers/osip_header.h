@@ -45,6 +45,10 @@
  */
   typedef struct osip_header osip_header_t;
 
+/**
+ * Definition of a generic sip header.
+ * @struct osip_header
+ */
   struct osip_header
   {
     char *hname;

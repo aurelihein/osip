@@ -38,6 +38,10 @@
  */
   typedef struct osip_cseq osip_cseq_t;
 
+/**
+ * Definition of the CSeq header.
+ * @struct osip_cseq
+ */
   struct osip_cseq
   {
     char *method;

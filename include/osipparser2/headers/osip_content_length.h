@@ -39,6 +39,10 @@
  */
   typedef struct osip_content_length osip_content_length_t;
 
+/**
+ * Definition of the Content-Length header.
+ * @struct osip_content_length
+ */
   struct osip_content_length
   {
     char *value;

@@ -40,6 +40,10 @@
  */
   typedef struct osip_content_type osip_content_type_t;
 
+/**
+ * Definition of the Content-Type header.
+ * @struct osip_content_type
+ */
   struct osip_content_type
   {
     char *type;

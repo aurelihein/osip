@@ -40,6 +40,10 @@
  */
   typedef struct osip_accept_encoding osip_accept_encoding_t;
 
+/**
+ * Definition of the Accept-Encoding header.
+ * @struct osip_accept_encoding
+ */
   struct osip_accept_encoding
   {
     char *element;

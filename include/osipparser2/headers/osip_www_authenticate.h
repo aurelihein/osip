@@ -39,6 +39,10 @@
  */
   typedef struct osip_www_authenticate osip_www_authenticate_t;
 
+/**
+ * Definition of the WWW-Authenticate header.
+ * @struct osip_www_authenticate
+ */
   struct osip_www_authenticate
   {
     char *auth_type;		/* ( "Basic" | "Digest" )      */

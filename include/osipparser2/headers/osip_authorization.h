@@ -39,6 +39,10 @@
  */
   typedef struct osip_authorization osip_authorization_t;
 
+/**
+ * Definition of the Authorization header.
+ * @struct osip_authorization
+ */
   struct osip_authorization
   {
     char *auth_type;		/* ( "Basic" | "Digest" )      */

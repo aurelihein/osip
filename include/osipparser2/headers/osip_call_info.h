@@ -40,6 +40,10 @@
  */
   typedef struct osip_call_info osip_call_info_t;
 
+/**
+ * Definition of the Call-Info header.
+ * @struct osip_call_info
+ */
   struct osip_call_info
   {
     char *element;
