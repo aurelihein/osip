@@ -111,15 +111,15 @@ next_separator (const char *ch, int separator_osip_to_find, int before_separator
 /* OUTPUT: err_t *err | structure to store error.   */
 /* return -1 on error */
 int
-osip_uri_parse (osip_uri_t * url, char *buf)
+osip_uri_parse (osip_uri_t * url, const char *buf)
 {
   char *username;
   char *password;
   char *host;
-  char *port;
-  char *params;
-  char *headers;
-  char *tmp;
+  const char *port;
+  const char *params;
+  const char *headers;
+  const char *tmp;
 
   /* basic tests */
   if (buf == NULL)
@@ -215,14 +215,15 @@ osip_uri_parse (osip_uri_t * url, char *buf)
   else
     /* params exist */
     {
+      char *tmpbuf;
       if (headers - params + 1 < 2)
 	return -1;
-      tmp = osip_malloc (headers - params + 1);
-      if (tmp == NULL)
+      tmpbuf = osip_malloc (headers - params + 1);
+      if (tmpbuf == NULL)
 	return -1;
-      tmp = osip_strncpy (tmp, params, headers - params);
-      osip_uri_parse_params (url, tmp);
-      osip_free (tmp);
+      tmpbuf = osip_strncpy (tmpbuf, params, headers - params);
+      osip_uri_parse_params (url, tmpbuf);
+      osip_free (tmpbuf);
     }
 
   port = params - 1;
@@ -341,7 +342,7 @@ osip_uri_get_port (osip_uri_t * url)
 
 
 int
-osip_uri_parse_headers (osip_uri_t * url, char *headers)
+osip_uri_parse_headers (osip_uri_t * url, const char *headers)
 {
   char *and;
   char *equal;
@@ -417,13 +418,13 @@ osip_uri_parse_headers (osip_uri_t * url, char *headers)
 }
 
 int
-osip_uri_parse_params (osip_uri_t * url, char *params)
+osip_uri_parse_params (osip_uri_t * url, const char *params)
 {
   char *pname;
   char *pvalue;
 
-  char *comma;
-  char *equal;
+  const char *comma;
+  const char *equal;
 
   /* find '=' wich is the separator for one param */
   /* find ';' wich is the separator for multiple params */

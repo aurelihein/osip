@@ -187,20 +187,20 @@ extern "C"
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-  int osip_uri_parse (osip_uri_t * url, char *buf);
+  int osip_uri_parse (osip_uri_t * url, const char *buf);
 #ifndef DOXYGEN
 /**
  * Parse the header part of a url.
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-  int osip_uri_parse_headers (osip_uri_t * url, char *buf);
+  int osip_uri_parse_headers (osip_uri_t * url, const char *buf);
 /**
  * Parse the parameter part of a url.
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-  int osip_uri_parse_params (osip_uri_t * url, char *buf);
+  int osip_uri_parse_params (osip_uri_t * url, const char *buf);
 #endif
 /**
  * Get a string representation of a url element.
