@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # This is a short-cut to execute tests on the parser.
 # ./conf/torture_msgs{,2} contain various kind of messages.
