@@ -1,8 +1,0 @@
-1) Open and build osipparser.dsw and osipfsm.dsw in the ./libosip-0.X.X/windows/
-   directory with Visual Studio C++ 6.0.
-
-2) Tests applications has no makefiles. Waiting for someone to contribute!
-
-3) For more advanced users: libosip can be compiled with cygwin!
-
- 
