@@ -420,6 +420,7 @@ ist_snd_3456xx(transaction_t *ist, sipevent_t *evt)
     }
 
   ist->ist_context->timer_g_start = time(NULL);
+  ist->ist_context->timer_h_start = time(NULL);
   transaction_set_state(ist, IST_COMPLETED);
   return;
 }
