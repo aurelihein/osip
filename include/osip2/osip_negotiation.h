@@ -544,16 +544,24 @@ extern "C"
 					osip_negotiation_ctx_t * con,
 					sdp_message_t ** sdp,
 					char *audio_port, char *video_port);
+
+#ifndef DOXYGEN
   int __osip_negotiation_sdp_build_offer (osip_negotiation_t *,
 					  osip_negotiation_ctx_t * con,
 					  sdp_message_t ** sdp,
 					  char *audio_port, char *video_port,
 					  char *audio_codec,
 					  char *video_codec);
+#endif
 
-  /* for non "on-hold sdp" in outgoing invite */
+/** Put the SDP message on hold in outgoing invite
+ * @param sdp The sdp message to modify.
+ */
   int osip_negotiation_sdp_message_put_on_hold (sdp_message_t * sdp);
-  /* for an "on hold sdp" in outgoing invite */
+
+/** Put the SDP message off hold in outgoing invite
+ * @param sdp The sdp message to modify.
+ */
   int osip_negotiation_sdp_message_put_off_hold (sdp_message_t * sdp);
 
 /** @} */

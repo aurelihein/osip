@@ -151,7 +151,7 @@ extern "C"
 /**
  * Allocate a osip_dialog_t element as a UAC.
  * <UL><LI>This could be used to initiate dialog with a NOTIFY coming
- * before the answer for a subscribe has reached us.</LI>
+ * before the answer for a subscribe has reached us.</LI></UL>
  * @param dialog The element to allocate.
  * @param next_request The response containing the informations.
  * @param local_cseq The local cseq

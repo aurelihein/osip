@@ -160,14 +160,15 @@ extern "C"
 /**
  * Parse a osip_message_t element.
  * @param sip The resulting element.
- * @param message The buffer to parse.
- * @param message The length of buffer to parse.
+ * @param buf The buffer to parse.
+ * @param length The length of the buffer to parse.
  */
   int osip_message_parse (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
+ * @param message_length The length of the returned buffer.
  */
   int osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length);
 /**
@@ -304,6 +305,7 @@ extern "C"
 			      0==strncmp((msg)->sip_method,"NOTIFY",6))
 /**
  * Test if the message is a SUBSCRIBE REQUEST
+ * @def MSG_IS_SUBSCRIBE
  * @param msg the SIP message.
  */
 #define MSG_IS_SUBSCRIBE(msg)  (MSG_IS_REQUEST(msg) && \
@@ -322,6 +324,10 @@ extern "C"
 			      0==strncmp((msg)->sip_method,"PRACK",5))
 
 
+/**
+ * Test if the message is an UPDATE REQUEST
+ * @param msg the SIP message.
+ */
 #define MSG_IS_UPDATE(msg)    (MSG_IS_REQUEST(msg) && \
 			      0==strncmp((msg)->sip_method,"UPDATE",6))
 

@@ -45,9 +45,25 @@ extern "C"
  */
   struct osip_rfc3264;
 
+/**
+ * Maximum number of supported audio payload.
+ * @def MAX_AUDIO_CODECS
+ */
 #define MAX_AUDIO_CODECS   100
+/**
+ * Maximum number of supported video payload.
+ * @def MAX_VIDEO_CODECS
+ */
 #define MAX_VIDEO_CODECS   100
+/**
+ * Maximum number of supported t38 config.
+ * @def MAX_T38_CODECS
+ */
 #define MAX_T38_CODECS       2
+/**
+ * Maximum number of supported application config.
+ * @def MAX_APP_CODECS
+ */
 #define MAX_APP_CODECS     100
 
 /**

@@ -458,13 +458,15 @@ extern "C"
 /**
  * Set the Body of the SIP message.
  * @param sip The element to work on.
- * @param buf The string containing the body.
+ * @param buf The buffer containing the body.
+ * @param length The length of the buffer.
  */
   int osip_message_set_body (osip_message_t * sip, const char *buf, size_t length);
 /**
- * Set a type for a body. (NOT TESTED! use with care)
+ * Set the Body of the SIP message. (please report bugs)
  * @param sip The element to work on.
- * @param buf the mime type of body.
+ * @param buf the buffer containing the body.
+ * @param length The length of the buffer.
  */
   int osip_message_set_body_mime (osip_message_t * sip, const char *buf, size_t length);
 /**

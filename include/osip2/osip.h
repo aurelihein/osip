@@ -1066,6 +1066,7 @@ extern "C"
 /**
  * Create a sipevent from a SIP message string.
  * @param buf The SIP message as a string.
+ * @param length The length of the buffer to parse.
  */
   osip_event_t *osip_parse (char *buf, size_t length);
 

@@ -73,6 +73,7 @@ extern "C"
  * Parse a osip_body_t element.
  * @param body The element to work on.
  * @param buf The buffer to parse.
+ * @param lentgh The length of the buffer to parse.
  */
   int osip_body_parse (osip_body_t * body, const char *buf, size_t length);
 /**
@@ -85,12 +86,14 @@ extern "C"
  * Parse a osip_body_t element. (for mime message format) (NOT TESTED, use with care)
  * @param body The element to work on.
  * @param buf The buffer to parse.
+ * @param length The length of the buffer to parse.
  */
   int osip_body_parse_mime (osip_body_t * body, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_body_t element.
  * @param body The element to work on.
  * @param dest The resulting buffer.
+ * @param length The length of the returned buffer.
  */
   int osip_body_to_str (const osip_body_t * body, char **dest, size_t *length);
 
@@ -104,6 +107,7 @@ extern "C"
 /**
  * Add a header in the osip_body_t element.
  * @param body The element to work on.
+ * @param hname The header string name.
  * @param hvalue The header string value.
  */
   int osip_body_set_header (osip_body_t * body, const char *hname,

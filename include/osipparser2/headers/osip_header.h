@@ -60,7 +60,7 @@
  * Generic parameter are used in a lot of headers. (To, From, Route,
  * Record-Route...) All those headers use a common API but this is
  * hidden by MACROs that you can be found in smsg.h.
- * @var osip_cseq_t
+ * @var osip_generic_param_t
  */
   typedef osip_uri_param_t osip_generic_param_t;
 
