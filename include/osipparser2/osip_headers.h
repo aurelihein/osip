@@ -59,7 +59,7 @@
 
 /**
  * @defgroup oSIP_HEADERS oSIP headers definitions
- * @ingroup oSIP
+ * @ingroup osip2_parser
  * @{
  */
 

@@ -85,7 +85,6 @@
 
 /**
  * @defgroup oSIP_DIALOG oSIP dialog Handling
- * @ingroup oSIP
  * @{
  */
 

@@ -38,7 +38,6 @@
 
 /**
  * @defgroup oSIP_LIST oSIP list Handling
- * @ingroup oSIP
  * @{
  */
 

@@ -115,7 +115,6 @@
 /**
  * @internal
  * @defgroup oSIP_OAM oSIP and SDP offer/answer model Handling
- * @ingroup oSIP
  * @{
  */
 

@@ -34,7 +34,7 @@
 
 /**
  * @defgroup oSIP_URLS oSIP url parser Handling
- * @ingroup oSIP
+ * @ingroup osip2_parser
  * @{
  */
 

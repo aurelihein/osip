@@ -31,7 +31,7 @@
 
 /**
  * @defgroup oSIP_BODY oSIP body API
- * @ingroup oSIP
+ * @ingroup osip2_parser
  * @{
  */
 

@@ -63,8 +63,8 @@
  */
 
 /**
- * @defgroup oSIP_SMSG oSIP message API
- * @ingroup oSIP
+ * @defgroup oSIP_MESSAGE oSIP message API
+ * @ingroup osip2_parser
  * @{
  */
 

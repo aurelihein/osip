@@ -39,7 +39,7 @@
 
 /**
  * @defgroup oSIP_THREAD oSIP Thread Routines
- * @ingroup oSIP
+ * @ingroup osip2_port
  * @{
  */
 
@@ -88,7 +88,7 @@ extern "C"
 
 /**
  * @defgroup oSIP_SEMA oSIP semaphore definitions
- * @ingroup oSIP
+ * @ingroup osip2_port
  * @{
  */
 
@@ -140,7 +140,7 @@ extern "C"
 
 /**
  * @defgroup oSIP_MUTEX oSIP semaphore definitions
- * @ingroup oSIP
+ * @ingroup osip2_port
  * @{
  */
 

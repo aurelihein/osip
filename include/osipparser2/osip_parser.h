@@ -31,7 +31,7 @@
 
 /**
  * @defgroup oSIP_PARSER oSIP parser Handling
- * @ingroup oSIP
+ * @ingroup osip2_parser
  * @{
  */
 

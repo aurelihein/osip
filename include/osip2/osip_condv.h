@@ -38,7 +38,7 @@
 
 /**
  * @defgroup oSIP_COND oSIP condition variables definitions
- * @ingroup oSIP
+ * @ingroup osip2_port
  * @{
  */
 

@@ -281,7 +281,7 @@
 
 /**
  * @defgroup oSIP_FSM oSIP fsm Handling
- * @ingroup oSIP
+ * @ingroup osip2_fsm
  * @{
  */
 

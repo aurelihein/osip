@@ -35,7 +35,7 @@
 
 /**
  * @defgroup oSIP_FIFO oSIP fifo Handling
- * @ingroup oSIP
+ * @ingroup osip2_port
  * @{
  */
 
