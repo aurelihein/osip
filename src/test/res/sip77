@@ -1,11 +1,8 @@
-Warning: Escaped-Header-in-a-legal-sip-url
-REGISTER sip:company.com SIP/2.0
-To: sip:user@company.com
-From: sip:user@company.com
-Contact: sip:user@host.company.com
-Call-ID: k345asrl3fdbv@10.0.0.1
-CSeq: 1 REGISTER
-Via: SIP/2.0/UDP 135.180.130.133
-Contact: <sip:user@example.com?Route=%3Csip:sip.example.com%3E>
-Warning: Escaped-Header-in-a-legal-sip-url
+INVITE sip:t.watson@ieee.org SIP/7.0
+Via:     SIP/2.0/UDP c.bell-tel.com
+From:    A. Bell <sip:a.g.bell@bell-tel.com>
+To:      T. Watson <sip:t.watson@ieee.org>
+Call-ID: 31417@c.bell-tel.com
+CSeq:    1 INVITE
+Warning: Unknown-higher-protocol-version-in-start-line.
 

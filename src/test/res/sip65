@@ -1,7 +1,11 @@
-INVITE sip:user;par=u%40h.com@company.com SIP/2.0
-To: sip:j_user@company.com
-From: sip:caller@university.edu
-Call-ID: 0ha0isndaksdj@10.1.1.1
-CSeq: 8 INVITE
-Via: SIP/2.0/UDP 135.180.130.133
-Warning: semicolon-separated-parameter-in-the-user-part.
+SIP/2.0 407 Proxy Authorization Required
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Proxy-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss1.wcom.com", nonce="f84f1cec41e6cbe5aea9c8e88d359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+
