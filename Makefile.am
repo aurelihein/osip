@@ -1,4 +1,4 @@
-EXTRA_DIST = README BUGS
+EXTRA_DIST = README BUGS FEATURES HISTORY
 
 SUBDIRS = include src scripts help platform debian
 
