@@ -156,23 +156,10 @@ check:
 	@echo " *******************************"
 	@echo " ****** starting tests! ********"
 	@echo " *******************************"
-	@./$(top_srcdir)/src/test/tst -c
-	@./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log2 2>&1
+	@./$(top_srcdir)/src/test/tst ./$(top_srcdir)/src/test/res -c
+	@./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res
 	@./$(top_srcdir)/src/test/tst_rfc3264 ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
 
-	@echo " ******              RESULTS                 ********"
-
-	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
-	@grep "==========" osipsdp-chk.log2 | grep OK | wc -l
-	@echo " **SDP* NUMBER OF FAILURE (0 are expected)   ********"
-	@grep "==========" osipsdp-chk.log2 | grep FA | wc -l
-	@echo ""
-	@echo "New negociator Facility:"
-	@echo ""
-	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
-	@grep "==========" osipsdp-chk.log | grep OK | wc -l
-	@echo " **SDP* NUMBER OF FAILURE (0 are expected)   ********"
-	@grep "==========" osipsdp-chk.log | grep FA | wc -l
 	@echo ""
 	@echo "In case you have a doubt, send the generated"
 	@echo "log file with your comment to <jack@atosc.org>."

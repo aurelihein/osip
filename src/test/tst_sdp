@@ -14,7 +14,7 @@ nok=0
 i=0
 while [ $i -lt 16 ]
 do
-    ./torture_sdp_test res/sdp$i 0 "$2"
+    ./torture_sdp_test $1/sdp$i 0 $2
 
    code=$? 
    if [ "$code" -eq 0 ]; then

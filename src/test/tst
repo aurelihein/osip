@@ -16,12 +16,14 @@ while [ $i -lt 89 ]
 do
 set +x
    #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip$i 0 $1
-   ./torture_test ./res/sip$i 0 $1
-   if [ "$?" -eq 0 ]; then
+   ./torture_test $1/sip$i 0 $2
+
+   code=$?
+   if [ "$code" -eq 0 ]; then
        echo "checking sip$i : passed";
        ok=`expr $ok + 1`;
    else
-       echo "checking sip$i : failed";
+       echo "checking sip$i : failed ($code)";
        nok=`expr $nok + 1`
    fi;
 
@@ -40,7 +42,7 @@ while [ $i -lt 9 ]
 do
 set +x
    #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip-malformed$i 0 $1
-   ./torture_test ./res/sip-malformed$i 0 $1
+   ./torture_test $1/sip-malformed$i 0 $2
    if [ "$?" -eq 0 ]; then
        echo "checking sip$i : passed";
        ok=`expr $ok + 1`;
