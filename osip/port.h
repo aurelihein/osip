@@ -26,12 +26,6 @@
 #include <stdio.h>
 #include <osip/list.h>
 
-#ifdef ENABLE_TRACE
-#define DEBUG(P) P
-#else
-#define DEBUG(P) do { } while(0)
-#endif
-
 #ifdef __VXWORKS_OS__
 
 #include <string.h>
@@ -60,7 +54,7 @@
 #    include <stdlib.h>
 #endif /* !STDC_HEADERS */
 
-#if HAVE_STDARG_H
+#if defined(HAVE_STDARG_H) || defined(WIN32)
 #  include <stdarg.h>
 #  define VA_START(a, f)  va_start(a, f)
 #else
@@ -97,7 +91,6 @@
 #    define PARAMS(args)   args
 #  endif
 #endif
-
 
 #ifndef PARAMS
 #  define PARAMS(args)     ()
@@ -223,7 +216,7 @@ boolean is_trace_level_activate ( trace_level_t level );
 /* INPUT: f | use f instead of default log file    */
 /* INPUT: chfr | format string for next args       */
 int
-#if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__)
+#if defined(HAVE_STDARG_H) || defined(WIN32) || defined(__VXWORKS_OS__)
 trace(char *fi, int li,trace_level_t level,FILE *f,char *chfr, ...);
 #else
 /* ERROR? I never tested this */

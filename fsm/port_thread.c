@@ -53,8 +53,8 @@ sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *ar
   /* HAVE TO DEAL WITH THE PTHREAD_CREATE_JOINABLE element */
   if (i!=0)
     {
-    DEBUG(fprintf(stdout,"<port_thread.c> Error while creating a new thread %i\n",i));
-    return NULL;
+      TRACE(trace(__FILE__,__LINE__,OSIP_ERROR, NULL,"Error while creating a new thread\n"));
+      return NULL;
     }
   return thread;
 }
