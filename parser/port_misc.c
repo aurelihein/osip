@@ -345,7 +345,7 @@ quote_find (char *qstring)
 	      return NULL;
 	    i = 1;
 	  }
-	if (quote - i == qstring + 1)
+	if (quote - i == qstring - 1)
 	  /* example: "\"john"  */
 	  /* example: "\\"jack" */
 	  {

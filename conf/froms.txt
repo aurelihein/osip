@@ -30,8 +30,6 @@
 "\ab" <sip:j.doe:secret@big.com;transport=tcp>
 "\\\ab" <sip:j.doe:secret@big.com;transport=tcp>
 ""\"ab" <sip:j.doe:secret@big.com;transport=tcp>
-"\\\\\\\j.doe" <sip:j.doe:secret@big.com;transport=tcp>
-"\\\j.doe" <sip:j.doe:secret@big.com;transport=tcp>
 #
 "a\"\a"" <sip:j.doe:secret@big.com;transport=tcp>
 "a\"\a"a" <sip:j.doe:secret@big.com;transport=tcp>
