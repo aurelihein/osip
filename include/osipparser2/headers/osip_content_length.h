@@ -28,8 +28,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_CONTENT_LENGTH oSIP content-length definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

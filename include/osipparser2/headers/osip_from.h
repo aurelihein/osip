@@ -30,8 +30,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_FROM oSIP from header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

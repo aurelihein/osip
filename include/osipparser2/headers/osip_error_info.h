@@ -25,12 +25,12 @@
 
 /**
  * @file osip_error_info.h
- * @brief oSIP error info header definition.
+ * @brief oSIP osip_error_info header definition.
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_ERROR_INFO oSIP error-info definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

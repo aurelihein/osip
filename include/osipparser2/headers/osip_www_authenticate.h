@@ -28,8 +28,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_WWW_AUTHENTICATE oSIP www-authenticate header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

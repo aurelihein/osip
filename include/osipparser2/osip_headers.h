@@ -52,5 +52,17 @@
 #include <osipparser2/headers/osip_via.h>
 #include <osipparser2/headers/osip_www_authenticate.h>
 
+/**
+ * @file osip_headers.h
+ * @brief oSIP osip_headers definition.
+ */
+
+/**
+ * @defgroup oSIP_HEADERS oSIP headers definitions
+ * @ingroup oSIP
+ * @{
+ */
+
+/** @} */
 
 #endif

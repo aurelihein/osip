@@ -27,8 +27,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_CALL_ID oSIP call-id header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

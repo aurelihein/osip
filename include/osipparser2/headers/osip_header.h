@@ -25,13 +25,13 @@
 
 /**
  * @file osip_header.h
- * @brief oSIP SIP Headers Routines
+ * @brief oSIP osip_header definition.
  *
  */
 
 /**
- * @defgroup oSIP_HEADER oSIP header API
- * @ingroup oSIP_HEADER
+ * @defgroup oSIP_HEADER oSIP header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

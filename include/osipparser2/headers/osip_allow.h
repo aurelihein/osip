@@ -29,8 +29,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_ALLOW oSIP allow header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

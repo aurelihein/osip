@@ -388,15 +388,6 @@ extern "C"
   }
   type_t;
 
-#if 0
-  typedef struct osip_statemachine osip_statemachine_t;
-
-  struct osip_statemachine
-  {
-    osip_list_t *transitions;
-  };
-#endif
-
 /**
  * Enumeration for transaction type.
  * A transaction can be either of:
@@ -581,92 +572,101 @@ extern "C"
   };
 
 
+/**
+ * Enumeration for callback type.
+ */
   typedef enum osip_message_callback_type
   {
-    OSIP_ICT_INVITE_SENT = 0,
-    OSIP_ICT_INVITE_SENT_AGAIN,
-    OSIP_ICT_ACK_SENT,
-    OSIP_ICT_ACK_SENT_AGAIN,
-    OSIP_ICT_STATUS_1XX_RECEIVED,
-    OSIP_ICT_STATUS_2XX_RECEIVED,
-    OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,
-    OSIP_ICT_STATUS_3XX_RECEIVED,
-    OSIP_ICT_STATUS_4XX_RECEIVED,
-    OSIP_ICT_STATUS_5XX_RECEIVED,
-    OSIP_ICT_STATUS_6XX_RECEIVED,
-    OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN,
+    OSIP_ICT_INVITE_SENT = 0,               /**< INVITE MESSAGE SENT */
+    OSIP_ICT_INVITE_SENT_AGAIN,             /**< INVITE MESSAGE RETRANSMITTED */
+    OSIP_ICT_ACK_SENT,                      /**< ACK MESSAGE SENT */
+    OSIP_ICT_ACK_SENT_AGAIN,                /**< ACK MESSAGE RETRANSMITTED */
+    OSIP_ICT_STATUS_1XX_RECEIVED,           /**< 1XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED,           /**< 2XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,     /**< 2XX FOR INVITE RECEIVED AGAIN */
+    OSIP_ICT_STATUS_3XX_RECEIVED,           /**< 3XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_4XX_RECEIVED,           /**< 4XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_5XX_RECEIVED,           /**< 5XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_6XX_RECEIVED,           /**< 6XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN,  /**< RESPONSE RECEIVED AGAIN */
 
-    OSIP_IST_INVITE_RECEIVED,
-    OSIP_IST_INVITE_RECEIVED_AGAIN,
-    OSIP_IST_ACK_RECEIVED,
-    OSIP_IST_ACK_RECEIVED_AGAIN,
-    OSIP_IST_STATUS_1XX_SENT,
-    OSIP_IST_STATUS_2XX_SENT,
-    OSIP_IST_STATUS_2XX_SENT_AGAIN,
-    OSIP_IST_STATUS_3XX_SENT,
-    OSIP_IST_STATUS_4XX_SENT,
-    OSIP_IST_STATUS_5XX_SENT,
-    OSIP_IST_STATUS_6XX_SENT,
-    OSIP_IST_STATUS_3456XX_SENT_AGAIN,
+    OSIP_IST_INVITE_RECEIVED,               /**< INVITE MESSAGE RECEIVED */
+    OSIP_IST_INVITE_RECEIVED_AGAIN,         /**< INVITE MESSAGE RECEIVED AGAN */
+    OSIP_IST_ACK_RECEIVED,                  /**< ACK MESSAGE RECEIVED */
+    OSIP_IST_ACK_RECEIVED_AGAIN,            /**< ACK MESSAGE RECEIVED AGAIN */
+    OSIP_IST_STATUS_1XX_SENT,               /**< 1XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT,               /**< 2XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT_AGAIN,         /**< 2XX FOR INVITE RETRANSMITTED */
+    OSIP_IST_STATUS_3XX_SENT,               /**< 3XX FOR INVITE SENT */
+    OSIP_IST_STATUS_4XX_SENT,               /**< 4XX FOR INVITE SENT */
+    OSIP_IST_STATUS_5XX_SENT,               /**< 5XX FOR INVITE SENT */
+    OSIP_IST_STATUS_6XX_SENT,               /**< 6XX FOR INVITE SENT */
+    OSIP_IST_STATUS_3456XX_SENT_AGAIN,      /**< RESPONSE RETRANSMITTED */
 
-    OSIP_NICT_REGISTER_SENT,
-    OSIP_NICT_BYE_SENT,
-    OSIP_NICT_OPTIONS_SENT,
-    OSIP_NICT_INFO_SENT,
-    OSIP_NICT_CANCEL_SENT,
-    OSIP_NICT_NOTIFY_SENT,
-    OSIP_NICT_SUBSCRIBE_SENT,
-    OSIP_NICT_UNKNOWN_REQUEST_SENT,
-    OSIP_NICT_REQUEST_SENT_AGAIN,
-    OSIP_NICT_STATUS_1XX_RECEIVED,
-    OSIP_NICT_STATUS_2XX_RECEIVED,
-    OSIP_NICT_STATUS_2XX_RECEIVED_AGAIN,
-    OSIP_NICT_STATUS_3XX_RECEIVED,
-    OSIP_NICT_STATUS_4XX_RECEIVED,
-    OSIP_NICT_STATUS_5XX_RECEIVED,
-    OSIP_NICT_STATUS_6XX_RECEIVED,
-    OSIP_NICT_STATUS_3456XX_RECEIVED_AGAIN,
+    OSIP_NICT_REGISTER_SENT,                /**< REGISTER MESSAGE SENT */
+    OSIP_NICT_BYE_SENT,                     /**< BYE MESSAGE SENT */
+    OSIP_NICT_OPTIONS_SENT,                 /**< OPTIONS MESSAGE SENT */
+    OSIP_NICT_INFO_SENT,                    /**< INFO MESSAGE SENT */
+    OSIP_NICT_CANCEL_SENT,                  /**< CANCEL MESSAGE SENT */
+    OSIP_NICT_NOTIFY_SENT,                  /**< NOTIFY MESSAGE SENT */
+    OSIP_NICT_SUBSCRIBE_SENT,               /**< SUBSCRIBE MESSAGE SENT */
+    OSIP_NICT_UNKNOWN_REQUEST_SENT,         /**< UNKNOWN REQUEST MESSAGE SENT */
+    OSIP_NICT_REQUEST_SENT_AGAIN,           /**< REQUEST MESSAGE RETRANMITTED */
+    OSIP_NICT_STATUS_1XX_RECEIVED,          /**< 1XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_2XX_RECEIVED,          /**< 2XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_2XX_RECEIVED_AGAIN,    /**< 2XX FOR MESSAGE RECEIVED AGAIN */
+    OSIP_NICT_STATUS_3XX_RECEIVED,          /**< 3XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_4XX_RECEIVED,          /**< 4XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_5XX_RECEIVED,          /**< 5XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_6XX_RECEIVED,          /**< 6XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_3456XX_RECEIVED_AGAIN, /**< RESPONSE RECEIVED AGAIN */
 
-    OSIP_NIST_REGISTER_RECEIVED,
-    OSIP_NIST_BYE_RECEIVED,
-    OSIP_NIST_OPTIONS_RECEIVED,
-    OSIP_NIST_INFO_RECEIVED,
-    OSIP_NIST_CANCEL_RECEIVED,
-    OSIP_NIST_NOTIFY_RECEIVED,
-    OSIP_NIST_SUBSCRIBE_RECEIVED,
-    /* ... TO BE ADDED: All known and used method extensions */
-    OSIP_NIST_UNKNOWN_REQUEST_RECEIVED,
-    OSIP_NIST_REQUEST_RECEIVED_AGAIN,
-    OSIP_NIST_STATUS_1XX_SENT,
-    OSIP_NIST_STATUS_2XX_SENT,
-    OSIP_NIST_STATUS_2XX_SENT_AGAIN,
-    OSIP_NIST_STATUS_3XX_SENT,
-    OSIP_NIST_STATUS_4XX_SENT,
-    OSIP_NIST_STATUS_5XX_SENT,
-    OSIP_NIST_STATUS_6XX_SENT,
-    OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
+    OSIP_NIST_REGISTER_RECEIVED,            /**< REGISTER RECEIVED */
+    OSIP_NIST_BYE_RECEIVED,                 /**< BYE RECEIVED */
+    OSIP_NIST_OPTIONS_RECEIVED,             /**< OPTIONS RECEIVED */
+    OSIP_NIST_INFO_RECEIVED,                /**< INFO RECEIVED */
+    OSIP_NIST_CANCEL_RECEIVED,              /**< CANCEL RECEIVED */
+    OSIP_NIST_NOTIFY_RECEIVED,              /**< NOTIFY RECEIVED */
+    OSIP_NIST_SUBSCRIBE_RECEIVED,           /**< SUBSCRIBE RECEIVED */
 
-    OSIP_MESSAGE_CALLBACK_COUNT
+    OSIP_NIST_UNKNOWN_REQUEST_RECEIVED,     /**< UNKNWON REQUEST RECEIVED */
+    OSIP_NIST_REQUEST_RECEIVED_AGAIN,       /**< UNKNWON REQUEST RECEIVED AGAIN */
+    OSIP_NIST_STATUS_1XX_SENT,              /**< 1XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT,              /**< 2XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT_AGAIN,        /**< 2XX FOR MESSAGE RETRANSMITTED */
+    OSIP_NIST_STATUS_3XX_SENT,              /**< 3XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_4XX_SENT,              /**< 4XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_5XX_SENT,              /**< 5XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_6XX_SENT,              /**< 6XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_3456XX_SENT_AGAIN,     /**< RESPONSE RETRANSMITTED */
+
+    OSIP_MESSAGE_CALLBACK_COUNT             /**< END OF ENUM */
   } osip_message_callback_type_t;
 
+/**
+ * Enumeration for callback type used when transaction is over.
+ */
   typedef enum osip_kill_callback_type
   {
-    OSIP_ICT_KILL_TRANSACTION,
-    OSIP_IST_KILL_TRANSACTION,
-    OSIP_NICT_KILL_TRANSACTION,
-    OSIP_NIST_KILL_TRANSACTION,
+    OSIP_ICT_KILL_TRANSACTION,      /**< end of Client INVITE transaction */
+    OSIP_IST_KILL_TRANSACTION,      /**< end of Server INVITE transaction */
+    OSIP_NICT_KILL_TRANSACTION,     /**< end of Client Non-INVITE transaction */
+    OSIP_NIST_KILL_TRANSACTION,     /**< end of Server Non-INVITE transaction */
 
-    OSIP_KILL_CALLBACK_COUNT
+    OSIP_KILL_CALLBACK_COUNT        /**< END OF ENUM */
   } osip_kill_callback_type_t;
 
+/**
+ * Enumeration for callback type used when a transport error is detected.
+ */
   typedef enum osip_transport_error_callback_type
   {
-    OSIP_ICT_TRANSPORT_ERROR,
-    OSIP_IST_TRANSPORT_ERROR,
-    OSIP_NICT_TRANSPORT_ERROR,
-    OSIP_NIST_TRANSPORT_ERROR,
+    OSIP_ICT_TRANSPORT_ERROR,             /**< transport error for ICT */
+    OSIP_IST_TRANSPORT_ERROR,             /**< transport error for IST */
+    OSIP_NICT_TRANSPORT_ERROR,            /**< transport error for NICT */
+    OSIP_NIST_TRANSPORT_ERROR,            /**< transport error for NIST */
 
-    OSIP_TRANSPORT_ERROR_CALLBACK_COUNT
+    OSIP_TRANSPORT_ERROR_CALLBACK_COUNT   /**< END OF ENUM */
   } osip_transport_error_callback_type_t;
 
   typedef void (*osip_message_cb_t) (int type, osip_transaction_t *,
@@ -729,10 +729,30 @@ extern "C"
 			    int, int);
   };
 
-  int osip_set_message_callback (osip_t *, int type, osip_message_cb_t cb);
-  int osip_set_kill_transaction_callback (osip_t *, int type,
+/**
+ * Set a callback for each transaction operation. 
+ * @param osip The element to work on.
+ * @param type The event type to hook on.
+ * @param cb The method to be called upon the event.
+ */
+  int osip_set_message_callback (osip_t *osip, int type, osip_message_cb_t cb);
+
+/**
+ * Set a callback for transaction operation related to the end of transactions. 
+ * @param osip The element to work on.
+ * @param type The event type to hook on.
+ * @param cb The method to be called upon the event.
+ */
+  int osip_set_kill_transaction_callback (osip_t *osip, int type,
 					  osip_kill_transaction_cb_t cb);
-  int osip_set_transport_error_callback (osip_t *, int type,
+
+/**
+ * Set a callback for each transaction operation related to network error.
+ * @param osip The element to work on.
+ * @param type The event type to hook on.
+ * @param cb The method to be called upon the event.
+ */
+  int osip_set_transport_error_callback (osip_t *osip, int type,
 					 osip_transport_error_cb_t cb);
 
 /**

@@ -4,8 +4,8 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = libosip
-PROJECT_NUMBER         = 2.0.2
-OUTPUT_DIRECTORY       = /home/jack/gpl-dev/osip-doc/
+PROJECT_NUMBER         = 2.0.6
+OUTPUT_DIRECTORY       = help/doxygen/doc
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
@@ -52,10 +52,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/jack/gpl-dev/libosip-2.0.2/src/osip2 \
-			 /home/jack/gpl-dev/libosip-2.0.2/src/osipparser2 \
-			 /home/jack/gpl-dev/libosip-2.0.2/include/osip2 \
-			 /home/jack/gpl-dev/libosip-2.0.2/include/osipparser2
+INPUT                  = src/osip2 \
+			 src/osipparser2 \
+			 include/osip2 \
+			 include/osipparser2
 FILE_PATTERNS          = *.h \
                          *.c
 RECURSIVE              = YES
@@ -183,9 +183,3 @@ DOT_CLEANUP            = YES
 # Configuration::addtions related to the search engine   
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
-CGI_NAME               = search.cgi
-CGI_URL                = 
-DOC_URL                = 
-DOC_ABSPATH            = 
-BIN_ABSPATH            = /usr/local/bin/
-EXT_DOC_PATHS          = 

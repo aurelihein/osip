@@ -29,8 +29,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_CONTENT_DISPOSITION oSIP content-disposition definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

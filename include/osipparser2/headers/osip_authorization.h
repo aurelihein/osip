@@ -28,8 +28,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_AUTHORIZATION oSIP authorization header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

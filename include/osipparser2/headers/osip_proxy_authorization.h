@@ -29,8 +29,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_PROXY_AUTHORIZATION oSIP proxy-authorization header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

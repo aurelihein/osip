@@ -29,8 +29,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_ALERT_INFO oSIP alert-info definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 

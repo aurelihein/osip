@@ -30,8 +30,8 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_MIME_VERSION oSIP mime-version header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 
