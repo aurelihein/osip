@@ -552,7 +552,7 @@ url_clone(url_t *url, url_t **dest)
   url_t *ur;
   *dest = NULL;
   if (url==NULL) return -1;
-  if (url->host==NULL) return -1;
+  if (url->host==NULL&&url->string==NULL) return -1;
 
   i =  url_init(&ur);
   if (i==-1) /* allocation failed */
@@ -563,7 +563,8 @@ url_clone(url_t *url, url_t **dest)
     ur->username = sgetcopy(url->username);
   if (url->password!=NULL)
     ur->password = sgetcopy(url->password);
-  ur->host = sgetcopy(url->host);
+  if (url->host!=NULL)
+    ur->host = sgetcopy(url->host);
   if (url->port!=NULL)
     ur->port = sgetcopy(url->port);
   if (url->string!=NULL)

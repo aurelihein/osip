@@ -697,6 +697,8 @@ msg_getreason(int replycode)
 	return sgetcopy("Request-URI Too Large");
       if (replycode==415)
 	return sgetcopy("Unsupported Media Type");
+      if (replycode==416)
+	return sgetcopy("Unsupported Uri Scheme");
       if (replycode==420)
 	return sgetcopy("Bad Extension");
       if (replycode==480)

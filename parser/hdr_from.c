@@ -361,6 +361,16 @@ from_compare(from_t *from1, from_t *from2)
 
   if (from1==NULL||from2==NULL) return -1;
   if (from1->url==NULL||from2->url==NULL) return -1;
+
+  /* we could have a sip or sips url, but if string!=NULL,
+     host part will be NULL. */
+  if (from1->url->host==NULL&&from2->url->host==NULL)
+    {
+      if (from1->url->string==NULL||from2->url->string==NULL)
+	return -1;
+      if (0==strcmp(from1->url->string, from2->url->string))
+	return 0;
+    }
   if (from1->url->host==NULL||from2->url->host==NULL) return -1;
 
   /* compare url including tag */

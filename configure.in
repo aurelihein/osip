@@ -34,6 +34,9 @@ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 
 AC_SUBST(ac_aux_dir)
 
+AC_CANONICAL_HOST                                                               
+AC_CANONICAL_BUILD                                                              
+
 dnl Checks for programs.
 
 AC_PROG_CC
@@ -136,7 +139,12 @@ else
   AC_CHECK_HEADERS(sys/sem.h)
 fi
 
-SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"
+if test "$host_os" = "hpux11.00" -o "$host_os" = "hpux11.11" ;then              
+        echo "We are on HPUX"                                                   
+else                                                                            
+        echo "We are not on HPUX"                                               
+        SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"                            
+fi                                                                              
 
 if test "x$enable_md5" = "xno"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DNO_MD5_SUPPORT"
