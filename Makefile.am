@@ -1,6 +1,6 @@
 EXTRA_DIST = README BUGS
 
-SUBDIRS = include src scripts help platform
+SUBDIRS = include src scripts help platform debian
 
 rpm-package:
 	cd platform && $(MAKE) rpm-package
