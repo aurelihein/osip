@@ -21,7 +21,7 @@
 #define _URLS_H_
 
 #include <osipparser2/osip_const.h>
-
+#include <osipparser2/osip_list.h>
 
 /**
  * @file urls.h
