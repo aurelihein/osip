@@ -16,6 +16,6 @@ libfsmtl_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
 
 
 INCLUDES = -I$(top_srcdir)
-CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_FSM_FLAGS) $(SIP_EXTRA_FLAGS)
+AM_CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_FSM_FLAGS) $(SIP_EXTRA_FLAGS)
 
 

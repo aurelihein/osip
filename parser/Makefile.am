@@ -22,6 +22,6 @@ libosip_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
 
 
 INCLUDES = -I$(top_srcdir)
-CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
+AM_CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
 
 
