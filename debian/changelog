@@ -2,7 +2,7 @@ libosip (0.8.4-1) unstable; urgency=low
 
   * New Release compliant with latest draft (with new API)
 
- -- Aymeric MOIZARD <jack@atosc.org> Tue, 16 Apr 2002 11:29:25 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 16 Apr 2002 11:29:25 +0100
 
 libosip (0.7.9-1) unstable; urgency=low
 

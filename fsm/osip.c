@@ -532,12 +532,26 @@ osip_create_transaction(osip_t *osip, sipevent_t *evt)
   int i;
   context_type_t ctx_type;
 
-  /* we create a new context for this incoming request */
-  if (0==strcmp(evt->sip->cseq->method,"INVITE"))
-    ctx_type = IST;
+  if (EVT_IS_INCOMINGREQ(evt))
+    {
+      /* we create a new context for this incoming request */
+      if (0==strcmp(evt->sip->cseq->method,"INVITE"))
+	ctx_type = IST;
+      else
+	ctx_type = NIST;
+    }
+  else if (EVT_IS_OUTGOINGREQ(evt))
+    {
+      if (0==strcmp(evt->sip->cseq->method,"INVITE"))
+	ctx_type = ICT;
+      else
+	ctx_type = NICT;
+    }
   else
-    ctx_type = NIST;
-  
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL2,NULL,"ERROR: Can't build a transction for this message!?\n"));
+    }
+
   i = transaction_init(&transaction,
 		       ctx_type,
 		       osip,

@@ -1,5 +1,7 @@
 libosip (0.8.5)
 	* add a failure case when there is no '>' char when '<' is found.
+	* osip_create_transaction is more robust and can now be used for
+	  ICT and NICT (as well as IST and NIST)
 	
 libosip (0.8.4)
 	* ist_fsm.c: start timer i while entering CONFIRMED state
