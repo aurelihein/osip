@@ -187,6 +187,34 @@
 #error No semaphore implementation found
 #endif
 
+#if defined(__PSOS__) || defined(__VXWORKS_OS__)
+
+/* TODO */
+
+#else
+
+/**
+ * Structure for referencing a condition variable element.
+ * @defvar struct osip_cond
+ */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
+  typedef struct osip_cond
+  {
+    pthread_cond_t cv;
+  } osip_cond_t;
+
+#endif
+  
+#ifdef WIN32
+  typedef struct osip_cond
+  {
+    struct osip_mutex * mut;
+    struct osip_sem * sem;
+  } osip_cond_t;
+#endif
+
+#endif
+
 #endif
 
 #endif

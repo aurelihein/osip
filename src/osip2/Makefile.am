@@ -8,7 +8,7 @@ ict_fsm.c      ist_fsm.c      nict_fsm.c          nist_fsm.c    \
 ict.c          ist.c          nict.c              nist.c        \
 fsm_misc.c     osip.c         osip_transaction.c  osip_event.c  \
 port_sema.c    port_fifo.c    port_thread.c       osip_dialog.c \
-osip_negotiation.c
+osip_negotiation.c            port_condv.c
 
 
 libosip2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
