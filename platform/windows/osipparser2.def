@@ -157,10 +157,10 @@ EXPORTS
      osip_message_get_proxy_authenticate        @153	
      osip_message_get_proxy_authorization        @154	
      osip_message_get_reason        @155	
-     osip_message_get_reasonphrase        @156	
+     osip_message_get_reason_phrase        @156	
      osip_message_get_record_route        @157	
      osip_message_get_route        @158	
-     osip_message_get_statuscode        @159	
+     osip_message_get_status_code        @159	
      osip_message_get_to        @160	
      osip_message_get_uri        @161	
      osip_message_get_version        @162	
@@ -193,10 +193,10 @@ EXPORTS
      osip_message_set_mime_version        @189	
      osip_message_set_proxy_authenticate        @190	
      osip_message_set_proxy_authorization        @191	
-     osip_message_set_reasonphrase        @192	
+     osip_message_set_reason_phrase        @192	
      osip_message_set_record_route        @193	
      osip_message_set_route        @194	
-     osip_message_set_statuscode        @195	
+     osip_message_set_status_code        @195	
      osip_message_set_to        @196	
      osip_message_set_topheader        @197	
      osip_message_set_uri        @198	
