@@ -163,11 +163,12 @@ char *
 osip_strdup (const char *ch)
 {
   char *copy;
-
+  int length;
   if (ch == NULL)
     return NULL;
-  copy = (char *) osip_malloc (strlen (ch) + 1);
-  osip_strncpy (copy, ch, strlen (ch));
+  length = strlen (ch);
+  copy = (char *) osip_malloc (length + 1);
+  osip_strncpy (copy, ch, length);
   return copy;
 }
 
