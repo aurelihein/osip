@@ -1,8 +1,6 @@
-libosip2 (2.0.1-1) unstable; urgency=low
+libosip2 (2.0.4-1) unstable; urgency=low
+  * fix random number generation on windows.
+  * fix for MingGw compiler
+  * set paramter of sdp_negociation_t structure to NULL on init.
 
-  * fix bug in osip_message_to_str() for too long messages.
-  * improve robustness when parsing empty headers.
-  * add optionnal retransmission of 2xx and ACK for INVITE capabilities.
-  * fix bug on exit for WIN32.
-
- -- Aymeric MOIZARD <jack@atosc.org>  Tue, 27 Jun 2003 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Fri, 3 Oct 2003 13:04:32 +0100
