@@ -22,6 +22,8 @@
 #include <osip/port.h>
 #include "msg.h"
 
+#ifndef USE_GPREF
+
 static parser_config_t pconfig[NUMBER_OF_HEADERS];
 
 /*
@@ -106,13 +108,6 @@ int parser_init() {
   return 0;
 }
 
-/* This method calls the method that is able to parse the header */
-int
-parser_callmethod(int i,sip_t *dest,char *hvalue)
-{
-  return pconfig[i].setheader(dest,hvalue);
-}
-
 /* search the header hname through pconfig[] tab. 
    A quicker algorithm should be used.
    It returns the index of the header in the parser_config_t tab.
@@ -172,3 +167,190 @@ parser_isknownheader(char *hname) {
   return -1;
 } 
 
+#else /* USE_GPREF */
+/* C code produced by gperf version 2.7.2 */
+/* Command-line: gperf sip.gperf  */
+
+#define TOTAL_KEYWORDS 53
+#define MIN_WORD_LENGTH 1
+#define MAX_WORD_LENGTH 19
+#define MIN_HASH_VALUE 1
+#define MAX_HASH_VALUE 132
+/* maximum key range = 132, duplicates = 0 */
+
+#ifdef __GNUC__
+__inline
+#else
+#ifdef __cplusplus
+inline
+#endif
+#endif
+static unsigned char asso_values[] =
+{
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133,  20, 133,  25,
+	41,   0,   5,  20,  25,   1, 133, 133,  10,  60,
+	60,   0,   0,   0,  45,  15,  45,  30,  40,   0,
+	133,  15, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133, 133, 133, 133, 133,
+	133, 133, 133, 133, 133, 133
+};
+static const parser_config_t pconfig[133] =
+{
+	{"",NULL},
+	{CONTENT_ENCODING_SHORT,&msg_setcontent_encoding},
+	{"",NULL},
+	{CALL_ID_SHORT,&msg_setcall_id},
+	{"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL},
+	{ERROR_INFO,&msg_seterror_info},
+	{FROM_SHORT,&msg_setfrom},
+	{IN_REPLY_TO,NULL},
+	{PROXY_REQUIRE,NULL},
+	{"",NULL}, {"",NULL},
+	{WWW_AUTHENTICATE,&msg_setwww_authenticate},
+	{"",NULL},
+	{PROXY_AUTHENTICATE,&msg_setproxy_authenticate},
+	{"",NULL}, {"",NULL},
+	{CONTENT_LENGTH_SHORT,&msg_setcontent_length},
+	{EXPIRES,NULL},
+	{PRIORITY,NULL},
+	{"",NULL},
+	{ALLOW,&msg_setallow},
+	{"",NULL},
+	{WARNING,NULL},
+	{"",NULL},
+	{CSEQ,&msg_setcseq},
+	{ALERT_INFO,&msg_setalert_info},
+	{SUBJECT_SHORT,NULL},
+	{"",NULL}, {"",NULL},
+	{CALL_INFO,&msg_setcall_info},
+	{ACCEPT_LANGUAGE,&msg_setaccept_language},
+	{"",NULL},
+	{CONTENT_TYPE,&msg_setcontent_type},
+	{"",NULL},
+	{AUTHENTICATION_INFO,NULL},
+	{"",NULL},
+	{CONTENT_LANGUAGE,NULL},
+	{"",NULL}, {"",NULL}, {"",NULL},
+	{SIPDATE,NULL},
+	{"",NULL},
+	{"to",&msg_setto},
+	{"",NULL}, {"",NULL},
+	{ROUTE,&msg_setroute},
+	{CONTENT_TYPE_SHORT,&msg_setcontent_type},
+	{REQUIRE,NULL},
+	{REPLY_TO,NULL},
+	{TIMESTAMP,NULL},
+	{ACCEPT_ENCODING,&msg_setaccept_encoding},
+	{"",NULL},
+	{RECORD_ROUTE,&msg_setrecord_route},
+	{"",NULL}, {"",NULL}, {"",NULL},
+	{CONTENT_ENCODING,&msg_setcontent_encoding},
+	{"",NULL},
+	{VIA,&msg_setvia},
+	{CONTENT_LENGTH,&msg_setcontent_length},
+	{SUPPORTED,NULL},
+	{SERVER,NULL},
+	{SUBJECT,NULL},
+	{"",NULL},
+	{FROM,&msg_setfrom},
+	{"",NULL},
+	{ACCEPT,&msg_setaccept},
+	{ORGANIZATION,NULL},
+	{CALL_ID,&msg_setcall_id},
+	{"",NULL}, {"",NULL}, {"",NULL},
+	{CONTACT,&msg_setcontact},
+	{"",NULL},
+	{PROXY_AUTHORIZATION,&msg_setproxy_authorization},
+	{"",NULL},
+	{VIA_SHORT,&msg_setvia},
+	{UNSUPPORTED,NULL},
+	{"",NULL}, {"",NULL},
+	{USER_AGENT,NULL},
+	{MIN_EXPIRES,NULL},
+	{MAX_FORWARDS,NULL},
+	{"",NULL}, {"",NULL}, {"",NULL},
+	{TO_SHORT,&msg_setto},
+	{"",NULL},
+	{AUTHORIZATION,&msg_setauthorization},
+	{"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL},
+	{RETRY_AFTER,NULL},
+	{"",NULL}, {"",NULL},
+	{CONTENT_DISPOSITION,NULL},
+	{"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL},
+	{"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL},
+	{CONTACT_SHORT,&msg_setcontact},
+	{"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL}, {"",NULL},
+	{"",NULL},
+	{MIME_VERSION,&msg_setmime_version}
+};
+static unsigned int
+hash (str, len)
+register const char *str;
+register unsigned int len;
+{
+	return len + asso_values[(unsigned char)str[len - 1]] + asso_values[(unsigned char)str[0]];
+}
+
+#ifdef __GNUC__
+__inline
+#endif
+int
+in_word_set (str, len)
+register const char *str;
+register unsigned int len;
+{
+	if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
+    {
+		register int key = hash (str, len);
+		
+		if (key <= MAX_HASH_VALUE && key >= 0)
+        {
+			register const char *s = pconfig[key].hname;
+	
+			if (*str == *s && !strcmp (str + 1, s + 1)&&(pconfig[key].setheader!=NULL))
+				return key;
+        }
+    }
+	return -1;
+}
+
+int parser_init() {
+  return 0; /* do not need initialization when using gpref */
+}
+
+int
+parser_isknownheader(char *hname)
+{
+	int iLength;
+	iLength=strlen(hname);
+	return in_word_set(hname,iLength);
+}
+
+#endif
+
+/* This method calls the method that is able to parse the header */
+int
+parser_callmethod(int i,sip_t *dest,char *hvalue)
+{
+  return pconfig[i].setheader(dest,hvalue);
+}

@@ -1,6 +1,6 @@
 Summary: "libosip" - An  implementation of SIP - rfc2543.
 Name: libosip
-Version: 0.8.7
+Version: 0.8.8
 Release: 1
 Group: Development/Libraries
 URL: http://www.atosc.org

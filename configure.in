@@ -100,6 +100,11 @@ AC_ARG_ENABLE(sysv,
 [  --enable-sysv           enable support for sysV semaphore (sys/sem.h).],
 enable_sysv=$enableval,enable_sysv="no")
 
+dnl support for gpref.
+AC_ARG_ENABLE(gpref,
+[  --enable-gpref          enable support for gpref (improve the parser speed).],
+enable_gpref=$enableval,enable_gpref="no")
+
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
   if test "x$enable_pth" = "xyes"; then
@@ -114,6 +119,10 @@ if test "x$enable_mt" = "xyes"; then
     SIP_FSM_FLAGS="-DOSIP_MT"
     ACX_PTHREAD()
   fi
+fi
+
+if test "x$enable_gpref" = "xyes"; then
+  SIP_PARSER_FLAGS="$SIP_FSM_FLAGS -DUSE_GPREF"
 fi
 
 if test "x$enable_semaphore" = "xyes"; then

@@ -184,7 +184,7 @@ test_message(char *msg, int verbose, int clone)
 	      /* create a clone of message */
 	      /* int j = 10000; */
 	      int j = 1;
-	      fprintf(stdout, "Trying j sequentials calls to msg_clone() and msg_free()\n", j);
+	      fprintf(stdout, "Trying %i sequentials calls to msg_clone() and msg_free()\n", j);
 	      while (j!=0)
 		{
 		  sip_t *copy;
@@ -221,7 +221,7 @@ test_message(char *msg, int verbose, int clone)
 		      sfree(copy);
 		    }
 		}
-	      fprintf(stdout, "Trying 10000 sequentials calls: done\n");
+	      fprintf(stdout, "sequentials calls: done\n");
 	    }
 	  sfree(result);
 	}

@@ -1,3 +1,8 @@
+libosip (0.8.8)
+	* new optional algo using gpref (thanks to <chenshx@mail.datang.com>)
+	  use ./configure --enable-gpref
+	* new debugging tools with mpatrol: ./configure --enable-mpatrol
+	
 libosip (0.8.7)
 	* reject message with 2 call-id, 2cseq, 2 from, 2 to...
 	* allow generic_param can have a NULL value!.
