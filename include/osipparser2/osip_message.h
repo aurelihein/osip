@@ -126,6 +126,7 @@ extern "C"
      */
     int message_property;
     char *message;
+    size_t message_length;
   };
 
 #ifndef SIP_MESSAGE_MAX_LENGTH
@@ -156,21 +157,15 @@ extern "C"
  * Parse a osip_message_t element.
  * @param sip The resulting element.
  * @param message The buffer to parse.
- */
-  int osip_message_parse (osip_message_t * sip, const char *message);
-/**
- * Parse a osip_message_t element.
- * @param sip The resulting element.
- * @param message The buffer to parse.
  * @param message The length of buffer to parse.
  */
-  int osip_message_parse2 (osip_message_t * sip, const char *buf, size_t length);
+  int osip_message_parse (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  */
-  int osip_message_to_str (osip_message_t * sip, char **dest);
+  int osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length);
 /**
  * Clone a osip_message_t element.
  * @param sip The element to clone.

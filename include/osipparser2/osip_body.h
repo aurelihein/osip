@@ -44,6 +44,7 @@ typedef struct osip_body osip_body_t;
 struct osip_body
 {
   char *body;
+  size_t        length;
   osip_list_t *headers;
   osip_content_type_t *content_type;
 };
@@ -69,7 +70,7 @@ extern "C"
  * @param body The element to work on.
  * @param buf The buffer to parse.
  */
-  int osip_body_parse (osip_body_t * body, const char *buf);
+  int osip_body_parse (osip_body_t * body, const char *buf, size_t length);
 /**
  * Clone a osip_body_t element.
  * @param body The element to clone.
@@ -81,13 +82,13 @@ extern "C"
  * @param body The element to work on.
  * @param buf The buffer to parse.
  */
-  int osip_body_parse_mime (osip_body_t * body, const char *buf);
+  int osip_body_parse_mime (osip_body_t * body, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_body_t element.
  * @param body The element to work on.
  * @param dest The resulting buffer.
  */
-  int osip_body_to_str (const osip_body_t * body, char **dest);
+  int osip_body_to_str (const osip_body_t * body, char **dest, size_t *length);
 
 /**
  * Set the Content-Type header in the osip_body_t element.

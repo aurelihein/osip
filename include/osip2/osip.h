@@ -1014,7 +1014,7 @@ extern "C"
  * Create a sipevent from a SIP message string.
  * @param buf The SIP message as a string.
  */
-  osip_event_t *osip_parse (char *buf);
+  osip_event_t *osip_parse (char *buf, size_t length);
 
 
 #ifdef OSIP_RETRANSMIT_2XX
