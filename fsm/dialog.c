@@ -362,10 +362,10 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
   (*dialog)->remote_cseq = satoi(response->cseq->number);
 
 
-  i = from_clone(response->to, &((*dialog)->remote_uri));
+  i = from_clone(response->from, &((*dialog)->remote_uri));
   if (i!=0) goto diau_error_3;
 
-  i = to_clone(response->from, &((*dialog)->local_uri));
+  i = to_clone(response->to, &((*dialog)->local_uri));
   if (i!=0) goto diau_error_4;
 
   {
