@@ -1,7 +1,7 @@
 
 SUBDIRS = debian rpm windows
 
-rpm:
+rpm-package:
 	cd rpm && $(MAKE) rpm-package
 
 deb:

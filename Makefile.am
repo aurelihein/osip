@@ -2,8 +2,8 @@ EXTRA_DIST = README BUGS
 
 SUBDIRS = include src scripts help platform
 
-rpm:
-	cd platform && $(MAKE) rpm
+rpm-package:
+	cd platform && $(MAKE) rpm-package
 
 deb:
 	cd platform && $(MAKE) deb

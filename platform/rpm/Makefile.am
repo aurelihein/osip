@@ -1,6 +1,6 @@
 
 EXTRA_DIST = libosip.spec
 
-rpm:
+rpm-package:
 	rpm -ba libosip.spec
 
