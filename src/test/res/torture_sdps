@@ -18,6 +18,7 @@ a=rtpmap:0 PCMU/8000
 a=rtpmap:3 GSM/8000
 a=rtpmap:4 G723/8000
 a=rtpmap:5 DVI4/8000
+a=recvonly
 |
 v=0
 o=watson 4858949 4858949 IN IP4 192.1.2.3
@@ -27,6 +28,7 @@ t=3149329600 0
 m=audio 5004 RTP/AVP 0 3
 a=rtpmap:0 PCMU/8000
 a=rtpmap:3 GSM/8000
+a=sendonly
 |
 v=0
 o=c 3149329138 3149329165 IN IP4 38.245.76.2
@@ -40,6 +42,7 @@ a=rtpmap:0 PCMU/8000
 a=rtpmap:7 LPC/8000
 m=video 2232 RTP/AVP 31
 a=rtpmap:31 H261/90000
+a=sendrecv
 |
 v=0
 o=alice 3149329138 3149329165 IN IP4 24.124.37.3
@@ -54,6 +57,7 @@ a=rtpmap:99 SX7300/8000
 m=video 0 RTP/AVP 31 34
 a=rtpmap:31 H261/90000
 a=rtpmap:34 H263/90000
+a=inactive
 |
 v=0
 o=mhandley 29739 7272939 IN IP4 126.5.4.3
