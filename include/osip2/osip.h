@@ -24,7 +24,6 @@
 #include <osipparser2/osip_const.h>
 
 /* Time-related functions and data types */
-#include <time.h>
 #include <osip2/osip_time.h>
 
 #ifdef __sun

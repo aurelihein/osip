@@ -51,7 +51,7 @@ min_timercmp (struct timeval *tv1, struct timeval *tv2)
     }
 }
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 
 #include <time.h>
 #include <sys/timeb.h>

@@ -30,6 +30,14 @@
 
 #ifndef DOXYGEN
 
+#if defined(WIN32) || defined(_WIN32_WCE)
+/* Struct timeval */
+struct timeval {
+        long    tv_sec;         /* seconds */
+        long    tv_usec;        /* and microseconds */
+};
+#endif
+
 /**
  * Structure for payload management. Each payload element
  * represents one codec of a media line.
@@ -75,21 +83,9 @@ void __payload_free (__payload_t * payload);
 
 #if defined(WIN32) || defined(_WIN32_WCE)
 /* Prevent the inclusion of winsock.h */
-#ifdef _WINSOCKAPI_
-#include <windows.h>
-#else
 #define _WINSOCKAPI_
 #include <windows.h>
-/* Allow external inclusion of winsock.h */
 #undef _WINSOCKAPI_
-#endif /* #ifdef _WINSOCKAPI_ */
-
-/* Struct timeval */
-typedef struct timeval {
-        long    tv_sec;         /* seconds */
-        long    tv_usec;        /* and microseconds */
-};
-
 #endif
 
 #if !defined(WIN32) && !defined(_WIN32_WCE) && defined(__PSOS__)
@@ -139,14 +135,9 @@ typedef pthread_t osip_thread_t;
 
 #if defined(WIN32) || defined(_WIN32_WCE)
 /* Prevent the inclusion of winsock.h */
-#ifdef _WINSOCKAPI_
-#include <windows.h>
-#else
 #define _WINSOCKAPI_
 #include <windows.h>
-/* Allow external inclusion of winsock.h */
 #undef _WINSOCKAPI_
-#endif /* #ifdef _WINSOCKAPI_ */
 typedef struct
 {
   HANDLE h;
@@ -215,6 +206,8 @@ osip_sem_t;
 #error No semaphore implementation found
 #endif
 
+/* Condition variable abstraction layer definition */
+
 #if defined(__PSOS__) || defined(__VXWORKS_OS__)
 
 typedef struct osip_cond
@@ -237,7 +230,7 @@ typedef struct osip_cond
 
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 typedef struct osip_cond
 {
   struct osip_mutex *mut;
@@ -245,10 +238,10 @@ typedef struct osip_cond
 } osip_cond_t;
 #endif
 
-#endif
+#endif /* #if defined(__PSOS__) || defined(__VXWORKS_OS__) */
 
-#endif
+#endif /* #ifdef OSIP_MT */
 
-#endif
+#endif /* #ifndef DOXYGEN */
 
-#endif
+#endif /* #ifndef _INTERNAL_H_ */

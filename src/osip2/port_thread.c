@@ -80,7 +80,7 @@ osip_thread_exit ()
 #endif
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {

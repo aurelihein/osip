@@ -8,11 +8,17 @@ extern "C"
 {
 #endif
 
-#ifdef WIN32
-/* Windows */
+/* Common time-related functions and data types */
 
-  struct timeval;
+/* struct timeval, as defined in <sys/time.h>, <winsock.h> or <winsock2.h> */
+struct timeval;
 
+/* Time manipulation functions */
+void add_gettimeofday(struct timeval *atv,int ms);
+void min_timercmp(struct timeval *tv1,struct timeval *tv2);
+
+/* OS-dependent */
+#if defined(WIN32) || defined(_WIN32_WCE)
 /* Operations on struct timeval */
 #define osip_timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
 #define osip_timercmp(tvp, uvp, cmp) \
@@ -20,29 +26,19 @@ extern "C"
          (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
 #define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 
-/* gettimeofday() for Windows using struct timeval */
+/* osip_gettimeofday() for Windows */
 int osip_gettimeofday(struct timeval *tp,void *tz);
 
 #else
-/* Non-Windows with struct timeval defined in sys/time.h */
-
-  struct timeval;
-/* Or perhaps #include <osipparser2/osip_port.h> at the beginning of the file
-if HAVE_SYS_TIME_H is defined??? */
-
 /* Operations on struct timeval */
-#define osip_timerisset(tvp)			timerisset(tvp)
-#define osip_timercmp(tvp, uvp, cmp)	timercmp(tvp,uvp,cmp)
-#define osip_timerclear(tvp)			timerclear(tvp)
+#define osip_timerisset(tvp)            timerisset(tvp)
+#define osip_timercmp(tvp, uvp, cmp)    timercmp(tvp,uvp,cmp)
+#define osip_timerclear(tvp)            timerclear(tvp)
 
-/* osip_gettimeofday() */
-#define osip_gettimeofday(tp,tz) gettimeofday((struct timeval *)(tp),tz)
+/* osip_gettimeofday() == gettimeofday() */
+#define osip_gettimeofday gettimeofday
 
 #endif /* #ifdef WIN32 */
-
-/* Windows-Linux common time-related functions */
-void add_gettimeofday(struct timeval *atv,int ms);
-void min_timercmp(struct timeval *tv1,struct timeval *tv2);
 
 #ifdef __cplusplus
 }
