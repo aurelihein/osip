@@ -91,10 +91,9 @@ AC_ARG_ENABLE(gperf,
 [  --enable-gperf          enable support for gperf (improve the parser speed).],
 enable_gperf=$enableval,enable_gperf="no")
 
-
-AC_ARG_ENABLE(nti,
-[  --enable-nti            enable new timer facility.],
-enable_nti=$enableval,enable_debug="no")
+AC_ARG_ENABLE(ntimer,
+[  --enable-ntimer         enable new timer facility. (default yes)],
+enable_ntimer=$enableval,enable_debug="yes")
 
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
@@ -107,7 +106,7 @@ if test "x$enable_mt" = "xyes"; then
   fi
 fi
 
-if test "x$enable_nti" = "xyes"; then
+if test "x$enable_ntimer" = "xyes"; then
   SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DNEW_TIMER"
 fi
 
