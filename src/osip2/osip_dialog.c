@@ -247,14 +247,6 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   osip_generic_param_t *tag;
 
   *dialog = NULL;
-  i = osip_to_get_tag (response->to, &tag);
-  if (i != 0)
-    {
-      OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in response!\n"));
-      return -1;
-    }
 
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
@@ -368,14 +360,6 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   osip_generic_param_t *tag;
 
   *dialog = NULL;
-  i = osip_to_get_tag (next_request->from, &tag);
-  if (i != 0)
-    {
-      OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "Remote UA is not compliant: missing a tag in next request!\n"));
-      return -1;
-    }
 
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)

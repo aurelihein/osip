@@ -1,4 +1,5 @@
 libosip2 (2.0.6)
+	* allow missing tag in To header of incoming request.
 	* reindentation of all code.
 	* improve configure.in file
 	* tiny other fix (doxygen, prototypes, warnings)
