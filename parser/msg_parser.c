@@ -711,6 +711,30 @@ msg_parse (sip_t * sip, char *buf)
   return 0;
 }
 
+/* This method just add a received parameter in the Via
+   as requested by rfc3261 */
+int
+msg_fix_last_via_header (sip_t *request, char *ip_addr, int port)
+{
+  via_t *via;
+  /* get Top most Via header: */
+  if (request==NULL||request->strtline==NULL)
+    return -1;
+  if (MSG_IS_RESPONSE(request))
+    return 0; /* Don't fix Via header */
+
+  via = list_get(request->vias, 0);
+  if (via==NULL||via->host==NULL)
+    /* Hey, we could build it? */
+    return -1;
+
+  /* only add the received parameter if the 'sent-by' value does not contains
+     this ip address */
+  if (0==strcmp(via->host, ip_addr)) /* don't need the received parameter */
+    return 0;
+  via_set_received(via, sgetcopy(ip_addr));
+  return 0;
+}
 
 char *
 msg_getreason (int replycode)

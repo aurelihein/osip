@@ -1026,8 +1026,6 @@ url_unescape (char *string)
 int url_2char_canonical(url_t *url, char **dest)
 {
   int result;
-  char *tmp;
-  char *buf;
   *dest = NULL;
   result = url_2char(url, dest);
   if (result == 0) {

@@ -78,6 +78,12 @@ extern "C"
   int parser_init ();
 
 /**
+ * Fix the via header for INCOMING requests only.
+ * a copy of ip_addr is done.
+ */
+  int msg_fix_last_via_header (sip_t *request, char *ip_addr, int port);
+
+/**
  * Allocate a sip_t element.
  * @param sip The element to allocate.
  */
