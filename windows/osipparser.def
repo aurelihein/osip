@@ -398,3 +398,4 @@ EXPORTS
     www_authenticate_setstale  @397      
     url_2char_canonical @398
     msg_fix_last_via_header @399
+    msg_settopheader @400

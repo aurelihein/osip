@@ -25,10 +25,9 @@
 #include <osip/smsg.h>
 
 
-/* Add a header to a SIP message. (for other than cseq,via, */
-/* contact,to,from,call-id,content-length)                  */
-/* INPUT :  char *hname | pointer to a header name.    */
-/* INPUT :  char *hvalue | pointer to a header value.  */
+/* Add a header to a SIP message.                           */
+/* INPUT :  char *hname | pointer to a header name.         */
+/* INPUT :  char *hvalue | pointer to a header value.       */
 /* OUTPUT: sip_t *sip | structure to save results.          */
 /* returns -1 on error. */
 int
@@ -73,6 +72,56 @@ msg_setheader (sip_t * sip, char *hname, char *hvalue)
   sip->message_property = 2;
 #endif
   list_add (sip->headers, h, -1);
+  return 0;			/* ok */
+}
+
+/* Add a header to a SIP message at the top of the list.    */
+/* INPUT :  char *hname | pointer to a header name.         */
+/* INPUT :  char *hvalue | pointer to a header value.       */
+/* OUTPUT: sip_t *sip | structure to save results.          */
+/* returns -1 on error. */
+int
+msg_settopheader (sip_t * sip, char *hname, char *hvalue)
+{
+  header_t *h;
+  int i;
+
+  if (hname == NULL)
+    return -1;
+
+  i = header_init (&h);
+  if (i != 0)
+    return -1;
+
+  h->hname = (char *) smalloc (strlen (hname) + 1);
+
+  if (h->hname == NULL)
+    {
+      header_free (h);
+      sfree (h);
+      return -1;
+    }
+  sstrncpy (h->hname, hname, strlen (hname));
+  sclrspace (h->hname);
+
+  if (hvalue != NULL)
+    {				/* some headers can be null ("subject:") */
+      h->hvalue = (char *) smalloc (strlen (hvalue) + 1);
+      if (h->hvalue == NULL)
+	{
+	  header_free (h);
+	  sfree (h);
+	  return -1;
+	}
+      sstrncpy (h->hvalue, hvalue, strlen (hvalue));
+      sclrspace (h->hvalue);
+    }
+  else
+    h->hvalue = NULL;
+#ifdef USE_TMP_BUFFER
+  sip->message_property = 2;
+#endif
+  list_add (sip->headers, h, 0);
   return 0;			/* ok */
 }
 

@@ -506,6 +506,14 @@ extern "C"
  */
   int msg_setheader (sip_t * sip, char *hname, char *hvalue);
 /**
+ * Allocate and Add an "unknown" header (not defined in oSIP).
+ * The element is add on the top of the unknown header list. 
+ * @param sip The element to work on.
+ * @param hname The token name.
+ * @param hvalue The token value.
+ */
+  int msg_settopheader (sip_t * sip, char *hname, char *hvalue);
+/**
  * Find an "unknown" header. (not defined in oSIP)
  * @param sip The element to work on.
  * @param hname The name of the header to find.
