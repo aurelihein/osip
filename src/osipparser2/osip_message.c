@@ -43,7 +43,7 @@ osip_message_init (osip_message_t ** sip)
 #endif
   *sip = (osip_message_t *) osip_malloc (sizeof (osip_message_t));
 #ifdef MEMORY_LEAKS
-  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, stdout,
+  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL,
 	      "<msg_write.c> osip_message_init() = %i, malloc-free = %i, address = %x\n",
 	      comptr, freesipcptr, *sip);
   fflush (stdout);
@@ -163,7 +163,7 @@ osip_message_free (osip_message_t * sip)
     return;
   comptr--;
   freesipcptr--;
-  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, stdout,
+  osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL,
 	      "<msg_write.c> osip_message_free() = %i, malloc-free = %i, address = %x\n",
 	      comptr, freesipcptr, sip);
 #endif
