@@ -106,7 +106,7 @@
 #define SIP_FORBIDDEN                     403
 #define SIP_NOT_FOUND                     404
 #define SIP_METHOD_NOT_ALLOWED            405
-#define SIP_NOT_ACCEPTABLE                406
+#define SIP_406_NOT_ACCEPTABLE            406
 #define SIP_PROXY_AUTHENTICATION_REQUIRED 407
 #define SIP_REQUEST_TIME_OUT              408
 #define SIP_GONE                          410
@@ -138,7 +138,7 @@
 #define SIP_BUSY_EVRYWHERE                600
 #define SIP_DECLINE                       603
 #define SIP_DOES_NOT_EXIST_ANYWHERE       604
-#define SIP_NOT_ACCEPTABLE                606
+#define SIP_606_NOT_ACCEPTABLE                606
 
 /** is the status code informational */
 #define OSIP_IS_SIP_INFO(x)         (((x) >= 100)&&((x) < 200))
