@@ -890,9 +890,8 @@ STATUS _cb_snprintf( char* buffer, int nc, int arg );
 STATUS _cb_snprintf( char* buffer, int nc, int arg )
 {
   _context *ctx = (_context*)arg;
-
-  if( ctx->max - ctx->len - nc < 1 ) /* retain 1 pos for terminating
-\0 */
+  
+  if( ctx->max - ctx->len - nc < 1 ) /* retain 1 pos for terminating \0 */
   {
     nc = ctx->max - ctx->len - 1;
   }
@@ -901,7 +900,7 @@ STATUS _cb_snprintf( char* buffer, int nc, int arg )
   {
     memcpy( ctx->str + ctx->len, buffer, nc );
     ctx->len += nc;
-  };
+  }
 
   ctx->str[ctx->len] = '\0';
 
