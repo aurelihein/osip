@@ -1943,7 +1943,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 	sdp_append_connection (string, size, tmp, sdp->c_connection,
 			       &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
     }
   pos = 0;
@@ -1956,7 +1959,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_bandwidth (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
       pos++;
     }
@@ -1971,7 +1977,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_time_descr (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
       pos++;
     }
@@ -1990,7 +1999,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_key (string, size, tmp, sdp->k_key, &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
     }
 
@@ -2004,7 +2016,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_attribute (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
       pos++;
     }
@@ -2019,7 +2034,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_media (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	return -1;
+	{
+	  osip_free(string)
+	  return -1;
+	}
       tmp = next_tmp;
       pos++;
     }
