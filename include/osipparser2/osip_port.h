@@ -147,14 +147,26 @@ extern "C"
 
 #ifndef WIN32
 
+typedef void *osip_malloc_func_t(size_t size);
+typedef void osip_free_func_t(void *ptr);
+typedef void *osip_realloc_func_t(void *ptr, size_t size);
+
+extern osip_malloc_func_t  *osip_malloc_func;
+extern osip_realloc_func_t *osip_realloc_func;
+extern osip_free_func_t    *osip_free_func;
+
+void osip_set_allocators(osip_malloc_func_t  *malloc_func, 
+                         osip_realloc_func_t *realloc_func, 
+                         osip_free_func_t    *free_func);
+
 #ifndef osip_malloc
-#define osip_malloc(S) malloc(S)
+#define osip_malloc(S) (osip_malloc_func?osip_malloc_func(S):malloc(S))
 #endif
 #ifndef osip_realloc
-#define osip_realloc(P,S) realloc(P,S)
+#define osip_realloc(P,S) (osip_realloc_func?osip_realloc_func(P,S):realloc(P,S))
 #endif
 #ifndef osip_free
-#define osip_free(P) { if (P!=NULL) free(P); }
+#define osip_free(P) { if (P!=NULL) { if (osip_free_func) osip_free_func(P); else free(P);} }
 #endif
 
 #else

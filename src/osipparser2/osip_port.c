@@ -71,6 +71,12 @@ static int use_syslog = 0;
 
 static unsigned int random_seed_set = 0;
 
+#ifndef WIN32
+osip_malloc_func_t  *osip_malloc_func = 0;
+osip_realloc_func_t *osip_realloc_func = 0;
+osip_free_func_t    *osip_free_func = 0;
+#endif
+
 #ifndef WIN32_USE_CRYPTO
 unsigned int
 osip_build_random_number ()
@@ -167,7 +173,7 @@ __osip_sdp_append_string (char *string, size_t size, char *cur,
       size_t length2;
 
       length2 = cur - string;
-      string = realloc (string, size + length + 10);
+      string = osip_realloc (string, size + length + 10);
       cur = string + length2;	/* the initial allocation may have changed! */
     }
   osip_strncpy (cur, string_osip_to_append, length);
@@ -724,6 +730,8 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
   return 0;
 }
 
+
+
 #ifdef WIN32
 
 void *osip_malloc(size_t size)
@@ -743,6 +751,17 @@ void osip_free(void *ptr)
 {
   if (ptr==NULL) return;
   free(ptr);
+}
+
+#else
+
+void osip_set_allocators(osip_malloc_func_t  *malloc_func, 
+                         osip_realloc_func_t *realloc_func, 
+                         osip_free_func_t    *free_func)
+{
+    osip_malloc_func = malloc_func;
+    osip_realloc_func = realloc_func;
+    osip_free_func = free_func;
 }
 
 #endif
