@@ -584,7 +584,8 @@ osip_create_transaction(osip_t *osip, sipevent_t *evt)
   return transaction;
 }
 
-
+#if 0
+/* This method is not compliant with the latest rfc2543bis-09 draft. */
 transaction_t *
 osip_transaction_find(list_t *transactions, sipevent_t *evt)
 {
@@ -617,6 +618,46 @@ osip_transaction_find(list_t *transactions, sipevent_t *evt)
    /*not found */
   return NULL;
 }
+#endif
+
+transaction_t *
+osip_transaction_find(list_t *transactions, sipevent_t *evt)
+{
+  int pos=0;
+  transaction_t *transaction;
+  if (EVT_IS_INCOMINGREQ(evt))
+    {
+      while (!list_eol(transactions,pos))
+	{
+	  transaction = (transaction_t *)list_get(transactions,pos);
+	  if (0==transaction_matching_request_to_xist_17_2_3(transaction,evt->sip))
+	    return transaction;
+	  pos++;
+	}
+    }
+  else if (EVT_IS_INCOMINGRESP(evt))
+    {
+      while (!list_eol(transactions,pos))
+	{
+	  transaction = (transaction_t *)list_get(transactions,pos);
+	  if (0==transaction_matching_response_to_xict_17_1_3(transaction, evt->sip))
+	    return transaction;
+	  pos++;
+	}
+    }
+  else /* handle OUTGOING message */
+    { /* THE TRANSACTION ID MUST BE SET */
+      while (!list_eol(transactions,pos))
+	{
+	  transaction = (transaction_t *)list_get(transactions,pos);
+	  if (transaction->transactionid == evt->transactionid)
+	    return transaction;
+	  pos++;
+	}
+      }
+  return NULL;
+}
+
 
 int
 osip_init(osip_t **osip)

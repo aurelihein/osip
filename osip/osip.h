@@ -521,6 +521,7 @@ struct transaction_t {
   int transactionid;         /* simple id used to identify the tr.*/
   fifo_t *transactionff;     /* events must be added in this fifo */
 
+  via_t     *topvia;           /* CALL-LEG definition */
   from_t    *from;           /* CALL-LEG definition */
   to_t      *to;
   call_id_t *callid;
@@ -892,6 +893,13 @@ void *transaction_get_your_instance(transaction_t *transaction);
 #ifndef DOXYGEN
 
 /**
+ * Set the Top Via value associated to this transaction.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param transaction The element to work on.
+ * @param topvia The topvia header.
+ */
+int transaction_set_topvia(transaction_t *transaction, via_t *topvia);
+/**
  * Set the from value associated to this transaction.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
  * @param transaction The element to work on.
@@ -969,6 +977,41 @@ int transaction_set_out_socket(transaction_t *transaction, int sock);
  */
 int transaction_set_config(transaction_t *transaction, osip_t *osip);
 
+/**
+ * Check if the response match a server transaction.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param tr The transaction.
+ * @param resp The SIP response received.
+ */
+int transaction_matching_response_to_xict_17_1_3(transaction_t *tr,sip_t *resp);
+/**
+ * Check if the request match a client transaction.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param tr The transaction.
+ * @param request The SIP request received.
+ */
+int transaction_matching_request_to_xist_17_2_3(transaction_t *tr, sip_t *request);
+/**
+ * Check if the tags in the From headers match.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param from1 The first From header.
+ * @param from2 The second From header.
+ */
+int from_tag_match(from_t *from1, from_t *from2);
+/**
+ * Check if the tags in the To headers match.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param to1 The first To header.
+ * @param to2 The second To header.
+ */
+int to_tag_match(to_t *to1, to_t *to2);
+/**
+ * Check if the Via headers match.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param via1 The first Via header.
+ * @param via2 The second Via header.
+ */
+int via_match(via_t *via1, via_t *via2);
 /**
  * Check if the first 2 parameters match the other ones.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY

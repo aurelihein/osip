@@ -23,10 +23,6 @@
 #include <osip/smsg.h>
 #include <osip/osip.h>
 
-int call_id_match(call_id_t *callid1,call_id_t *callid2);
-int callleg_match(to_t *to1,from_t *from1,to_t *to2,from_t *from2);
-int cseq_match(cseq_t *cseq1,cseq_t *cseq2);
-
 /* This is for internal use only.                      */
 type_t 	       evt_settype_incoming_sipmessage   (sip_t *sip);
 type_t 	       evt_settype_outgoing_sipmessage   (sip_t *sip);

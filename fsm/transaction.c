@@ -27,6 +27,7 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
 		 osip_t *osip, sip_t *request)
 {
   static int transactionid = 1;
+  via_t *topvia;
 
   int i;
   time_t now;
@@ -55,20 +56,29 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   (*transaction)->transactionid = transactionid;
   transactionid++;
 
-  i = transaction_set_from(*transaction, request->from);
+  topvia = list_get(request->vias, 0);
+  if (topvia==NULL) goto ti_error_1;
+  
+  i = transaction_set_topvia(*transaction, topvia);
   if (i!=0) goto ti_error_1;
-  transaction_set_to(*transaction, request->to);
+
+  /* In some situation, some of those informtions might
+     be useless. Mostly, I prefer to keep them in all case
+     for backward compatibility. */
+  i = transaction_set_from(*transaction, request->from);
   if (i!=0) goto ti_error_2;
-  transaction_set_call_id(*transaction, request->call_id);
+  transaction_set_to(*transaction, request->to);
   if (i!=0) goto ti_error_3;
-  transaction_set_cseq(*transaction, request->cseq);
+  transaction_set_call_id(*transaction, request->call_id);
   if (i!=0) goto ti_error_4;
+  transaction_set_cseq(*transaction, request->cseq);
+  if (i!=0) goto ti_error_5;
   (*transaction)->orig_request = request;
 
   (*transaction)->config = osip;
 
   (*transaction)->transactionff = (fifo_t*) smalloc(sizeof(fifo_t));
-  if ((*transaction)->transactionff==NULL) goto ti_error_5;
+  if ((*transaction)->transactionff==NULL) goto ti_error_6;
   fifo_init((*transaction)->transactionff);
 
   (*transaction)->ctx_type = ctx_type;
@@ -80,48 +90,51 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
     {
       (*transaction)->state = ICT_PRE_CALLING;
       i = ict_init(&((*transaction)->ict_context), osip, request);
-      if (i!=0) goto ti_error_6;
+      if (i!=0) goto ti_error_7;
       osip_add_ict(osip, *transaction);
     }
   else if  (ctx_type==IST)
     {
       (*transaction)->state = IST_PRE_PROCEEDING;
       i = ist_init(&((*transaction)->ist_context), osip, request);
-      if (i!=0) goto ti_error_6;
+      if (i!=0) goto ti_error_7;
       osip_add_ist(osip, *transaction);
     }
   else if  (ctx_type==NICT)
     {
       (*transaction)->state = NICT_PRE_TRYING;
       i = nict_init(&((*transaction)->nict_context), osip, request);
-      if (i!=0) goto ti_error_6;
+      if (i!=0) goto ti_error_7;
       osip_add_nict(osip, *transaction);
     }
   else
     {
       (*transaction)->state = NIST_PRE_TRYING;
       i = nist_init(&((*transaction)->nist_context), osip, request);
-      if (i!=0) goto ti_error_6;
+      if (i!=0) goto ti_error_7;
       osip_add_nist(osip, *transaction);
     }
   return 0;
 
 
- ti_error_6:
+ ti_error_7:
   fifo_free((*transaction)->transactionff);
   sfree((*transaction)->transactionff);
- ti_error_5:
+ ti_error_6:
   cseq_free((*transaction)->cseq);
   sfree((*transaction)->cseq);
- ti_error_4:
+ ti_error_5:
   call_id_free((*transaction)->callid);
   sfree((*transaction)->callid);
- ti_error_3:
+ ti_error_4:
   to_free((*transaction)->to);
   sfree((*transaction)->to);
- ti_error_2:
+ ti_error_3:
   from_free((*transaction)->from);
   sfree((*transaction)->from);
+ ti_error_2:
+  via_free((*transaction)->topvia);
+  sfree((*transaction)->topvia);
  ti_error_1:
   sfree(*transaction);
   return -1;
@@ -130,6 +143,7 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
 int
 transaction_free(transaction_t *transaction)
 {
+  sipevent_t *evt;
   int i;
   if (transaction==NULL) return -1;
   if (transaction->orig_request!=NULL)
@@ -168,6 +182,16 @@ transaction_free(transaction_t *transaction)
 		  "BUG: transaction already removed from list %i!!\n",
 		  transaction->transactionid));
     }
+
+  /* empty the fifo */
+  evt = fifo_tryget(transaction->transactionff);
+  while (evt!=NULL)
+    {
+      msg_free(evt->sip);
+      sfree(evt->sip);
+      sfree(evt);
+      evt = fifo_tryget(transaction->transactionff);
+    }
   fifo_free(transaction->transactionff);
   sfree(transaction->transactionff);
 
@@ -178,6 +202,8 @@ transaction_free(transaction_t *transaction)
   msg_free(transaction->ack);
   sfree(transaction->ack);
 
+  via_free(transaction->topvia);
+  sfree(transaction->topvia);
   from_free(transaction->from);
   sfree(transaction->from);
   to_free(transaction->to);
@@ -266,6 +292,17 @@ transaction_get_your_instance(transaction_t *transaction)
 {
   if (transaction==NULL) return NULL;
   return transaction->your_instance;
+}
+
+int
+transaction_set_topvia(transaction_t *transaction, via_t *topvia)
+{
+  int i;
+  if (transaction==NULL) return -1;
+  i = via_clone(topvia, &(transaction->topvia));
+  if (i==0) return 0;
+  transaction->topvia = NULL;
+  return -1;
 }
 
 int
@@ -368,6 +405,208 @@ transaction_set_config(transaction_t *transaction, osip_t *osip)
   return 0;
 }
 
+/*
+  0.8.7: Oups! Previous release does NOT follow the exact matching rules
+  as described in the latest rfc2543bis-09 draft. The previous behavior
+  was correct for User Agent but a statefull proxy can't easily fork
+  transactions with oSIP.
+  This limitation is now removed.
+  Another happy side of that it will be easier to handle ACK for 200 to INVITE.
+*/
+
+int
+transaction_matching_response_to_xict_17_1_3(transaction_t *tr, sip_t *response)
+{
+  generic_param_t *b_request;
+  generic_param_t *b_response;
+  via_t *topvia_response;
+
+  /* some checks to avoid crashing on bad requests */
+  if (tr==NULL||
+      (tr->ict_context==NULL&&tr->nict_context==NULL)||
+      /* only ict and nict can match a response */
+      response==NULL||
+      response->cseq==NULL||
+      response->cseq->method==NULL)
+    return -1;
+
+  topvia_response = list_get(response->vias, 0);
+  if (topvia_response==NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a response without any Via! The remote UA is not compliant with SIP!\n"));      
+      return -1;
+    }
+  via_param_getbyname(tr->topvia, "branch", &b_request);
+  if (b_request==NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"BUG: You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
+      return -1;
+    }
+  via_param_getbyname(topvia_response, "branch", &b_response);
+  if (b_response==NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a response without any branch! The remote UA is not compliant with SIP!\n"));
+      return -1;
+    }
+
+  /*
+    A response matches a client transaction under two
+    conditions:
+    
+    1.   If the response has the same value of the branch parameter
+    in the top Via header field as the branch parameter in the
+    top Via header field of the request that created the
+    transaction.
+  */
+  if (0!=strcmp(b_request->gvalue, b_response->gvalue))
+    return -1;
+  /*  
+    2.   If the method parameter in the CSeq header field matches
+    the method of the request that created the transaction. The
+    method is needed since a CANCEL request constitutes a
+    different transaction, but shares the same value of the
+    branch parameter.
+    AMD NOTE: cseq->method is ALWAYS the same than the METHOD of the request.
+  */
+  if (0==strcmp(response->cseq->method, tr->cseq->method))  /* general case */
+    return 0;
+  return -1;
+}
+
+int
+transaction_matching_request_to_xist_17_2_3(transaction_t *tr, sip_t *request)
+{
+  generic_param_t *b_origrequest;
+  generic_param_t *b_request;
+  via_t *topvia_request;
+  int length_br;
+  int length_br2;
+
+  /* some checks to avoid crashing on bad requests */
+  if (tr==NULL||
+      (tr->ist_context==NULL&&tr->nist_context==NULL)||
+      /* only ist and nist can match a request */
+      request==NULL||
+      request->cseq==NULL||
+      request->cseq->method==NULL)
+    return -1;
+
+  topvia_request = list_get(request->vias, 0);
+  if (topvia_request==NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a request without any Via! The remote UA is not compliant with SIP!\n"));      
+      return -1;
+    }
+  via_param_getbyname(topvia_request, "branch", &b_request);
+  via_param_getbyname(tr->topvia, "branch", &b_origrequest);
+
+  if ((b_origrequest==NULL&&b_request!=NULL)||
+      (b_origrequest!=NULL&&b_request==NULL))
+    return -1; /* one request is compliant, the other one is not... */
+
+  /* Section 17.2.3 Matching Requests to Server Transactions:
+    "The branch parameter in the topmost Via header field of the request
+    is examined. If it is present and begins with the magic cookie
+    "z9hG4bK", the request was generated by a client transaction
+    compliant to this specification."
+  */
+
+  if (b_origrequest!=NULL&&b_request!=NULL) /* case where both request contains
+					       a branch */
+    {
+      length_br = strlen(b_origrequest->gvalue);
+      length_br2 = strlen(b_request->gvalue);
+      if (length_br != length_br2)
+	return -1; /* can't be the same */
+      if (0==strncmp(b_origrequest->gvalue, "z9hG4bK", 7)
+	  &&0==strncmp(b_request->gvalue, "z9hG4bK", 7))
+	{ /* both request comes from a compliant UA */
+	  /* The request
+	     matches a transaction if the branch parameter in the request is equal
+	     to the one in the top Via header field of the request that created
+	     the transaction, the sent-by value in the top Via of the request is
+	     equal to the one in the request that created the transaction, and in
+	     the case of a CANCEL request, the method of the request that created
+	     the transaction was also CANCEL.
+	  */
+	  if (0!=strcmp(b_origrequest->gvalue, b_request->gvalue))
+	    return -1; /* bracnh param does not match */
+	  via_param_getbyname(topvia_request, "sent-by", &b_request);
+	  via_param_getbyname(tr->topvia, "sent-by", &b_origrequest);
+	  if ((b_request!=NULL&&b_origrequest==NULL)||
+	      (b_request==NULL&&b_origrequest!=NULL))
+	    return -1; /* sent-by param does not match */
+	  if (b_request!=NULL   /* useless  && b_origrequest!=NULL */
+	      && 0!=strcmp(b_origrequest->gvalue, b_request->gvalue))
+	    return -1;
+	  if ( /* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
+		  I always check the CSeq */
+	      0!=strcmp(tr->cseq->method, request->cseq->method))
+	    return -1;
+	  return 0;
+	}
+    }
+
+  /* Back to the old backward compatibilty mechanism for matching requests */
+  if (0!=call_id_match(tr->callid, request->call_id))
+    return -1;
+  if (0!=to_tag_match(tr->to, request->to))
+    return -1;
+  if (0!=from_tag_match(tr->from, request->from))
+    return -1;
+  if (0!=cseq_match(tr->cseq, request->cseq))
+    return -1;
+  if (0!=via_match(tr->topvia, topvia_request))
+    return -1;
+  return 0;
+}
+
+int
+to_tag_match(to_t *to1, to_t *to2)
+{
+  return from_tag_match((from_t*)to1, (from_t*)to2);
+}
+
+int
+from_tag_match(from_t *from1, from_t *from2)
+{
+  generic_param_t *tag_from1;
+  generic_param_t *tag_from2;
+  from_param_getbyname(from1, "tag", &tag_from1);
+  from_param_getbyname(from2, "tag", &tag_from2);
+  if (tag_from1==NULL&&tag_from2==NULL)
+    return 0;
+  if ((tag_from1!=NULL&&tag_from2==NULL)
+      ||(tag_from1==NULL&&tag_from2!=NULL))
+    return -1;
+  if (0!=strcmp(tag_from1->gvalue, tag_from2->gvalue))
+    return -1;
+  return 0;
+}
+
+int
+via_match(via_t *via1, via_t *via2)
+{
+  /* Can I really compare it this way??
+     There exist matching rules for via header, but this method
+     should only be used to detect retransmissions so the result should
+     be exactly equivalent. (This may not be true if the retransmission
+     traverse a different set of proxy...  */
+  char *_via1;
+  char *_via2;
+  int i;
+  if (via1==NULL||via2==NULL) return -1;
+  i = via_2char(via1, &_via1);
+  if (i!=0) return -1;
+  i = via_2char(via2, &_via2);
+  if (i!=0) { sfree(_via1); return -1; }
+
+  i = strcmp(_via1, _via2);
+  sfree(_via1);
+  sfree(_via2);
+  if (i!=0) return -1;
+  return 0;
+}
 
 int
 call_id_match(call_id_t *callid1,call_id_t *callid2){

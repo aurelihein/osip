@@ -301,6 +301,7 @@ msg_2char(sip_t *sip, char **dest)
   i = msg_startline_2char(sip->strtline, &tmp);
   if (i==-1) {
     sfree(*dest);
+    *dest = NULL;
     return -1;
   }
   sstrncpy(message, tmp, strlen(tmp));
@@ -312,75 +313,75 @@ msg_2char(sip_t *sip, char **dest)
   i = strcat_headers_one_per_line(message,sip->vias,"Via: ",5,
 				 ((int (*)(void *,char **))&via_2char)
 				 ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_headers_one_per_line(message,sip->record_routes,"Record-Route: ",14,
 				 ((int (*)(void *,char **))&record_route_2char)
 				 ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_headers_one_per_line(message,sip->routes,"Route: ",7,
 				 ((int (*)(void *,char **))&route_2char)
 				 ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->from,"From: ",6,
 			   ((int (*)(void *,char **))&from_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->to,"To: ",4,
 			   ((int (*)(void *,char **))&to_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->call_id,"Call-ID: ",9,
 			   ((int (*)(void *,char **))&call_id_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->cseq,"CSeq: ",6,
 			   ((int (*)(void *,char **))&cseq_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_headers_one_per_line(message,sip->contacts,"Contact: ",9,
 				 ((int (*)(void *,char **))&contact_2char)
 				 ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->authorization,"Authorization: ",15,
 			   ((int (*)(void *,char **))&authorization_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->www_authenticate,"WWW-Authenticate: ",18,
 			   ((int (*)(void *,char **))&www_authenticate_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_simple_header(message,sip->proxy_authenticate,
 			   "Proxy-Authenticate: ",20,
 			   ((int (*)(void *,char **))&www_authenticate_2char)
 			   ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
   i = strcat_headers_one_per_line(message,sip->proxy_authorizations
 				  ,"Proxy-Authorization: ",21
 				 ,((int (*)(void *,char **))&authorization_2char)
 				 ,&next);
-  if (i!=0) { sfree(*dest);  return -1; }
+  if (i!=0) { sfree(*dest); *dest = NULL; return -1; }
   message = next;
 
 
@@ -392,10 +393,11 @@ msg_2char(sip_t *sip, char **dest)
 	i = header_2char(header, &tmp);
 	if (i==-1) {
 	  sfree(*dest);
+	  *dest = NULL;
 	  return -1;
 	}
 	sstrncpy(message,tmp,strlen(tmp));
-	sfree(tmp);      
+	sfree(tmp);
 	message = message + strlen(message);
 	sstrncpy(message,CRLF,2);
 	message = message + 2;
@@ -546,6 +548,7 @@ msg_2char(sip_t *sip, char **dest)
       i = body_2char(body, &tmp);
       if (i==-1) {
 	sfree(*dest);
+	*dest = NULL;
 	return -1;
       }
       sstrncpy(message,tmp,strlen(tmp));
