@@ -21,9 +21,10 @@ void min_timercmp(struct timeval *tv1,struct timeval *tv2);
 #if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__)
 /* Operations on struct timeval */
 #define osip_timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
-#define osip_timercmp(tvp, uvp, cmp) \
-        ((tvp)->tv_sec cmp (uvp)->tv_sec || \
-         (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
+# define osip_timercmp(a, b, CMP)                          \
+  (((a)->tv_sec == (b)->tv_sec) ?                          \
+   ((a)->tv_usec CMP (b)->tv_usec) :                       \
+   ((a)->tv_sec CMP (b)->tv_sec))
 #define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 
 /* osip_gettimeofday() for Windows */
