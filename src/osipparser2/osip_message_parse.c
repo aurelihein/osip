@@ -65,6 +65,15 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
 
   /* The second token is a sip-url or a uri: */
   p1 = strchr (p2 + 2, ' ');	/* no space allowed inside sip-url */
+  if (p1==NULL)
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "Uncompliant request-uri\n"));
+      osip_free(dest->sip_method);
+      dest->sip_method = NULL;
+      return -1;
+    }
   if (p1 - p2 < 2)
     return -1;
   requesturi = (char *) osip_malloc (p1 - p2);
@@ -125,6 +134,12 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
   osip_strncpy (dest->sip_version, *headers, statuscode - (*headers));
 
   reasonphrase = strchr (statuscode + 1, ' ');
+  if (reasonphrase==NULL)
+    {
+      osip_free(dest->sip_version);
+      dest->sip_version = NULL;
+      return -1;
+    }
   /* dest->status_code = (char *) osip_malloc (reasonphrase - statuscode); */
   /* osip_strncpy (dest->status_code, statuscode + 1, reasonphrase - statuscode - 1); */
   if (sscanf (statuscode + 1, "%d", &dest->status_code) != 1)
