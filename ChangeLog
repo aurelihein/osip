@@ -1,3 +1,14 @@
+libosip2 (1.99.6)
+        * complete new organization of files and directories.
+        * become libosip2.
+        
+libosip (1.99.4)
+        * fix a bug when ACK for 3456xx can't be built.
+        * complete reorganisation of includes, files and directories.
+        * moving free to corresponding *_free()
+        * remove the need to define HAVE_* to compile simple program with osip2
+        * complete renaming of the API.
+
 libosip (0.9.7)
 	* fix a bug in hdr_wwwauthenticate.c.
 	* patch for debian packaging and version management.

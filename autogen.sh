@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: autogen.sh,v 1.1 2002-09-05 15:31:20 aymeric Exp $
+# $Id: autogen.sh,v 1.2 2003-05-13 14:33:56 aymeric Exp $
 #
 # Run this to generate all the initial makefiles, etc.
 #
@@ -19,7 +19,7 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 test "$srcdir" = "." && srcdir=`pwd`
 
-PROJECT=osip
+PROJECT=osip2
 
 # failure subroutine.
 # syntax: do-something || fail
@@ -58,7 +58,7 @@ if test "$DIE" -eq 1; then
     exit 1
 fi
 
-test -f osip/osip.h || {
+test -f include/osip2/osip.h || {
         echo "You must run this script in the top-level $PROJECT directory"
         exit 1
 }
