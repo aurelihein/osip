@@ -155,8 +155,11 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
      if the fisrt quote is after '<' then
      this is not a quote for a displayname.
    */
-  if (displayname > url)
-    displayname = NULL;
+  if (displayname!=NULL)
+    {
+      if (displayname > url)
+	displayname = NULL;
+    }
 
   if ((displayname == NULL) && (url != NULL))
     {				/* displayname IS A '*token' (not a quoted-string) */
