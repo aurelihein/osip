@@ -25,31 +25,34 @@
 #include "msg.h"
 
 int
-msg_seterror_info(sip_t *sip, char *hvalue)
+msg_seterror_info (sip_t * sip, char *hvalue)
 {
   error_info_t *error_info;
   int i;
-  i = error_info_init(&error_info);
-  if (i==-1)
+
+  i = error_info_init (&error_info);
+  if (i == -1)
     return -1;
-  i = error_info_parse(error_info, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = error_info_parse (error_info, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->error_infos,error_info,-1);
+  list_add (sip->error_infos, error_info, -1);
   return 0;
 }
 
 int
-msg_geterror_info(sip_t *sip,int pos,error_info_t **dest) {
+msg_geterror_info (sip_t * sip, int pos, error_info_t ** dest)
+{
   error_info_t *error_info;
-  *dest =  NULL;
-  if (list_size(sip->error_infos)<=pos)
-    return -1; /* does not exist */
-  error_info = (error_info_t *) list_get(sip->error_infos,pos);
+
+  *dest = NULL;
+  if (list_size (sip->error_infos) <= pos)
+    return -1;                  /* does not exist */
+  error_info = (error_info_t *) list_get (sip->error_infos, pos);
   *dest = error_info;
   return pos;
 }

@@ -32,30 +32,32 @@
 /* OUTPUT: sip_t *sip | structure to save results.          */
 /* returns -1 on error. */
 int
-msg_setheader(sip_t *sip, char *hname, char *hvalue)
+msg_setheader (sip_t * sip, char *hname, char *hvalue)
 {
   header_t *h;
   int i;
-  i= header_init(&h);
 
-  if (hname==NULL)  return -1;
+  i = header_init (&h);
 
-  h->hname  = (char *)smalloc(strlen(hname)+1);
-  sstrncpy(h->hname , hname, strlen(hname));
-  sclrspace(h->hname);
+  if (hname == NULL)
+    return -1;
 
-  if (hvalue!=NULL) { /* some headers can be null ("subject:") */
-    h->hvalue = (char *)smalloc(strlen(hvalue)+1);
-    sstrncpy(h->hvalue , hvalue, strlen(hvalue));
-    sclrspace(h->hvalue);
-  } 
-  else
+  h->hname = (char *) smalloc (strlen (hname) + 1);
+  sstrncpy (h->hname, hname, strlen (hname));
+  sclrspace (h->hname);
+
+  if (hvalue != NULL)
+    {                           /* some headers can be null ("subject:") */
+      h->hvalue = (char *) smalloc (strlen (hvalue) + 1);
+      sstrncpy (h->hvalue, hvalue, strlen (hvalue));
+      sclrspace (h->hvalue);
+  } else
     h->hvalue = NULL;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->headers,h,-1);
-  return 0; /* ok */
+  list_add (sip->headers, h, -1);
+  return 0;                     /* ok */
 }
 
 /* Get a header in a SIP message.                       */
@@ -63,12 +65,12 @@ msg_setheader(sip_t *sip, char *hname, char *hvalue)
 /* OUTPUT: sip_t *sip | structure to scan for a header .*/
 /* return null on error. */
 int
-msg_getheader(sip_t *sip, int pos, header_t **dest)
-{ 
+msg_getheader (sip_t * sip, int pos, header_t ** dest)
+{
   *dest = NULL;
-  if (list_size(sip->headers)<=pos) 
-    return -1; /* NULL */
-  *dest = (header_t *) list_get(sip->headers,pos);
+  if (list_size (sip->headers) <= pos)
+    return -1;                  /* NULL */
+  *dest = (header_t *) list_get (sip->headers, pos);
   return 0;
 }
 
@@ -78,49 +80,51 @@ msg_getheader(sip_t *sip, int pos, header_t **dest)
 /* return the current position of the header found      */
 /* and -1 on error. */
 int
-msg_header_getbyname(sip_t *sip, char *hname, int pos, header_t **dest)
-{ 
+msg_header_getbyname (sip_t * sip, char *hname, int pos, header_t ** dest)
+{
   int i;
   header_t *tmp;
 
   *dest = NULL;
   i = pos;
-  if (list_size(sip->headers)<=pos) 
-    return -1; /* NULL */
-  while (list_size(sip->headers)>i)
+  if (list_size (sip->headers) <= pos)
+    return -1;                  /* NULL */
+  while (list_size (sip->headers) > i)
     {
       char *tmp2;
-      tmp = (header_t *) list_get(sip->headers,i);
-      tmp2 = sgetcopy(tmp->hname);
-      stolowercase(tmp2);
-      if (strcmp(tmp2,hname)==0)
-	{
-	  *dest = tmp;
-	  sfree(tmp2);
-	  return i;
-	}
-      sfree(tmp2);
+
+      tmp = (header_t *) list_get (sip->headers, i);
+      tmp2 = sgetcopy (tmp->hname);
+      stolowercase (tmp2);
+      if (strcmp (tmp2, hname) == 0)
+        {
+          *dest = tmp;
+          sfree (tmp2);
+          return i;
+        }
+      sfree (tmp2);
       i++;
     }
-  return -1; /* not found */
+  return -1;                    /* not found */
 }
 
 int
-header_init(header_t **header)
+header_init (header_t ** header)
 {
-  *header = (header_t*) smalloc(sizeof(header_t));
-  (*header)->hname  = NULL;
+  *header = (header_t *) smalloc (sizeof (header_t));
+  (*header)->hname = NULL;
   (*header)->hvalue = NULL;
   return 0;
 }
 
 void
-header_free(header_t *header)
+header_free (header_t * header)
 {
-  if (header==NULL) return;
-  sfree(header->hname);
-  sfree(header->hvalue);
-  header->hname  = NULL;
+  if (header == NULL)
+    return;
+  sfree (header->hname);
+  sfree (header->hvalue);
+  header->hname = NULL;
   header->hvalue = NULL;
 }
 
@@ -128,66 +132,72 @@ header_free(header_t *header)
 /* INPUT : header_t *header | header. */
 /* returns null on error. */
 int
-header_2char(header_t *header, char **dest)
+header_2char (header_t * header, char **dest)
 {
   int len;
+
   *dest = NULL;
-  if ((header==NULL)||(header->hname==NULL))
+  if ((header == NULL) || (header->hname == NULL))
     return -1;
 
   len = 0;
-  if (header->hvalue!=NULL)
-    len = strlen(header->hvalue);
+  if (header->hvalue != NULL)
+    len = strlen (header->hvalue);
 
-  *dest = (char *) smalloc(strlen(header->hname)+len+3);
-  if (header->hvalue!=NULL)
-    sprintf(*dest,"%s: %s",header->hname,header->hvalue);
+  *dest = (char *) smalloc (strlen (header->hname) + len + 3);
+  if (header->hvalue != NULL)
+    sprintf (*dest, "%s: %s", header->hname, header->hvalue);
   else
-    sprintf(*dest,"%s:",header->hname);
+    sprintf (*dest, "%s:", header->hname);
   return 0;
 }
 
 char *
-header_getname(header_t *header)
+header_getname (header_t * header)
 {
-  if (header==NULL) return NULL;
+  if (header == NULL)
+    return NULL;
   return header->hname;
 }
 
 void
-header_setname(header_t *header, char *name)
+header_setname (header_t * header, char *name)
 {
   header->hname = name;
 }
 
 char *
-header_getvalue(header_t *header)
+header_getvalue (header_t * header)
 {
-  if (header==NULL) return NULL;
+  if (header == NULL)
+    return NULL;
   return header->hvalue;
 }
 
 void
-header_setvalue(header_t *header, char *value)
+header_setvalue (header_t * header, char *value)
 {
   header->hvalue = value;
 }
 
 int
-header_clone(header_t *header, header_t **dest)
+header_clone (header_t * header, header_t ** dest)
 {
   int i;
   header_t *he;
-  *dest = NULL;
-  if (header==NULL) return -1;
-  if (header->hname==NULL) return -1;
 
-  i =  header_init(&he);
-  if (i==-1) /* allocation failed */
-      return -1;
-    he->hname = sgetcopy(header->hname);
-  if (header->hvalue!=NULL)
-    he->hvalue = sgetcopy(header->hvalue);
+  *dest = NULL;
+  if (header == NULL)
+    return -1;
+  if (header->hname == NULL)
+    return -1;
+
+  i = header_init (&he);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  he->hname = sgetcopy (header->hname);
+  if (header->hvalue != NULL)
+    he->hvalue = sgetcopy (header->hvalue);
 
   *dest = he;
   return 0;

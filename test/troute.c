@@ -30,7 +30,7 @@
 
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *routes_file;
 
@@ -39,46 +39,47 @@ main(int argc, char **argv)
   char *a_route;
   char *dest;
   char *res;
-  
-  routes_file = fopen(argv[1],"r");
-  if (routes_file==NULL)
+
+  routes_file = fopen (argv[1], "r");
+  if (routes_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: troute routes.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout, "Failed to open %s file.\nUsage: troute routes.txt\n",
+               argv[1]);
+      exit (0);
     }
 
-  a_route = (char *)smalloc(200);
-  res = fgets(a_route, 200, routes_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_route = (char *) smalloc (200);
+  res = fgets (a_route, 200, routes_file);      /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      strncpy(a_route+strlen(a_route)-1,"\0",1);
 
-      if (0!=strncmp(a_route, "#", 1))
-	{
-	  /* allocate & init route */
-	  route_init(&route);
-	  printf ("=================================================\n");
-	  printf ("ROUTE TO PARSE: |%s|\n",a_route);
-	  errcode = route_parse(route, a_route);
-	  if (errcode!=-1)
-	    {
-	      if (route_2char(route, &dest)!=-1)
-		{
-		  printf ("result:         |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad route format: %s\n",a_route);
-	  route_free(route);
-	  sfree(route);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_route, 200, routes_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      strncpy (a_route + strlen (a_route) - 1, "\0", 1);
+
+      if (0 != strncmp (a_route, "#", 1))
+        {
+          /* allocate & init route */
+          route_init (&route);
+          printf ("=================================================\n");
+          printf ("ROUTE TO PARSE: |%s|\n", a_route);
+          errcode = route_parse (route, a_route);
+          if (errcode != -1)
+            {
+              if (route_2char (route, &dest) != -1)
+                {
+                  printf ("result:         |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad route format: %s\n", a_route);
+          route_free (route);
+          sfree (route);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_route, 200, routes_file);  /* lines are under 200 */
     }
-  sfree(a_route);
+  sfree (a_route);
   return 0;
 }

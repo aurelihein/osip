@@ -30,7 +30,7 @@
 
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *record_routes_file;
 
@@ -39,46 +39,48 @@ main(int argc, char **argv)
   char *a_record_route;
   char *dest;
   char *res;
-  
-  record_routes_file = fopen(argv[1],"r");
-  if (record_routes_file==NULL)
+
+  record_routes_file = fopen (argv[1], "r");
+  if (record_routes_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: trecord_route record_routes.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout,
+               "Failed to open %s file.\nUsage: trecord_route record_routes.txt\n",
+               argv[1]);
+      exit (0);
     }
 
-  a_record_route = (char *)smalloc(200);
-  res = fgets(a_record_route, 200, record_routes_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_record_route = (char *) smalloc (200);
+  res = fgets (a_record_route, 200, record_routes_file);        /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      strncpy(a_record_route+strlen(a_record_route)-1,"\0",1);
 
-      if (0!=strncmp(a_record_route, "#", 1))
-	{
-	  /* allocate & init record_route */
-	  record_route_init(&record_route);
-	  printf ("=================================================\n");
-	  printf ("RECORD_ROUTE TO PARSE: |%s|\n",a_record_route);
-	  errcode = record_route_parse(record_route, a_record_route);
-	  if (errcode!=-1)
-	    {
-	      if (record_route_2char(record_route, &dest)!=-1)
-		{
-		  printf ("result:                |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad record_route format: %s\n",a_record_route);
-	  record_route_free(record_route);
-	  sfree(record_route);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_record_route, 200, record_routes_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      strncpy (a_record_route + strlen (a_record_route) - 1, "\0", 1);
+
+      if (0 != strncmp (a_record_route, "#", 1))
+        {
+          /* allocate & init record_route */
+          record_route_init (&record_route);
+          printf ("=================================================\n");
+          printf ("RECORD_ROUTE TO PARSE: |%s|\n", a_record_route);
+          errcode = record_route_parse (record_route, a_record_route);
+          if (errcode != -1)
+            {
+              if (record_route_2char (record_route, &dest) != -1)
+                {
+                  printf ("result:                |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad record_route format: %s\n", a_record_route);
+          record_route_free (record_route);
+          sfree (record_route);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_record_route, 200, record_routes_file);    /* lines are under 200 */
     }
-  sfree(a_record_route);
+  sfree (a_record_route);
   return 0;
 }

@@ -24,9 +24,9 @@
 #include <osip/smsg.h>
 
 int
-content_length_init(content_length_t **cl)
+content_length_init (content_length_t ** cl)
 {
-  *cl = (content_length_t *)smalloc(sizeof(content_length_t));
+  *cl = (content_length_t *) smalloc (sizeof (content_length_t));
   (*cl)->value = NULL;
   return 0;
 }
@@ -36,26 +36,28 @@ content_length_init(content_length_t **cl)
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setcontent_length(sip_t *sip, char *hvalue)
+msg_setcontent_length (sip_t * sip, char *hvalue)
 {
   int i;
-  if (sip->contentlength!=NULL)
+
+  if (sip->contentlength != NULL)
     return -1;
-  i = content_length_init(&(sip->contentlength));
-  if (i==-1)
+  i = content_length_init (&(sip->contentlength));
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return content_length_parse(sip->contentlength, hvalue);
+  return content_length_parse (sip->contentlength, hvalue);
 }
 
 int
-content_length_parse(content_length_t *contentlength, char *hvalue)
+content_length_parse (content_length_t * contentlength, char *hvalue)
 {
-  if (strlen(hvalue)+1<2) return -1;
-  contentlength->value = (char *)smalloc(strlen(hvalue)+1);
-  sstrncpy(contentlength->value,hvalue,strlen(hvalue));
+  if (strlen (hvalue) + 1 < 2)
+    return -1;
+  contentlength->value = (char *) smalloc (strlen (hvalue) + 1);
+  sstrncpy (contentlength->value, hvalue, strlen (hvalue));
   return 0;
 }
 
@@ -63,7 +65,8 @@ content_length_parse(content_length_t *contentlength, char *hvalue)
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 content_length_t *
-msg_getcontent_length(sip_t *sip) {
+msg_getcontent_length (sip_t * sip)
+{
   return sip->contentlength;
 }
 
@@ -71,37 +74,40 @@ msg_getcontent_length(sip_t *sip) {
 /* INPUT : content_length_t *content_length | content_length header.  */
 /* returns null on error. */
 int
-content_length_2char(content_length_t *cl, char **dest)
+content_length_2char (content_length_t * cl, char **dest)
 {
-  *dest = sgetcopy(cl->value);
+  *dest = sgetcopy (cl->value);
   return 0;
 }
 
 /* deallocates a content_length_t strcture.  */
 /* INPUT : content_length_t *content_length | content_length header. */
 void
-content_length_free(content_length_t *content_length)
+content_length_free (content_length_t * content_length)
 {
-  if (content_length==NULL) return;
-  sfree(content_length->value);
+  if (content_length == NULL)
+    return;
+  sfree (content_length->value);
 }
 
 int
-content_length_clone(content_length_t *ctl, content_length_t **dest)
+content_length_clone (content_length_t * ctl, content_length_t ** dest)
 {
   int i;
   content_length_t *cl;
+
   *dest = NULL;
-  if (ctl==NULL) return -1;
-  /*
-    empty headers are allowed:
-    if (ctl->value==NULL) return -1;
-  */
-  i =  content_length_init(&cl);
-  if (i==-1) /* allocation failed */
+  if (ctl == NULL)
     return -1;
-  if (ctl->value!=NULL)
-    cl->value = sgetcopy(ctl->value);
+  /*
+     empty headers are allowed:
+     if (ctl->value==NULL) return -1;
+   */
+  i = content_length_init (&cl);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  if (ctl->value != NULL)
+    cl->value = sgetcopy (ctl->value);
 
   *dest = cl;
   return 0;

@@ -29,18 +29,19 @@
 /* OUTPUT: sip_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-msg_setproxy_authenticate(sip_t *sip, char *hvalue)
+msg_setproxy_authenticate (sip_t * sip, char *hvalue)
 {
   int i;
-  if (sip->proxy_authenticate!=NULL)
+
+  if (sip->proxy_authenticate != NULL)
     return -1;
-  i = proxy_authenticate_init(&(sip->proxy_authenticate));
-  if (i==-1)
+  i = proxy_authenticate_init (&(sip->proxy_authenticate));
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return proxy_authenticate_parse(sip->proxy_authenticate, hvalue);
+  return proxy_authenticate_parse (sip->proxy_authenticate, hvalue);
 }
 
 
@@ -49,7 +50,7 @@ msg_setproxy_authenticate(sip_t *sip, char *hvalue)
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 proxy_authenticate_t *
-msg_getproxy_authenticate(sip_t *sip)
+msg_getproxy_authenticate (sip_t * sip)
 {
   return sip->proxy_authenticate;
 }

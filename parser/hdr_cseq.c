@@ -25,9 +25,9 @@
 #include <osip/smsg.h>
 
 int
-cseq_init(cseq_t **cseq)
+cseq_init (cseq_t ** cseq)
 {
-  *cseq = (cseq_t *)smalloc(sizeof(cseq_t));
+  *cseq = (cseq_t *) smalloc (sizeof (cseq_t));
   (*cseq)->method = NULL;
   (*cseq)->number = NULL;
   return 0;
@@ -38,18 +38,19 @@ cseq_init(cseq_t **cseq)
 /* OUTPUT: sip_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-msg_setcseq(sip_t *sip, char *hvalue)
+msg_setcseq (sip_t * sip, char *hvalue)
 {
   int i;
-  if (sip->cseq!=NULL)
+
+  if (sip->cseq != NULL)
     return -1;
-  i = cseq_init(&(sip->cseq));
-  if (i==-1)
+  i = cseq_init (&(sip->cseq));
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return cseq_parse(sip->cseq, hvalue);
+  return cseq_parse (sip->cseq, hvalue);
 }
 
 /* fills the cseq strucuture.                      */
@@ -57,107 +58,115 @@ msg_setcseq(sip_t *sip, char *hvalue)
 /* OUTPUT: sip_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-cseq_parse(cseq_t *cseq, char *hvalue)
+cseq_parse (cseq_t * cseq, char *hvalue)
 {
   char *method = NULL;
   char *end = NULL;
 
   cseq->number = NULL;
-  cseq->method  = NULL;
+  cseq->method = NULL;
 
-  method = strchr(hvalue,' ');  /* SEARCH FOR SPACE */
-  end = hvalue+strlen(hvalue);
+  method = strchr (hvalue, ' ');        /* SEARCH FOR SPACE */
+  end = hvalue + strlen (hvalue);
 
-  if (method==NULL)
+  if (method == NULL)
     return -1;
 
-  if (method-hvalue+1<2) return -1;
-  cseq->number = (char *)smalloc(method-hvalue+1);
-  sstrncpy(cseq->number,hvalue,method-hvalue);
-  sclrspace(cseq->number);
+  if (method - hvalue + 1 < 2)
+    return -1;
+  cseq->number = (char *) smalloc (method - hvalue + 1);
+  sstrncpy (cseq->number, hvalue, method - hvalue);
+  sclrspace (cseq->number);
 
-  if (end-method+1<2) return -1;
-  cseq->method = (char *)smalloc(end-method+1);
-  sstrncpy(cseq->method,method+1,end-method);
-  sclrspace(cseq->method);
+  if (end - method + 1 < 2)
+    return -1;
+  cseq->method = (char *) smalloc (end - method + 1);
+  sstrncpy (cseq->method, method + 1, end - method);
+  sclrspace (cseq->method);
 
-  return 0; /* ok */
+  return 0;                     /* ok */
 }
 
 /* returns the cseq header.            */
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 cseq_t *
-msg_getcseq(sip_t *sip)
+msg_getcseq (sip_t * sip)
 {
   return sip->cseq;
 }
 
 char *
-cseq_getnumber( cseq_t *cseq)
+cseq_getnumber (cseq_t * cseq)
 {
   return cseq->number;
 }
 
 char *
-cseq_getmethod( cseq_t *cseq)
+cseq_getmethod (cseq_t * cseq)
 {
   return cseq->method;
 }
 
-void 
-cseq_setnumber(cseq_t *cseq, char *number)
+void
+cseq_setnumber (cseq_t * cseq, char *number)
 {
-  cseq->number = (char *)number;
+  cseq->number = (char *) number;
 }
 
-void 
-cseq_setmethod(cseq_t *cseq, char *method)
+void
+cseq_setmethod (cseq_t * cseq, char *method)
 {
-  cseq->method = (char *)method;
+  cseq->method = (char *) method;
 }
 
 /* returns the cseq header as a string.          */
 /* INPUT : cseq_t *cseq | cseq header.  */
 /* returns null on error. */
 int
-cseq_2char(cseq_t *cseq, char **dest)
+cseq_2char (cseq_t * cseq, char **dest)
 {
   int len;
+
   *dest = NULL;
-  if ((cseq==NULL)||(cseq->number==NULL)||(cseq->method==NULL))
+  if ((cseq == NULL) || (cseq->number == NULL) || (cseq->method == NULL))
     return -1;
-  len = strlen(cseq->method)+strlen(cseq->number)+2;
-  *dest = (char *)smalloc(len);
-  sprintf(*dest,"%s %s",cseq->number,cseq->method);
+  len = strlen (cseq->method) + strlen (cseq->number) + 2;
+  *dest = (char *) smalloc (len);
+  sprintf (*dest, "%s %s", cseq->number, cseq->method);
   return 0;
 }
 
 /* deallocates a cseq_t structure.  */
 /* INPUT : cseq_t *cseq | cseq. */
 void
-cseq_free(cseq_t *cseq)
+cseq_free (cseq_t * cseq)
 {
-  if (cseq==NULL) return;
-  sfree(cseq->method);
-  sfree(cseq->number);
+  if (cseq == NULL)
+    return;
+  sfree (cseq->method);
+  sfree (cseq->number);
 }
 
 int
-cseq_clone(cseq_t *cseq, cseq_t **dest)
+cseq_clone (cseq_t * cseq, cseq_t ** dest)
 {
   int i;
   cseq_t *cs;
-  *dest = NULL;
-  if (cseq==NULL) return -1;
-  if (cseq->method==NULL) return -1;
-  if (cseq->number==NULL) return -1;
 
-  i =  cseq_init(&cs);
-  if (i==-1) /* allocation failed */
-      return -1;
-  cs->method = sgetcopy(cseq->method);
-  cs->number = sgetcopy(cseq->number);
+  *dest = NULL;
+  if (cseq == NULL)
+    return -1;
+  if (cseq->method == NULL)
+    return -1;
+  if (cseq->number == NULL)
+    return -1;
+
+  i = cseq_init (&cs);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  cs->method = sgetcopy (cseq->method);
+  cs->number = sgetcopy (cseq->number);
 
   *dest = cs;
   return 0;

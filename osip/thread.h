@@ -63,32 +63,41 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifdef __VXWORKS_OS__
-typedef struct _sthread_t {
-  int id;
-} sthread_t;
+  typedef struct _sthread_t
+  {
+    int id;
+  }
+  sthread_t;
 #endif
 
 #ifdef WIN32
 #ifdef OLD_THREAD_INTERFACE
-typedef struct {
+  typedef struct
+  {
     unsigned long h;
-} sthread_t;
+  }
+  sthread_t;
 #else
-typedef struct {
+  typedef struct
+  {
     HANDLE h;
-	unsigned long id;
-} sthread_t;
+    unsigned long id;
+  }
+  sthread_t;
 #endif
 #endif
 
 #if !defined(WIN32) && defined(__PSOS__)
-typedef struct {
+  typedef struct
+  {
     unsigned long tid;
-} sthread_t;
+  }
+  sthread_t;
 #endif
 
 #if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
@@ -98,7 +107,7 @@ typedef struct {
  * Structure for referencing a thread
  * @var sthread_t
  */
-typedef pthread_t sthread_t;
+  typedef pthread_t sthread_t;
 #else
 #error no thread implementation found!
 #endif
@@ -111,24 +120,24 @@ typedef pthread_t sthread_t;
  * @param func The method where the thread start.
  * @param arg A pointer on the argument given to the method 'func'.
  */
-sthread_t *sthread_create(int stacksize, sthread_t *thread,
-                          void *(*func)(void *),  void *arg);
+  sthread_t *sthread_create (int stacksize, sthread_t * thread,
+                             void *(*func) (void *), void *arg);
 /**
  * Join a thread.
  * @param thread The thread to join.
  */
-int sthread_join(sthread_t *thread);
+  int sthread_join (sthread_t * thread);
 /* this method is not implemented on all systems */
 /**
  * Set the priority of a thread.
  * @param thread The thread to work on.
  * @param priority The priority value to set.
  */
-int sthread_setpriority(sthread_t *thread, int priority);
+  int sthread_setpriority (sthread_t * thread, int priority);
 /**
  * Exit from a thread.
  */
-void sthread_exit();
+  void sthread_exit ();
 
 #ifdef __cplusplus
 }
@@ -138,4 +147,4 @@ void sthread_exit();
 /** @} */
 
 
-#endif /* end of _THREAD_H_ */
+#endif                          /* end of _THREAD_H_ */

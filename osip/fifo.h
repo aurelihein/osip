@@ -40,14 +40,17 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
 #ifndef DOXYGEN
 
 #define MAX_LEN 1000
-typedef enum {ok , plein , vide} fifo_etat;
+  typedef enum
+  { ok, plein, vide }
+  fifo_etat;
 
 #endif
 
@@ -55,47 +58,48 @@ typedef enum {ok , plein , vide} fifo_etat;
  * Structure for referencing a fifo.
  * @defvar fifo_t
  */
-typedef struct fifo_t fifo_t;
+  typedef struct fifo_t fifo_t;
 
-struct fifo_t {
+  struct fifo_t
+  {
 #ifdef OSIP_MT
-  smutex_t *qislocked;
-  ssem_t  *qisempty;
+    smutex_t *qislocked;
+    ssem_t *qisempty;
 #endif
-  list_t *queue;
-  int     nb_elt;
-  fifo_etat etat; 
-};
+    list_t *queue;
+    int nb_elt;
+    fifo_etat etat;
+  };
 
 /**
  * Initialise a fifo_t element.
  * NOTE: this element MUST be previously allocated.
  * @param ff The element to initialise.
  */
-void  fifo_init(fifo_t *ff);
+  void fifo_init (fifo_t * ff);
 /**
  * Free a fifo element.
  * @param ff The element to work on.
  */
-void  fifo_free(fifo_t *ff);
+  void fifo_free (fifo_t * ff);
 /**
  * Add an element in a fifo.
  * @param ff The element to work on.
  * @param element The pointer on the element to add.
  */
-int   fifo_add(fifo_t *ff , void *element);
+  int fifo_add (fifo_t * ff, void *element);
 #ifdef OSIP_MT
 /**
  * Get an element from a fifo or block until one is added.
  * @param ff The element to work on.
  */
-void *fifo_get(fifo_t *ff);
+  void *fifo_get (fifo_t * ff);
 #endif
 /**
  * Try to get an element from a fifo, but do not block if there is no element.
  * @param ff The element to work on.
  */
-void *fifo_tryget(fifo_t *ff);
+  void *fifo_tryget (fifo_t * ff);
 
 
 /** @} */

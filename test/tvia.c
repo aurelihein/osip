@@ -30,7 +30,7 @@
 
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *vias_file;
 
@@ -39,47 +39,47 @@ main(int argc, char **argv)
   char *a_via;
   char *dest;
   char *res;
-  
-  vias_file = fopen(argv[1],"r");
-  if (vias_file==NULL)
+
+  vias_file = fopen (argv[1], "r");
+  if (vias_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: tvia vias.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout, "Failed to open %s file.\nUsage: tvia vias.txt\n", argv[1]);
+      exit (0);
     }
 
-  a_via = (char *)smalloc(200);
-  res = fgets(a_via, 200, vias_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_via = (char *) smalloc (200);
+  res = fgets (a_via, 200, vias_file);  /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      sstrncpy(a_via+strlen(a_via)-1,"\0",1);
 
-      if (0!=strncmp(a_via, "#", 1))
-	{
-	  /* allocate & init via */
-	  via_init(&via);
-	  printf ("=================================================\n");
-	  printf ("VIA TO PARSE: |%s|\n",a_via);
-	  errcode = via_parse(via, a_via);
-	  if (errcode!=-1)
-	    {
-	      if (via_2char(via, &dest)!=-1)
-		{
-		  printf ("result:       |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad via format: %s\n",a_via);
-	  via_free(via);
-	  sfree(via);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_via, 200, vias_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      sstrncpy (a_via + strlen (a_via) - 1, "\0", 1);
+
+      if (0 != strncmp (a_via, "#", 1))
+        {
+          /* allocate & init via */
+          via_init (&via);
+          printf ("=================================================\n");
+          printf ("VIA TO PARSE: |%s|\n", a_via);
+          errcode = via_parse (via, a_via);
+          if (errcode != -1)
+            {
+              if (via_2char (via, &dest) != -1)
+                {
+                  printf ("result:       |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad via format: %s\n", a_via);
+          via_free (via);
+          sfree (via);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_via, 200, vias_file);      /* lines are under 200 */
     }
-  sfree(a_via);
+  sfree (a_via);
 
   return 0;
 }

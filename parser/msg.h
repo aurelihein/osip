@@ -24,24 +24,26 @@
 #define NUMBER_OF_HEADERS 31
 
 /* internal type for parser's config */
-typedef struct _parser_config_t {
+typedef struct _parser_config_t
+{
   char *hname;
-  int  (*setheader)(sip_t*, char*);
-} parser_config_t;
+  int (*setheader) (sip_t *, char *);
+}
+parser_config_t;
 
-void msg_startline_init(startline_t **strtline);
+void msg_startline_init (startline_t ** strtline);
 
-int parser_callmethod(int i,sip_t *dest,char *hvalue);
-int parser_isknownheader(char *hname);
+int parser_callmethod (int i, sip_t * dest, char *hvalue);
+int parser_isknownheader (char *hname);
 
-int find_next_occurence(char *str, char *buf, char **index_of_str);
-int find_next_crlf(char *start_of_header, char **end_of_header);
-int find_next_crlfcrlf(char *start_of_part, char **end_of_part);
+int find_next_occurence (char *str, char *buf, char **index_of_str);
+int find_next_crlf (char *start_of_header, char **end_of_header);
+int find_next_crlfcrlf (char *start_of_part, char **end_of_part);
 
-int quoted_string_set(char *name, char *str, char **result, char **next);
-int token_set(char *name, char *str, char **result, char **next);
+int quoted_string_set (char *name, char *str, char **result, char **next);
+int token_set (char *name, char *str, char **result, char **next);
 
 
-int generic_param_parseall(list_t *gen_params, char *params);
+int generic_param_parseall (list_t * gen_params, char *params);
 
 #endif

@@ -38,21 +38,22 @@
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setvia(sip_t *sip, char *hvalue)
+msg_setvia (sip_t * sip, char *hvalue)
 {
   via_t *via;
   int i;
-  i = via_init(&via);
-  if (i==-1) /* allocation failed */
-      return -1;
-  i = via_parse(via, hvalue);
-  if (i==-1)
+
+  i = via_init (&via);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  i = via_parse (via, hvalue);
+  if (i == -1)
     return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->vias,via,-1);
+  list_add (sip->vias, via, -1);
   return 0;
 }
 
@@ -61,21 +62,22 @@ msg_setvia(sip_t *sip, char *hvalue)
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_appendtopvia(sip_t *sip, char *hvalue)
+msg_appendtopvia (sip_t * sip, char *hvalue)
 {
   via_t *via;
   int i;
-  i = via_init(&via);
-  if (i==-1) /* allocation failed */
-      return -1;
-  i = via_parse(via, hvalue);
-  if (i==-1)
+
+  i = via_init (&via);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  i = via_parse (via, hvalue);
+  if (i == -1)
     return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->vias,via,0);
+  list_add (sip->vias, via, 0);
   return 0;
 }
 
@@ -85,56 +87,58 @@ msg_appendtopvia(sip_t *sip, char *hvalue)
 /* OUTPUT: via_t *via | structure to save results. */
 /* returns null on error. */
 int
-msg_getvia(sip_t *sip,int pos,via_t **dest)
+msg_getvia (sip_t * sip, int pos, via_t ** dest)
 {
-  *dest=NULL;
-  if (sip==NULL) return -1;
-  if (list_size(sip->vias)<=pos) 
+  *dest = NULL;
+  if (sip == NULL)
     return -1;
-  *dest = (via_t *) list_get(sip->vias,pos);
-  
+  if (list_size (sip->vias) <= pos)
+    return -1;
+  *dest = (via_t *) list_get (sip->vias, pos);
+
   return pos;
 }
 
 
 int
-via_init(via_t **via)
+via_init (via_t ** via)
 {
-  *via = (via_t *)smalloc(sizeof(via_t));
-  (*via)->version  = NULL;
+  *via = (via_t *) smalloc (sizeof (via_t));
+  (*via)->version = NULL;
   (*via)->protocol = NULL;
-  (*via)->host     = NULL;
-  (*via)->port     = NULL;
-  (*via)->comment  = NULL;
+  (*via)->host = NULL;
+  (*via)->port = NULL;
+  (*via)->comment = NULL;
 
-  (*via)->via_params = (list_t *) smalloc(sizeof(list_t));
-  list_init((*via)->via_params);
-  
+  (*via)->via_params = (list_t *) smalloc (sizeof (list_t));
+  list_init ((*via)->via_params);
+
   return 0;
 }
 
 void
-via_free(via_t *via)
+via_free (via_t * via)
 {
-  if (via==NULL) return;
-  sfree(via->version);
-  sfree(via->protocol);
-  sfree(via->host);
-  sfree(via->port);
-  sfree(via->comment);
-  generic_param_freelist(via->via_params);
-  sfree(via->via_params); 
+  if (via == NULL)
+    return;
+  sfree (via->version);
+  sfree (via->protocol);
+  sfree (via->host);
+  sfree (via->port);
+  sfree (via->comment);
+  generic_param_freelist (via->via_params);
+  sfree (via->via_params);
 
-  via->version    = NULL;
-  via->protocol   = NULL;
-  via->host       = NULL;
-  via->port       = NULL;
-  via->comment    = NULL;
+  via->version = NULL;
+  via->protocol = NULL;
+  via->host = NULL;
+  via->port = NULL;
+  via->comment = NULL;
   via->via_params = NULL;
 }
 
 int
-via_parse(via_t *via, char *hvalue)
+via_parse (via_t * via, char *hvalue)
 {
   char *version;
   char *protocol;
@@ -157,113 +161,126 @@ via_parse(via_t *via, char *hvalue)
      examples:
 
      SIP/2.0/UDP my.sip.fr:4000;ttl=16;maddr=224.2.0.1 ;branch=dlze.1 (o server)
-        ^   ^                ^ ^                                      ^
-  */
+     ^   ^                ^ ^                                      ^
+   */
 
-  version  = strchr (hvalue,'/');
-  if (version==NULL) return -1;
+  version = strchr (hvalue, '/');
+  if (version == NULL)
+    return -1;
 
-  protocol = strchr (version+1,'/');
-  if (protocol==NULL) return -1;
+  protocol = strchr (version + 1, '/');
+  if (protocol == NULL)
+    return -1;
 
   /* set the version */
-  if (protocol-version<2) return -1;
-  via->version = (char *)smalloc(protocol-version);
-  sstrncpy(via->version, version+1, protocol-version-1);
-  sclrspace(via->version);
+  if (protocol - version < 2)
+    return -1;
+  via->version = (char *) smalloc (protocol - version);
+  sstrncpy (via->version, version + 1, protocol - version - 1);
+  sclrspace (via->version);
 
   /* Here: we avoid matching a additionnal space */
-  host = strchr (protocol+1,' ');
-  if (host==NULL) return -1; /* fixed in 0.8.4 */
-  if (host==protocol+1) /* there are extra SPACE characters */
+  host = strchr (protocol + 1, ' ');
+  if (host == NULL)
+    return -1;                  /* fixed in 0.8.4 */
+  if (host == protocol + 1)     /* there are extra SPACE characters */
     {
-      while (0==strncmp(host," ",1))
-	{
-	  host++;
-	  if (strlen(host)==1) return -1; /* via is malformed */
-	}
-      /* here we match the real space located after the protocol name*/
-      host = strchr (host+1,' ');
-      if (host==NULL) return -1; /* fixed in 0.8.4 */
+      while (0 == strncmp (host, " ", 1))
+        {
+          host++;
+          if (strlen (host) == 1)
+            return -1;          /* via is malformed */
+        }
+      /* here we match the real space located after the protocol name */
+      host = strchr (host + 1, ' ');
+      if (host == NULL)
+        return -1;              /* fixed in 0.8.4 */
     }
 
   /* set the protocol */
-  if (host-protocol<2) return -1;
-  via->protocol = (char *)smalloc(host-protocol);
-  sstrncpy(via->protocol, protocol+1, host-protocol-1);
-  sclrspace(via->protocol);
+  if (host - protocol < 2)
+    return -1;
+  via->protocol = (char *) smalloc (host - protocol);
+  sstrncpy (via->protocol, protocol + 1, host - protocol - 1);
+  sclrspace (via->protocol);
 
-  /* comments in Via are not allowed any more in the latest draft (09)*/
-  comment    = strchr(host,'(');
+  /* comments in Via are not allowed any more in the latest draft (09) */
+  comment = strchr (host, '(');
 
-  if (comment!=NULL)
+  if (comment != NULL)
     {
       char *end_comment;
-      end_comment = strchr(host,')');
-      if (end_comment==NULL) return -1; /* if '(' exist ')' MUST exist */
-      if (end_comment-comment<2) return -1;
-      via->comment = (char *)smalloc(end_comment-comment);
-      sstrncpy(via->comment, comment+1, end_comment-comment-1);
+
+      end_comment = strchr (host, ')');
+      if (end_comment == NULL)
+        return -1;              /* if '(' exist ')' MUST exist */
+      if (end_comment - comment < 2)
+        return -1;
+      via->comment = (char *) smalloc (end_comment - comment);
+      sstrncpy (via->comment, comment + 1, end_comment - comment - 1);
       comment--;
-    }
-  else
-    comment = host + strlen(host);
+  } else
+    comment = host + strlen (host);
 
-  via_params = strchr(host,';');
+  via_params = strchr (host, ';');
 
-  if ((via_params!=NULL)&&(via_params<comment))
+  if ((via_params != NULL) && (via_params < comment))
     /* via params exist */
     {
       char *tmp;
-      if (comment-via_params+1<2) return -1;
-      tmp = (char *)smalloc(comment-via_params+1);
-      sstrncpy(tmp, via_params, comment-via_params);
-      generic_param_parseall(via->via_params, tmp);
-      sfree(tmp);
+
+      if (comment - via_params + 1 < 2)
+        return -1;
+      tmp = (char *) smalloc (comment - via_params + 1);
+      sstrncpy (tmp, via_params, comment - via_params);
+      generic_param_parseall (via->via_params, tmp);
+      sfree (tmp);
     }
 
-  if (via_params==NULL)
+  if (via_params == NULL)
     via_params = comment;
 
   /* add ipv6 support (0.8.4) */
   /* Via: SIP/2.0/UDP [mlke::zeezf:ezfz:zef:zefzf]:port;.... */
-  ipv6host   = strchr(host,'[');
-  if (ipv6host!=NULL&&ipv6host<via_params)
+  ipv6host = strchr (host, '[');
+  if (ipv6host != NULL && ipv6host < via_params)
     {
-      port       = strchr(ipv6host,']');
-      if (port==NULL||port>via_params) return -1;
+      port = strchr (ipv6host, ']');
+      if (port == NULL || port > via_params)
+        return -1;
 
-      if (port-ipv6host<2) return -1;
-      via->host = (char *)smalloc(port-ipv6host);
-      sstrncpy(via->host, ipv6host+1,port-ipv6host-1);
-      sclrspace(via->host);
+      if (port - ipv6host < 2)
+        return -1;
+      via->host = (char *) smalloc (port - ipv6host);
+      sstrncpy (via->host, ipv6host + 1, port - ipv6host - 1);
+      sclrspace (via->host);
 
-      port       = strchr(port,':');
-    }
-  else
+      port = strchr (port, ':');
+  } else
     {
-      port       = strchr(host,':');
-      ipv6host=NULL;
+      port = strchr (host, ':');
+      ipv6host = NULL;
     }
 
-  if ((port!=NULL)&&(port<via_params))
+  if ((port != NULL) && (port < via_params))
     {
-      if (via_params-port<2) return -1;
-      via->port = (char *)smalloc(via_params-port);
-      sstrncpy(via->port, port+1,via_params-port-1);
-      sclrspace(via->port);
-    }
-  else
+      if (via_params - port < 2)
+        return -1;
+      via->port = (char *) smalloc (via_params - port);
+      sstrncpy (via->port, port + 1, via_params - port - 1);
+      sclrspace (via->port);
+  } else
     port = via_params;
 
   /* host is already set in the case of ipv6 */
-  if (ipv6host!=NULL)
+  if (ipv6host != NULL)
     return 0;
 
-  if (port-host<2) return -1;
-  via->host = (char *)smalloc(port-host);
-  sstrncpy(via->host, host+1,port-host-1);
-  sclrspace(via->host);
+  if (port - host < 2)
+    return -1;
+  via->host = (char *) smalloc (port - host);
+  sstrncpy (via->host, host + 1, port - host - 1);
+  sclrspace (via->host);
 
   return 0;
 }
@@ -273,153 +290,165 @@ via_parse(via_t *via, char *hvalue)
 /* INPUT : via_t via* | via header.    */
 /* returns null on error. */
 int
-via_2char(via_t *via, char **dest) {
+via_2char (via_t * via, char **dest)
+{
   char *buf;
 
   *dest = NULL;
-  if ((via==NULL)||(via->host==NULL)
-      ||(via->version==NULL)||(via->protocol==NULL))
+  if ((via == NULL) || (via->host == NULL)
+      || (via->version == NULL) || (via->protocol == NULL))
     return -1;
 
-  buf = (char *)smalloc(200);
+  buf = (char *) smalloc (200);
   *dest = buf;
 
-  if (strchr(via->host,':')!=NULL)
+  if (strchr (via->host, ':') != NULL)
     {
-      if (via->port==NULL)
-	sprintf(buf,"SIP/%s/%s [%s]", via->version, via->protocol, via->host);
+      if (via->port == NULL)
+        sprintf (buf, "SIP/%s/%s [%s]", via->version, via->protocol, via->host);
       else
-	sprintf(buf,"SIP/%s/%s [%s]:%s",via->version, via->protocol,
-		via->host,via->port);
-    }
-  else
+        sprintf (buf, "SIP/%s/%s [%s]:%s", via->version, via->protocol,
+                 via->host, via->port);
+  } else
     {
-      if (via->port==NULL)
-	sprintf(buf,"SIP/%s/%s %s", via->version, via->protocol, via->host);
+      if (via->port == NULL)
+        sprintf (buf, "SIP/%s/%s %s", via->version, via->protocol, via->host);
       else
-	sprintf(buf,"SIP/%s/%s %s:%s",via->version, via->protocol,
-		via->host,via->port);
+        sprintf (buf, "SIP/%s/%s %s:%s", via->version, via->protocol,
+                 via->host, via->port);
     }
-  buf = buf + strlen(buf);
+  buf = buf + strlen (buf);
 
 
   {
     int pos = 0;
     generic_param_t *u_param;
-    while (!list_eol(via->via_params,pos))
+
+    while (!list_eol (via->via_params, pos))
       {
-	u_param = (generic_param_t *)list_get(via->via_params,pos);
-	sprintf(buf,";%s=%s",u_param->gname,u_param->gvalue);
-	buf = buf + strlen(buf);
-	pos++;
+        u_param = (generic_param_t *) list_get (via->via_params, pos);
+        sprintf (buf, ";%s=%s", u_param->gname, u_param->gvalue);
+        buf = buf + strlen (buf);
+        pos++;
       }
   }
 
-  if (via->comment!=NULL)
-    sprintf(buf, " (%s)", via->comment);
+  if (via->comment != NULL)
+    sprintf (buf, " (%s)", via->comment);
 
   return 0;
 }
 
 void
-via_setversion(via_t *via, char *version)
+via_setversion (via_t * via, char *version)
 {
   via->version = version;
 }
 
 char *
-via_getversion(via_t *via)
+via_getversion (via_t * via)
 {
-  if (via==NULL) return NULL;
+  if (via == NULL)
+    return NULL;
   return via->version;
 }
 
 void
-via_setprotocol(via_t *via, char *protocol)
+via_setprotocol (via_t * via, char *protocol)
 {
   via->protocol = protocol;
 }
 
 char *
-via_getprotocol(via_t *via)
+via_getprotocol (via_t * via)
 {
-  if (via==NULL) return NULL;
+  if (via == NULL)
+    return NULL;
   return via->protocol;
 }
 
 void
-via_sethost(via_t *via, char *host)
+via_sethost (via_t * via, char *host)
 {
   via->host = host;
 }
 
 char *
-via_gethost(via_t *via)
+via_gethost (via_t * via)
 {
-  if (via==NULL) return NULL;
+  if (via == NULL)
+    return NULL;
   return via->host;
 }
 
 void
-via_setport(via_t *via, char *port)
+via_setport (via_t * via, char *port)
 {
   via->port = port;
 }
 
 char *
-via_getport(via_t *via)
+via_getport (via_t * via)
 {
-  if (via==NULL) return NULL;
+  if (via == NULL)
+    return NULL;
   return via->port;
 }
 
 void
-via_setcomment(via_t *via, char *comment)
+via_setcomment (via_t * via, char *comment)
 {
   via->comment = comment;
 }
 
 char *
-via_getcomment(via_t *via)
+via_getcomment (via_t * via)
 {
-  if (via==NULL) return NULL;
+  if (via == NULL)
+    return NULL;
   return via->comment;
 }
 
 int
-via_clone(via_t *via, via_t **dest)
+via_clone (via_t * via, via_t ** dest)
 {
   int i;
   via_t *vi;
-  *dest = NULL;
-  if (via==NULL) return -1;
-  if (via->version==NULL) return -1;
-  if (via->protocol==NULL) return -1;
-  if (via->host==NULL) return -1;
 
-  i =  via_init(&vi);
-  if (i==-1) /* allocation failed */
-      return -1;
-  vi->version = sgetcopy(via->version);
-  vi->protocol = sgetcopy(via->protocol);
-  vi->host = sgetcopy(via->host);
-  if (via->port!=NULL)
-      vi->port = sgetcopy(via->port);
-  if (via->comment!=NULL)
-    vi->comment = sgetcopy(via->comment);
+  *dest = NULL;
+  if (via == NULL)
+    return -1;
+  if (via->version == NULL)
+    return -1;
+  if (via->protocol == NULL)
+    return -1;
+  if (via->host == NULL)
+    return -1;
+
+  i = via_init (&vi);
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  vi->version = sgetcopy (via->version);
+  vi->protocol = sgetcopy (via->protocol);
+  vi->host = sgetcopy (via->host);
+  if (via->port != NULL)
+    vi->port = sgetcopy (via->port);
+  if (via->comment != NULL)
+    vi->comment = sgetcopy (via->comment);
 
   {
     int pos = 0;
     generic_param_t *u_param;
     generic_param_t *dest_param;
-    while (!list_eol(via->via_params,pos))
+
+    while (!list_eol (via->via_params, pos))
       {
-	u_param = (generic_param_t *)list_get(via->via_params,pos);
-	i = generic_param_clone(u_param,&dest_param);
-	if (i!=0)
-	  return -1;
-	list_add(vi->via_params, dest_param, -1);
-	pos++;
+        u_param = (generic_param_t *) list_get (via->via_params, pos);
+        i = generic_param_clone (u_param, &dest_param);
+        if (i != 0)
+          return -1;
+        list_add (vi->via_params, dest_param, -1);
+        pos++;
       }
   }
   *dest = vi;

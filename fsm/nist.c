@@ -23,72 +23,80 @@
 #include "fsm.h"
 
 int
-nist_init(nist_t **nist, osip_t *osip, sip_t *invite)
+nist_init (nist_t ** nist, osip_t * osip, sip_t * invite)
 {
   int i;
 
-  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"allocating NIST context\n"));
+  TRACE (trace
+         (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NIST context\n"));
 
-  *nist = (nist_t *)smalloc(sizeof(nist_t));
-  if (*nist==NULL) return -1;
+  *nist = (nist_t *) smalloc (sizeof (nist_t));
+  if (*nist == NULL)
+    return -1;
 
 #ifndef DISABLE_MEMSET
-  memset(*nist, 0, sizeof(nist_t));
+  memset (*nist, 0, sizeof (nist_t));
 #endif
   /* for INVITE retransmissions */
   {
     via_t *via;
-    char  *proto;
-    i = msg_getvia(invite, 0, &via); /* get top via */
-    if (i!=0) goto ii_error_1;
-    proto = via_getprotocol(via);
-    if (proto==NULL) goto ii_error_1;
+    char *proto;
+
+    i = msg_getvia (invite, 0, &via);   /* get top via */
+    if (i != 0)
+      goto ii_error_1;
+    proto = via_getprotocol (via);
+    if (proto == NULL)
+      goto ii_error_1;
 
 #ifndef WIN32
-    i = strncasecmp(proto, "TCP", 3);
+    i = strncasecmp (proto, "TCP", 3);
 #else
-    i = stricmp(proto, "TCP");
+    i = stricmp (proto, "TCP");
 #endif
-    if (i!=0)
-      { /* for other reliable protocol than TCP, the timer
-	   must be desactived by the external application */
-	(*nist)->timer_j_length = 64 * DEFAULT_T1;
-	(*nist)->timer_j_start = -1;  /* not started */
-      }
-    else
-      { /* TCP is used: */
-	(*nist)->timer_j_length = 0; /* MUST do the transition immediatly */
-	(*nist)->timer_j_start = -1; /* not started */
+    if (i != 0)
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*nist)->timer_j_length = 64 * DEFAULT_T1;
+        (*nist)->timer_j_start = -1;    /* not started */
+    } else
+      {                         /* TCP is used: */
+        (*nist)->timer_j_length = 0;    /* MUST do the transition immediatly */
+        (*nist)->timer_j_start = -1;    /* not started */
       }
   }
 
   return 0;
 
- ii_error_1:
-  sfree(*nist);
+ii_error_1:
+  sfree (*nist);
   return -1;
 }
 
 int
-nist_free(nist_t *nist)
+nist_free (nist_t * nist)
 {
-  if (nist==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free nist ressource\n"));
+  if (nist == NULL)
+    return -1;
+  TRACE (trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 
   return 0;
 }
 
 
 sipevent_t *
-nist_need_timer_j_event(nist_t *nist, state_t state, int transactionid)
+nist_need_timer_j_event (nist_t * nist, state_t state, int transactionid)
 {
-  time_t now = time(NULL);
-  if (nist==NULL) return NULL;
-  if (state==NIST_COMPLETED)
+  time_t now = time (NULL);
+
+  if (nist == NULL)
+    return NULL;
+  if (state == NIST_COMPLETED)
     {
-      if (nist->timer_j_start==-1) return NULL;
-      if ((now-nist->timer_j_start)*1000>nist->timer_j_length)
-	return osip_new_event(TIMEOUT_J, transactionid);
+      if (nist->timer_j_start == -1)
+        return NULL;
+      if ((now - nist->timer_j_start) * 1000 > nist->timer_j_length)
+        return osip_new_event (TIMEOUT_J, transactionid);
     }
   return NULL;
 }

@@ -30,7 +30,7 @@
 
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *wwwauthenticates_file;
 
@@ -39,46 +39,47 @@ main(int argc, char **argv)
   char *a_wwwauthenticate;
   char *dest;
   char *res;
-  
-  wwwauthenticates_file = fopen(argv[1],"r");
-  if (wwwauthenticates_file==NULL)
+
+  wwwauthenticates_file = fopen (argv[1], "r");
+  if (wwwauthenticates_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: twwwauthenticate wwwauthenticates.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout,
+               "Failed to open %s file.\nUsage: twwwauthenticate wwwauthenticates.txt\n",
+               argv[1]);
+      exit (0);
     }
 
-  a_wwwauthenticate = (char *)smalloc(200);
-  res = fgets(a_wwwauthenticate, 200, wwwauthenticates_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_wwwauthenticate = (char *) smalloc (200);
+  res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);  /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      strncpy(a_wwwauthenticate+strlen(a_wwwauthenticate)-1,"\0",1);
 
-      if (0!=strncmp(a_wwwauthenticate, "#", 1))
-	{
-	  /* allocate & init wwwauthenticate */
-	  www_authenticate_init(&wwwauthenticate);
-	  printf ("=================================================\n");
-	  printf ("WWWAUTHENTICATE TO PARSE: |%s|\n",a_wwwauthenticate);
-	  errcode = www_authenticate_parse(wwwauthenticate, a_wwwauthenticate);
-	  if (errcode!=-1)
-	    {
-	      if (www_authenticate_2char(wwwauthenticate, &dest)!=-1)
-		{
-		  printf ("result:                   |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad wwwauthenticate format: %s\n",a_wwwauthenticate);
-	  www_authenticate_free(wwwauthenticate),
-	  sfree(wwwauthenticate);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_wwwauthenticate, 200, wwwauthenticates_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      strncpy (a_wwwauthenticate + strlen (a_wwwauthenticate) - 1, "\0", 1);
+
+      if (0 != strncmp (a_wwwauthenticate, "#", 1))
+        {
+          /* allocate & init wwwauthenticate */
+          www_authenticate_init (&wwwauthenticate);
+          printf ("=================================================\n");
+          printf ("WWWAUTHENTICATE TO PARSE: |%s|\n", a_wwwauthenticate);
+          errcode = www_authenticate_parse (wwwauthenticate, a_wwwauthenticate);
+          if (errcode != -1)
+            {
+              if (www_authenticate_2char (wwwauthenticate, &dest) != -1)
+                {
+                  printf ("result:                   |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad wwwauthenticate format: %s\n", a_wwwauthenticate);
+          www_authenticate_free (wwwauthenticate), sfree (wwwauthenticate);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);      /* lines are under 200 */
     }
-  sfree(a_wwwauthenticate);
+  sfree (a_wwwauthenticate);
   return 0;
 }

@@ -29,7 +29,7 @@
 
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *content_types_file;
 
@@ -38,46 +38,47 @@ main(int argc, char **argv)
   char *a_content_type;
   char *dest;
   char *res;
-  
-  content_types_file = fopen(argv[1],"r");
-  if (content_types_file==NULL)
+
+  content_types_file = fopen (argv[1], "r");
+  if (content_types_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: tcontent_type content_types.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout,
+               "Failed to open %s file.\nUsage: tcontent_type content_types.txt\n",
+               argv[1]);
+      exit (0);
     }
 
-  a_content_type = (char *)smalloc(200);
-  res = fgets(a_content_type, 200, content_types_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_content_type = (char *) smalloc (200);
+  res = fgets (a_content_type, 200, content_types_file);        /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      strncpy(a_content_type+strlen(a_content_type)-1,"\0",1);
 
-      if (0!=strncmp(a_content_type, "#", 1))
-	{
-	  /* allocate & init content_type */
-	  content_type_init(&content_type);
-	  printf ("=================================================\n");
-	  printf ("CONTENT_TYPE TO PARSE: |%s|\n",a_content_type);
-	  errcode = content_type_parse(content_type, a_content_type);
-	  if (errcode!=-1)
-	    {
-	      if (content_type_2char(content_type, &dest)!=-1)
-		{
-		  printf ("result:                |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad content_type format: %s\n",a_content_type);
-	  content_type_free(content_type),
-	  sfree(content_type);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_content_type, 200, content_types_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      strncpy (a_content_type + strlen (a_content_type) - 1, "\0", 1);
+
+      if (0 != strncmp (a_content_type, "#", 1))
+        {
+          /* allocate & init content_type */
+          content_type_init (&content_type);
+          printf ("=================================================\n");
+          printf ("CONTENT_TYPE TO PARSE: |%s|\n", a_content_type);
+          errcode = content_type_parse (content_type, a_content_type);
+          if (errcode != -1)
+            {
+              if (content_type_2char (content_type, &dest) != -1)
+                {
+                  printf ("result:                |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad content_type format: %s\n", a_content_type);
+          content_type_free (content_type), sfree (content_type);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_content_type, 200, content_types_file);    /* lines are under 200 */
     }
-  sfree(a_content_type);
+  sfree (a_content_type);
   return 0;
 }

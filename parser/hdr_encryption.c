@@ -25,31 +25,34 @@
 #include "msg.h"
 
 int
-msg_setencryption(sip_t *sip, char *hvalue)
+msg_setencryption (sip_t * sip, char *hvalue)
 {
   encryption_t *encryption;
   int i;
-  i = encryption_init(&encryption);
-  if (i==-1)
+
+  i = encryption_init (&encryption);
+  if (i == -1)
     return -1;
-  i = encryption_parse(encryption, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = encryption_parse (encryption, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->encryptions,encryption,-1);
+  list_add (sip->encryptions, encryption, -1);
   return 0;
 }
 
 int
-msg_getencryption(sip_t *sip,int pos,encryption_t **dest) {
+msg_getencryption (sip_t * sip, int pos, encryption_t ** dest)
+{
   encryption_t *encryption;
-  *dest =  NULL;
-  if (list_size(sip->encryptions)<=pos)
-    return -1; /* does not exist */
-  encryption = (encryption_t *) list_get(sip->encryptions,pos);
+
+  *dest = NULL;
+  if (list_size (sip->encryptions) <= pos)
+    return -1;                  /* does not exist */
+  encryption = (encryption_t *) list_get (sip->encryptions, pos);
   *dest = encryption;
   return pos;
 }
@@ -57,25 +60,24 @@ msg_getencryption(sip_t *sip,int pos,encryption_t **dest) {
 
 
 int
-encryption_parse(encryption_t *cd, char *hvalue)
+encryption_parse (encryption_t * cd, char *hvalue)
 {
   char *cd_params;
-  
-  cd_params = strchr(hvalue,' ');
 
-  if (cd_params!=NULL)
+  cd_params = strchr (hvalue, ' ');
+
+  if (cd_params != NULL)
     {
-      if (generic_param_parseall(cd->gen_params,
-				 cd_params)==-1)
-	return -1;
-    }
-  else
+      if (generic_param_parseall (cd->gen_params, cd_params) == -1)
+        return -1;
+  } else
     cd_params = hvalue + strlen (hvalue);
 
-  if (cd_params-hvalue+1<2) return -1;
-  cd->element = (char *)smalloc(cd_params-hvalue+1);
-  sstrncpy(cd->element, hvalue, cd_params-hvalue);
-  sclrspace(cd->element);
+  if (cd_params - hvalue + 1 < 2)
+    return -1;
+  cd->element = (char *) smalloc (cd_params - hvalue + 1);
+  sstrncpy (cd->element, hvalue, cd_params - hvalue);
+  sclrspace (cd->element);
 
   return 0;
 }

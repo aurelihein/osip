@@ -91,15 +91,18 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
 #ifndef DOXYGEN
-typedef enum _dlg_type_t {
-  CALLER,
-  CALLEE
-} dlg_type_t;
+  typedef enum _dlg_type_t
+  {
+    CALLER,
+    CALLEE
+  }
+  dlg_type_t;
 #endif
 
 
@@ -107,29 +110,30 @@ typedef enum _dlg_type_t {
  * Structure for referencing a dialog.
  * @var dialog_t
  */
-typedef struct dialog_t dialog_t;
+  typedef struct dialog_t dialog_t;
 
 
 /**
  * Structure for referencing a dialog.
  */
-struct dialog_t {
-  /*  char *dialog_id; ***implied*** */  /* call-id:local_tag:remote-tag */
-  char      *call_id;
-  char      *local_tag;
-  char      *remote_tag;
-  list_t    *route_set;
-  int        local_cseq;
-  int        remote_cseq;
-  to_t      *remote_uri;
-  from_t    *local_uri;
-  contact_t *remote_contact_uri;
-  int        secure;
+  struct dialog_t
+  {
+/*  char *dialog_id; ***implied*** *//* call-id:local_tag:remote-tag */
+    char *call_id;
+    char *local_tag;
+    char *remote_tag;
+    list_t *route_set;
+    int local_cseq;
+    int remote_cseq;
+    to_t *remote_uri;
+    from_t *local_uri;
+    contact_t *remote_contact_uri;
+    int secure;
 
-  /* type of dialog (CALLEE or CALLER) */
-  dlg_type_t type;
-  state_t state; /* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
-};
+    /* type of dialog (CALLEE or CALLER) */
+    dlg_type_t type;
+    state_t state;              /* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+  };
 
 
 /**
@@ -144,7 +148,7 @@ struct dialog_t {
  * @param dialog The element to allocate.
  * @param response The response containing the informations.
  */
-int dialog_init_as_uac(dialog_t **dialog, sip_t *response);
+  int dialog_init_as_uac (dialog_t ** dialog, sip_t * response);
 /**
  * Allocate a dialog_t element as a UAS.
  * NOTE1: Only INVITE transactions can create a dialog.
@@ -154,19 +158,19 @@ int dialog_init_as_uac(dialog_t **dialog, sip_t *response);
  * @param invite The INVITE request containing some informations.
  * @param response The response containing other informations.
  */
-int dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response);
+  int dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response);
 /**
  * Free all resource in a dialog_t element.
  * @param dialog The element to free.
  */
-void dialog_free(dialog_t *dialog);
+  void dialog_free (dialog_t * dialog);
 /**
  * Set the state of the dialog.
  * This is useful to keep information on who is the initiator of the call.
  * @param dialog The element to work on.
  * @param type The type of dialog (CALLEE or CALLER).
  */
-void dialog_set_state(dialog_t *dialog, state_t type);
+  void dialog_set_state (dialog_t * dialog, state_t type);
 /**
  * Update the Route-Set as UAS of a dialog.
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
@@ -177,28 +181,28 @@ void dialog_set_state(dialog_t *dialog, state_t type);
  * @param dialog The element to work on.
  * @param invite The invite received.
  */
-int dialog_update_route_set_as_uas(dialog_t *dialog, sip_t *invite);
+  int dialog_update_route_set_as_uas (dialog_t * dialog, sip_t * invite);
 /**
  * Update the CSeq (remote cseq) during a UAS transaction of a dialog.
  * NOTE: All INCOMING transactions MUST update the remote CSeq.
  * @param dialog The element to work on.
  * @param request The request received.
  */
-int dialog_update_cseq_as_uas(dialog_t *dialog, sip_t *request);
+  int dialog_update_cseq_as_uas (dialog_t * dialog, sip_t * request);
 
 /**
  * Match a response received with a dialog.
  * @param dialog The element to work on.
  * @param response The response received.
  */
-int dialog_match_as_uac(dialog_t *dialog, sip_t *response);
+  int dialog_match_as_uac (dialog_t * dialog, sip_t * response);
 /**
  * Update the tag as UAC of a dialog?. (this could be needed if the 180
  * does not contains any tag, but the 200 contains one.
  * @param dialog The element to work on.
  * @param response The response received.
  */
-int dialog_update_tag_as_uac(dialog_t *dialog, sip_t *response);
+  int dialog_update_tag_as_uac (dialog_t * dialog, sip_t * response);
 /**
  * Update the Route-Set as UAC of a dialog.
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
@@ -209,18 +213,18 @@ int dialog_update_tag_as_uac(dialog_t *dialog, sip_t *response);
  * @param dialog The element to work on.
  * @param response The response received.
  */
-int dialog_update_route_set_as_uac(dialog_t *dialog, sip_t *response);
+  int dialog_update_route_set_as_uac (dialog_t * dialog, sip_t * response);
 
 /**
  * Match a request (response sent??) received with a dialog.
  * @param dialog The element to work on.
  * @param request The request received.
  */
-int dialog_match_as_uas(dialog_t *dialog, sip_t *request);
+  int dialog_match_as_uas (dialog_t * dialog, sip_t * request);
 
 #ifndef DOXYGEN
-int dialog_is_originator(dialog_t *dialog);
-int dialog_is_callee(dialog_t *dialog);
+  int dialog_is_originator (dialog_t * dialog);
+  int dialog_is_callee (dialog_t * dialog);
 #endif
 
 

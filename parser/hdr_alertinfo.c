@@ -25,31 +25,34 @@
 #include "msg.h"
 
 int
-msg_setalert_info(sip_t *sip, char *hvalue)
+msg_setalert_info (sip_t * sip, char *hvalue)
 {
   alert_info_t *alert_info;
   int i;
-  i = alert_info_init(&alert_info);
-  if (i==-1)
+
+  i = alert_info_init (&alert_info);
+  if (i == -1)
     return -1;
-  i = alert_info_parse(alert_info, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = alert_info_parse (alert_info, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->alert_infos,alert_info,-1);
+  list_add (sip->alert_infos, alert_info, -1);
   return 0;
 }
 
 int
-msg_getalert_info(sip_t *sip,int pos,alert_info_t **dest) {
+msg_getalert_info (sip_t * sip, int pos, alert_info_t ** dest)
+{
   alert_info_t *alert_info;
-  *dest =  NULL;
-  if (list_size(sip->alert_infos)<=pos)
-    return -1; /* does not exist */
-  alert_info = (alert_info_t *) list_get(sip->alert_infos,pos);
+
+  *dest = NULL;
+  if (list_size (sip->alert_infos) <= pos)
+    return -1;                  /* does not exist */
+  alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
   *dest = alert_info;
   return pos;
 }

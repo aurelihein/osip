@@ -39,55 +39,57 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
  * Structure for referencing url parameters.
  * @defvar url_param_t
  */
-typedef struct url_param_t url_param_t;
+  typedef struct url_param_t url_param_t;
 
-struct url_param_t {
-  char *gname;
-  char *gvalue;
-};
+  struct url_param_t
+  {
+    char *gname;
+    char *gvalue;
+  };
 
 /**
  * Structure for referencing url headers.
  * @defvar url_header_t
  */
-typedef url_param_t url_header_t;
+  typedef url_param_t url_header_t;
 
 /**
  * Allocate a url parameter element.
  * @param url_param The element to work on.
  */
-int   url_param_init(url_param_t **url_param);
+  int url_param_init (url_param_t ** url_param);
 /**
  * Free a url parameter element.
  * @param url_param The element to work on.
  */
-void  url_param_free(url_param_t *url_param);
+  void url_param_free (url_param_t * url_param);
 /**
  * Set values of a url parameter element.
  * @param url_param The element to work on.
  * @param name The token name.
  * @param value The token value.
  */
-int   url_param_set (url_param_t *url_param, char *name, char *value);
+  int url_param_set (url_param_t * url_param, char *name, char *value);
 /**
  * Clone a url parameter element.
  * @param url_param The element to work on.
  * @param dest The resulting new allocated element.
  */
-int   url_param_clone(url_param_t *url_param, url_param_t **dest);
+  int url_param_clone (url_param_t * url_param, url_param_t ** dest);
 #ifndef DOXYGEN
 /*
  * Free a list of a url parameter element.
  * @param url_params The list of url parameter element to free.
  */
-void  url_param_freelist (list_t *url_params);
+  void url_param_freelist (list_t * url_params);
 #endif
 /**
  * Allocate and add a url parameter element in a list.
@@ -95,14 +97,14 @@ void  url_param_freelist (list_t *url_params);
  * @param name The token name.
  * @param value The token value.
  */
-int   url_param_add      (list_t *url_params, char *name, char *value);
+  int url_param_add (list_t * url_params, char *name, char *value);
 /**
  * Find in a url parameter element in a list.
  * @param url_params The list of url parameter element to work on.
  * @param name The name of the parameter element to find.
  * @param dest A pointer on the element found.
  */
-int   url_param_getbyname(list_t *url_params, char *name, url_param_t **dest);
+  int url_param_getbyname (list_t * url_params, char *name, url_param_t ** dest);
 
 /**
  * Allocate a generic parameter element.
@@ -153,129 +155,131 @@ int   url_param_getbyname(list_t *url_params, char *name, url_param_t **dest);
  * Structure for referencing SIP urls.
  * @defvar url_t
  */
-typedef struct url_t url_t;
+  typedef struct url_t url_t;
 
-struct url_t {
-  char *scheme;
-  char *username;
-  char *password;
-  char *host;
-  char *port;
-  list_t *url_params;
-  list_t *url_headers;
+  struct url_t
+  {
+    char *scheme;
+    char *username;
+    char *password;
+    char *host;
+    char *port;
+    list_t *url_params;
+    list_t *url_headers;
 
-  char *string; /** other url schemes are strings. (http, mailto...) */
-};
+    char *string;
+                /** other url schemes are strings. (http, mailto...) */
+  };
 
 /**
  * Allocate a url element.
  * @param url The element to work on.
  */
-int     url_init(url_t **url);
+  int url_init (url_t ** url);
 /**
  * Free a url element.
  * @param url The element to work on.
  */
-void    url_free(url_t *url);
+  void url_free (url_t * url);
 /**
  * Parse a url.
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-int     url_parse(url_t *url, char *buf);
+  int url_parse (url_t * url, char *buf);
 #ifndef DOXYGEN
 /**
  * Parse the header part of a url.
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-int     url_parse_headers(url_t *url, char *buf);
+  int url_parse_headers (url_t * url, char *buf);
 /**
  * Parse the parameter part of a url.
  * @param url The element to work on.
  * @param buf The buffer to parse.
  */
-int     url_parse_params (url_t *url, char *buf);
+  int url_parse_params (url_t * url, char *buf);
 #endif
 /**
  * Get a string representation of a url element.
  * @param url The element to work on.
  * @param dest The resulting new allocated buffer.
  */
-int     url_2char(url_t *url,char **dest);
+  int url_2char (url_t * url, char **dest);
 /**
  * Clone a url element.
  * @param url The element to work on.
  * @param dest The resulting new allocated element.
  */
-int     url_clone(url_t *url,url_t **dest);
+  int url_clone (url_t * url, url_t ** dest);
 
 /**
  * Set the scheme of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_setscheme(url_t *url, char *value);
+  void url_setscheme (url_t * url, char *value);
 /**
  * Get the scheme of a url element.
  * @param url The element to work on.
  */
-char*   url_getscheme(url_t *url);
+  char *url_getscheme (url_t * url);
 /**
  * Set the host of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_sethost(url_t *url, char *value);
+  void url_sethost (url_t * url, char *value);
 /**
  * Get the host of a url element.
  * @param url The element to work on.
  */
-char*   url_gethost(url_t *url);
+  char *url_gethost (url_t * url);
 /**
  * Set the username of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_setusername(url_t *url, char *value);
+  void url_setusername (url_t * url, char *value);
 /**
  * Get the username of a url element.
  * @param url The element to work on.
  */
-char*   url_getusername(url_t *url);
+  char *url_getusername (url_t * url);
 /**
  * Set the password of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_setpassword(url_t *url, char *value);
+  void url_setpassword (url_t * url, char *value);
 /**
  * Get the password of a url element.
  * @param url The element to work on.
  */
-char*   url_getpassword(url_t *url);
+  char *url_getpassword (url_t * url);
 /**
  * Set the host of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_sethost(url_t *url, char *value);
+  void url_sethost (url_t * url, char *value);
 /**
  * Get the host of a url element.
  * @param url The element to work on.
  */
-char*   url_gethost(url_t *url);
+  char *url_gethost (url_t * url);
 /**
  * Set the port of a url element.
  * @param url The element to work on.
  * @param value The token value.
  */
-void    url_setport(url_t *url, char *value);
+  void url_setport (url_t * url, char *value);
 /**
  * Get the port of a url element.
  * @param url The element to work on.
  */
-char*   url_getport(url_t *url);
+  char *url_getport (url_t * url);
 
 
 
@@ -418,14 +422,14 @@ char*   url_getport(url_t *url);
 
 #ifndef DOXYGEN
 /* internal method */
-char *next_separator(char *ch, int separator_to_find, int before_separator);
+  char *next_separator (char *ch, int separator_to_find, int before_separator);
 
-char *url_escape_nonascii_and_nondef(const char *string, const char *def);
-char *url_escape_userinfo(const char *string);
-char *url_escape_password(const char *string);
-char *url_escape_uri_param(char *string);
-char *url_escape_header_param(char *string);
-void url_unescape(char *string);
+  char *url_escape_nonascii_and_nondef (const char *string, const char *def);
+  char *url_escape_userinfo (const char *string);
+  char *url_escape_password (const char *string);
+  char *url_escape_uri_param (char *string);
+  char *url_escape_header_param (char *string);
+  void url_unescape (char *string);
 
 #endif
 
@@ -435,4 +439,4 @@ void url_unescape(char *string);
 }
 #endif
 
-#endif /*  _URLS_H_ */
+#endif                          /*  _URLS_H_ */

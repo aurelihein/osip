@@ -24,9 +24,9 @@
 #include <osip/smsg.h>
 
 int
-to_init(to_t **to)
+to_init (to_t ** to)
 {
-  return from_init((from_t **)to);
+  return from_init ((from_t **) to);
 }
 
 /* adds the to header to message.              */
@@ -34,54 +34,55 @@ to_init(to_t **to)
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setto(sip_t *sip, char *hvalue)
+msg_setto (sip_t * sip, char *hvalue)
 {
   int i;
-  if (sip->to!=NULL)
+
+  if (sip->to != NULL)
     return -1;
-  i = to_init(&(sip->to));
-  if (i==-1)
+  i = to_init (&(sip->to));
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return to_parse(sip->to, hvalue);
+  return to_parse (sip->to, hvalue);
 }
 
 /* returns the to header.            */
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 to_t *
-msg_getto(sip_t *sip) {
+msg_getto (sip_t * sip)
+{
   return sip->to;
 }
 
 int
-to_parse(to_t *to, char *hvalue)
+to_parse (to_t * to, char *hvalue)
 {
-  return from_parse((from_t *)to, hvalue);
+  return from_parse ((from_t *) to, hvalue);
 }
 
 /* returns the to header as a string.          */
 /* INPUT : to_t *to | to header.  */
 /* returns null on error. */
 int
-to_2char(to_t *to, char **dest)
+to_2char (to_t * to, char **dest)
 {
-  return from_2char((from_t *)to, dest);
+  return from_2char ((from_t *) to, dest);
 }
 
 /* deallocates a to_t structure.  */
 /* INPUT : to_t *to | to header. */
 void
-to_free(to_t *to)
+to_free (to_t * to)
 {
-  from_free((from_t *)to);
+  from_free ((from_t *) to);
 }
 
 int
-to_clone(to_t *to, to_t **dest)
+to_clone (to_t * to, to_t ** dest)
 {
-  return from_clone((from_t *)to,(from_t **)dest);
+  return from_clone ((from_t *) to, (from_t **) dest);
 }
-

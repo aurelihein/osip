@@ -29,24 +29,26 @@
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setmime_version(sip_t *sip, char *hvalue)
+msg_setmime_version (sip_t * sip, char *hvalue)
 {
   int i;
-  if (sip->mime_version!=NULL)
+
+  if (sip->mime_version != NULL)
     return -1;
-  i = mime_version_init(&(sip->mime_version));
-  if (i==-1)
+  i = mime_version_init (&(sip->mime_version));
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return mime_version_parse(sip->mime_version, hvalue);
+  return mime_version_parse (sip->mime_version, hvalue);
 }
 
 /* returns the mime_version header.            */
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 mime_version_t *
-msg_getmime_version(sip_t *sip) {
+msg_getmime_version (sip_t * sip)
+{
   return sip->mime_version;
 }

@@ -31,34 +31,36 @@
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setaccept(sip_t *sip, char *hvalue)
+msg_setaccept (sip_t * sip, char *hvalue)
 {
   accept_t *accept;
   int i;
-  i = accept_init(&accept);
-  if (i==-1)
+
+  i = accept_init (&accept);
+  if (i == -1)
     return -1;
-  i = accept_parse(accept, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = accept_parse (accept, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
 
-  list_add(sip->accepts,accept,-1);
+  list_add (sip->accepts, accept, -1);
   return 0;
 }
 
 
 int
-msg_getaccept(sip_t *sip,int pos,accept_t **dest) {
+msg_getaccept (sip_t * sip, int pos, accept_t ** dest)
+{
   accept_t *accept;
-  *dest =  NULL;
-  if (list_size(sip->accepts)<=pos)
-    return -1; /* does not exist */
-  accept = (accept_t *) list_get(sip->accepts,pos);
+
+  *dest = NULL;
+  if (list_size (sip->accepts) <= pos)
+    return -1;                  /* does not exist */
+  accept = (accept_t *) list_get (sip->accepts, pos);
   *dest = accept;
   return pos;
 }
-

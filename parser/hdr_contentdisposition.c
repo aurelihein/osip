@@ -25,31 +25,35 @@
 #include "msg.h"
 
 int
-msg_setcontent_disposition(sip_t *sip, char *hvalue)
+msg_setcontent_disposition (sip_t * sip, char *hvalue)
 {
   content_disposition_t *content_disposition;
   int i;
-  i = content_disposition_init(&content_disposition);
-  if (i==-1)
+
+  i = content_disposition_init (&content_disposition);
+  if (i == -1)
     return -1;
-  i = content_disposition_parse(content_disposition, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = content_disposition_parse (content_disposition, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->content_dispositions,content_disposition,-1);
+  list_add (sip->content_dispositions, content_disposition, -1);
   return 0;
 }
 
 int
-msg_getcontent_disposition(sip_t *sip,int pos,content_disposition_t **dest) {
+msg_getcontent_disposition (sip_t * sip, int pos, content_disposition_t ** dest)
+{
   content_disposition_t *content_disposition;
-  *dest =  NULL;
-  if (list_size(sip->content_dispositions)<=pos)
-    return -1; /* does not exist */
-  content_disposition = (content_disposition_t *) list_get(sip->content_dispositions,pos);
+
+  *dest = NULL;
+  if (list_size (sip->content_dispositions) <= pos)
+    return -1;                  /* does not exist */
+  content_disposition =
+    (content_disposition_t *) list_get (sip->content_dispositions, pos);
   *dest = content_disposition;
   return pos;
 }
@@ -57,25 +61,24 @@ msg_getcontent_disposition(sip_t *sip,int pos,content_disposition_t **dest) {
 
 
 int
-content_disposition_parse(content_disposition_t *cd, char *hvalue)
+content_disposition_parse (content_disposition_t * cd, char *hvalue)
 {
   char *cd_params;
-  
-  cd_params = strchr(hvalue,';');
 
-  if (cd_params!=NULL)
+  cd_params = strchr (hvalue, ';');
+
+  if (cd_params != NULL)
     {
-      if (generic_param_parseall(cd->gen_params,
-				 cd_params)==-1)
-	return -1;
-    }
-  else
+      if (generic_param_parseall (cd->gen_params, cd_params) == -1)
+        return -1;
+  } else
     cd_params = hvalue + strlen (hvalue);
 
-  if (cd_params-hvalue+1<2) return -1;
-  cd->element = (char *)smalloc(cd_params-hvalue+1);
-  sstrncpy(cd->element, hvalue, cd_params-hvalue);
-  sclrspace(cd->element);
+  if (cd_params - hvalue + 1 < 2)
+    return -1;
+  cd->element = (char *) smalloc (cd_params - hvalue + 1);
+  sstrncpy (cd->element, hvalue, cd_params - hvalue);
+  sclrspace (cd->element);
 
   return 0;
 }

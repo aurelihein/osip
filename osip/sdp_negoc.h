@@ -118,7 +118,8 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**
@@ -130,36 +131,37 @@ extern "C" {
  * the remote SDP packet.
  * @defvar sdp_context_t
  */
-typedef struct sdp_context_t sdp_context_t;
+  typedef struct sdp_context_t sdp_context_t;
 
-struct sdp_context_t {
-  void *mycontext; /* add the pointer to your personal context */
-  sdp_t *remote;
-  sdp_t *local;
-};
+  struct sdp_context_t
+  {
+    void *mycontext;            /* add the pointer to your personal context */
+    sdp_t *remote;
+    sdp_t *local;
+  };
 
 /**
  * Allocate a bandwidth element.
  * @param ctx The element to work on.
  */
-int sdp_context_init(sdp_context_t **ctx);
+  int sdp_context_init (sdp_context_t ** ctx);
 /**
  * Free a bandwidth element.
  * @param ctx The element to work on.
  */
-void sdp_context_free(sdp_context_t *ctx);
+  void sdp_context_free (sdp_context_t * ctx);
 
 /**
  * Set the context associated to this negotiation.
  * @param ctx The element to work on.
  * @param value A pointer to your personal context.
  */
-int sdp_context_set_mycontext(sdp_context_t *ctx, void *value);
+  int sdp_context_set_mycontext (sdp_context_t * ctx, void *value);
 /**
  * Get the context associated to this negotiation.
  * @param ctx The element to work on.
  */
-void *sdp_context_get_mycontext(sdp_context_t *ctx);
+  void *sdp_context_get_mycontext (sdp_context_t * ctx);
 
 /**
  * Set the local SDP packet associated to this negotiation.
@@ -168,56 +170,57 @@ void *sdp_context_get_mycontext(sdp_context_t *ctx);
  * @param ctx The element to work on.
  * @param sdp The local SDP packet.
  */
-int sdp_context_set_local_sdp(sdp_context_t *ctx, sdp_t *sdp);
+  int sdp_context_set_local_sdp (sdp_context_t * ctx, sdp_t * sdp);
 /**
  * Get the local SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  */
-sdp_t *sdp_context_get_local_sdp(sdp_context_t *ctx);
+  sdp_t *sdp_context_get_local_sdp (sdp_context_t * ctx);
 /**
  * Set the remote SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  * @param sdp The remote SDP packet.
  */
-int sdp_context_set_remote_sdp(sdp_context_t *ctx, sdp_t *sdp);
+  int sdp_context_set_remote_sdp (sdp_context_t * ctx, sdp_t * sdp);
 /**
  * Get the remote SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  */
-sdp_t *sdp_context_get_remote_sdp(sdp_context_t *ctx);
+  sdp_t *sdp_context_get_remote_sdp (sdp_context_t * ctx);
 
 /**
  * Structure for payload management. Each payload element
  * represents one codec of a media line.
  * @defvar payload_t
  */
-typedef struct payload_t payload_t;
+  typedef struct payload_t payload_t;
 
-struct payload_t {
-  char *payload;
-  /*  char *port; this must be assigned by the application dynamicly */
-  char *number_of_port;
-  char *proto;
-  char *c_nettype;
-  char *c_addrtype;
-  char *c_addr;
-  char *c_addr_multicast_ttl;
-  char *c_addr_multicast_int;
-  /* rtpmap (rcvonly and other attributes are added dynamicly) */
-  char *a_rtpmap;
-};
+  struct payload_t
+  {
+    char *payload;
+    /*  char *port; this must be assigned by the application dynamicly */
+    char *number_of_port;
+    char *proto;
+    char *c_nettype;
+    char *c_addrtype;
+    char *c_addr;
+    char *c_addr_multicast_ttl;
+    char *c_addr_multicast_int;
+    /* rtpmap (rcvonly and other attributes are added dynamicly) */
+    char *a_rtpmap;
+  };
 
 
 /**
  * Allocate a payload element.
  * @param payload The payload.
  */
-int  payload_init(payload_t **payload);
+  int payload_init (payload_t ** payload);
 /**
  * Free a payload element.
  * @param payload The payload.
  */
-void payload_free(payload_t *payload);
+  void payload_free (payload_t * payload);
 
 /**
  * Structure for storing the global configuration management.
@@ -233,118 +236,113 @@ void payload_free(payload_t *payload);
  *      a negotiation if you are not satisfied by the negotiation result.
  * @defvar sdp_config_t
  */
-typedef struct sdp_config_t sdp_config_t;
+  typedef struct sdp_config_t sdp_config_t;
 
-struct sdp_config_t {
+  struct sdp_config_t
+  {
 
-  char *o_username;
-  char *o_session_id;
-  char *o_session_version;
-  char *o_nettype;
-  char *o_addrtype;
-  char *o_addr;
+    char *o_username;
+    char *o_session_id;
+    char *o_session_version;
+    char *o_nettype;
+    char *o_addrtype;
+    char *o_addr;
 
-  char *c_nettype;
-  char *c_addrtype;
-  char *c_addr;
-  char *c_addr_multicast_ttl;
-  char *c_addr_multicast_int;
+    char *c_nettype;
+    char *c_addrtype;
+    char *c_addr;
+    char *c_addr_multicast_ttl;
+    char *c_addr_multicast_int;
 
-  list_t *audio_codec;
-  list_t *video_codec;
-  list_t *other_codec;
+    list_t *audio_codec;
+    list_t *video_codec;
+    list_t *other_codec;
 
-  int  (*fcn_set_info)(void*, sdp_t *);
-  int  (*fcn_set_uri)(void*, sdp_t *);
+    int (*fcn_set_info) (void *, sdp_t *);
+    int (*fcn_set_uri) (void *, sdp_t *);
 
-  int  (*fcn_set_emails)(void*, sdp_t *);
-  int  (*fcn_set_phones)(void*, sdp_t *);
-  int  (*fcn_set_attributes)(void*, sdp_t *, int);
-  int  (*fcn_accept_audio_codec)(void*, 
-				 char *, char *,
-				 int , char *);
-  int  (*fcn_accept_video_codec)(void*, 
-				 char *, char *,
-				 int , char *);
-  int  (*fcn_accept_other_codec)(void*, 
-				 char *, char *,
-				 char *, char *);
-  char *(*fcn_get_audio_port)(void *, int);
-  char *(*fcn_get_video_port)(void *, int);
-  char *(*fcn_get_other_port)(void *, int);
+    int (*fcn_set_emails) (void *, sdp_t *);
+    int (*fcn_set_phones) (void *, sdp_t *);
+    int (*fcn_set_attributes) (void *, sdp_t *, int);
+    int (*fcn_accept_audio_codec) (void *, char *, char *, int, char *);
+    int (*fcn_accept_video_codec) (void *, char *, char *, int, char *);
+    int (*fcn_accept_other_codec) (void *, char *, char *, char *, char *);
+    char *(*fcn_get_audio_port) (void *, int);
+    char *(*fcn_get_video_port) (void *, int);
+    char *(*fcn_get_other_port) (void *, int);
 
-};
+  };
 
 
 /**
  * Initialise (and Allocate) a sdp_config element (this element is global).
  * This method must be called when the application is started.
  */
-int sdp_config_init();
+  int sdp_config_init ();
 /**
  * Free resource stored by a sdp_config element.
  * This method must be called once when the application is stopped.
  */
-void sdp_config_free();
+  void sdp_config_free ();
 
 /**
  * Set the local username ('o' field) of all local SDP packet.
  * @param tmp The username.
  */
-int sdp_config_set_o_username(char *tmp);
+  int sdp_config_set_o_username (char *tmp);
 /**
  * Set the local session id ('o' field) of all local SDP packet.
  * WARNING: this field should be updated for each new SDP packet?
  * @param tmp The session id.
  */
-int sdp_config_set_o_session_id(char *tmp);
+  int sdp_config_set_o_session_id (char *tmp);
 /**
  * Set the local session version ('o' field) of all local SDP packet.
  * WARNING: this field should be updated for each new SDP packet?
  * @param tmp The session version.
  */
-int sdp_config_set_o_session_version(char *tmp);
+  int sdp_config_set_o_session_version (char *tmp);
 /**
  * Set the local network type ('o' field) of all local SDP packet.
  * @param tmp The network type.
  */
-int sdp_config_set_o_nettype(char *tmp);
+  int sdp_config_set_o_nettype (char *tmp);
 /**
  * Set the local address type ('o' field) of all local SDP packet.
  * @param tmp The address type.
  */
-int sdp_config_set_o_addrtype(char *tmp);
+  int sdp_config_set_o_addrtype (char *tmp);
 /**
  * Set the local IP address ('o' field) of all local SDP packet.
  * @param tmp The IP address.
  */
-int sdp_config_set_o_addr(char *tmp);
+  int sdp_config_set_o_addr (char *tmp);
 
 /**
  * Set the local network type ('c' field) of all local SDP packet.
  * @param tmp The network type.
  */
-int sdp_config_set_c_nettype(char *tmp);
+  int sdp_config_set_c_nettype (char *tmp);
 /**
  * Set the local address type ('c' field) of all local SDP packet.
  * @param tmp The address type.
  */
-int sdp_config_set_c_addrtype(char *tmp);
+  int sdp_config_set_c_addrtype (char *tmp);
 /**
  * Set the local IP address ('c' field) of all local SDP packet.
  * @param tmp The IP address.
  */
-int sdp_config_set_c_addr(char *tmp);
+  int sdp_config_set_c_addr (char *tmp);
 /**
  * Set the local ttl for multicast address ('c' field) of all local SDP packet.
  * @param tmp The ttl for multicast address.
  */
-int sdp_config_set_c_addr_multicast_ttl(char *tmp);
+  int sdp_config_set_c_addr_multicast_ttl (char *tmp);
 /**
  * Set the local int for multicast address ('c' field) of all local SDP packet.
  * @param tmp The int for multicast address.
  */
-int sdp_config_set_c_addr_multicast_int(char *tmp);
+  int sdp_config_set_c_addr_multicast_int (char *tmp);
 
 /**
  * Add a supported audio codec.
@@ -360,12 +358,12 @@ int sdp_config_set_c_addr_multicast_int(char *tmp);
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-int sdp_config_add_support_for_audio_codec(char *payload, char *number_of_port,
-					   char *proto, char *c_nettype,
-					   char *c_addrtype,char *c_addr,
-					   char *c_addr_multicast_ttl,
-					   char *c_addr_multicast_int,
-					   char *a_rtpmap);
+  int sdp_config_add_support_for_audio_codec (char *payload, char *number_of_port,
+                                              char *proto, char *c_nettype,
+                                              char *c_addrtype, char *c_addr,
+                                              char *c_addr_multicast_ttl,
+                                              char *c_addr_multicast_int,
+                                              char *a_rtpmap);
 /**
  * Add a supported video codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -380,12 +378,12 @@ int sdp_config_add_support_for_audio_codec(char *payload, char *number_of_port,
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-int sdp_config_add_support_for_video_codec(char *payload, char *number_of_port,
-					   char *proto, char *c_nettype,
-					   char *c_addrtype,char *c_addr,
-					   char *c_addr_multicast_ttl,
-					   char *c_addr_multicast_int,
-					   char *a_rtpmap);
+  int sdp_config_add_support_for_video_codec (char *payload, char *number_of_port,
+                                              char *proto, char *c_nettype,
+                                              char *c_addrtype, char *c_addr,
+                                              char *c_addr_multicast_ttl,
+                                              char *c_addr_multicast_int,
+                                              char *a_rtpmap);
 /**
  * Add a supported (non-audio and non-video) codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -400,26 +398,26 @@ int sdp_config_add_support_for_video_codec(char *payload, char *number_of_port,
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-int sdp_config_add_support_for_other_codec(char *payload, char *number_of_port,
-					   char *proto, char *c_nettype,
-					   char *c_addrtype,char *c_addr,
-					   char *c_addr_multicast_ttl,
-					   char *c_addr_multicast_int,
-					   char *a_rtpmap);
+  int sdp_config_add_support_for_other_codec (char *payload, char *number_of_port,
+                                              char *proto, char *c_nettype,
+                                              char *c_addrtype, char *c_addr,
+                                              char *c_addr_multicast_ttl,
+                                              char *c_addr_multicast_int,
+                                              char *a_rtpmap);
 
 #ifndef DOXYGEN
 /**
  * Free resource in the global sdp_config..
  */
-int sdp_config_remove_audio_payloads();
+  int sdp_config_remove_audio_payloads ();
 /**
  * Free resource in the global sdp_config..
  */
-int sdp_config_remove_video_payloads();
+  int sdp_config_remove_video_payloads ();
 /**
  * Free resource in the global sdp_config..
  */
-int sdp_config_remove_other_payloads();
+  int sdp_config_remove_other_payloads ();
 #endif
 
 /**
@@ -427,70 +425,71 @@ int sdp_config_remove_other_payloads();
  * This callback is called once each time we need an 'i' field.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_set_info(int  (*fcn)(sdp_context_t *, sdp_t *));
+  int sdp_config_set_fcn_set_info (int (*fcn) (sdp_context_t *, sdp_t *));
 /**
  * Set the callback for setting a URI ('u' field) in a local SDP packet.
  * This callback is called once each time we need an 'u' field.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_set_uri(int  (*fcn)(sdp_context_t *, sdp_t *));
+  int sdp_config_set_fcn_set_uri (int (*fcn) (sdp_context_t *, sdp_t *));
 /**
  * Set the callback for setting an email ('e' field) in a local SDP packet.
  * This callback is called once each time we need an 'e' field.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_set_emails(int  (*fcn)(sdp_context_t *, sdp_t *));
+  int sdp_config_set_fcn_set_emails (int (*fcn) (sdp_context_t *, sdp_t *));
 /**
  * Set the callback for setting a phone ('p' field) in a local SDP packet.
  * This callback is called once each time we need an 'p' field.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_set_phones(int  (*fcn)(sdp_context_t *, sdp_t *));
+  int sdp_config_set_fcn_set_phones (int (*fcn) (sdp_context_t *, sdp_t *));
 /**
  * Set the callback for setting an attribute ('a' field) in a local SDP packet.
  * This callback is called once each time we need an 'a' field.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_set_attributes(int  (*fcn)(sdp_context_t *, sdp_t *, int));
+  int
+    sdp_config_set_fcn_set_attributes (int (*fcn) (sdp_context_t *, sdp_t *, int));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_accept_audio_codec(int  (*fcn)(sdp_context_t *, char *,
-						      char *, int, char *));
+  int sdp_config_set_fcn_accept_audio_codec (int (*fcn) (sdp_context_t *, char *,
+                                                         char *, int, char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_accept_video_codec(int  (*fcn)(sdp_context_t *, char *,
-						      char *, int, char *));
+  int sdp_config_set_fcn_accept_video_codec (int (*fcn) (sdp_context_t *, char *,
+                                                         char *, int, char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_accept_other_codec(int  (*fcn)(sdp_context_t *, char *,
-						      char *, char *, char *));
+  int sdp_config_set_fcn_accept_other_codec (int (*fcn) (sdp_context_t *, char *,
+                                                         char *, char *, char *));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_get_audio_port(char*  (*fcn)(sdp_context_t *, int));
+  int sdp_config_set_fcn_get_audio_port (char *(*fcn) (sdp_context_t *, int));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_get_video_port(char*  (*fcn)(sdp_context_t *, int));
+  int sdp_config_set_fcn_get_video_port (char *(*fcn) (sdp_context_t *, int));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-int sdp_config_set_fcn_get_other_port(char*  (*fcn)(sdp_context_t *, int));
+  int sdp_config_set_fcn_get_other_port (char *(*fcn) (sdp_context_t *, int));
 
 /**
  * Start the automatic negotiation for a UA
@@ -505,14 +504,15 @@ int sdp_config_set_fcn_get_other_port(char*  (*fcn)(sdp_context_t *, int));
  * SDP packet if you wish to improve it or just refine some attributes.
  * @param ctx The context holding the remote SDP offer.
  */
-int sdp_context_execute_negotiation(sdp_context_t *ctx);
+  int sdp_context_execute_negotiation (sdp_context_t * ctx);
 
-int sdp_build_offer(sdp_context_t *con, sdp_t **sdp, char *audio_port, char *video_port);
+  int sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
+                       char *video_port);
 
   /* for non "on-hold sdp" in outgoing invite */
-int sdp_put_on_hold(sdp_t *sdp);
+  int sdp_put_on_hold (sdp_t * sdp);
   /* for an "on hold sdp" in outgoing invite */
-int sdp_put_off_hold(sdp_t *sdp);
+  int sdp_put_off_hold (sdp_t * sdp);
 
 #ifndef DOXYGEN
 /* deprecated for spelling reasons... */

@@ -26,31 +26,34 @@
 
 
 int
-msg_setaccept_language(sip_t *sip, char *hvalue)
+msg_setaccept_language (sip_t * sip, char *hvalue)
 {
   accept_language_t *accept_language;
   int i;
-  i = accept_language_init(&accept_language);
-  if (i==-1)
+
+  i = accept_language_init (&accept_language);
+  if (i == -1)
     return -1;
-  i = accept_language_parse(accept_language, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = accept_language_parse (accept_language, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->accept_languages,accept_language,-1);
+  list_add (sip->accept_languages, accept_language, -1);
   return 0;
 }
 
 int
-msg_getaccept_language(sip_t *sip,int pos,accept_language_t **dest) {
+msg_getaccept_language (sip_t * sip, int pos, accept_language_t ** dest)
+{
   accept_language_t *accept_language;
-  *dest =  NULL;
-  if (list_size(sip->accept_languages)<=pos)
-    return -1; /* does not exist */
-  accept_language = (accept_language_t *) list_get(sip->accept_languages,pos);
+
+  *dest = NULL;
+  if (list_size (sip->accept_languages) <= pos)
+    return -1;                  /* does not exist */
+  accept_language = (accept_language_t *) list_get (sip->accept_languages, pos);
   *dest = accept_language;
   return pos;
 }

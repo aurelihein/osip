@@ -28,17 +28,18 @@
 /* find the transition for state and type in statemachine */
 /* return NULL; if transition is not found.               */
 transition_t *
-fsm_findmethod(type_t type,state_t state,statemachine_t *statemachine)
+fsm_findmethod (type_t type, state_t state, statemachine_t * statemachine)
 {
   int pos;
+
   pos = 0;
-  while (!list_eol(statemachine->transitions,pos))
+  while (!list_eol (statemachine->transitions, pos))
     {
       transition_t *transition;
-      transition = (transition_t *)list_get(statemachine->transitions,pos);
-      if (transition->type == type
-	  && transition->state == state)
-	return transition;
+
+      transition = (transition_t *) list_get (statemachine->transitions, pos);
+      if (transition->type == type && transition->state == state)
+        return transition;
       pos++;
     }
   return NULL;
@@ -48,19 +49,17 @@ fsm_findmethod(type_t type,state_t state,statemachine_t *statemachine)
 /* call the right execution method.          */
 /*   return -1 when event must be discarded  */
 int
-fsm_callmethod(type_t type,state_t state,statemachine_t *statemachine,
-	       void *sipevent,void *transaction)
+fsm_callmethod (type_t type, state_t state, statemachine_t * statemachine,
+                void *sipevent, void *transaction)
 {
   transition_t *transition;
-  transition   = fsm_findmethod(type,state,statemachine);
-  if (transition==NULL)
+
+  transition = fsm_findmethod (type, state, statemachine);
+  if (transition == NULL)
     {
       /* No transition found for this event */
-      return -1; /* error */
+      return -1;                /* error */
     }
-  transition->method(transaction,sipevent); 
-  return 0; /* ok */
+  transition->method (transaction, sipevent);
+  return 0;                     /* ok */
 }
-
-
-

@@ -25,32 +25,34 @@
 #include "msg.h"
 
 int
-msg_setallow(sip_t *sip, char *hvalue)
+msg_setallow (sip_t * sip, char *hvalue)
 {
   allow_t *allow;
   int i;
-  i = allow_init(&allow);
-  if (i==-1)
+
+  i = allow_init (&allow);
+  if (i == -1)
     return -1;
-  i = allow_parse(allow, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = allow_parse (allow, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->allows,allow,-1);
+  list_add (sip->allows, allow, -1);
   return 0;
 }
 
 int
-msg_getallow(sip_t *sip,int pos,allow_t **dest) {
+msg_getallow (sip_t * sip, int pos, allow_t ** dest)
+{
   allow_t *allow;
-  *dest =  NULL;
-  if (list_size(sip->allows)<=pos)
-    return -1; /* does not exist */
-  allow = (allow_t *) list_get(sip->allows,pos);
+
+  *dest = NULL;
+  if (list_size (sip->allows) <= pos)
+    return -1;                  /* does not exist */
+  allow = (allow_t *) list_get (sip->allows, pos);
   *dest = allow;
   return pos;
 }
-

@@ -28,7 +28,7 @@
 #include <osip/smsg.h>
 
 int
-main(int argc, char **argv)
+main (int argc, char **argv)
 {
   FILE *callids_file;
 
@@ -37,46 +37,46 @@ main(int argc, char **argv)
   char *a_callid;
   char *dest;
   char *res;
-  
-  callids_file = fopen(argv[1],"r");
-  if (callids_file==NULL)
+
+  callids_file = fopen (argv[1], "r");
+  if (callids_file == NULL)
     {
-    fprintf(stdout,"Failed to open %s file.\nUsage: tcallid callids.txt\n",argv[1]);
-    exit(0);
+      fprintf (stdout, "Failed to open %s file.\nUsage: tcallid callids.txt\n",
+               argv[1]);
+      exit (0);
     }
 
-  a_callid = (char *)smalloc(200);
-  res = fgets(a_callid, 200, callids_file); /* lines are under 200 */
-  while (res !=NULL)
+  a_callid = (char *) smalloc (200);
+  res = fgets (a_callid, 200, callids_file);    /* lines are under 200 */
+  while (res != NULL)
     {
 
       int errcode;
-      /* remove the last '\n' before parsing */
-      strncpy(a_callid+strlen(a_callid)-1,"\0",1);
 
-      if (0!=strncmp(a_callid, "#", 1))
-	{
-	  /* allocate & init callid */
-	  call_id_init(&callid);
-	  printf ("=================================================\n");
-	  printf ("CALLID TO PARSE: |%s|\n",a_callid);
-	  errcode = call_id_parse(callid, a_callid);
-	  if (errcode!=-1)
-	    {
-	      if (call_id_2char(callid, &dest)!=-1)
-		{
-		  printf ("result:        |%s|\n", dest);
-		  sfree(dest);
-		}
-	    }
-	  else
-	    printf("Bad callid format: %s\n",a_callid);
-	  call_id_free(callid),
-	  sfree(callid);
-	  printf ("=================================================\n");
-	}
-      res = fgets(a_callid, 200, callids_file); /* lines are under 200 */
+      /* remove the last '\n' before parsing */
+      strncpy (a_callid + strlen (a_callid) - 1, "\0", 1);
+
+      if (0 != strncmp (a_callid, "#", 1))
+        {
+          /* allocate & init callid */
+          call_id_init (&callid);
+          printf ("=================================================\n");
+          printf ("CALLID TO PARSE: |%s|\n", a_callid);
+          errcode = call_id_parse (callid, a_callid);
+          if (errcode != -1)
+            {
+              if (call_id_2char (callid, &dest) != -1)
+                {
+                  printf ("result:        |%s|\n", dest);
+                  sfree (dest);
+                }
+          } else
+            printf ("Bad callid format: %s\n", a_callid);
+          call_id_free (callid), sfree (callid);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_callid, 200, callids_file);        /* lines are under 200 */
     }
-  sfree(a_callid);
+  sfree (a_callid);
   return 0;
 }

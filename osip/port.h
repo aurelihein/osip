@@ -104,23 +104,24 @@
 #define SIP_GLOBAL_ERROR    (-5)
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /**************************/
 /* MALLOC redirections    */
 /**************************/
 
-void      *smalloc(size_t size);
-void       sfree  (void *ptr);
+  void *smalloc (size_t size);
+  void sfree (void *ptr);
 
 
 /**************************/
 /* RANDOM number support  */
 /**************************/
 
-unsigned int new_random_number();
-void         init_random_number();
+  unsigned int new_random_number ();
+  void init_random_number ();
 
 /**************************/
 /* TIMER support          */
@@ -128,28 +129,27 @@ void         init_random_number();
 
 #define SP   " \0"
 
-void       susleep(int useconds);
+  void susleep (int useconds);
 
 /**************************/
 /* STRING support         */
 /**************************/
 
-int        satoi(char *number);
-char      *sstrncpy(char *dest,const char *src,int length);
-char      *sgetcopy(char *ch);
-char      *sgetcopy_unquoted_string(char *ch);
-int        stolowercase(char *word);
-int        sclrspace(char *word);
+  int satoi (char *number);
+  char *sstrncpy (char *dest, const char *src, int length);
+  char *sgetcopy (char *ch);
+  char *sgetcopy_unquoted_string (char *ch);
+  int stolowercase (char *word);
+  int sclrspace (char *word);
 /* used by the sdp parser: */
-char      *sdp_append_string(char *string, int size,
-			     char *cur, char *string_to_append);
-int        set_next_token(char **dest, char *buf,
-			  int end_separator, char **next);
+  char *sdp_append_string (char *string, int size,
+                           char *cur, char *string_to_append);
+  int set_next_token (char **dest, char *buf, int end_separator, char **next);
 /* find the next unescaped quote and  */
 /* return its index.                  */
 /* return NULL on error.              */
-char      *quote_find(char *qstring);
-int        sclrlws(char *word);
+  char *quote_find (char *qstring);
+  int sclrlws (char *word);
 
 /**************************/
 /* LOG&DEBUG support      */
@@ -157,42 +157,44 @@ int        sclrlws(char *word);
 
 /* define log possible value */
 #ifdef WIN32
-typedef unsigned char boolean;
+  typedef unsigned char boolean;
 #else
 #ifndef __PSOS__
-typedef int boolean;
+  typedef int boolean;
 #endif
 #endif
 
 #define LOG_TRUE  1
 #define LOG_FALSE 0
 /* levels */
-typedef enum _trace_level {
-  TRACE_LEVEL0      = 0,
+  typedef enum _trace_level
+  {
+    TRACE_LEVEL0 = 0,
 #define OSIP_FATAL    0
-  TRACE_LEVEL1      = 1,
+    TRACE_LEVEL1 = 1,
 #define OSIP_BUG      1
-  TRACE_LEVEL2      = 2,
+    TRACE_LEVEL2 = 2,
 #define OSIP_ERROR    2
-  TRACE_LEVEL3      = 3,
+    TRACE_LEVEL3 = 3,
 #define OSIP_WARNING  3
-  TRACE_LEVEL4      = 4,
+    TRACE_LEVEL4 = 4,
 #define OSIP_INFO1    4
-  TRACE_LEVEL5      = 5,
+    TRACE_LEVEL5 = 5,
 #define OSIP_INFO2    5
-  TRACE_LEVEL6      = 6,
+    TRACE_LEVEL6 = 6,
 #define OSIP_INFO3    6
-  TRACE_LEVEL7      = 7,
+    TRACE_LEVEL7 = 7,
 #define OSIP_INFO4    7
-  END_TRACE_LEVEL   = 8
-} trace_level_t;
+    END_TRACE_LEVEL = 8
+  }
+  trace_level_t;
 
 /* these are defined in all cases, but are empty when oSIP is compiled
    without trace */
-void    trace_initialize        ( trace_level_t level, FILE *file );
-void    trace_enable_level      ( trace_level_t level );
-void    trace_disable_level     ( trace_level_t level );
-boolean is_trace_level_activate ( trace_level_t level );
+  void trace_initialize (trace_level_t level, FILE * file);
+  void trace_enable_level (trace_level_t level);
+  void trace_disable_level (trace_level_t level);
+  boolean is_trace_level_activate (trace_level_t level);
 
 #ifndef ENABLE_TRACE
 
@@ -215,12 +217,12 @@ boolean is_trace_level_activate ( trace_level_t level );
 /* INPUT: level | level of the trace               */
 /* INPUT: f | use f instead of default log file    */
 /* INPUT: chfr | format string for next args       */
-int
+  int
 #if defined(HAVE_STDARG_H) || defined(WIN32) || defined(__VXWORKS_OS__)
-trace(char *fi, int li,trace_level_t level,FILE *f,char *chfr, ...);
+    trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...);
 #else
 /* ERROR? I never tested this */
-trace(fi,li,level,f,chfr,va_list);
+    trace (fi, li, level, f, chfr, va_list);
 #endif
 
 #ifdef ENABLE_TRACE
@@ -239,4 +241,4 @@ trace(fi,li,level,f,chfr,va_list);
 }
 #endif
 
-#endif  /* _PORT_H_ */
+#endif                          /* _PORT_H_ */

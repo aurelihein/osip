@@ -28,32 +28,34 @@
    token possible values are gzip,compress,deflate
 */
 int
-msg_setcontent_encoding(sip_t *sip, char *hvalue)
+msg_setcontent_encoding (sip_t * sip, char *hvalue)
 {
   content_encoding_t *content_encoding;
   int i;
-  i = content_encoding_init(&content_encoding);
-  if (i==-1)
+
+  i = content_encoding_init (&content_encoding);
+  if (i == -1)
     return -1;
-  i = content_encoding_parse(content_encoding, hvalue);
-  if (i==-1) /* allocation failed */
-      return -1;
+  i = content_encoding_parse (content_encoding, hvalue);
+  if (i == -1)                  /* allocation failed */
+    return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->content_encodings,content_encoding,-1);
+  list_add (sip->content_encodings, content_encoding, -1);
   return 0;
 }
 
 int
-msg_getcontent_encoding(sip_t *sip,int pos,content_encoding_t **dest) {
+msg_getcontent_encoding (sip_t * sip, int pos, content_encoding_t ** dest)
+{
   content_encoding_t *ce;
-  *dest =  NULL;
-  if (list_size(sip->content_encodings)<=pos)
-    return -1; /* does not exist */
-  ce = (content_encoding_t *) list_get(sip->content_encodings,pos);
+
+  *dest = NULL;
+  if (list_size (sip->content_encodings) <= pos)
+    return -1;                  /* does not exist */
+  ce = (content_encoding_t *) list_get (sip->content_encodings, pos);
   *dest = ce;
   return pos;
 }
-

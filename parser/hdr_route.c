@@ -25,14 +25,13 @@
 
 #ifdef __VXWORKS_OS__
 int
-route_init2(route_t **route)
+route_init2 (route_t ** route)
 #else
 int
-route_init(route_t **route)
+route_init (route_t ** route)
 #endif
-
 {
-  return from_init((from_t **)route);
+  return from_init ((from_t **) route);
 }
 
 /* adds the route header to message.         */
@@ -40,25 +39,26 @@ route_init(route_t **route)
 /* OUTPUT: sip_t *sip | structure to save results.  */
 /* returns -1 on error. */
 int
-msg_setroute(sip_t *sip, char *hvalue)
+msg_setroute (sip_t * sip, char *hvalue)
 {
   route_t *route;
   int i;
+
 #ifdef __VXWORKS_OS__
-  i = route_init2(&route);
+  i = route_init2 (&route);
 #else
-  i = route_init(&route);
+  i = route_init (&route);
 #endif
-  if (i==-1) /* allocation failed */
-      return -1;
-  i = route_parse(route, hvalue);
-  if (i==-1)
+  if (i == -1)                  /* allocation failed */
+    return -1;
+  i = route_parse (route, hvalue);
+  if (i == -1)
     return -1;
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->routes,route,-1);
+  list_add (sip->routes, route, -1);
   return 0;
 }
 
@@ -66,37 +66,39 @@ msg_setroute(sip_t *sip, char *hvalue)
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 int
-msg_getroute(sip_t *sip,int pos,route_t **dest) {
+msg_getroute (sip_t * sip, int pos, route_t ** dest)
+{
   route_t *route;
-  *dest =  NULL;
-  if (list_size(sip->routes)<=pos)
-    return -1; /* does not exist */
-  route = (route_t *) list_get(sip->routes,pos);
+
+  *dest = NULL;
+  if (list_size (sip->routes) <= pos)
+    return -1;                  /* does not exist */
+  route = (route_t *) list_get (sip->routes, pos);
   *dest = route;
   return pos;
 }
 
 int
-route_parse(route_t *route, char *hvalue)
+route_parse (route_t * route, char *hvalue)
 {
-  return from_parse((from_t *)route, hvalue);
+  return from_parse ((from_t *) route, hvalue);
 }
 
 /* returns the route header as a string.          */
 /* INPUT : route_t *route | route header.  */
 /* returns null on error. */
 int
-route_2char(route_t *route, char **dest)
+route_2char (route_t * route, char **dest)
 {
   /* we can't use from_2char(): route and record_route */
   /* always use brackets. */
-  return record_route_2char((record_route_t *)route, dest);
+  return record_route_2char ((record_route_t *) route, dest);
 }
 
 /* deallocates a route_t structure.  */
 /* INPUT : route_t *route | route header. */
 void
-route_free(route_t *route)
+route_free (route_t * route)
 {
-  from_free((from_t *)route);
+  from_free ((from_t *) route);
 }

@@ -40,35 +40,44 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifdef WIN32
 #include <windows.h>
-typedef struct {
+  typedef struct
+  {
     HANDLE h;
-} smutex_t;
-typedef struct {
+  }
+  smutex_t;
+  typedef struct
+  {
     HANDLE h;
-} ssem_t;
+  }
+  ssem_t;
 #endif
 
 #if !defined(WIN32) && defined(__PSOS__)
 #include <Types.h>
 #include <os.h>
-typedef struct {
+  typedef struct
+  {
     UInt32 id;
-} smutex_t;
-typedef struct {
+  }
+  smutex_t;
+  typedef struct
+  {
     UInt32 id;
-} ssem_t;
+  }
+  ssem_t;
 #endif
 
 #ifdef __VXWORKS_OS__
 #include <semaphore.h>
 #include <semLib.h>
-typedef struct semaphore smutex_t;
-typedef sem_t ssem_t;
+  typedef struct semaphore smutex_t;
+  typedef sem_t ssem_t;
 #endif
 
 #ifdef __sun__
@@ -84,7 +93,7 @@ typedef sem_t ssem_t;
  * Structure for referencing a semaphore element.
  * @defvar smutex_t
  */
-typedef pthread_mutex_t smutex_t;
+  typedef pthread_mutex_t smutex_t;
 #endif
 
 #if defined(HAVE_SEMAPHORE_H)
@@ -97,16 +106,18 @@ typedef pthread_mutex_t smutex_t;
  * Structure for referencing a semaphore element.
  * @defvar ssem_t
  */
-typedef sem_t  ssem_t;
+  typedef sem_t ssem_t;
 #endif
 
 #if !defined(HAVE_SEMAPHORE_H) && defined(HAVE_SYS_SEM_H)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-typedef struct _ssem_t {
-  int semid;
-} ssem_t;
+  typedef struct _ssem_t
+  {
+    int semid;
+  }
+  ssem_t;
 #endif
 
 #if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(__PSOS__) && !defined(__VXWORKS_OS__))
@@ -116,50 +127,50 @@ typedef struct _ssem_t {
 /**
  * Allocate and Initialise a semaphore.
  */
-smutex_t     *smutex_init();
+  smutex_t *smutex_init ();
 /**
  * Destroy the mutex.
  * @param mut The mutex to destroy.
  */
-void         smutex_destroy(smutex_t *mut);
+  void smutex_destroy (smutex_t * mut);
 /**
  * Lock the mutex.
  * @param mut The mutex to lock.
  */
-int          smutex_lock(smutex_t *mut);
+  int smutex_lock (smutex_t * mut);
 /**
  * Unlock the mutex.
  * @param mut The mutex to unlock.
  */
-int          smutex_unlock(smutex_t *mut);
+  int smutex_unlock (smutex_t * mut);
 
 /**
  * Allocate and Initialise a semaphore.
  * @param value The initial value for the semaphore.
  */
-ssem_t      *ssem_init(unsigned int value);
+  ssem_t *ssem_init (unsigned int value);
 /**
  * Destroy a semaphore.
  * @param sem The semaphore to destroy.
  */
-int          ssem_destroy(ssem_t *sem);
+  int ssem_destroy (ssem_t * sem);
 /**
  * Post operation on a semaphore.
  * @param sem The semaphore to destroy.
  */
-int          ssem_post(ssem_t *sem);
+  int ssem_post (ssem_t * sem);
 /**
  * Wait operation on a semaphore.
  * NOTE: this call will block if the semaphore is at 0.
  * @param sem The semaphore to destroy.
  */
-int          ssem_wait(ssem_t *sem);
+  int ssem_wait (ssem_t * sem);
 /**
  * Wait operation on a semaphore.
  * NOTE: if the semaphore is at 0, this call won't block.
  * @param sem The semaphore to destroy.
  */
-int          ssem_trywait(ssem_t *sem);
+  int ssem_trywait (ssem_t * sem);
 
 
 #ifdef __cplusplus
@@ -169,7 +180,6 @@ int          ssem_trywait(ssem_t *sem);
 /** @} */
 
 
-#endif /* OSIP_MT */
+#endif                          /* OSIP_MT */
 
-#endif /* _SEMA_H_ */
-
+#endif                          /* _SEMA_H_ */

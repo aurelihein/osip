@@ -23,64 +23,69 @@
 #include "fsm.h"
 
 int
-nict_init(nict_t **nict, osip_t *osip, sip_t *request)
+nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
 {
   route_t *route;
   int i;
   time_t now;
-  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"allocating NICT context\n"));
 
-  *nict = (nict_t *)smalloc(sizeof(nict_t));
-  if (*nict==NULL) return -1;
-  now = time(NULL);
+  TRACE (trace
+         (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NICT context\n"));
+
+  *nict = (nict_t *) smalloc (sizeof (nict_t));
+  if (*nict == NULL)
+    return -1;
+  now = time (NULL);
 #ifndef DISABLE_MEMSET
-  memset(*nict, 0, sizeof(nict_t));
+  memset (*nict, 0, sizeof (nict_t));
 #else
   (*ict)->destination = NULL;
 #endif
   /* for REQUEST retransmissions */
   {
     via_t *via;
-    char  *proto;
-    i = msg_getvia(request, 0, &via); /* get top via */
-    if (i!=0) goto ii_error_1;
-    proto = via_getprotocol(via);
-    if (proto==NULL) goto ii_error_1;
+    char *proto;
+
+    i = msg_getvia (request, 0, &via);  /* get top via */
+    if (i != 0)
+      goto ii_error_1;
+    proto = via_getprotocol (via);
+    if (proto == NULL)
+      goto ii_error_1;
 
 #ifndef WIN32
-    i = strncasecmp(proto, "TCP", 3);
+    i = strncasecmp (proto, "TCP", 3);
 #else
-    i = stricmp(proto, "TCP");
+    i = stricmp (proto, "TCP");
 #endif
-    if (i!=0)
-      { /* for other reliable protocol than TCP, the timer
-	   must be desactived by the external application */
-	(*nict)->timer_e_length = DEFAULT_T1;
-	(*nict)->timer_e_start = now;  /* started */
+    if (i != 0)
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*nict)->timer_e_length = DEFAULT_T1;
+        (*nict)->timer_e_start = now;   /* started */
 
-	(*nict)->timer_k_length = DEFAULT_T4;
-	(*nict)->timer_k_start = -1; /* not started */
-      }
-    else
-      { /* TCP is used: */
-	(*nict)->timer_e_length = -1; /* E is not ACTIVE */
-	(*nict)->timer_e_start = -1;
+        (*nict)->timer_k_length = DEFAULT_T4;
+        (*nict)->timer_k_start = -1;    /* not started */
+    } else
+      {                         /* TCP is used: */
+        (*nict)->timer_e_length = -1;   /* E is not ACTIVE */
+        (*nict)->timer_e_start = -1;
 
-	(*nict)->timer_k_length = 0; /* MUST do the transition immediatly */
-	(*nict)->timer_k_start = -1; /* not started */
+        (*nict)->timer_k_length = 0;    /* MUST do the transition immediatly */
+        (*nict)->timer_k_start = -1;    /* not started */
       }
   }
 
-  msg_getroute(request, 0, &route);
-  if (route!=NULL)
+  msg_getroute (request, 0, &route);
+  if (route != NULL)
     {
       int port = 5060;
-      if (route->url->port!=NULL)
-	port = satoi(route->url->port);
-      nict_set_destination((*nict), sgetcopy(route->url->host), port);
-    }
-  else
-    (*nict)->port  = 5060;
+
+      if (route->url->port != NULL)
+        port = satoi (route->url->port);
+      nict_set_destination ((*nict), sgetcopy (route->url->host), port);
+  } else
+    (*nict)->port = 5060;
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
   (*nict)->timer_f_start = now; /* started */
@@ -90,69 +95,81 @@ nict_init(nict_t **nict, osip_t *osip, sip_t *request)
 
   return 0;
 
- ii_error_1:
-  sfree(*nict);
+ii_error_1:
+  sfree (*nict);
   return -1;
 }
 
 int
-nict_free(nict_t *nict)
+nict_free (nict_t * nict)
 {
-  if (nict==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free nict ressource\n"));
+  if (nict == NULL)
+    return -1;
+  TRACE (trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
 
-  sfree(nict->destination);
+  sfree (nict->destination);
   return 0;
 }
 
 int
-nict_set_destination(nict_t *nict, char *destination, int port)
+nict_set_destination (nict_t * nict, char *destination, int port)
 {
-  if (nict==NULL) return -1;
-  if (nict->destination!=NULL) sfree(nict->destination);
+  if (nict == NULL)
+    return -1;
+  if (nict->destination != NULL)
+    sfree (nict->destination);
   nict->destination = destination;
   nict->port = port;
   return 0;
 }
 
 sipevent_t *
-nict_need_timer_e_event(nict_t *nict, state_t state, int transactionid)
+nict_need_timer_e_event (nict_t * nict, state_t state, int transactionid)
 {
-  time_t now = time(NULL);
-  if (nict==NULL) return NULL;
-  if (state==NICT_PROCEEDING||state==NICT_TRYING)
+  time_t now = time (NULL);
+
+  if (nict == NULL)
+    return NULL;
+  if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
-      if (nict->timer_e_start==-1) return NULL;
-      if ((now-nict->timer_e_start)*1000>nict->timer_e_length)
-	return osip_new_event(TIMEOUT_E, transactionid);
+      if (nict->timer_e_start == -1)
+        return NULL;
+      if ((now - nict->timer_e_start) * 1000 > nict->timer_e_length)
+        return osip_new_event (TIMEOUT_E, transactionid);
     }
   return NULL;
 }
 
 sipevent_t *
-nict_need_timer_f_event(nict_t *nict, state_t state, int transactionid)
+nict_need_timer_f_event (nict_t * nict, state_t state, int transactionid)
 {
-  time_t now = time(NULL);
-  if (nict==NULL) return NULL;
-  if (state==NICT_PROCEEDING||state==NICT_TRYING)
+  time_t now = time (NULL);
+
+  if (nict == NULL)
+    return NULL;
+  if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
-      if (nict->timer_f_start==-1) return NULL;
-      if ((now-nict->timer_f_start)*1000>nict->timer_f_length)
-	return osip_new_event(TIMEOUT_F, transactionid);
+      if (nict->timer_f_start == -1)
+        return NULL;
+      if ((now - nict->timer_f_start) * 1000 > nict->timer_f_length)
+        return osip_new_event (TIMEOUT_F, transactionid);
     }
   return NULL;
 }
 
 sipevent_t *
-nict_need_timer_k_event(nict_t *nict, state_t state, int transactionid)
+nict_need_timer_k_event (nict_t * nict, state_t state, int transactionid)
 {
-  time_t now = time(NULL);
-  if (nict==NULL) return NULL;
-  if (state==NICT_COMPLETED)
+  time_t now = time (NULL);
+
+  if (nict == NULL)
+    return NULL;
+  if (state == NICT_COMPLETED)
     {
-      if (nict->timer_k_start==-1) return NULL;
-      if ((now-nict->timer_k_start)*1000>nict->timer_k_length)
-	return osip_new_event(TIMEOUT_K, transactionid);
+      if (nict->timer_k_start == -1)
+        return NULL;
+      if ((now - nict->timer_k_start) * 1000 > nict->timer_k_length)
+        return osip_new_event (TIMEOUT_K, transactionid);
     }
   return NULL;
 }

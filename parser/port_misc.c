@@ -58,32 +58,32 @@ static unsigned int b = 0;
 static unsigned int x = 0;
 
 void
-init_random_number()
+init_random_number ()
 {
-  srand((unsigned int) time(NULL));
-  a  = 4*(1+(int) (20000000.0*rand()/(RAND_MAX+1.0)))+1;
-  b  = 2*(1+(int) (30324000.0*rand()/(RAND_MAX+1.0)))+1;
-  x = (1+(int)   (23445234.0*rand()/(RAND_MAX+1.0)));
+  srand ((unsigned int) time (NULL));
+  a = 4 * (1 + (int) (20000000.0 * rand () / (RAND_MAX + 1.0))) + 1;
+  b = 2 * (1 + (int) (30324000.0 * rand () / (RAND_MAX + 1.0))) + 1;
+  x = (1 + (int) (23445234.0 * rand () / (RAND_MAX + 1.0)));
 }
 
 unsigned int
-new_random_number()
+new_random_number ()
 {
-  x = a*x + b;
+  x = a * x + b;
   return x;
 }
 
 int
-satoi(char *number)
+satoi (char *number)
 {
-  return atoi(number);
+  return atoi (number);
 }
 
 char *
-sstrncpy(char *dest,const char *src,int length)
+sstrncpy (char *dest, const char *src, int length)
 {
-  memcpy(dest,src,length);
-  dest[length]='\0';
+  memcpy (dest, src, length);
+  dest[length] = '\0';
   return dest;
 }
 
@@ -96,106 +96,117 @@ sstrncpy(char *dest,const char *src,int length)
    THIS METHOD MUST BE CHANGED!
 */
 char *
-sdp_append_string(char *string, int size, char *cur, char *string_to_append)
+sdp_append_string (char *string, int size, char *cur, char *string_to_append)
 {
-  int length = strlen(string_to_append);
-  if (cur+length-string>size)
+  int length = strlen (string_to_append);
+
+  if (cur + length - string > size)
     {
-      string = realloc(string,size+length+10);
+      string = realloc (string, size + length + 10);
       /* string may be another pointer?? does it contains
-	 the previous element?? */
+         the previous element?? */
       /* can we use cur??? after such a call?? */
     }
-  sstrncpy(cur,string_to_append,length);
-  return cur+strlen(cur);
+  sstrncpy (cur, string_to_append, length);
+  return cur + strlen (cur);
 }
 
 void
-susleep(int useconds)
+susleep (int useconds)
 {
 #ifdef WIN32
-  Sleep(useconds/1000);
+  Sleep (useconds / 1000);
 #else
   struct timeval delay;
   int sec;
-  sec = (int)useconds/1000000;
-  if (sec>0)
+
+  sec = (int) useconds / 1000000;
+  if (sec > 0)
     {
-    delay.tv_sec = sec;
-    delay.tv_usec = 0;
-    }
-  else
+      delay.tv_sec = sec;
+      delay.tv_usec = 0;
+  } else
     {
-    delay.tv_sec = 0;
-    delay.tv_usec =useconds;
+      delay.tv_sec = 0;
+      delay.tv_usec = useconds;
     }
-  select(0,0,0,0,&delay);
-#endif  
+  select (0, 0, 0, 0, &delay);
+#endif
 }
 
 
 char *
-sgetcopy(char *ch)
+sgetcopy (char *ch)
 {
   char *copy;
-  if (ch==NULL) return NULL;
-  copy = (char *)smalloc(strlen(ch)+1);
-  sstrncpy(copy,ch,strlen(ch));
+
+  if (ch == NULL)
+    return NULL;
+  copy = (char *) smalloc (strlen (ch) + 1);
+  sstrncpy (copy, ch, strlen (ch));
   return copy;
 }
 
 char *
-sgetcopy_unquoted_string(char *ch)
+sgetcopy_unquoted_string (char *ch)
 {
-  char *copy = (char *)smalloc(strlen(ch)+1);
+  char *copy = (char *) smalloc (strlen (ch) + 1);
+
   /* remove leading and trailing " */
-  if ((*ch=='\"'))
+  if ((*ch == '\"'))
     {
-      sstrncpy(copy,ch+1,strlen(ch+1));
-      sstrncpy(copy+strlen(copy)-1,"\0",1);
-    }
-  else
-    sstrncpy(copy,ch,strlen(ch));
+      sstrncpy (copy, ch + 1, strlen (ch + 1));
+      sstrncpy (copy + strlen (copy) - 1, "\0", 1);
+  } else
+    sstrncpy (copy, ch, strlen (ch));
   return copy;
 }
 
-int stolowercase(char *word)
+int
+stolowercase (char *word)
 {
 #ifdef HAVE_CTYPE_H
-  for ( ; *word; word++)
-    *word = tolower(*word);
+  for (; *word; word++)
+    *word = tolower (*word);
 #else
   int i;
-  int len = strlen(word);
-  for (i=0 ; i<=len-1 ; i++) {
-  if ('A' <= word[i] && word[i] <= 'Z')
-    word[i] = word[i]+32;
-  }
+  int len = strlen (word);
+
+  for (i = 0; i <= len - 1; i++)
+    {
+      if ('A' <= word[i] && word[i] <= 'Z')
+        word[i] = word[i] + 32;
+    }
 #endif
   return 0;
 }
 
 /* remove SPACE before and after the content */
-int sclrspace(char *word)
+int
+sclrspace (char *word)
 {
   char *pbeg;
   char *pend;
   int len;
-  if (word==NULL) return -1;
-  len = strlen(word);
+
+  if (word == NULL)
+    return -1;
+  len = strlen (word);
 
   pbeg = word;
-  while ((' '== *pbeg)||('\r'== *pbeg)||('\n'== *pbeg)||('\t'== *pbeg)) pbeg++;
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
+    pbeg++;
 
-  pend = word + len -1;
-  while ((' '== *pend)||('\r'== *pend)||('\n'== *pend)||('\t'== *pend)) pend--;
+  pend = word + len - 1;
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
+    pend--;
 
   /* Add terminating NULL only if we've cleared room for it */
-  if (pend+1 <= word+(len-1))
-    pend[1]='\0';
-  
-  if (pbeg!=word)
-    memmove(word,pbeg,pend-pbeg+2);
+  if (pend + 1 <= word + (len - 1))
+    pend[1] = '\0';
+
+  if (pbeg != word)
+    memmove (word, pbeg, pend - pbeg + 2);
 
   return 0;
 }
@@ -213,67 +224,77 @@ int sclrspace(char *word)
    return 1 on success
 */
 int
-set_next_token(char **dest, char *buf, int end_separator, char **next)
+set_next_token (char **dest, char *buf, int end_separator, char **next)
 {
-  char *sep; /* separator */
-  *next=NULL;
+  char *sep;                    /* separator */
+
+  *next = NULL;
 
   sep = buf;
-  while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
+  while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
+         && (*sep != '\n'))
     sep++;
-  if ((*sep=='\r')||(*sep=='\n'))
-    { /* we should continue normally only if this is the separator asked! */
-      if (*sep!=end_separator) return -1;
+  if ((*sep == '\r') || (*sep == '\n'))
+    {                           /* we should continue normally only if this is the separator asked! */
+      if (*sep != end_separator)
+        return -1;
     }
-  if (*sep=='\0') return -1; /* value must not end with this separator! */
-  if (sep==buf) return -1;  /* empty value (or several space!) */
+  if (*sep == '\0')
+    return -1;                  /* value must not end with this separator! */
+  if (sep == buf)
+    return -1;                  /* empty value (or several space!) */
 
-  *dest = smalloc(sep-(buf)+1);
-  sstrncpy(*dest,buf,sep-buf);
- 
-  *next = sep+1;  /* return the position right after the separator */
+  *dest = smalloc (sep - (buf) + 1);
+  sstrncpy (*dest, buf, sep - buf);
+
+  *next = sep + 1;              /* return the position right after the separator */
   return 0;
 }
 
 /*  not yet done!!! :-)
  */
 int
-set_next_token_better(char **dest, char *buf, int end_separator,
-		      int *forbidden_tab[], int size_tab,
-		      char **next)
+set_next_token_better (char **dest, char *buf, int end_separator,
+                       int *forbidden_tab[], int size_tab, char **next)
 {
-  char *sep; /* separator */
-  *next=NULL;
+  char *sep;                    /* separator */
+
+  *next = NULL;
 
   sep = buf;
-  while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
+  while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
+         && (*sep != '\n'))
     sep++;
-  if ((*sep=='\r')&&(*sep=='\n'))
-    { /* we should continue normally only if this is the separator asked! */
-      if (*sep!=end_separator) return -1;
+  if ((*sep == '\r') && (*sep == '\n'))
+    {                           /* we should continue normally only if this is the separator asked! */
+      if (*sep != end_separator)
+        return -1;
     }
-  if (*sep=='\0') return -1; /* value must not end with this separator! */
-  if (sep==buf) return -1;  /* empty value (or several space!) */
+  if (*sep == '\0')
+    return -1;                  /* value must not end with this separator! */
+  if (sep == buf)
+    return -1;                  /* empty value (or several space!) */
 
-  *dest = smalloc(sep-(buf)+1);
-  sstrncpy(*dest,buf,sep-buf);
- 
-  *next = sep+1;  /* return the position right after the separator */
+  *dest = smalloc (sep - (buf) + 1);
+  sstrncpy (*dest, buf, sep - buf);
+
+  *next = sep + 1;              /* return the position right after the separator */
   return 1;
 }
 
 /* in quoted-string, many characters can be escaped...   */
 /* quote_find returns the next quote that is not escaped */
 char *
-quote_find(char *qstring)
+quote_find (char *qstring)
 {
   char *quote;
-  quote = strchr(qstring,'"');
-  if (quote==qstring) /* the first char matches and is not escaped...*/
+
+  quote = strchr (qstring, '"');
+  if (quote == qstring)         /* the first char matches and is not escaped... */
     return quote;
 
-  if (quote==NULL)
-    return NULL; /* no quote at all... */
+  if (quote == NULL)
+    return NULL;                /* no quote at all... */
 
   /* this is now the nasty cases where '"' is escaped
      '" jonathan ros \\\""'
@@ -284,37 +305,40 @@ quote_find(char *qstring)
      |                |
      we must count the number of preceeding '\' */
   {
-      int i = 1;
-      while (1)
-	{
-	  if (0==strncmp(quote-i,"\\",1))
-	    i++;
-	  else
-	    {
-	      if (i%2==1) /* the '"' was not escaped */
-		return quote;
+    int i = 1;
 
-	      /* else continue with the next '"'*/
-	      quote = strchr(quote+1,'"');
-	      if (quote==NULL) return NULL;
-	      i = 1;
-	    }
-	  if (quote-i==qstring+1)
-	    /* example: "\"john"  */
-	    /* example: "\\"jack" */
-	    {
-	      if (i%2==0) /* the '"' was not escaped */
-		return quote;
-	      else
-		{/* else continue with the next '"'*/
-		  quote = strchr(quote+1,'"');
-		  if (quote==NULL) return NULL;
-		  i = 1;
-		}
-		
-	    }
-	}
-      return NULL;
+    while (1)
+      {
+        if (0 == strncmp (quote - i, "\\", 1))
+          i++;
+        else
+          {
+            if (i % 2 == 1)     /* the '"' was not escaped */
+              return quote;
+
+            /* else continue with the next '"' */
+            quote = strchr (quote + 1, '"');
+            if (quote == NULL)
+              return NULL;
+            i = 1;
+          }
+        if (quote - i == qstring + 1)
+          /* example: "\"john"  */
+          /* example: "\\"jack" */
+          {
+            if (i % 2 == 0)     /* the '"' was not escaped */
+              return quote;
+            else
+              {                 /* else continue with the next '"' */
+                quote = strchr (quote + 1, '"');
+                if (quote == NULL)
+                  return NULL;
+                i = 1;
+              }
+
+          }
+      }
+    return NULL;
   }
 }
 
@@ -346,53 +370,67 @@ int sclrlws(char *word) {
 /* IS_TRACE_LEVEL_ACTIVATE(level)                         */
 /**********************************************************/
 #ifndef ENABLE_TRACE
-void trace_initialize ( trace_level_t level , FILE *file )
-{ }
-void trace_enable_level ( trace_level_t level )
-{ }
-void trace_disable_level (trace_level_t level)
-{ }
-boolean is_trace_level_activate ( trace_level_t level )
-{ return LOG_FALSE; }
+void
+trace_initialize (trace_level_t level, FILE * file)
+{
+}
+void
+trace_enable_level (trace_level_t level)
+{
+}
+void
+trace_disable_level (trace_level_t level)
+{
+}
+boolean
+is_trace_level_activate (trace_level_t level)
+{
+  return LOG_FALSE;
+}
 
 #else
 
 /* initialize log */
 /* all lower levels of level are logged in file. */
-void trace_initialize ( trace_level_t level , FILE *file )
+void
+trace_initialize (trace_level_t level, FILE * file)
 {
   int i = 0;
+
   /* enable trace in log file by default */
-  if (file!=NULL)
+  if (file != NULL)
     logfile = file;
   else
     logfile = stdout;
 
   /* enable all lower levels */
-  while (i<END_TRACE_LEVEL)
+  while (i < END_TRACE_LEVEL)
     {
-      if (i<level)
-	tracing_table[i]=LOG_TRUE;
+      if (i < level)
+        tracing_table[i] = LOG_TRUE;
       else
-	tracing_table[i]=LOG_FALSE;
+        tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
 
 /* enable a special debugging level! */
-void trace_enable_level ( trace_level_t level )
+void
+trace_enable_level (trace_level_t level)
 {
-  tracing_table[level]=LOG_TRUE;
+  tracing_table[level] = LOG_TRUE;
 }
 
 /* disable a special debugging level! */
-void trace_disable_level (trace_level_t level)
+void
+trace_disable_level (trace_level_t level)
 {
-  tracing_table[level]=LOG_FALSE;
+  tracing_table[level] = LOG_FALSE;
 }
 
 /* not so usefull? */
-boolean is_trace_level_activate ( trace_level_t level )
+boolean
+is_trace_level_activate (trace_level_t level)
 {
   return tracing_table[level];
 }
@@ -400,62 +438,60 @@ boolean is_trace_level_activate ( trace_level_t level )
 
 int
 #if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__) || defined(WIN32)
-trace(char *fi, int li, trace_level_t level, FILE *f, char *chfr, ...)
+trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 #else
-trace(fi,li,level,f,chfr,va_list)
+trace (fi, li, level, f, chfr, va_list)
      char *fi;
      char *li;
      int level;
      FILE *f;
      char *chfr
 #endif
-{
-  va_list ap;
+     {
+       va_list ap;
 #ifdef ENABLE_TRACE
 
-  if (logfile==NULL)
-    { /* user did not initialize logger.. */
-      return 1;
-    }
-  if (f==NULL)
-    f = logfile;
-  if (tracing_table[level]==LOG_FALSE)
-    return 0;
+       if (logfile == NULL)
+         {                      /* user did not initialize logger.. */
+           return 1;
+         }
+       if (f == NULL)
+           f = logfile;
 
-  VA_START(ap, chfr);
+       if (tracing_table[level] == LOG_FALSE)
+         return 0;
+
+       VA_START (ap, chfr);
 
 #ifdef __VXWORKS_OS__
-  /* vxworks can't have a local file */
-  f = stdout;
+       /* vxworks can't have a local file */
+       f = stdout;
 #endif
 #ifdef WIN32
-f = stdout;
+       f = stdout;
 #endif
 
-  if (level==OSIP_FATAL)
-    fprintf(f, "| FATAL | <%s: %i> ", fi, li);
-  else if (level==OSIP_BUG)
-    fprintf(f, "|  BUG  | <%s: %i> ", fi, li);
-  else if (level==OSIP_ERROR)
-    fprintf(f, "| ERROR | <%s: %i> ", fi, li);
-  else if (level==OSIP_WARNING)
-    fprintf(f, "|WARNING| <%s: %i> ", fi, li);
-  else if (level==OSIP_INFO1)
-    fprintf(f, "| INFO1 | <%s: %i> ", fi, li);
-  else if (level==OSIP_INFO2)
-    fprintf(f, "| INFO2 | <%s: %i> ", fi, li);
-  else if (level==OSIP_INFO3)
-    fprintf(f, "| INFO3 | <%s: %i> ", fi, li);
-  else if (level==OSIP_INFO4)
-    fprintf(f, "| INFO4 | <%s: %i> ", fi, li);
+       if (level == OSIP_FATAL)
+         fprintf (f, "| FATAL | <%s: %i> ", fi, li);
+       else if (level == OSIP_BUG)
+         fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
+       else if (level == OSIP_ERROR)
+         fprintf (f, "| ERROR | <%s: %i> ", fi, li);
+       else if (level == OSIP_WARNING)
+         fprintf (f, "|WARNING| <%s: %i> ", fi, li);
+       else if (level == OSIP_INFO1)
+         fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
+       else if (level == OSIP_INFO2)
+         fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
+       else if (level == OSIP_INFO3)
+         fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
+       else if (level == OSIP_INFO4)
+         fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
 
-  vfprintf(f, chfr,ap);
+       vfprintf (f, chfr, ap);
 
-  fflush(f);
+       fflush (f);
 #endif
-  va_end(ap);
-  return 0;
-}
-
-
-
+       va_end (ap);
+       return 0;
+     }

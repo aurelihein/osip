@@ -31,31 +31,34 @@
 /* OUTPUT: sip_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-msg_setproxy_authorization(sip_t *sip, char *hvalue)
+msg_setproxy_authorization (sip_t * sip, char *hvalue)
 {
   proxy_authorization_t *proxy_authorization;
   int i;
 
-  i = proxy_authorization_init(&proxy_authorization);
-  if (i==-1)
+  i = proxy_authorization_init (&proxy_authorization);
+  if (i == -1)
     return -1;
-  i = proxy_authorization_parse(proxy_authorization, hvalue);
-  if (i==-1)
+  i = proxy_authorization_parse (proxy_authorization, hvalue);
+  if (i == -1)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  list_add(sip->proxy_authorizations,proxy_authorization,-1);  
+  list_add (sip->proxy_authorizations, proxy_authorization, -1);
   return 0;
 }
 
 int
-msg_getproxy_authorization(sip_t *sip,int pos,proxy_authorization_t **dest) {
+msg_getproxy_authorization (sip_t * sip, int pos, proxy_authorization_t ** dest)
+{
   proxy_authorization_t *proxy_authorization;
-  *dest =  NULL;
-  if (list_size(sip->proxy_authorizations)<=pos)
-    return -1; /* does not exist */
-  proxy_authorization = (proxy_authorization_t *) list_get(sip->proxy_authorizations,pos);
+
+  *dest = NULL;
+  if (list_size (sip->proxy_authorizations) <= pos)
+    return -1;                  /* does not exist */
+  proxy_authorization =
+    (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
   *dest = proxy_authorization;
   return pos;
 }
