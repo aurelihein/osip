@@ -955,6 +955,7 @@ osip_message_get_reason (int replycode)
     {415, "Unsupported Media Type"},
     {416, "Unsupported Uri Scheme"},
     {420, "Bad Extension"},
+    {422, "Session Interval Too Small"},
     {423, "Interval Too Short"},
     {480, "Temporarily not available"},
     {481, "Call Leg/Transaction Does Not Exist"},

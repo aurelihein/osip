@@ -1,4 +1,4 @@
-EXTRA_DIST = README BUGS FEATURES HISTORY
+EXTRA_DIST = README BUGS FEATURES HISTORY autogen.sh
 
 SUBDIRS = include src scripts help platform debian
 
