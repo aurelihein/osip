@@ -396,4 +396,6 @@ EXPORTS
     www_authenticate_setqop_options  @395      
     www_authenticate_setrealm  @396      
     www_authenticate_setstale  @397      
+    url_2char_canonical @398
+
 
