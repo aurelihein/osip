@@ -21,6 +21,10 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
+
 /**
  * @file list.h
  * @brief oSIP list Routines

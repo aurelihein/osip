@@ -21,13 +21,14 @@
 #ifndef _OSIP_H_
 #define _OSIP_H_
 
+#include <osip/const.h>
+
 #include <time.h>
 
 #ifdef __sun
 #include <sys/types.h>
 #endif
 
-#include <osip/const.h>
 #include <osip/smsg.h>
 #include <osip/fifo.h>
 

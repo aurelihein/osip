@@ -21,7 +21,7 @@
 #include <osip/osip.h>
 #include "fsm.h"
 
-static statemachine_t *ict_fsm;
+statemachine_t *ict_fsm;
 
 statemachine_t*
 ict_get_fsm()

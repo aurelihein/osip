@@ -21,6 +21,10 @@
 #ifndef _SDP_H_
 #define _SDP_H_
 
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
+
 #include <osip/list.h>
 
 

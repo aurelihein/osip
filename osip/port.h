@@ -21,6 +21,8 @@
 #ifndef _PORT_H_
 #define _PORT_H_
 
+#include <osip/const.h>
+
 #include <stdio.h>
 #include <osip/list.h>
 

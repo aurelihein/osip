@@ -22,7 +22,7 @@
 
 #include "fsm.h"
 
-static statemachine_t *ist_fsm;
+statemachine_t *ist_fsm;
 
 statemachine_t*
 ist_get_fsm()

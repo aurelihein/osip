@@ -20,6 +20,12 @@
 
 #ifndef _THREAD_H_
 #define _THREAD_H_
+
+
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 

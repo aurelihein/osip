@@ -21,6 +21,9 @@
 #ifndef _CONST_H_
 #define _CONST_H_
 
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
 
 #define CRLF "\r\n\0"
 #define CR   "\r\0"

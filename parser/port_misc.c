@@ -50,8 +50,8 @@
 #include <pthread.h>
 #endif
 
-static FILE *logfile = NULL;
-static int tracing_table[END_TRACE_LEVEL];
+FILE *logfile = NULL;
+int tracing_table[END_TRACE_LEVEL];
 
 /* a,b, and x are used to generate random callid with a long period. */
 static unsigned int a = 0;
