@@ -2,7 +2,7 @@ EXTRA_DIST = osip.sgml
 
 mandir = @mandir@/man1
 
-install-data-local: osip.1
+install-manpage: osip.1
 	$(mkinstalldirs) $(DESTDIR)$(mandir)
 	@chmod 0755 $(DESTDIR)$(mandir)
 	@echo "Installing man page: osip.1"
