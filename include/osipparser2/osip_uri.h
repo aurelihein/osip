@@ -269,17 +269,6 @@ extern "C"
  */
   char *osip_uri_get_password (osip_uri_t * url);
 /**
- * Set the host of a url element.
- * @param url The element to work on.
- * @param value The token value.
- */
-  void osip_uri_set_host (osip_uri_t * url, char *value);
-/**
- * Get the host of a url element.
- * @param url The element to work on.
- */
-  char *osip_uri_get_host (osip_uri_t * url);
-/**
  * Set the port of a url element.
  * @param url The element to work on.
  * @param value The token value.
