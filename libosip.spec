@@ -1,8 +1,8 @@
 Summary:	The GNU oSIP library
 Summary(pl):	Biblioteka GNU oSIP
 Name:		libosip
-Version:	0.9.3
-Release:	1
+Version:	%{version}
+Release:	%{rel}
 License:	LGPL
 Group:          Development/Libraries
 Source0:	ftp://ftp.gnu.org/gnu/osip/%{name}-%{version}.tar.gz
@@ -13,10 +13,10 @@ BuildRequires:	libtool
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-This is "the GNU oSIP library". It has been designed
-to provide the Internet Community a simple way to support the Session
-Initiation Protocol. SIP is described in the RFC3261 which is
-available at http://www.ietf.org/rfc/rfc3261.txt.
+This is "the GNU oSIP library". It has been designed to provide
+the Internet Community a simple way to support the Session Initiation
+Protocol. SIP is described in the RFC3261 which is available at
+http://www.ietf.org/rfc/rfc3261.txt.
 
 %description -l pl
 To jest biblioteka GNU oSIP. Zosta³a zaprojektowana, aby
