@@ -419,6 +419,14 @@ char*   url_getport(url_t *url);
 #ifndef DOXYGEN
 /* internal method */
 char *next_separator(char *ch, int separator_to_find, int before_separator);
+
+char *url_escape_nonascii_and_nondef(const char *string, const char *def);
+char *url_escape_userinfo(const char *string);
+char *url_escape_password(const char *string);
+char *url_escape_uri_param(char *string);
+char *url_escape_header_param(char *string);
+void url_unescape(char *string);
+
 #endif
 
 /** @} */

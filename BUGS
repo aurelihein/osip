@@ -1,27 +1,4 @@
 
-FIXED:
-BUG2 :          06022002   0.8.1
-  With the new fsm, some messages must be handled without giving
-  them to the state machines. This is the case when receiving more
-  than one 2xx responses. In the case where a 2xx has been received,
-  the rfc says that it's up to the "transaction user" to deal with
-  the message without the use of the transaction layer. This is needed
-  because behavior is different in this case for UA and proxy. (and the
-  state machines are usable by both UA and proxy since 0.8.1!)
-
-  By now, instead of refusing the 2xx messages, and leave it to the
-  "transaction user" layer, the fsm will discard the event without
-  telling the upper layer. This behavior will be fixed to leave
-  the choice of deleting the message up to the user.
-
-  An other important modification in the latest draft of SIP (which
-  has result in a modification of the fsm library) is the handling of
-  ACK. For any response superior to 299, the ACK is completely
-  handled by the fsm. You don't have to build it and send it as it's
-  automated. (both proxy and UA handles those ACK following the same
-  procedures in the latest draft of SIP! That's why...). Nevertheless,
-  you'll have handle 2XX (for INVITE) in the "transaction user" alone:
-  Proxy will forward the 2xx and UA will sends special ACK within the
-  dialog.
+Yes, some bugs exists... :!
 
 

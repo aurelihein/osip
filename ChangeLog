@@ -1,4 +1,5 @@
 libosip (0.8.8)
+	* urls.c: built-in support of escaped sequences in sip-uri!
 	* vxworks minor patches.
 	* nict.c and ict.c: fix a bug with the setting of the port.
 	* fsm/dialog.c: if 1xx answer does not contain the route set, update

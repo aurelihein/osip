@@ -95,7 +95,11 @@ url_test_accessor_api(url_t *url)
       return 0;
     }
   if (url->username!=NULL)
-    fprintf(stdout,"%s|",url->username);
+    {
+      char *tmp;
+      fprintf(stdout,"%s|",url->username);
+    }
+  
   if ((url->password!=NULL)&&(url->username!=NULL))
     fprintf(stdout,":%s|",url->password);
   if (url->username!=NULL)

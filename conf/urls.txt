@@ -86,5 +86,22 @@ sip:j.doe@big.com;to[to?r+s=foo:&.bar;qsdr$/def
 sip:j.d;oe:secret?@big.com;to[to?r+s=foo:&.bar;qsdr$/def
 #
 # this url lacks a value for its header_param!!
+#
 sip:j.+d$=o\?;e:secr&=+$,@big.com;to[to?r+s=foo:&.bar;qsdr$/def
 #
+# test allowed values in the userinfo part of url.
+#
+sip:abcdefghijklmnopqurstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_.!~*'()&=+$,;?/reserved%3A%40@big.com;
+
+#
+# test allowed values in the password part of url.
+#
+sip:ab:jack%3B%3F%2F-_.!~*'()[]/:&+$;/?:@&=+$@big.com;
+#
+# test allowed values in the uri-parameter part of url.
+#
+sip:ab@big.com;ab-_.!~*'()[]/:&+$-_.!~*'()=ab-_.!~*'()[]/:&+$-_.!~*'(); cd-_.!~*'()[]/:&+$-_.!~*'()=cd-_.!~*'()[]/:&+$-_.!~*'()
+#
+# test allowed values in the header-parameter part of url.
+#
+sip:ab@big.com?ab-_.!~*'()[]/?:+$=-_.!~*'()[]/?:+$&-_.!~*'()[]/?:+$%26%3D%2C%3B?/= -_.!~*'()[]/?:+$%26%3D+$%2C%3B?/

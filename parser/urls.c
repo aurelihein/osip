@@ -167,10 +167,14 @@ url_parse(url_t *url, char *buf)
 	  if (host-password<2)  return -1;
 	  url->password = (char *) smalloc(host-password);
 	  sstrncpy(url->password, password+1, host-password-1);
+	  url_unescape(url->password);
 	}
       if (password-username<2)  return -1;
-      url->username = (char *) smalloc(password-username);
-      sstrncpy(url->username, username+1, password-username-1);
+      {
+	url->username = (char *) smalloc(password-username);
+	sstrncpy(url->username, username+1, password-username-1);
+	url_unescape(url->username);
+      }
     }
 
 
@@ -322,18 +326,21 @@ url_parse_headers (url_t *url, char *headers)
 
       hname  = (char *) smalloc(equal-headers);
       sstrncpy(hname, headers+1, equal-headers-1);
+      url_unescape(hname);
 
       if (and!=NULL)
 	{
 	  if (and-equal<2) { sfree(hname); return -1; }
 	  hvalue = (char *) smalloc(and-equal);
 	  sstrncpy(hvalue, equal+1, and-equal-1);
+	  url_unescape(hvalue);
 	}
       else
 	{ /* this is for the last header (no and...) */
 	  if (headers+strlen(headers)-equal+1 <2) { sfree(hname);return -1; }
 	  hvalue = (char *) smalloc(headers + strlen(headers)-equal +1);
 	  sstrncpy(hvalue, equal+1, headers + strlen(headers)-equal);
+	  url_unescape(hvalue);
 	}
 
       url_uheader_add (url, hname, hvalue);
@@ -378,11 +385,13 @@ url_parse_params (url_t *url, char *params)
 	  if (comma-equal<2) return -1;
 	  pvalue = (char *) smalloc(comma-equal);
 	  sstrncpy(pvalue, equal+1, comma-equal-1);
+	  url_unescape(pvalue);
 	}
 
       if (equal-params<2) { sfree(pvalue); return -1; }
       pname  = (char *) smalloc(equal-params);
       sstrncpy(pname, params+1, equal-params-1);
+      url_unescape(pname);
 
       url_uparam_add (url, pname, pvalue);
 
@@ -441,12 +450,16 @@ url_2char(url_t *url, char **dest) {
 
   if (url->username!=NULL)
     {
-      sprintf(buf,"%s",url->username);
+      char *tmp = url_escape_userinfo(url->username);
+      sprintf(buf,"%s",tmp);
+      sfree(tmp);
       buf = buf + strlen(buf);
     }
   if ((url->password!=NULL)&&(url->username!=NULL))
     { /* be sure that when a password is given, a username is also given */
-      sprintf(buf,":%s",url->password);
+      char *tmp = url_escape_password(url->password);
+      sprintf(buf,":%s",tmp);
+      sfree(tmp);
       buf = buf + strlen(buf);
     }
   if (url->username!=NULL)
@@ -475,11 +488,18 @@ url_2char(url_t *url, char **dest) {
     url_param_t *u_param;
     while (!list_eol(url->url_params,pos))
       {
+	char *tmp;
 	u_param = (url_param_t *)list_get(url->url_params,pos);
+	tmp = url_escape_uri_param(u_param->gname);
 	if (u_param->gvalue!=NULL)
-	  sprintf(buf,";%s=%s",u_param->gname,u_param->gvalue);
+	  {
+	    char *tmp2 = url_escape_uri_param(u_param->gvalue);
+	    sprintf(buf,";%s=%s", tmp, tmp2);
+	    sfree(tmp2);
+	  }
 	else
-	  sprintf(buf,";%s",u_param->gname);
+	  sprintf(buf,";%s",tmp);
+	sfree(tmp);
 	buf = buf + strlen(buf);
 	pos++;
       }
@@ -490,11 +510,19 @@ url_2char(url_t *url, char **dest) {
     url_header_t *u_header;
     while (!list_eol(url->url_headers,pos))
       {
+	char *tmp;
+	char *tmp2;
 	u_header = (url_header_t *)list_get(url->url_headers,pos);
+	tmp = url_escape_header_param(u_header->gname);
+	tmp2 = url_escape_header_param(u_header->gvalue);
 	if (pos==0)
-	  sprintf(buf,"?%s=%s",u_header->gname,u_header->gvalue);
+	  {
+	    sprintf(buf,"?%s=%s",u_header->gname,u_header->gvalue);
+	  }
 	else
 	  sprintf(buf,"&%s=%s",u_header->gname,u_header->gvalue);
+	sfree(tmp);
+	sfree(tmp2);
 	buf = buf + strlen(buf);
 	pos++;
       }
@@ -704,4 +732,119 @@ url_param_clone(url_param_t *uparam, url_param_t **dest)
     up->gvalue = NULL;
   *dest = up;
   return 0;
+}
+
+
+#define _ALPHANUM_ "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\0"
+#define _RESERVED_ ";/?:@&=+$\0"
+#define _MARK_ "-_.!~*'()\0"
+
+#define _MARK__USER_UNRESERVED_ "-_.!~*'()&=+$,;?/\0"
+#define _MARK__PWORD_UNRESERVED_ "-_.!~*'()&=+$,\0"
+#define _MARK__URI_PARAM_UNRESERVED_ "-_.!~*'()[]/:&+$\0"
+#define _MARK__HEADER_PARAM_UNRESERVED_ "-_.!~*'()[]/?:+$\0"
+
+#define osip_is_alphanum(in) (  \
+       (in >= 'a' && in <= 'z') || \
+       (in >= 'A' && in <= 'Z') || \
+       (in >= '0' && in <= '9'))
+
+char *url_escape_nonascii_and_nondef(const char *string, const char *def)
+{
+  int alloc = strlen(string)+1;
+  int length;
+  char *ns = smalloc(alloc);
+  unsigned char in;
+  int newlen = alloc;
+  int index=0;
+  const char *tmp;
+  int i;
+
+  length = alloc-1;
+  while(length--) {
+    in = *string;
+
+    i = 0;
+    tmp = NULL;
+    if (osip_is_alphanum(in))
+	tmp = string;
+    else
+      {
+	for (; def[i]!='\0' && def[i]!=in ; i++)
+	  { }
+	if(def[i]!='\0')
+	    tmp = string;
+      }
+    if(tmp==NULL) {
+      /* encode it */
+      newlen += 2; /* the size grows with two, since this'll become a %XX */
+      if(newlen > alloc) {
+        alloc *= 2;
+        ns = realloc(ns, alloc);
+        if(!ns)
+          return NULL;
+      }
+      sprintf(&ns[index], "%%%02X", in);      
+      index+=3;
+    }
+    else {
+      /* just copy this */
+      ns[index++]=in;
+    }
+    string++;
+  }
+  ns[index]=0; /* terminate it */
+  return ns;
+}
+
+/* user =  *( unreserved / escaped / user-unreserved ) */
+const char *userinfo_def =  /* implied _ALPHANUM_ */   _MARK__USER_UNRESERVED_ ;
+char *url_escape_userinfo(const char *string)
+{
+  return url_escape_nonascii_and_nondef(string, userinfo_def);
+}
+
+/* user =  *( unreserved / escaped / user-unreserved ) */
+const char *password_def =  _MARK__PWORD_UNRESERVED_ ;
+char *url_escape_password(const char *string)
+{
+  return url_escape_nonascii_and_nondef(string, password_def);
+}
+
+const char *uri_param_def =  _MARK__URI_PARAM_UNRESERVED_;
+char *url_escape_uri_param(char *string)
+{
+ return url_escape_nonascii_and_nondef(string, uri_param_def);
+}
+
+const char *header_param_def =  _MARK__HEADER_PARAM_UNRESERVED_;
+char *url_escape_header_param(char *string)
+{
+ return url_escape_nonascii_and_nondef(string, header_param_def);
+}
+
+void url_unescape(char *string)
+{
+  int alloc = strlen(string)+1;
+  unsigned char in;
+  int index=0;
+  unsigned int hex;
+  char *ptr;
+
+  ptr = string;
+  while(--alloc > 0) {
+    in = *ptr;
+    if('%' == in) {
+      /* encoded part */
+      if(sscanf(ptr+1, "%02X", &hex)) {
+        in = hex;
+        ptr+=2;
+        alloc-=2;
+      }
+    }
+    
+    string[index++] = in;
+    ptr++;
+  }
+  string[index]=0; /* terminate it */
 }
