@@ -668,7 +668,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       
       /* update length (without CRLFCRLF */
       length = length-(start_of_body-start_of_buf); /* fixed 24 08 2004 */
-      if (length<=2)
+      if (length<=0)
 	return -1;
       
       if (sip->content_length != NULL)
