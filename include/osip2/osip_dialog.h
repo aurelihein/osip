@@ -75,7 +75,22 @@ extern "C"
 
     osip_dialog_type_t type;             /**< type of dialog (CALLEE or CALLER) */
     state_t state;                       /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+    void *your_instance;                 /**< for application data reference */
   };
+
+/**
+ * Link osip dialog to application
+ * @param dialog The osip dialog
+ * @param instance The application instance
+ */
+#define osip_dialog_set_instance(dialog,instance) (dialog)->your_instance = (void*)(instance)
+  
+/**
+ * Retrieve application instance from dialog
+ * @param dialog The osip dialog
+ * @param instance The application instance
+ */
+#define osip_dialog_get_instance(dialog)          (dialog)->your_instance
 
 /**
  * Allocate a osip_dialog_t element as a UAC.
