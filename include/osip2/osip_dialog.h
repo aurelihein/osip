@@ -94,13 +94,12 @@ extern "C"
 
 /**
  * Allocate a osip_dialog_t element as a UAC.
- * <UL><LI>NOTE1: Only INVITE transactions can create a dialog.</LI>
- * <LI>NOTE2: The dialog should be created when the first response is received.
- *        (except for a 100 Trying)</LI>
- * <LI>NOTE3: Remote UA should be compliant! If not (not tag in the to header?)
+ * NOTE1: The dialog should be created when the first response is received.
+ *        (except for a 100 Trying)
+ * NOTE2: Remote UA should be compliant! If not (not tag in the to header?)
  *        the old mechanism is used to match the request but if 2 uncompliant
  *        UA both answer 200 OK for the same transaction, they won't be detected.
- *        This is a major BUG in the old rfc.</LI></UL>
+ *        This is a major BUG in the old rfc.
  * @param dialog The element to allocate.
  * @param response The response containing the informations.
  */
@@ -120,8 +119,7 @@ extern "C"
 
 /**
  * Allocate a osip_dialog_t element as a UAS.
- * NOTE1: Only INVITE transactions can create a dialog.
- * NOTE2: The dialog should be created when the first response is sent.
+ * NOTE1: The dialog should be created when the first response is sent.
  *        (except for a 100 Trying)
  * @param dialog The element to allocate.
  * @param invite The INVITE request containing some informations.
