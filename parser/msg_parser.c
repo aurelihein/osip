@@ -746,8 +746,12 @@ msg_fix_last_via_header (sip_t * request, char *ip_addr, int port)
     {
       if (rport->gvalue == NULL)
 	{
-	  rport->gvalue = (char *) smalloc (8);
-	  snprintf (rport->gvalue, 8, "%i", port);
+	  rport->gvalue = (char *) smalloc (9);
+#ifdef WIN32
+	  _snprintf (rport->gvalue, 8, "%i", port);
+#else
+          snprintf (rport->gvalue, 8, "%i", port);
+#endif
 	}			/* else bug? */
     }
 
