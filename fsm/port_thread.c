@@ -154,7 +154,7 @@ void sthread_exit()
 sthread_t *
 sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
-  if (thread!=NULL)
+  if (thread==NULL)
     thread = (sthread_t *) smalloc(sizeof(sthread_t));
   thread->id = taskSpawn(NULL,5,0,stacksize,(FUNCPTR)func,(int)arg,0,0,0,0,0,0,0,0,0);
   if (thread->id<0) sfree(thread);
