@@ -1,6 +1,9 @@
-libosip (0.9.5-1) unstable; urgency=low
+libosip (0.9.6-1) unstable; urgency=low
 
-  * fix a memory leak for retransmissions in msg_2char. 
-  * fix a bug when startline end with CRCRLF.
+  * fix transaction_init for request without mandatory headers.
+  * refuse to create transactions with cseq and method that differs.
+  * check minimum authorized length for method name of request.
+  * fix the state when a retransmission of INVITE is received.
+  * Minor changes in #define definitions just for clarity.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Fry, 25 Feb 2003 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 10 Mar 2003 13:04:32 +0100
