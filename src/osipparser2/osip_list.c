@@ -202,16 +202,6 @@ osip_list_remove (osip_list_t * li, int pos)
       ntmp = (__node_t *) ntmp->next;
     }
 
-  /* if pos==nb_elt next node is the last one */
-/* Unreachable code!
-  if (pos == li->nb_elt)
-    {
-      osip_free (ntmp->next);
-      li->nb_elt--;
-      return li->nb_elt;
-    }
-*/
-
   /* insert new node */
   {
     __node_t *remnode;
@@ -223,36 +213,3 @@ osip_list_remove (osip_list_t * li, int pos)
   }
   return li->nb_elt;
 }
-
-
-/*  
-   Robin Nayathodan <roooot@softhome.net> 
-   N.K Electronics INDIA
-    
-   To Modify the element in the List
- 
- */
-/*
-
-int 
-list_set(osip_list_t * li, void *el, int pos)
-{
-  __node_t *ntmp;
-  int i = 0;
-
-  if (pos < 0 || pos >= li->nb_elt)
-    // element does not exist
-    return 0;
-
-
-  ntmp = li->node;              //exist because nb_elt>0
-
-  while (pos > i)
-    {
-      i++;
-      ntmp = (__node_t *) ntmp->next;
-    }
-  ntmp->element = el;
-  return li->nb_elt;
-}
-*/
