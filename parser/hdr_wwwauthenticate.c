@@ -176,7 +176,7 @@ token_set (char *name, char *str, char **result, char **next)
   if (strlen (str) < 6)
     return 0;                   /* end of header... */
 
-  while ((' ' == *str) || (',' == *str))
+  while ((' ' == *str) || ('\t' == *str) || (',' == *str))
     if (*str)
       str++;
     else
