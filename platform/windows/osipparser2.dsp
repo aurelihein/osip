@@ -236,6 +236,10 @@ SOURCE=..\..\src\osipparser2\sdp_accessor.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osipparser2\osip_rfc3264.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osipparser2\sdp_message.c
 # End Source File
 # End Group
@@ -381,6 +385,10 @@ SOURCE=..\..\include\osipparser2\headers\osip_www_authenticate.h
 # Begin Source File
 
 SOURCE=..\..\src\osipparser2\parser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osipparser2\osip_rfc3264.h
 # End Source File
 # Begin Source File
 
