@@ -1,4 +1,11 @@
-Feb 2001    : 0.8.1
+Jul 2002    : 0.8.8
+	I have never tested the windows version myself. In fact, previous
+	version	was broken du to a wrong contribution. This is now fixed
+	by using a new thread API (which Microsoft recommends to not use!).
+	Aside to this, this new revision is fully tested on a wide variety
+	of OS and several bugs and race conditions has been fixed.
+
+Feb 2002    : 0.8.1
 	Old API for fsm is broken. The finite state machines have been
 	entirely rewritten to be compliant with rfc2543bis-07. They
 	only contains what's defined for the TRANSACTION LAYER. Previously,
@@ -7,7 +14,7 @@ Feb 2001    : 0.8.1
 	they can be used by Proxy_core as well as UAS_UAC_core as
 	defined by rfc2543bis-07.
 
-Jan 2001    : 0.8.0
+Jan 2002    : 0.8.0
 	The library now contains a full SDP parser and
 	its accessor API. The ./fsm also includes a new
 	(and optionnal) framework to be used for automatic

@@ -337,14 +337,25 @@ int sclrlws(char *word) {
   return 0;
 }
 */
-#ifdef ENABLE_TRACE
-/********************************************************/
-/* only MACROS from osip/trace.h must be used by others */
-/* TRACE_INITIALIZE(level,file))                        */
-/* TRACE_ENABLE_LEVEL(level)                            */
-/* TRACE_DISABLE_LEVEL(level)                           */
-/* IS_TRACE_LEVEL_ACTIVATE(level)                       */
-/********************************************************/
+
+/**********************************************************/
+/* only MACROS from osip/trace.h should be used by others */
+/* TRACE_INITIALIZE(level,file))                          */
+/* TRACE_ENABLE_LEVEL(level)                              */
+/* TRACE_DISABLE_LEVEL(level)                             */
+/* IS_TRACE_LEVEL_ACTIVATE(level)                         */
+/**********************************************************/
+#ifndef ENABLE_TRACE
+void trace_initialize ( trace_level_t level , FILE *file )
+{ }
+void trace_enable_level ( trace_level_t level )
+{ }
+void trace_disable_level (trace_level_t level)
+{ }
+boolean is_trace_level_activate ( trace_level_t level )
+{ return LOG_FALSE; }
+
+#else
 
 /* initialize log */
 /* all lower levels of level are logged in file. */

@@ -86,6 +86,10 @@ msg_init(sip_t **sip) {
   list_init((*sip)->call_infos);
   (*sip)->contacts = (list_t *)smalloc(sizeof(list_t));
   list_init((*sip)->contacts);
+
+  /* forget it: this feild is not suported */
+  (*sip)->content_dispositions = NULL;
+
   (*sip)->content_encodings = (list_t *)smalloc(sizeof(list_t));
   list_init((*sip)->content_encodings);
   (*sip)->contentlength = NULL;

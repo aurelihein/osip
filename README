@@ -1,5 +1,5 @@
 Project    : "The GNU oSIP library" is an implementation of SIP - rfc2543. 
-Last update: 0.8.7
+Last update: 0.8.8
 Email      : jack@atosc.org
 License    : LGPL (http://www.gnu.org)
 Home Page  : http://www.fsf.org/software/osip/osip.html
@@ -67,67 +67,27 @@ The library is known to compile on various platform:
 	(2.2.16, 2.4.7, 2.4.12, 2.4.17 with gcc 2.95.2)
 	gcc-3.0.3 from libosip-0.7.8
   *  Windows NT (95, 2000, ???)
-        VC++6.0 (?)
+        VC++6.0
 
 Extra set of OS where some version of oSIP has been ported.
-  *  Solaris (2.5)
-  *  HP-Unix (??) (with a missing -lrt, if I remember)
-  *  VxWorks(5.4?). (makefiles removed since version 0.8.1)
+  *  Solaris.
+  *  HP-Unix.
+  *  VxWorks.
 
-*** I Need testers and maintainers for all OS: UNIX/VxWorks/Windows. ***
-    write jack@atosc.org if this is of interest to you.
-
-
-For VxWorks :
-============>   VxWorks is no longer supported. If you need it, please
-		create and send makefiles to jack@atosc.org
-
-Unix and Linux :
-============>
-
-   $>configure
-   $>make
-   $>make install
-
-I prefer to do:
-
-  $> tar -xvzf libosip-0.X.X.tar.gz
-  $> mkdir linux-build
-  $> cd linux-build
-  $> ../libosip-0.X.X/configure
-  $> make
-  $> make install
-
-Here is a list of options you can give to the 'configure' command line:
-
-configure --disable-mt             ==> disable any thread support,
-flags: "-UOSIP_MT"
-
-configure --disable-debug          ==> disable debug.
-flags: "-UENABLE_DEBUG"
-
-configure --disable-trace           ==> disable the trace in the logfile.
-flags: "-UENABLE_TRACE"
-
-configure --enable_mleak           ==> enable the memory leak detection.
-flags: "-DENABLE_MLEAK"
-
-configure --enable-pth             ==> use GNU pth library. (never tested yet!)
-flags: "-DTHREAD_PTH -UTHREAD_PTHREAD"
-
-configure --prefix=/your/local     ==> install in '$prefix' (default is /usr/local)
-
-For Windows :
-============>    Makefiles are located in ./windows
-
+The INSTALL file describes the compilation process.
 
 Tests programs:
 ---------------
 
-NOTE: previous release of oSIP was including test applications for the
-fsm part (directory ./example and ./example_mt). THIS IS NOT PROVIDED
-ANY MORE. Tests will now be made by real applications. I'm actually building
-a UA and I'm about to start a proxy. Those are not yet available.
+NOTE: "josua" is available on osip.atosc.org/download and is used
+      to test the oSIP stack. Also, you can download a Proxy server
+      "partysip" at www.partysip.org.
+
+For basic test, type the following command line:
+
+  $> make check
+
+For more testing:
 
   *  ./test/torture_test: test the SIP parser.
   *  ./test/torture_sdp: test the SDP parser, its accessor API and the
@@ -149,7 +109,7 @@ How to use the test programs:
 
 	./test/torture_test conf/torture_msgs 0
 	./test/torture_test conf/torture_msgs 1 -v
-	./test/torture_test conf/torture_msgs 3
+	./test/torture_test conf/torture_msgs 3 -v -c
 
 	./test/torture_sdp conf/torture_sdps 3
 	./test/torture_sdp conf/torture_sdps 3 -v
@@ -160,7 +120,6 @@ How to use the test programs:
 	./test/tvia conf/vias.txt
 	./test/tcontact conf/contacts.txt
 	./test/turl conf/urls.txt
-
 
 Known issues:
 -------------
@@ -176,25 +135,8 @@ Known issues:
     default number of thread is 1024 in the source tree. (as
     far as I know)
 
-Known Limitation:
------------------
-
-  *  Only main headers are entirely defined:
-	Via, To, From, Call-Id, CSeq, Contact,
-	Content-Type, Content-Length, mime-version,
-	route, record-route, content-encoding, allow,
-	error-info, call-info, alert-info, accept-encoding,
-	accept-language, accept, proxy-authorization,
-	proxy-authenticate, authorization,
-	www-authenticate.
-
-	All other SIP headers are considered to be
-	strings. (but there are all fully usable
-	by the application layer)
-
-        Note that, unknown SIP headers (not defined in the rfc)
-        are supported the way "other SIP headers" are. Thus,
-        the same API is used.
+    Of course, you should avoid building an application that launch
+    so much threads! 
 
 Contact information:
 --------------------

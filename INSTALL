@@ -6,11 +6,40 @@ might be broken. Reports if one appears broken.
 Install process for UNIX. (latest tested 0.8.8)
 _________________________
 
-$> tar -xvzf libosip-x.x.x.tar.gz
-$> mkdir bld-linux
-$> CFLAGS="-I/usr/local/include/" ../configure
-$> make
-$> make install      (as root...)
+  $> tar -xvzf libosip-x.x.x.tar.gz
+  $> mkdir bld-linux
+  $> CFLAGS="-I/usr/local/include/" ../configure
+  $> make
+  $> make install      (as root...)
+
+I prefer to do:
+
+  $> tar -xvzf libosip-0.X.X.tar.gz
+  $> mkdir linux-build
+  $> cd linux-build
+  $> ../libosip-0.X.X/configure
+  $> make
+  $> make install
+
+Here is a list of options you can give to the 'configure' command line:
+
+configure --disable-mt             ==> disable any thread support,
+flags: "-UOSIP_MT"
+
+configure --disable-debug          ==> disable debug.
+flags: "-UENABLE_DEBUG"
+
+configure --disable-trace           ==> disable the trace in the logfile.
+flags: "-UENABLE_TRACE"
+
+configure --enable_mleak           ==> enable the memory leak detection.
+flags: "-DENABLE_MLEAK"
+
+configure --enable-pth             ==> use GNU pth library. (never tested yet!)
+flags: "-DTHREAD_PTH -UTHREAD_PTHREAD"
+
+configure --prefix=/your/local     ==> install in '$prefix' (default is /usr/local)
+
 
 Install process for Windows. (latest tested 0.8.8)
 ____________________________

@@ -1,3 +1,8 @@
+libosip (0.8.8-1) unstable; urgency=low
+  * race conditions and bug fixes.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 02 Jul 2002 13:04:32 +0100
+
 libosip (0.8.7-1) unstable; urgency=low
   * make check + new test report.
   * patch from marko for some warnings on OpenBSD..

@@ -166,6 +166,7 @@ typedef unsigned char boolean;
 typedef int boolean;
 #endif
 #endif
+
 #define LOG_TRUE  1
 #define LOG_FALSE 0
 /* levels */
@@ -189,7 +190,15 @@ typedef enum _trace_level {
   END_TRACE_LEVEL   = 8
 } trace_level_t;
 
+/* these are defined in all cases, but are empty when oSIP is compiled
+   without trace */
+void    trace_initialize        ( trace_level_t level, FILE *file );
+void    trace_enable_level      ( trace_level_t level );
+void    trace_disable_level     ( trace_level_t level );
+boolean is_trace_level_activate ( trace_level_t level );
+
 #ifndef ENABLE_TRACE
+
 #define TRACE_INITIALIZE(level, file)  do { } while (0)
 #define TRACE_ENABLE_LEVEL(level)      do { } while (0)
 #define TRACE_DISABLE_LEVEL(level)     do { } while (0)
@@ -202,10 +211,6 @@ typedef enum _trace_level {
 #define TRACE_DISABLE_LEVEL(level)     trace_disable_level ( level )
 #define IS_TRACE_LEVEL_ACTIVATE(level) is_trace_level_activate( level )
 
-extern void    trace_initialize        ( trace_level_t level, FILE *file );
-extern void    trace_enable_level      ( trace_level_t level );
-extern void    trace_disable_level     ( trace_level_t level );
-extern boolean is_trace_level_activate ( trace_level_t level );
 #endif
 
 /* log facility. */
@@ -222,11 +227,15 @@ trace(fi,li,level,f,chfr,va_list);
 #endif
 
 #ifdef ENABLE_TRACE
-#ifndef TRACE  /* quick and temporary hack for VC++ */
+
+  /* #ifndef TRACE ??? quick and temporary hack for VC++ */
 #define TRACE(P) P
+  /* #endif */
+
 #else
+
 #define TRACE(P) do {} while (0)
-#endif
+
 #endif
 
 #ifdef __cplusplus
