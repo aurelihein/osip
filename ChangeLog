@@ -1,4 +1,5 @@
 libosip (0.9.5)
+	* fix a memory leak for retransmissions in msg_2char. 
 	* fix a bug when startline end with CRCRLF.
 	
 libosip (0.9.4)

@@ -417,8 +417,8 @@ msg_2char (sip_t * sip, char **dest)
 						   developpement. replacement line will be:
 						   *dest = sip->message; */
 #ifdef ENABLE_DEBUG
-	if (number_of_call_avoided % 1000 == 0)
-	  /* printf ("number of call msg_2char avoided: %i\n",
+	/* if (number_of_call_avoided % 1000 == 0)
+	  printf ("number of call msg_2char avoided: %i\n",
 	     number_of_call_avoided); */
 #endif
 	return 0;
