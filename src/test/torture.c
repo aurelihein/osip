@@ -98,7 +98,7 @@ main (int argc, char **argv)
     }
   num_test++;
 
-  msg = (char *) osip_malloc (50000);	/* msg are under 10000 */
+  msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
   if (msg == NULL)
     {
       fprintf (stderr, "Error! osip_malloc failed\n");
@@ -164,18 +164,17 @@ test_message (char *msg, int verbose, int clone)
 	if (osip_message_parse (sip, msg, strlen(msg)) != 0)
 	  {
 	    fprintf (stdout, "ERROR: failed while parsing!\n");
-	    osip_message_free (sip);	/* try to free msg, even if it failed! */
+	    osip_message_free (sip);
 	    return -1;
 	  }
-	osip_message_free (sip);	/* try to free msg, even if it failed! */
+	osip_message_free (sip);
       }
 
     osip_message_init (&sip);
     if (osip_message_parse (sip, msg, strlen(msg)) != 0)
       {
 	fprintf (stdout, "ERROR: failed while parsing!\n");
-	osip_message_free (sip);	/* try to free msg, even if it failed! */
-	/* this seems dangerous..... */
+	osip_message_free (sip);
 	return -1;
       }
     else

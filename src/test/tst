@@ -12,10 +12,10 @@ ok=0
 nok=0
 
 i=0
-while [ $i -lt 87 ]
+while [ $i -lt 89 ]
 do
 set +x
-#  mpatrol -C -S -L -j -d --list -p -t --use-debug ./test/torture_test $1 $i $2 $3
+   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip$i 0 $1
    ./torture_test ./res/sip$i 0 $1
    if [ "$?" -eq 0 ]; then
        echo "checking sip$i : passed";
@@ -39,7 +39,7 @@ i=0
 while [ $i -lt 9 ]
 do
 set +x
-#  mpatrol -C -S -L -j -d --list -p -t --use-debug ./test/torture_test $1 $i $2 $3
+   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip-malformed$i 0 $1
    ./torture_test ./res/sip-malformed$i 0 $1
    if [ "$?" -eq 0 ]; then
        echo "checking sip$i : passed";
