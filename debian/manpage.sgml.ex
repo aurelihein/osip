@@ -57,7 +57,7 @@
     <para>This manual page documents briefly the
       <command>&dhpackage;</command> library.</para>
 
-    <para>API reference & FAQ can be found at http://www.fsf.org/software/osip/</para>
+    <para>API reference & FAQ can be found at http://www.gnu.org/software/osip/</para>
 
 <!--    <para><command>&dhpackage;</command> is a program that...</para>
 -->

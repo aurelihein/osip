@@ -5,11 +5,11 @@
 
  Email      : jack@atosc.org
  License    : LGPL (http://www.gnu.org)
- Home Page  : http://www.fsf.org/software/osip/osip.html
+ Home Page  : http://www.gnu.org/software/osip/osip.html
  Download   : ftp://ftp.gnu.org/gnu/osip
 
 "The GNU oSIP library" is part of the "GNU project".
-You can check www.fsf.org for more information about
+You can check www.gnu.org for more information about
 being part of the "GNU project".
 
 For information, look at:
@@ -21,7 +21,7 @@ For information, look at:
        =====
 
 Latest version:       ftp://ftp.gnu.org/gnu/osip
-Home page:            http://www.fsf.org/software/osip/osip.html
+Home page:            http://www.gnu.org/software/osip/osip.html
 Online Documentation: http://www.gnu.org/software/osip/
 
        Supported Platforms:

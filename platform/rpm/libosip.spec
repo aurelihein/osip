@@ -6,7 +6,7 @@ Release:	1
 License:	LGPL
 Group:          Development/Libraries
 Source0:	ftp://ftp.gnu.org/gnu/osip/%{name}-%{version}.tar.gz
-URL:		http://www.fsf.org/software/osip/osip.html
+URL:		http://www.gnu.org/software/osip/osip.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
