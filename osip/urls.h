@@ -22,43 +22,136 @@
 
 #include <osip/const.h>
 
-typedef enum {
-  SIP,
-  TEL           /* NOT ACTUALLY SUPPORTED */
-}urischeme_t;
 
-typedef struct _url_param_t {
+/**
+ * @file urls.h
+ * @brief oSIP url parser Routines
+ */
+
+/**
+ * @defgroup oSIP_URLS oSIP url parser Handling
+ * @ingroup oSIP
+ * @{
+ */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Structure for referencing url parameters.
+ * @defvar url_param_t
+ */
+typedef struct url_param_t url_param_t;
+
+struct url_param_t {
   char *gname;
   char *gvalue;
-} url_param_t;
+};
 
+/**
+ * Structure for referencing url headers.
+ * @defvar url_header_t
+ */
 typedef url_param_t url_header_t;
 
+/**
+ * Allocate a url parameter element.
+ * @param url_param The element to work on.
+ */
 int   url_param_init(url_param_t **url_param);
+/**
+ * Free a url parameter element.
+ * @param url_param The element to work on.
+ */
 void  url_param_free(url_param_t *url_param);
-int   url_param_set (url_param_t *url_param, char *pname, char *pvalue);
-void  url_param_freelist (list_t *params);
-int   url_param_add      (list_t *params, char *pname, char *pvalue);
-int   url_param_getbyname(list_t *params, char *pname, url_param_t **uparam);
-int   url_param_clone(url_param_t *uparam, url_param_t **dest);
-
-#define url_header_init(UH) url_param_init(UH)
-#define url_header_free(UH) url_param_free(UH)
-#define url_header_set(UH)  url_param_set(UH)
-#define url_header_freelist(L)       url_param_freelist(L)
-#define url_header_add(L,N,V)        url_param_add(L,N,V)
-#define url_header_getbyname(L,N,UH) url_param_getbyname(L,N,UH)
-#define url_header_clone(UH,DEST)    url_param_clone(UH,DEST)
+/**
+ * Set values of a url parameter element.
+ * @param url_param The element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+int   url_param_set (url_param_t *url_param, char *name, char *value);
+/**
+ * Clone a url parameter element.
+ * @param url_param The element to work on.
+ * @param dest The resulting new allocated element.
+ */
+int   url_param_clone(url_param_t *url_param, url_param_t **dest);
+#ifndef DOXYGEN
 /*
-int   url_header_init(url_header_t **url_header);
-void  url_header_free(url_header_t *url_header);
-int   url_header_set (url_header_t *url_header, char *pname, char *pvalue);
-void  url_header_freelist (list_t *params);
-int   url_header_add(list_t *url_headers, char *pname, char *pvalue);
-int   url_header_getbyname(list_t *params, char *pname, url_header_t **uparam);
-*/
+ * Free a list of a url parameter element.
+ * @param url_params The list of url parameter element to free.
+ */
+void  url_param_freelist (list_t *url_params);
+#endif
+/**
+ * Allocate and add a url parameter element in a list.
+ * @param url_params The list of url parameter element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+int   url_param_add      (list_t *url_params, char *name, char *value);
+/**
+ * Find in a url parameter element in a list.
+ * @param url_params The list of url parameter element to work on.
+ * @param name The name of the parameter element to find.
+ * @param dest A pointer on the element found.
+ */
+int   url_param_getbyname(list_t *url_params, char *name, url_param_t **dest);
 
-typedef struct _sipurl_t {
+/**
+ * Allocate a generic parameter element.
+ * @param url_header The element to work on.
+ */
+#define url_header_init(url_header) url_param_init(url_header)
+/**
+ * Free a generic parameter element.
+ * @param url_header The element to work on.
+ */
+#define url_header_free(url_header) url_param_free(url_header)
+/**
+ * Set values of a generic parameter element.
+ * @param url_header The element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+#define url_header_set(url_header, name, value)  url_param_set(url_header, name, value)
+/**
+ * Clone a generic parameter element.
+ * @param url_header The element to work on.
+ * @param dest The resulting new allocated element.
+ */
+#define url_header_clone(url_header,dest)    url_param_clone(url_header,dest)
+#ifndef DOXYGEN
+/*
+ * Free a list of a generic parameter element.
+ * @param LIST The list of generic parameter element to free.
+ */
+#define url_header_freelist(LIST)       url_param_freelist(LIST)
+#endif
+/**
+ * Allocate and add a generic parameter element in a list.
+ * @param url_headers The list of generic parameter element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+#define url_header_add(url_headers,name,value)        url_param_add(url_headers,name,value)
+/**
+ * Find in a generic parameter element in a list.
+ * @param url_headers The list of generic parameter element to work on.
+ * @param name The name of the parameter element to find.
+ * @param dest A pointer on the element found.
+ */
+#define url_header_getbyname(url_headers,name,dest) url_param_getbyname(url_headers,name,dest)
+
+/**
+ * Structure for referencing SIP urls.
+ * @defvar url_t
+ */
+typedef struct url_t url_t;
+
+struct url_t {
   char *scheme;
   char *username;
   char *password;
@@ -67,59 +160,263 @@ typedef struct _sipurl_t {
   list_t *url_params;
   list_t *url_headers;
 
-  char *string; /* other schemes */
-} url_t ;
+  char *string; /** other url schemes are strings. (http, mailto...) */
+};
 
+/**
+ * Allocate a url element.
+ * @param url The element to work on.
+ */
 int     url_init(url_t **url);
+/**
+ * Free a url element.
+ * @param url The element to work on.
+ */
 void    url_free(url_t *url);
+/**
+ * Parse a url.
+ * @param url The element to work on.
+ * @param buf The buffer to parse.
+ */
 int     url_parse(url_t *url, char *buf);
-int     url_parse_headers(url_t *url, char *headers);
-int     url_parse_params (url_t *url, char *params );
+#ifndef DOXYGEN
+/**
+ * Parse the header part of a url.
+ * @param url The element to work on.
+ * @param buf The buffer to parse.
+ */
+int     url_parse_headers(url_t *url, char *buf);
+/**
+ * Parse the parameter part of a url.
+ * @param url The element to work on.
+ * @param buf The buffer to parse.
+ */
+int     url_parse_params (url_t *url, char *buf);
+#endif
+/**
+ * Get a string representation of a url element.
+ * @param url The element to work on.
+ * @param dest The resulting new allocated buffer.
+ */
 int     url_2char(url_t *url,char **dest);
+/**
+ * Clone a url element.
+ * @param url The element to work on.
+ * @param dest The resulting new allocated element.
+ */
 int     url_clone(url_t *url,url_t **dest);
 
-void    url_setscheme(url_t *url, char *scheme);
+/**
+ * Set the scheme of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_setscheme(url_t *url, char *value);
+/**
+ * Get the scheme of a url element.
+ * @param url The element to work on.
+ */
 char*   url_getscheme(url_t *url);
-void    url_sethost(url_t *url, char *host);
+/**
+ * Set the host of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_sethost(url_t *url, char *value);
+/**
+ * Get the host of a url element.
+ * @param url The element to work on.
+ */
 char*   url_gethost(url_t *url);
-void    url_setusername(url_t *url, char *username);
+/**
+ * Set the username of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_setusername(url_t *url, char *value);
+/**
+ * Get the username of a url element.
+ * @param url The element to work on.
+ */
 char*   url_getusername(url_t *url);
-void    url_setpassword(url_t *url, char *password);
+/**
+ * Set the password of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_setpassword(url_t *url, char *value);
+/**
+ * Get the password of a url element.
+ * @param url The element to work on.
+ */
 char*   url_getpassword(url_t *url);
-void    url_sethost(url_t *url, char *host);
+/**
+ * Set the host of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_sethost(url_t *url, char *value);
+/**
+ * Get the host of a url element.
+ * @param url The element to work on.
+ */
 char*   url_gethost(url_t *url);
-void    url_setport(url_t *url, char *port);
+/**
+ * Set the port of a url element.
+ * @param url The element to work on.
+ * @param value The token value.
+ */
+void    url_setport(url_t *url, char *value);
+/**
+ * Get the port of a url element.
+ * @param url The element to work on.
+ */
 char*   url_getport(url_t *url);
 
 
 
-#define url_set_transport_udp(U)   url_param_add(U->url_params, "transport", "udp")
-#define url_set_transport_tcp(U)   url_param_add(U->url_params, "transport", "tcp")
-#define url_set_transport_sctp(U)  url_param_add(U->url_params, "transport", "sctp")
-#define url_set_transport_tls(U)   url_param_add(U->url_params, "transport", "tls")
-#define url_set_transport(U,T)     url_param_add(U->url_params, "transport", T)
+/**
+ * Set the transport parameter to UDP in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_transport_udp(url)   url_param_add(url->url_params, "transport", "udp")
+/**
+ * Set the transport parameter to TCP in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_transport_tcp(url)   url_param_add(url->url_params, "transport", "tcp")
+/**
+ * Set the transport parameter to SCTP in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_transport_sctp(url)  url_param_add(url->url_params, "transport", "sctp")
+/**
+ * Set the transport parameter to TLS in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_transport_tls(url)   url_param_add(url->url_params, "transport", "tls")
+/**
+ * Set the transport parameter to TLS in a url element.
+ * @param url The element to work on.
+ * @param value The value describing the transport protocol.
+ */
+#define url_set_transport(url,value) url_param_add(url->url_params, "transport", value)
 
-#define url_set_user_phone(U)     url_param_add(U->url_params, "user", "phone")
-#define url_set_user_ip(U)        url_param_add(U->url_params, "user", "ip")
-#define url_set_user(U, USER)     url_param_add(U->url_params, "user", USER)
+/**
+ * Set the user parameter to PHONE in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_user_phone(url)   url_param_add(url->url_params, "user", "phone")
+/**
+ * Set the user parameter to IP in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_user_ip(url)      url_param_add(url->url_params, "user", "ip")
+/**
+ * Set the user parameter in a url element.
+ * @param url The element to work on.
+ * @param value The value describing the user url.
+ */
+#define url_set_user(url, value)  url_param_add(url->url_params, "user", value)
 
-#define url_set_method_invite(U)  url_param_add(U->url_params, "method", "INVITE")
-#define url_set_method_ack(U)     url_param_add(U->url_params, "method", "ACK")
-#define url_set_method_options(U) url_param_add(U->url_params, "method", "OPTIONS")
-#define url_set_method_bye(U)     url_param_add(U->url_params, "method", "BYE")
-#define url_set_method_cancel(U)  url_param_add(U->url_params, "method", "CANCEL")
-#define url_set_method_register(U) url_param_add(U->url_params,"method", "REGISTER")
-#define url_set_method(U, M)      url_param_add(U->url_params, "method", M)
-#define url_set_ttl(U, T)         url_param_add(U->url_params, "ttl", T)
-#define url_set_maddr(U, M)       url_param_add(U->url_params, "maddr", M)
+/**
+ * Set a method parameter to INVITE in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_invite(url)  url_param_add(url->url_params, "method", "INVITE")
+/**
+ * Set a method parameter to ACK in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_ack(url)     url_param_add(url->url_params, "method", "ACK")
+/**
+ * Set a method parameter to OPTIONS in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_options(url) url_param_add(url->url_params, "method", "OPTIONS")
+/**
+ * Set a method parameter to BYE in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_bye(url)     url_param_add(url->url_params, "method", "BYE")
+/**
+ * Set a method parameter to CANCEL in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_cancel(url)  url_param_add(url->url_params, "method", "CANCEL")
+/**
+ * Set a method parameter to REGISTER in a url element.
+ * @param url The element to work on.
+ */
+#define url_set_method_register(url) url_param_add(url->url_params,"method", "REGISTER")
+/**
+ * Set a method parameter in a url element.
+ * @param url The element to work on.
+ * @param value The value for the method parameter.
+ */
+#define url_set_method(url, value) url_param_add(url->url_params, "method", value)
+/**
+ * Set a ttl parameter in a url element.
+ * @param url The element to work on.
+ * @param value The value for the ttl parameter.
+ */
+#define url_set_ttl(url, value)    url_param_add(url->url_params, "ttl", value)
+/**
+ * Set a maddr parameter in a url element.
+ * @param url The element to work on.
+ * @param value The value for the maddr parameter.
+ */
+#define url_set_maddr(url, value)  url_param_add(url->url_params, "maddr", value)
 
-#define url_uparam_get(U,I,GP)    url_param_get(U->url_params,I,GP)
-#define url_uparam_add(F,N,V)     url_param_add(F->url_params,N,V)
-#define url_uparam_getbyname(F,N,UH)  url_param_getbyname(F->url_params,N,UH)
+/**
+ * Get a url parameter in a url element.
+ * @param url The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
+ */
+#define url_uparam_get(url,pos,dest) url_param_get(url->url_params,pos,dest)
+/**
+ * Allocate and add a url parameter element in a url element.
+ * @param url The element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+#define url_uparam_add(url,name,value) url_param_add(url->url_params,name,value)
+/**
+ * Find in a url parameter element in a url element.
+ * @param url The element to work on.
+ * @param name The name of the url parameter element to find.
+ * @param dest A pointer on the element found.
+ */
+#define url_uparam_getbyname(url,name,dest)  url_param_getbyname(url->url_params,name,dest)
 
-#define url_uheader_get(U,I,GP)   url_header_get(U->url_headers,I,GP)
-#define url_uheader_add(F,N,V)    url_header_add(F->url_headers,N,V)
-#define url_uheader_getbyname(F,N,UH) url_header_getbyname(F->url_headers,N,UH)
+/**
+ * Get a url header in a url element.
+ * @param url The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
+ */
+#define url_uheader_get(url,pos,dest)   url_header_get(url->url_headers,pos,dest)
+/**
+ * Allocate and add a url header element in a url element.
+ * @param url The element to work on.
+ * @param name The token name.
+ * @param value The token value.
+ */
+#define url_uheader_add(url,name,value)    url_header_add(url->url_headers,name,value)
+/**
+ * Find in a url header element in a url element.
+ * @param url The element to work on.
+ * @param name The name of the url header element to find.
+ * @param dest A pointer on the element found.
+ */
+#define url_uheader_getbyname(url,name,dest) url_header_getbyname(url->url_headers,name,dest)
 
+/** @} */
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /*  _URLS_H_ */

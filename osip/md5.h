@@ -23,6 +23,16 @@ These notices must be retained in any copies of any part of this
 documentation and/or software.
  */
 
+#ifndef _MD5_H_
+#define _MD5_H_
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifndef DOXYGEN
+
 /* MD5 context. */
 typedef struct {
   UINT4 state[4];                                   /* state (ABCD) */
@@ -35,3 +45,11 @@ void MD5Update PROTO_LIST
   ((MD5_CTX *, unsigned char *, unsigned int));
 void MD5Final PROTO_LIST ((unsigned char [16], MD5_CTX *));
 
+#endif
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

@@ -25,6 +25,21 @@
 #include <osip/port.h>
 #include <errno.h>
 
+/**
+ * @file sema.h
+ * @brief oSIP semaphore definitions
+ */
+
+/**
+ * @defgroup oSIP_SEMA oSIP semaphore definitions
+ * @ingroup oSIP
+ * @{
+ */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef WIN32
 #include <Windows.h>
 typedef struct {
@@ -61,6 +76,10 @@ typedef sem_t ssem_t;
 
 #if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
+/**
+ * Structure for referencing a semaphore element.
+ * @defvar smutex_t
+ */
 typedef pthread_mutex_t smutex_t;
 #endif
 
@@ -70,6 +89,10 @@ typedef pthread_mutex_t smutex_t;
 #undef getdate
 #include <synch.h>
 #endif
+/**
+ * Structure for referencing a semaphore element.
+ * @defvar ssem_t
+ */
 typedef sem_t  ssem_t;
 #endif
 
@@ -86,16 +109,60 @@ typedef struct _ssem_t {
 #error No semaphore implementation found
 #endif
 
+/**
+ * Allocate and Initialise a semaphore.
+ */
 smutex_t     *smutex_init();
+/**
+ * Destroy the mutex.
+ * @param mut The mutex to destroy.
+ */
 void         smutex_destroy(smutex_t *mut);
+/**
+ * Lock the mutex.
+ * @param mut The mutex to lock.
+ */
 int          smutex_lock(smutex_t *mut);
+/**
+ * Unlock the mutex.
+ * @param mut The mutex to unlock.
+ */
 int          smutex_unlock(smutex_t *mut);
 
+/**
+ * Allocate and Initialise a semaphore.
+ * @param value The initial value for the semaphore.
+ */
 ssem_t      *ssem_init(unsigned int value);
+/**
+ * Destroy a semaphore.
+ * @param sem The semaphore to destroy.
+ */
 int          ssem_destroy(ssem_t *sem);
+/**
+ * Post operation on a semaphore.
+ * @param sem The semaphore to destroy.
+ */
 int          ssem_post(ssem_t *sem);
+/**
+ * Wait operation on a semaphore.
+ * NOTE: this call will block if the semaphore is at 0.
+ * @param sem The semaphore to destroy.
+ */
 int          ssem_wait(ssem_t *sem);
+/**
+ * Wait operation on a semaphore.
+ * NOTE: if the semaphore is at 0, this call won't block.
+ * @param sem The semaphore to destroy.
+ */
 int          ssem_trywait(ssem_t *sem);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+/** @} */
 
 
 #endif /* OSIP_MT */

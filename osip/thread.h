@@ -23,16 +23,46 @@
 #include <stdio.h>
 #include <errno.h>
 
-
 #ifdef __VXWORKS_OS__
 #include <taskLib.h>
+#endif
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+#if !defined(WIN32) && defined(__PSOS__)
+#include <psos.h>
+#endif
+
+#if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
+#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+#include <pthread.h>
+#endif
+#endif
+
+/**
+ * @file thread.h
+ * @brief oSIP Thread Routines
+ */
+
+/**
+ * @defgroup oSIP_THREAD oSIP Thread Routines
+ * @ingroup oSIP
+ * @{
+ */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __VXWORKS_OS__
 typedef struct _sthread_t {
   int id;
 } sthread_t;
 #endif
 
 #ifdef WIN32
-#include <windows.h>
 typedef struct {
     unsigned long h;
     unsigned int ID;
@@ -40,7 +70,6 @@ typedef struct {
 #endif
 
 #if !defined(WIN32) && defined(__PSOS__)
-#include <psos.h>
 typedef struct {
     unsigned long tid;
 } sthread_t;
@@ -48,19 +77,48 @@ typedef struct {
 
 #if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
 #if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
-#include <pthread.h>
+/**
+ * Structure for referencing a thread
+ * @var sthread_t
+ */
 typedef pthread_t sthread_t;
 #else
 #error no thread implementation found!
 #endif
 #endif
 
+/**
+ * Allocate (or initialise if a thread address is given)
+ * @param stacksize The stack size of the thread. (20000 is a good value)
+ * @param thread The thread to create. (if it is NULL, a new thread is returned)
+ * @param func The method where the thread start.
+ * @param arg A pointer on the argument given to the method 'func'.
+ */
 sthread_t *sthread_create(int stacksize, sthread_t *thread,
                           void *(*func)(void *),  void *arg);
+/**
+ * Join a thread.
+ * @param thread The thread to join.
+ */
 int sthread_join(sthread_t *thread);
 /* this method is not implemented on all systems */
+/**
+ * Set the priority of a thread.
+ * @param thread The thread to work on.
+ * @param priority The priority value to set.
+ */
 int sthread_setpriority(sthread_t *thread, int priority);
+/**
+ * Exit from a thread.
+ */
 void sthread_exit();
 
+#ifdef __cplusplus
+}
+#endif
 
-#endif /* end of _THREAD_H */
+
+/** @} */
+
+
+#endif /* end of _THREAD_H_ */

@@ -7,6 +7,13 @@
   been defined with C compiler flags.
  */
 
+#ifndef _GLOBAL_H_
+#define _GLOBAL_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* modified for oSIP: GCC supports this feature */
 #define PROTOTYPES 1
 
@@ -33,3 +40,10 @@ If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
 #define PROTO_LIST(list) ()
 #endif
 
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif

@@ -78,14 +78,6 @@
 #  error no variadic api
 #endif
 
-#ifdef __cplusplus
-#  define BEGIN_C_DECLS      extern "C" {
-#  define END_C_DECLS        }
-#else
-#  define BEGIN_C_DECLS
-#  define END_C_DECLS
-#endif
-
 #if __STDC__
 #  ifndef NOPROTOS
 #    define PARAMS(args)   args
@@ -104,10 +96,9 @@
 #define SIP_RESSOURCE_ERROR (-4)
 #define SIP_GLOBAL_ERROR    (-5)
 
-
-BEGIN_C_DECLS
-
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**************************/
 /* MALLOC redirections    */
@@ -219,6 +210,8 @@ trace(fi,li,level,f,chfr,va_list);
 #define TRACE(P) do {} while (0)
 #endif
 
-END_C_DECLS
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* _PORT_H_ */
