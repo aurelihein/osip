@@ -34,4 +34,3 @@ indent:
 	rm -rf */*.c~
 	rm -rf */*.h~
 
-

@@ -18,7 +18,7 @@ md5c.c         sdp_rfc2327.c  sdp_accessor.c
 
 
 libosip_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
--release $(OSIP_RELEASE) $(PARSER_LIB) $(EXTRA_LIB)
+$(PARSER_LIB) $(EXTRA_LIB)
 
 
 INCLUDES = -I$(top_srcdir)

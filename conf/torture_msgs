@@ -10,7 +10,7 @@ Call-ID: de6d4b92-603e-4f84-a26c-3428d69e4da6@165.213.114.66
 CSeq: 1 MESSAGE
 Contact: <sip:165.213.114.66:10507>
 User-Agent: Windows RTC/1.0
-Proxy-Authorization: Digest username="user", realm="siproxd", nonce="3df0ac66000ef8d0327b23c66b8b4567",uri="sip:soekris1",cnonce="abcdefghi", nc=00000001,response="b31c4fca724852835c704bc395b3f49e", opaque=""
+Proxy-Authorization:  Digest username="user", realm="siproxd", nonce="3df0ac66000ef8d0327b23c66b8b4567",uri="sip:soekris1",cnonce="abcdefghi", nc=00000001,response="b31c4fca724852835c704bc395b3f49e", opaque=""
 Proxy-Authorization: Digest 
  username="me@other.domain.example.com",realm="other.domain.example.com",
  uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
@@ -94,7 +94,7 @@ CSeq: 1 REGISTER
 Supported: com.salut.amoi,100rel
 Content-Length: 0
 Server:  IMS1.0
-WWW-Authenticate: Digest realm="This is test realm",nonce="MTAwODc4ODQzNDIzMWI2MDY0OTBlNGJjMjJkZWNiMWRmOGUwNmIwMDVlMjZl",stale=false,algorithm=MD5,qop="auth,auth-int"
+WWW-Authenticate:  Digest realm="This is test realm",nonce="MTAwODc4ODQzNDIzMWI2MDY0OTBlNGJjMjJkZWNiMWRmOGUwNmIwMDVlMjZl",stale=false,algorithm=MD5,qop="auth,auth-int"
 
 |
 SIP/2.0 180 Ringing
