@@ -145,7 +145,7 @@ char *
 osip_strncpy (char *dest, const char *src, size_t length)
 {
 #ifdef WIN32
-  memcpy (dest, src, length);
+  strncpy (dest, src, length);
 #else
   strncpy (dest, src, length);
 #endif
