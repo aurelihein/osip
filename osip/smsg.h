@@ -581,6 +581,12 @@ int      msg_getbody        (sip_t *sip, int pos, body_t **dest);
 #define MSG_IS_CANCEL(msg)   (MSG_IS_REQUEST(msg) && \
 			      0==strncmp((msg)->strtline->sipmethod,"CANCEL",6))
 /**
+ * Test if the message is a REFER REQUEST
+ * @param msg the SIP message.
+ */
+#define MSG_IS_REFER(msg)   (MSG_IS_REQUEST(msg) && \
+			      0==strncmp((msg)->strtline->sipmethod,"REFER",5))
+/**
  * Test if the message is a NOTIFY REQUEST
  * @param msg the SIP message.
  */
@@ -592,6 +598,12 @@ int      msg_getbody        (sip_t *sip, int pos, body_t **dest);
  */
 #define MSG_IS_SUBSCRIBE(msg)  (MSG_IS_REQUEST(msg) && \
 			      0==strncmp((msg)->strtline->sipmethod,"SUBSCRIBE",9))
+/**
+ * Test if the message is a MESSAGE REQUEST
+ * @param msg the SIP message.
+ */
+#define MSG_IS_MESSAGE(msg)  (MSG_IS_REQUEST(msg) && \
+			      0==strncmp((msg)->strtline->sipmethod,"MESSAGE",7))
 /**
  * Test if the message is a PRACK REQUEST  (!! PRACK IS NOT SUPPORTED by the fsm!!)
  * @param msg the SIP message.

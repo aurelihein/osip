@@ -351,9 +351,11 @@ char  *sdp_a_att_value_get(sdp_t *sdp, int pos_media, int pos) {
 }
 
 int sdp_endof_media(sdp_t *sdp,int i) {
+  if (sdp==NULL) return -1;
+  if (i==-1) return 0;
   if (!list_eol(sdp->m_medias,i))
     return 0; /* not end of list */
-  return 1; /* end of list */
+  return -1; /* end of list */
 }
 
 int sdp_m_media_add(sdp_t *sdp, char *media,

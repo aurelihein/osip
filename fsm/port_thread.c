@@ -146,7 +146,10 @@ int sthread_join(sthread_t *thread)
   if (i==WAIT_OBJECT_0)
 	fprintf(stdout, "thread joined!\n");
   else
-    fprintf(stdout, "ERROR!! thread joined ERROR!!\n");
+    {
+      fprintf(stdout, "ERROR!! thread joined ERROR!!\n");
+      return -1;
+    }
   CloseHandle(thread->h);
 
   return(0);
