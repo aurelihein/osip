@@ -1,4 +1,5 @@
 libosip (0.9.7)
+	* extra free removed for pSOS (smutex_destroy)
 	* fix crash when osip can't build ACK for 3456xx to INVITEs.
 	* Extra spaces now appear before content-length digits.
 	

@@ -390,7 +390,7 @@ smutex_destroy (smutex_t * mut)
   if (mut)
     {
       sm_delete (mut->id);
-      sfree (mut);
+      /* sfree (mut); extra free removed */
     }
 }
 
