@@ -170,6 +170,8 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
 
   if (host == NULL)
     host = username;
+  else if (username[1] == '@') /* username is empty */
+    host = username+1;
   else
     /* username exists */
     {
