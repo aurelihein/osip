@@ -1,3 +1,11 @@
+libosip (0.9.3-1) unstable; urgency=low
+ * fix a bug for quoted strings starting with an escaped char '\'.
+ * initial commit for WinCE support. (uncomplete)
+ * fsm/port_sema.c: (windows only) sem_trywait was never returning 0.
+ * add a method to get possible destination and port for a request.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 28 Dec 2002 13:04:32 +0100
+
 libosip (0.9.2-1) unstable; urgency=low
   * support for the received and rport.
   * sdp_negoc.c: fix the video support.
