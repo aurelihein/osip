@@ -866,7 +866,7 @@ extern "C"
  * @param osip The osip_t structure.
  * @param ack  The ack that has just been received.
  */
-  osip_dialog_t *osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack);
+  struct osip_dialog *osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack);
 
 /**
  * Stop out of fsm retransmissions (ACK or 200 Ok) associated to a given dialog.

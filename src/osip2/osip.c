@@ -253,7 +253,7 @@ osip_start_ack_retransmissions (osip_t * osip, osip_dialog_t * dialog,
 }
 
 /* we stop the 200ok when receiving the corresponding ack */
-osip_dialog_t *
+struct osip_dialog *
 osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
 {
   osip_dialog_t *dialog = NULL;
@@ -1360,6 +1360,28 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_mutex_unlock (nist_fastmutex);
 #endif
 
+#ifdef OSIP_RETRANSMIT_2XX
+  
+#ifdef OSIP_MT
+  osip_mutex_lock(ixt_fastmutex);
+#endif
+ {
+   ixt_t *ixt;
+   for (pos = 0; (ixt = (ixt_t *) osip_list_get(osip->ixt_retransmissions,
+						pos))!=NULL; ++pos)
+     {
+       struct timeval cmpTime;
+       div_t dValue = div(ixt->interval, 1000);
+       cmpTime.tv_sec = ixt->start + dValue.quot;
+       cmpTime.tv_usec = dValue.rem * 1000;
+       min_timercmp(lower_tv, &cmpTime);
+     }
+ }
+#ifdef OSIP_MT
+  osip_mutex_unlock (ixt_fastmutex);
+#endif
+#endif
+  
   lower_tv->tv_sec = lower_tv->tv_sec - now.tv_sec;
   lower_tv->tv_usec = lower_tv->tv_usec - now.tv_usec;
 
