@@ -730,7 +730,7 @@ c=IN IP4 TOREPLACE\r\n");
 #if (defined WIN32 || defined _WIN32_WCE)   
 		  _snprintf(tmp2, 199, "\r\na=recvonly\r\n");
 #else
-          snprintf(tmp2, 199, "\r\na=recvonly\r\n");
+		  snprintf(tmp2, 199, "\r\na=recvonly\r\n");
 #endif
 		  break;
 		}
@@ -739,7 +739,7 @@ c=IN IP4 TOREPLACE\r\n");
 #if (defined WIN32 || defined _WIN32_WCE) 
 		  _snprintf(tmp2, 199, "\r\na=sendonly\r\n");
 #else
-          snprintf(tmp2, 199, "\r\na=sendonly\r\n");
+		  snprintf(tmp2, 199, "\r\na=sendonly\r\n");
 #endif
 		  break;
 		}
@@ -752,7 +752,7 @@ c=IN IP4 TOREPLACE\r\n");
 #if (defined WIN32 || defined _WIN32_WCE) 
 		  _snprintf(tmp2, 199, "\r\na=inactive\r\n");
 #else
-          snprintf(tmp2, 199, "\r\na=inactive\r\n");
+		  snprintf(tmp2, 199, "\r\na=inactive\r\n");
 #endif
 		  inactive='0';
 		  break;
@@ -762,16 +762,20 @@ c=IN IP4 TOREPLACE\r\n");
 	}
 
       if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
+	{
 #if (defined WIN32 || defined _WIN32_WCE) 
 	_snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
 #else
-    snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
+	snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
 #endif
+	}
       else if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
+	{
 #if (defined WIN32 || defined _WIN32_WCE) 
-	_snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+	  _snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
 #else
-    snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+	  snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+	}
 #endif
       else
 	return -1;
