@@ -1,3 +1,7 @@
+libosip2 (2.0.6)
+	* improve configure.in file
+	* tiny other fix (doxygen, prototypes, warnings)
+	
 libosip2 (2.0.5)
 	* Fix for content-type header.
 	* New optionnal timer interface. (will become the default)
