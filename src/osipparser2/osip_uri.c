@@ -850,7 +850,7 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
       int len;
       u_param = (osip_uri_param_t *) osip_list_get (params, pos);
       len = strlen(u_param->gname);
-      if (pname_len == len && strncmp (u_param->gname, pname, strlen (pname)) == 0)
+      if (pname_len == len && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0)
 	{
 	  *url_param = u_param;
 	  return 0;
