@@ -550,6 +550,7 @@ osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 	 {
 	   char buffer[512];
 	   int in = 0;
+	   memset(buffer, 0, sizeof(buffer));
 	   if (level == OSIP_FATAL)
 	     in = snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
 	   else if (level == OSIP_BUG)
@@ -591,6 +592,7 @@ osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 	 {
 	   char buffer[512];
 	   int in = 0;
+	   memset(buffer, 0, sizeof(buffer));
 	   if (level == OSIP_FATAL)
 	     in = _snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
 	   else if (level == OSIP_BUG)

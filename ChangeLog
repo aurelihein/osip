@@ -1,3 +1,6 @@
+libosip (0.9.4)
+	* verify log strings are NULL terminated.
+	
 libosip (0.9.3)
 	* fix a bug for quoted strings starting with an escaped char '\'.
 	* initial commit for WinCE support. (uncomplete)
