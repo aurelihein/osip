@@ -44,7 +44,7 @@ extern "C"
 {
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 #include <windows.h>
   typedef struct
   {
@@ -58,7 +58,7 @@ extern "C"
   ssem_t;
 #endif
 
-#if !defined(WIN32) && defined(__PSOS__)
+#if (!(defined(WIN32) || defined (_WIN32_WCE)) && defined(__PSOS__))
 #include <Types.h>
 #include <os.h>
   typedef struct
@@ -120,7 +120,7 @@ extern "C"
   ssem_t;
 #endif
 
-#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(__PSOS__) && !defined(__VXWORKS_OS__))
+#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__PSOS__) && !defined(__VXWORKS_OS__))
 #error No semaphore implementation found
 #endif
 

@@ -45,6 +45,7 @@
 
 #define strnicmp	_strnicmp
 #define stricmp		_stricmp
+#define EBUSY           16
 
 #endif
 
@@ -182,7 +183,7 @@ extern "C"
 /**************************/
 
 /* define log possible value */
-#ifdef WIN32
+#if defined (WIN32) || defined (_WIN32_WCE)
   typedef unsigned char boolean;
 #else
 #ifndef __PSOS__

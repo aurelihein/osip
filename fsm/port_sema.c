@@ -25,7 +25,7 @@
 #include <osip/port.h>
 #include <osip/sema.h>
 
-#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(__POS__)
+#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__POS__)
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 
 smutex_t *
@@ -281,7 +281,8 @@ ssem_trywait (ssem_t * sem)
 }
 #endif
 
-#ifdef WIN32
+#if defined (WIN32) || defined (_WIN32_WCE)
+
 #include <limits.h>
 smutex_t *
 smutex_init ()

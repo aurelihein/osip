@@ -33,15 +33,17 @@
 #include <taskLib.h>
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
+
 #include <windows.h>
 #endif
 
-#if !defined(WIN32) && defined(__PSOS__)
+#if !defined(WIN32) && !defined(_WIN32_WCE) && defined(__PSOS__)
 #include <psos.h>
 #endif
 
-#if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
+#if !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__VXWORKS_OS__) && !defined(__POS__)
+
 /* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
@@ -75,7 +77,7 @@ extern "C"
   sthread_t;
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
   typedef struct 
   {
     HANDLE h;
@@ -83,8 +85,7 @@ extern "C"
    }
    sthread_t;
   
-#endif
-#if !defined(WIN32) && defined(__PSOS__)
+#elif defined(__PSOS__)
     typedef struct
   {
     unsigned long tid;
@@ -92,7 +93,7 @@ extern "C"
   sthread_t;
 #endif
 
-#if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
+#if !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__VXWORKS_OS__) && !defined(__POS__)
 /* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 /**
