@@ -106,7 +106,7 @@ main (int argc, char **argv)
   if (marker == NULL)
     {
       fprintf (stderr,
-	       "Error! The message's number you specified does not exist");
+	       "Error! The message's number you specified does not exist\n");
       exit (1);			/* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
