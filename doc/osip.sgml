@@ -64,13 +64,15 @@
 
   </refsect1>
   <refsect1>
-<!--
     <title>OPTIONS</title>
+<!--
 
     <para>These programs follow the usual GNU command line syntax,
       with long options starting with two dashes (`-').  A summary of
       options is included below.  For a complete description, see the
       <application>Info</application> files.</para>
+
+-->
 
     <variablelist>
       <varlistentry>
@@ -91,7 +93,6 @@
       </varlistentry>
     </variablelist>
 
--->
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>
@@ -102,6 +103,27 @@
       Fall of a Fooish Bar</citetitle> available via the
       <application>Info</application> system.</para>
 -->
+
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option>
+          <option>-help</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-v</option>
+          <option>-version</option>
+        </term>
+        <listitem>
+          <para>Show version of program.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>

@@ -1,28 +1,9 @@
 <!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!-- Process this file with docbook-to-man to generate an nroff manual
-     page: `docbook-to-man manpage.sgml > manpage.1'.  You may view
-     the manual page with: `docbook-to-man manpage.sgml | nroff -man |
-     less'.  A typical entry in a Makefile or Makefile.am is:
 
-osip.1: osip.sgml
-	docbook-to-man $< > $@
-
-    
-	The docbook-to-man binary is found in the docbook-to-man package.
-	Please remember that if you create the nroff version in one of the
-	debian/rules file targets (such as build), you will need to include
-	docbook-to-man in your Build-Depends control field.
-
-  -->
-
-  <!-- Fill in your name for FIRSTNAME and SURNAME. -->
   <!ENTITY dhfirstname "<firstname>Aymeric</firstname>">
   <!ENTITY dhsurname   "<surname>MOIZARD</surname>">
-  <!-- Please adjust the date whenever revising the manpage. -->
   <!ENTITY dhdate      "<date>May 15, 2002</date>">
-  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
-       allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
   <!ENTITY dhemail     "<email>jack@atosc.org</email>">
   <!ENTITY dhusername  "Aymeric Moizard">
@@ -61,12 +42,13 @@ osip.1: osip.sgml
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
-      <command>&dhpackage;</command>
-
-      <arg><option>-losip<replaceable>The url, SIP and SDP parsers
-      </replaceable></option></arg>
-
-      <arg><option>-lfsmtl<replaceable>The SIP transaction manager, the dialog manager</replaceable></option></arg>
+      <command>-losip</command>
+      
+      <arg><option>The url, SIP and SDP parsers</option></arg>
+      </cmdsynopsis>
+    <cmdsynopsis>
+      <command>-lfsmtl</command>
+      <arg><option>The SIP transaction manager, the dialog manager</option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -93,7 +75,7 @@ osip.1: osip.sgml
     <variablelist>
       <varlistentry>
         <term><option>-h</option>
-          <option>--help</option>
+          <option>-help</option>
         </term>
         <listitem>
           <para>Show summary of options.</para>
@@ -101,7 +83,7 @@ osip.1: osip.sgml
       </varlistentry>
       <varlistentry>
         <term><option>-v</option>
-          <option>--version</option>
+          <option>-version</option>
         </term>
         <listitem>
           <para>Show version of program.</para>
