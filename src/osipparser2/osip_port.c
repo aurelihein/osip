@@ -108,7 +108,11 @@ osip_atoi (const char *number)
 char *
 osip_strncpy (char *dest, const char *src, int length)
 {
+#ifdef WIN32
   memcpy (dest, src, length);
+#else
+  strncpy(dest, src, length);
+#endif
   dest[length] = '\0';
   return dest;
 }

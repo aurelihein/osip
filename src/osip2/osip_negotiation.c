@@ -27,6 +27,7 @@ osip_negotiation_ctx_init (osip_negotiation_ctx_t ** con)
   (*con) = (osip_negotiation_ctx_t *) osip_malloc (sizeof (osip_negotiation_ctx_t));
   if (*con == NULL)
     return -1;
+  (*con)->mycontext = NULL; /* fixed Sep 24 2003 */
   (*con)->remote = NULL;
   (*con)->local = NULL;
   return 0;

@@ -1,3 +1,6 @@
+libosip2 (2.0.4)
+	* set paramter of sdp_negociation_t structure to NULL on init.
+	
 libosip2 (2.0.3)
 	* new method to create dialog from NOTIFY requests.
 	* fix random number generation to avoid possible guess of random numbers.
