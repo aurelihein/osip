@@ -76,20 +76,12 @@ extern "C"
 #endif
 
 #ifdef WIN32
-#ifdef OLD_THREAD_INTERFACE
-  typedef struct
-  {
-    unsigned long h;
-  }
-  sthread_t;
-#else
   typedef struct
   {
     HANDLE h;
-    unsigned long id;
+    unsigned id;
   }
   sthread_t;
-#endif
 #endif
 
 #if !defined(WIN32) && defined(__PSOS__)

@@ -85,123 +85,52 @@ sthread_exit ()
 
 #ifdef WIN32
 
-#ifdef OLD_THREAD_INTERFACE
-sthread_t *
-sthread_create (int stacksize, sthread_t * thread,
-                void *(*func) (void *), void *arg)
+sthread_t *sthread_create(int stacksize, sthread_t *thread,
+                          void *(*func)(void *),  void *arg)
 {
-  if (thread == NULL)
-    thread = (sthread_t *) smalloc (sizeof (sthread_t));
+    if (thread==NULL)
+      thread = (sthread_t *) smalloc(sizeof(sthread_t));
 
-  thread->h = _beginthread ((void *) func, stacksize, arg);
+    thread->h = (HANDLE) _beginthreadex(NULL, /* default security attr */
+							 0, /* use default one */
+							 (void *)func,
+							 arg,
+							 0,
+							 &(thread->id));
 
-  if (thread->h == 0)
+    if (thread->h == 0)
     {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Could not create new thread\n"));
-      return NULL;
+    fprintf(stdout,"Error while creating a new thread\n");
+    return NULL;
     }
 
   return thread;
 }
 
-/* THIS METHOD IS BROKEN because it kill the thread instead
-of wainting for it! */
-int
-sthread_join (sthread_t * thread)
+int sthread_join(sthread_t *thread)
 {
   int i;
+  if (thread==NULL) return -1;
 
-  if (thread == NULL)
-    return -1;
-  if (GetThreadPriority ((HANDLE) thread->h) != THREAD_PRIORITY_ERROR_RETURN)
+  i = WaitForSingleObject(thread->h, INFINITE);
+  if (i==WAIT_OBJECT_0)
+	fprintf(stdout, "thread joined!\n");
+  else
     {
-      i = TerminateThread ((HANDLE) thread->h, 0);
-      if (i == 0)
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                       "Could not join thread\n"));
-      } else
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_INFO4, NULL, "Thread joined!\n"));
-        }
-  } else
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL, "No thread to join?\n"));
+      fprintf(stdout, "ERROR!! thread joined ERROR!!\n");
       return -1;
     }
+  CloseHandle(thread->h);
 
-  return (0);
-}
-
-void
-sthread_exit ()
-{
-  _endthread ();
-}
-
-#else
-
-sthread_t *
-sthread_create (int stacksize, sthread_t * thread,
-                void *(*func) (void *), void *arg)
-{
-  if (thread == NULL)
-    thread = (sthread_t *) smalloc (sizeof (sthread_t));
-
-  thread->h = CreateThread (NULL,       /* default security attr */
-                            0,  /* use default one */
-                            (void *) func, arg, 0, &(thread->id));
-
-  if (thread->h == 0)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Could not create thread!\n"));
-      return NULL;
-    }
-
-  return thread;
-}
-
-int
-sthread_join (sthread_t * thread)
-{
-  int i;
-
-  if (thread == NULL)
-    return -1;
-
-  i = WaitForSingleObject (thread->h, INFINITE);
-  if (i == WAIT_OBJECT_0)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO4, NULL, "thread joined!\n"));
-  } else
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Could not join thread!\n"));
-      return -1;
-    }
-  CloseHandle (thread->h);
-
-  return (0);
+  return(0);
 
 }
 
-void
-sthread_exit ()
-{
-  ExitThread (0);
+void sthread_exit()
+{ 
+	/* ExitThread(0); */
+	_endthreadex(0);
 }
-
-#endif
-
 
 int
 sthread_setpriority (sthread_t * thread, int priority)
