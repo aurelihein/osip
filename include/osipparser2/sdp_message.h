@@ -542,6 +542,14 @@ extern "C"
   int sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
 				   char *att_field, char *att_value);
 /**
+ * delete all attribute fields specified by att_field.
+ * @param sdp The element to work on.
+ * @param pos_media The line number.
+ * @param att_field The value to remove.
+ */
+  int sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, 
+				   char *att_field);
+ /**
  * Get one of the attribute ('a' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
