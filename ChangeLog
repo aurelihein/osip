@@ -1,4 +1,5 @@
 libosip2 (2.0.5)
+	* Fix for content-type header.
 	* New optionnal timer interface. (will become the default)
 	* fix the sent-by check for matching response with transaction.
 	
