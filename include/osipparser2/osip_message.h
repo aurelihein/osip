@@ -98,6 +98,8 @@ extern "C"
     int message_property;             /**@internal */
     char *message;                    /**@internal */
     size_t message_length;            /**@internal */
+
+    void *application_data;           /**can be used by upper layer*/
   };
 
 #ifndef SIP_MESSAGE_MAX_LENGTH
