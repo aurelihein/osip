@@ -1,4 +1,6 @@
 libosip2 (2.0.1)
+	* fix bug in osip_message_to_str() for too long messages.
+	* improve robustness when parsing empty headers.
 	* add optionnal retransmission of 2xx and ACK for INVITE capabilities.
 	* fix bug on exit for WIN32.
 

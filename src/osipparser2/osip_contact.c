@@ -34,6 +34,9 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
   int i;
   osip_contact_t *contact;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_contact_init (&contact);
   if (i != 0)
     return -1;

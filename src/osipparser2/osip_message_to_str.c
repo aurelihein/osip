@@ -276,7 +276,6 @@ strcat_headers_one_per_line (char **_string, int *malloc_size,
       message = message + strlen (message);
       osip_strncpy (message, CRLF, 2);
       message = message + 2;
-
       pos++;
     }
   *_string = string;
@@ -617,8 +616,7 @@ osip_message_to_str (osip_message_t * sip, char **dest)
       return -1;
     }
   message = next;
-
-
+  
   pos = 0;
   while (!osip_list_eol (sip->headers, pos))
     {
@@ -632,6 +630,17 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	  *dest = NULL;
 	  return -1;
 	}
+
+      if (malloc_size < message - *dest + 100 + 16 )
+	{
+	  int size = message - *dest;
+	  malloc_size = message - *dest + 16 + 100;
+	  *dest = realloc (*dest, malloc_size);
+	  if (*dest == NULL)
+	    return -1;
+	  message = *dest + size;
+	}
+
       osip_strncpy (message, tmp, strlen (tmp));
       osip_free (tmp);
       message = message + strlen (message);
@@ -691,7 +700,6 @@ osip_message_to_str (osip_message_t * sip, char **dest)
       return -1;
     }
   message = next;
-
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
@@ -776,6 +784,16 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
 
   /* we have to create the body before adding the contentlength */
+  /* add enough lenght for "Content-Length: " */
+  if (malloc_size < message - *dest + 100 + 16 )
+    {
+      int size = message - *dest;
+      malloc_size = message - *dest + 16 + 100;
+      *dest = realloc (*dest, malloc_size);
+      if (*dest == NULL)
+	return -1;
+      message = *dest + size;
+    }
 
   osip_strncpy (message, "Content-Length: ", 16);
   message = message + strlen (message);
@@ -853,6 +871,17 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	  *dest = NULL;
 	  return -1;
 	}
+
+      if (malloc_size < message - *dest + 100 + strlen(tmp) )
+	{
+	  int size = message - *dest;
+	  malloc_size = message - *dest + strlen(tmp) + 100;
+	  *dest = realloc (*dest, malloc_size);
+	  if (*dest == NULL)
+	    return -1;
+	  message = *dest + size;
+	}
+
       osip_strncpy (message, tmp, strlen (tmp));
       osip_free (tmp);
       message = message + strlen (message);

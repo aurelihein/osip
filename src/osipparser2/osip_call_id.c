@@ -32,6 +32,9 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   if (sip->call_id != NULL)
     return -1;
   i = osip_call_id_init (&(sip->call_id));

@@ -57,6 +57,9 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
   osip_authorization_t *authorization;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   if (sip == NULL || sip->authorizations == NULL)
     return -1;
   i = osip_authorization_init (&authorization);

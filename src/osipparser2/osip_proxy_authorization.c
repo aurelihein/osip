@@ -36,6 +36,9 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
   osip_proxy_authorization_t *proxy_authorization;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_proxy_authorization_init (&proxy_authorization);
   if (i != 0)
     return -1;

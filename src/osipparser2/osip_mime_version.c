@@ -33,6 +33,9 @@ osip_message_set_mime_version (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   if (sip->mime_version != NULL)
     return -1;
   i = osip_mime_version_init (&(sip->mime_version));

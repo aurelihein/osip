@@ -39,6 +39,9 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
   osip_record_route_t *record_route;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_record_route_init (&record_route);
   if (i != 0)
     return -1;

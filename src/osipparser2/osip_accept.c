@@ -35,6 +35,9 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
   osip_accept_t *accept;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = accept_init (&accept);
   if (i != 0)
     return -1;

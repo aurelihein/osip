@@ -58,6 +58,10 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
 
   if (sip->content_type != NULL)
     return -1;
+
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_content_type_init (&(sip->content_type));
   if (i != 0)
     return -1;

@@ -30,6 +30,9 @@ osip_message_set_alert_info (osip_message_t * sip, const char *hvalue)
   osip_alert_info_t *alert_info;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_alert_info_init (&alert_info);
   if (i != 0)
     return -1;

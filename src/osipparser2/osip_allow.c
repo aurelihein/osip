@@ -30,6 +30,9 @@ osip_message_set_allow (osip_message_t * sip, const char *hvalue)
   osip_allow_t *allow;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_allow_init (&allow);
   if (i != 0)
     return -1;

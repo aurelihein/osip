@@ -34,6 +34,9 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
   osip_accept_encoding_t *accept_encoding;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_accept_encoding_init (&accept_encoding);
   if (i != 0)
     return -1;

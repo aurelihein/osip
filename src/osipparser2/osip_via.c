@@ -34,6 +34,9 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
   osip_via_t *via;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_via_init (&via);
   if (i != 0)
     return -1;

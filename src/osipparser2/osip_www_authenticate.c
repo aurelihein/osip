@@ -51,6 +51,9 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
   osip_www_authenticate_t *www_authenticate;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   if (sip == NULL || sip->www_authenticates == NULL)
     return -1;
   i = osip_www_authenticate_init (&www_authenticate);

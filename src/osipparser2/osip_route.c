@@ -44,6 +44,9 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
   osip_route_t *route;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
 #ifdef __VXWORKS_OS__
   i = osip_route_init2 (&route);
 #else

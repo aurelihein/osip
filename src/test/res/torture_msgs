@@ -2,6 +2,48 @@ MESSAGE sip:ominjeonaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 Via: SIP/2.0/UDP 165.213.114.66:10507; viaparm
 Via: SIP/2.0/UDP 165.213.114.66:10507; viaparm
 Via: SIP/2.0/UDP 165.213.114.66:10507; viaparm
+Accept:     
+Content-Type:
+Content-Type:   
+www-authenticate:   
+Via:   
+to:   
+route:   
+record-route:   
+Call-ID:   
+User-Agent:   
+Proxy-Authorization:   
+CSeq:   
+Contact:   
+Supported:   
+Accept:
+Content-Type:
+Content-Type:
+www-authenticate:
+Via:
+to:
+route:
+record-route:
+Call-ID:
+User-Agent:
+Proxy-Authorization:
+CSeq:
+Contact:
+Supported:
+Accept: 
+Content-Type: 
+Content-Type: 
+www-authenticate: 
+Via: 
+to: 
+route: 
+record-route: 
+Call-ID: 
+User-Agent: 
+Proxy-Authorization: 
+CSeq: 
+Contact: 
+Supported: 
 From: "\"\"" <sip:foo@foo.com>;tag=f9ac1478-d316-4bf4-b3a1-6fec6c89e1b2
 Record-Route: <sip:oleaa@aa.there.com;
  maddr=ssaa.wcom.com>

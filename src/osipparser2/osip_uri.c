@@ -122,7 +122,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
   const char *tmp;
 
   /* basic tests */
-  if (buf == NULL)
+  if (buf == NULL || buf[0]=='\0')
     return -1;
 
   tmp = strchr (buf, ':');

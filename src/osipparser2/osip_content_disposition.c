@@ -30,6 +30,9 @@ osip_message_set_content_disposition (osip_message_t * sip, const char *hvalue)
   osip_content_disposition_t *content_disposition;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_content_disposition_init (&content_disposition);
   if (i != 0)
     return -1;

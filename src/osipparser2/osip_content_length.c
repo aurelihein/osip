@@ -42,6 +42,9 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   if (sip->content_length != NULL)
     return -1;
   i = osip_content_length_init (&(sip->content_length));

@@ -30,6 +30,9 @@ osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
   osip_error_info_t *error_info;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_error_info_init (&error_info);
   if (i != 0)
     return -1;

@@ -33,6 +33,9 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
   osip_content_encoding_t *content_encoding;
   int i;
 
+  if (hvalue==NULL || hvalue[0]=='\0')
+    return 0;
+
   i = osip_content_encoding_init (&content_encoding);
   if (i != 0)
     return -1;
