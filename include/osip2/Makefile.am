@@ -1,5 +1,5 @@
 
-EXTRA_DIST = internal.h
+EXTRA_DIST = internal.h doc.h
 
 osip2_includedir=$(includedir)/osip2
 

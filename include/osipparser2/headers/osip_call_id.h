@@ -34,10 +34,14 @@
 
 /**
  * Structure for Call-Id headers.
- * @defvar osip_call_id_t
+ * @var osip_call_id_t
  */
   typedef struct osip_call_id osip_call_id_t;
 
+/**
+ * Definition of the Call-Id header.
+ * @struct osip_call_id
+ */
   struct osip_call_id
   {
     char *number;

@@ -29,7 +29,7 @@
  */
 
 /**
- * @defgroup oSIP_SDP oSIP sdp negotiation facility.
+ * @defgroup oSIP_rfc3264 oSIP sdp negotiation facility.
  * @ingroup oSIP
  * @{
  */
