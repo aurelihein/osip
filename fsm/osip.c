@@ -472,9 +472,9 @@ transaction_t *
 __osip_find_transaction(osip_t *osip,sipevent_t* evt, int consume)
 {
   transaction_t *transaction = NULL;
-  list_t *transactions;
+  list_t *transactions = NULL;
 #ifdef OSIP_MT
-  smutex_t *mut;
+  smutex_t *mut = NULL;
 #endif
   if (EVT_IS_INCOMINGMSG(evt))
     {
@@ -603,6 +603,7 @@ osip_create_transaction(osip_t *osip, sipevent_t *evt)
   else
     {
       TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"Cannot build a transction for this message!\n"));
+      return NULL;
     }
 
   i = transaction_init(&transaction,

@@ -551,8 +551,31 @@ transaction_matching_request_to_xist_17_2_3(transaction_t *tr, sip_t *request)
   /* Back to the old backward compatibilty mechanism for matching requests */
   if (0!=call_id_match(tr->callid, request->call_id))
     return -1;
-  if (0!=to_tag_match(tr->to, request->to))
-    return -1;
+  if (MSG_IS_ACK(request))
+    {
+      generic_param_t *tag_from1;
+      generic_param_t *tag_from2;
+      from_param_getbyname(tr->to, "tag", &tag_from1);
+      from_param_getbyname(request->to, "tag", &tag_from2);
+      if (tag_from1==NULL && tag_from2!=NULL )
+	{ /* do not check it as it can be a new tag when the final
+	     answer has a tag while an INVITE doesn't have one */
+	}
+      else if ( tag_from1!=NULL && tag_from2==NULL )
+	{
+	  return -1;
+	}
+      else
+	{
+	  if (0!=to_tag_match(tr->to, request->to))
+	    return -1;
+	}
+    }
+  else
+    {
+      if (0!=to_tag_match(tr->to, request->to))
+	return -1;
+    }
   if (0!=from_tag_match(tr->from, request->from))
     return -1;
   if (0!=cseq_match(tr->cseq, request->cseq))
