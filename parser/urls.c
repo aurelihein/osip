@@ -130,18 +130,34 @@ url_parse (url_t * url, char *buf)
   url->scheme = (char *) smalloc (tmp - buf + 1);
   sstrncpy (url->scheme, buf, tmp - buf);
 
-  if (strlen (url->scheme) < 3 ||
-      (0 != strncmp (url->scheme, "sip", 3)
-       && 0 != strncmp (url->scheme, "sips", 4)))
-    {                           /* Is not a sipurl ! */
-      int i = strlen (tmp + 1);
-
-      if (i < 2)
-        return -1;
+#ifndef WIN32
+ if (strlen (url->scheme) < 3 ||
+     (0 != strncasecmp (url->scheme, "sip", 3)
+      && 0 != strncasecmp (url->scheme, "sips", 4)))
+   {                           /* Is not a sipurl ! */
+     int i = strlen (tmp + 1);
+     
+     if (i < 2)
+       return -1;
       url->string = (char *) smalloc (i + 1);
       sstrncpy (url->string, tmp + 1, i);
       return 0;
-    }
+   }
+#else
+ if (strlen (url->scheme) < 3 ||
+     (0 != strnicmp (url->scheme, "sip", 3)
+      && 0 != strnicmp (url->scheme, "sips", 4)))
+   {                           /* Is not a sipurl ! */
+     int i = strlen (tmp + 1);
+     
+     if (i < 2)
+       return -1;
+     url->string = (char *) smalloc (i + 1);
+     sstrncpy (url->string, tmp + 1, i);
+     return 0;
+   }
+#endif
+
   /*  law number 1:
      if ('?' exists && is_located_after '@')
      or   if ('?' exists && '@' is not there -no username-)
