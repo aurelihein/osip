@@ -54,10 +54,12 @@
 #endif
 
 #ifdef __VXWORKS_OS__
-
 #include <string.h>
 #include <time.h>
+#include <sys/times.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <stdlib.h>
 #define VA_START(a, f)  va_start(a, f)
 
 #else /* end of __VXWORKS_OS__ */

@@ -108,7 +108,7 @@ osip_fallback_random_number ()
       ticks = GetTickCount();
 #elif defined(__VXWORKS_OS__)
       struct timespec tp;
-      ret = clock_gettime(CLOCK_REALTIME, &tp);
+      clock_gettime(CLOCK_REALTIME, &tp);
       ticks = tp.tv_sec+tp.tv_nsec;
 #else
       struct timeval tv;

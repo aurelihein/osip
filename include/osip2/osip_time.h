@@ -18,7 +18,7 @@ void add_gettimeofday(struct timeval *atv,int ms);
 void min_timercmp(struct timeval *tv1,struct timeval *tv2);
 
 /* OS-dependent */
-#if defined(WIN32) || defined(_WIN32_WCE)
+#if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__)
 /* Operations on struct timeval */
 #define osip_timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
 #define osip_timercmp(tvp, uvp, cmp) \
