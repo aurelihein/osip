@@ -8,7 +8,7 @@ Package: libosip-dev
 Section: devel
 Architecture: any
 Depends: libosip1 (= ${Source-Version}), libc6-dev
-Description: oSIP library, Development (for Omnibus SIP) 
+Description: oSIP library, Development (for open SIP) 
  This is the oSIP library. It has been designed to provide
  the Internet Community a simple way to support SIP
  (Session Initiation Protocol). SIP is described in the RFC3261
