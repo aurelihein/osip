@@ -26,61 +26,6 @@
  * @file osip_dialog.h
  * @brief oSIP dialog Routines
  *
- * Dialog management is a powerful facility given by oSIP. This feature is
- * needed by SIP end point who has the capability to answer calls. (i.e.
- * answering 200 OK to an INVITE).
- * <BR>
- * A Dialog is a context for a call establishment in oSIP. It's not useless
- * to say that ONE invite request can lead to several call establishment.
- * This can happen if your call has been forked by a proxy and several
- * user agent was contacted and replied at the same time. It is true that
- * this case won't probably happen several times a month...
- * <BR>
- * There is two ways of creating a dialog. In one case, you are the CALLER
- * and in the other case, you will be the CALLEE.
- * <UL>
- * <LI>Creating a dialog as a CALLER
- * <BR>In this case, you have to create a dialog each time you receive
- * an answer with a code between 101 and 299. The best place in oSIP to
- * actually create a dialog is of course in the callback that announce
- * such SIP messages. Of course, each time you receive a response, you have
- * to check for an existing dialog associated to this INVITE that can have
- * been created by earlier SIP answer coming from the same User Agent. The
- * code in the callback will look like the following:
- * <BR> void cb_rcv1xx(osip_transaction_t *tr,osip_message_t *sip)
- * <BR> {
- * <BR>   osip_dialog_t *dialog;
- * <BR>   if (MSG_IS_RESPONSEFOR(sip, "INVITE")&&!MSG_TEST_CODE(sip, 100)) {
- * <BR>     dialog = my_application_search_existing_dialog(sip);
- * <BR>     if (dialog==NULL) //NO EXISTING DIALOG
- * <BR>       {
- * <BR>        i = osip_dialog_init_as_uac(&dialog, sip);
- * <BR>        my_application_add_existing_dialog(dialog);
- * <BR>       }
- * <BR>   } else {
- * <BR>     // no dialog establishment for other REQUEST
- * <BR> }
- * </LI>
- * <LI>Creating a dialog as a CALLEE
- * <BR>In this case, you will have to create a dialog upon receiving the first
- * transmission of the INVITE request. The correct place to do that is inside
- * the callback previously registered to announce new INVITE. First, you will
- * build a SIP answer like 180 or 200 and you'll be able to create a dialog
- * by calling the following code:
- * <BR>osip_dialog_t *dialog;
- * <BR>osip_dialog_init_as_uas(&dialog, original_invite, response_that_you_build);
- * <BR>To make things working, you MUST create a VALID response: do not
- * forget to create a new tag and put it in the 'To' header. The dialog
- * management heavily depends on this tag.
- * </LI>
- * </UL>
- * <P>The dialog management is compliant with the latest SIP draft
- * (rfc2543bis-09). It should handle successfully most cases where
- * a remote UA is not compliant (no tag in the To of a final response!)
- * But for example, if you receive 2 answers from 2 uncompliant
- * UA, they will be detected as being related to the same dialog...
- * Do not change any code in oSIP or in your application... instead, you
- * should boycott such implementation. :-
  */
 
 /**

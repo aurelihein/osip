@@ -2,7 +2,7 @@
  * @ingroup libosip2 The GNU oSIP stack
  * @defgroup howto3_transaction How-To manage transactions.
 
- * @section howto1_1 Description.
+ * @section howto3_1 Description.
 
 The interesting and somewhat complex feature implemented
 by osip is the 4 states machines that applied to the different
@@ -84,7 +84,7 @@ Events are divided in three categories:
 <LI>transport errors</LI>
 </UL>
 
-* @section howto1_2 Managing a new transaction.
+* @section howto3_2 Managing a new transaction.
 
 Let's assume you want to implement a User Agent and you want to
 start a REGISTER transaction. Using the parser library, you will first
@@ -123,7 +123,7 @@ transaction. Here is the code:
 
 Adding new events in the fsm is made with similar code.
 
-* @section howto1_3 Consuming events.
+* @section howto3_3 Consuming events.
 
 The previous step show how to create a transaction and one possible way
 to add a new event. (Note, that some events -the TIMEOUT_* ones- will be
@@ -147,7 +147,7 @@ transaction, the code will be the following:
   }
 </pre>
 
-* @section howto1_4 Announcing events to the application layer.
+* @section howto3_4 Announcing events to the application layer.
 
 Looking at the case of a usual outgoing REGISTER transaction, this behaviour
 is expected.
