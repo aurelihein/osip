@@ -402,7 +402,9 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite, osip_
       pos++;
     }
 
-  (*dialog)->local_cseq = -1;
+  /* local_cseq is set to response->cseq->number for better
+     handling of bad UA */
+  (*dialog)->local_cseq = osip_atoi (response->cseq->number);
   (*dialog)->remote_cseq = osip_atoi (response->cseq->number);
 
 
