@@ -1,5 +1,5 @@
 Project    : "The GNU oSIP library" is an implementation of SIP - rfc3261. 
-Last update: 0.9.0
+Last update: 0.9.1
 Email      : jack@atosc.org
 License    : LGPL (http://www.gnu.org)
 Home Page  : http://www.fsf.org/software/osip/osip.html
@@ -50,14 +50,7 @@ Documentation:
 
 Yet available:
   *  this README file.
-  *  ./doc/osip.html: oSIP User Manual (for 0.7.X releases).
-	(Under the FDL license)
-
-WARNING: This documentation is up to date for the parser library, but
-         is not for the fsm part of oSIP. Main ideas remain unchanged
-         but events exchanges between the fsm and the applications layer
-         have changed. This was required for being compliant with the
-         latest revision of the rfc3261.
+  *  Documentation link at http://www.gnu.org/software/osip/
 
 Installation procedure:
 -----------------------
@@ -66,13 +59,15 @@ The library is known to compile on various platform:
   *  GNU/Linux
 	(2.2.16, 2.4.7, 2.4.12, 2.4.17 with gcc 2.95.2)
 	gcc-3.0.3 from libosip-0.7.8
+  *  OpenBsd 3.1/3.2
   *  Windows NT (95, 2000, ???)
         VC++6.0
+  *  Solaris.
 
 Extra set of OS where some version of oSIP has been ported.
-  *  Solaris.
   *  HP-Unix.
   *  VxWorks.
+  *  Some embedded systems with linux.
 
 The INSTALL file describes the compilation process.
 
@@ -87,7 +82,7 @@ For basic test, type the following command line:
 
   $> make check
 
-For more testing:
+For more testing: (!!!DON'T WORRY, SOME TESTS MUST FAIL!!!)
 
   *  ./test/torture_test: test the SIP parser.
   *  ./test/torture_sdp: test the SDP parser, its accessor API and the
@@ -120,23 +115,6 @@ How to use the test programs:
 	./test/tvia conf/vias.txt
 	./test/tcontact conf/contacts.txt
 	./test/turl conf/urls.txt
-
-Known issues:
--------------
-
-  *  Lack of thread resources:
-        It seems that some Linux distributions includes kernel
-        that can't launch a high number of threads. Proxy can
-        use heavily multi-threaded architectures thus resulting
-        in a high number of threads. If the limit is set to 64
-        threads, this will limit the proxy capability.
-
-    The solution for me is to just recompile the kernel. The
-    default number of thread is 1024 in the source tree. (as
-    far as I know)
-
-    Of course, you should avoid building an application that launch
-    so much threads! 
 
 Contact information:
 --------------------
