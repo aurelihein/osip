@@ -26,9 +26,17 @@ void
 add_gettimeofday (struct timeval *atv, int ms)
 {
   int m;
-  atv->tv_usec += ms * 1000;
-  m = atv->tv_usec / 1000000;
-  atv->tv_usec = atv->tv_usec % 1000000;
+  if (ms>=1000000)
+    {
+      atv->tv_usec = 0;
+      m = ms / 1000;
+    }
+  else
+    {
+      atv->tv_usec += ms * 1000;
+      m = atv->tv_usec / 1000000;
+      atv->tv_usec = atv->tv_usec % 1000000;
+    }
   atv->tv_sec += m;
 }
 
