@@ -69,7 +69,7 @@
  * carefully the rfc. oSIP is not easy to use, but I'm
  * convinced there are benefits in terms of flexibility.
  * If you find osip too complex to use, please look for
- * another adequate solutions.
+ * another adequate solution.
  * </B>
  *
  ************************************************************
