@@ -1,5 +1,5 @@
 
-EXTRA_DIST = parser.h
+EXTRA_DIST = parser.h osip_rfc3264i.h
 
 lib_LTLIBRARIES = libosipparser2.la
 
@@ -15,7 +15,7 @@ osip_call_id.c              osip_message_parse.c                              \
 osip_contact.c              osip_message_to_str.c      osip_port.c            \
 osip_content_disposition.c  osip_mime_version.c        sdp_message.c          \
 osip_content_length.c       osip_parser_cfg.c          sdp_accessor.c         \
-osip_content_type.c         osip_proxy_authenticate.c
+osip_content_type.c         osip_proxy_authenticate.c  osip_rfc3264.c
 
 libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
  $(PARSER_LIB) $(EXTRA_LIB)

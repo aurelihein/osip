@@ -1,3 +1,6 @@
+libosip2 (2.1.0)
+	* Initial release of the new SDP negociator. (old one will be removed)
+	
 libosip2 (2.0.8)
 	* fix bug in parser (windows)
 	* fix lookup of generic_paramter and uri_parameter.

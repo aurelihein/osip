@@ -1,9 +1,9 @@
 
 SUBDIRS = res
 
-EXTRA_DIST = tst tst_sdp README
+EXTRA_DIST = tst tst_sdp tst_rfc3264 README
 
-noinst_PROGRAMS = torture_test torture_sdp_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
+noinst_PROGRAMS = torture_rfc3264 torture_test torture_sdp_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
 INCLUDES = -I$(top_srcdir)/include
 AM_CFLAGS = $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
 
@@ -104,6 +104,14 @@ $(top_builddir)/src/osipparser2/sdp_message.o   \
 $(top_builddir)/src/osipparser2/sdp_accessor.o  \
 $(top_builddir)/src/osip2/osip_negotiation.o
 
+torture_rfc3264_SOURCES =  torture_rfc3264.c
+torture_rfc3264_LDADD = $(PARSER_LIB) $(EXTRA_LIB) \
+$(top_builddir)/src/osipparser2/osip_list.o     \
+$(top_builddir)/src/osipparser2/osip_port.o     \
+$(top_builddir)/src/osipparser2/sdp_message.o   \
+$(top_builddir)/src/osipparser2/sdp_accessor.o  \
+$(top_builddir)/src/osipparser2/osip_rfc3264.o
+
 torture_test_SOURCES =  torture.c
 torture_test_LDADD = $(PARSER_LIB) $(EXTRA_LIB) \
 $(top_builddir)/src/osipparser2/osip_list.o     \
@@ -147,7 +155,8 @@ $(top_builddir)/src/osipparser2/sdp_accessor.o
 check:
 	@echo " ****** starting tests! ********"
 	./$(top_srcdir)/src/test/tst ./$(top_srcdir)/src/test/res/torture_msgs -v -c > ./osip-chk.log 2>&1
-	./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
+	./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log2 2>&1
+	./$(top_srcdir)/src/test/tst_rfc3264 ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
 
 	@echo " ******              RESULTS                 ********"
 
@@ -156,6 +165,13 @@ check:
 	@echo " **SIP* NUMBER OF FAILURE (6 are expected)  ********"
 	@grep "==========" osip-chk.log | grep FA | wc -l
 
+	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
+	@grep "==========" osipsdp-chk.log2 | grep OK | wc -l
+	@echo " **SDP* NUMBER OF FAILURE (0 are expected)   ********"
+	@grep "==========" osipsdp-chk.log2 | grep FA | wc -l
+	@echo ""
+	@echo "New negociator Facility:"
+	@echo ""
 	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
 	@grep "==========" osipsdp-chk.log | grep OK | wc -l
 	@echo " **SDP* NUMBER OF FAILURE (0 are expected)   ********"
