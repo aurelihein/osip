@@ -129,4 +129,3 @@ EXPORTS
 	 osip_cond_init    @125
 	 osip_cond_signal    @126
 	 osip_cond_timedwait    @127
-	 osip_clock_gettime    @128
