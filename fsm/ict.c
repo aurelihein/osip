@@ -81,7 +81,7 @@ ict_init(ict_t **ict, osip_t *osip, sip_t *invite)
       int port = 5060;
       if (route->url->port!=NULL)
 	port = satoi(route->url->port);
-      ict_set_destination((*ict), route->url->host, port);
+      ict_set_destination((*ict), sgetcopy(route->url->host), port);
     }
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;

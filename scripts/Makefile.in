@@ -90,7 +90,8 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 
-EXTRA_DIST = config.guess config.sub install-sh missing mkinstalldirs ltconfig ltmain.sh
+EXTRA_DIST = config.guess config.sub install-sh missing mkinstalldirs ltconfig ltmain.sh acx_pthread.m4
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/scripts/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

@@ -77,7 +77,7 @@ nict_init(nict_t **nict, osip_t *osip, sip_t *request)
       int port = 5060;
       if (route->url->port!=NULL)
 	port = satoi(route->url->port);
-      nict_set_destination((*nict), route->url->host, port);
+      nict_set_destination((*nict), sgetcopy(route->url->host), port);
     }
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;

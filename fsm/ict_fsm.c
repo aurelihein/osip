@@ -322,15 +322,16 @@ ict_rcv_3456xx(transaction_t *ict, sipevent_t *evt)
 	  int port = 5060;
 	  if (route->url->port!=NULL)
 	    port = satoi(route->url->port);
-	  ict_set_destination(ict->ict_context, route->url->host, port);
+	  ict_set_destination(ict->ict_context, sgetcopy(route->url->host), port);
 	}
       else
 	{
 	  int port = 5060;
 	  if (ack->strtline->rquri->port!=NULL)
 	    port = satoi(ack->strtline->rquri->port);
-	  ict_set_destination(ict->ict_context, ack->strtline->rquri->host, port);
+	  ict_set_destination(ict->ict_context, sgetcopy(ack->strtline->rquri->host), port);
 	}
+      
       i = osip->cb_send_message(ict, ack, ict->ict_context->destination,
 				ict->ict_context->port, ict->out_socket);
       if (i!=0)
