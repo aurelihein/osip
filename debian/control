@@ -1,0 +1,27 @@
+Source: libosip
+Priority: optional
+Maintainer: Aymeric Moizard <jack@atosc.org>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: libosip-dev
+Section: devel
+Architecture: any
+Depends: libosip1 (= ${Source-Version}), libc6-dev
+Description: oSIP library, Development (for Omnibus SIP) 
+ This is the oSIP library (for Omnibus SIP). It has been
+ designed to provide the Internet Community a simple
+ way to support the Session Initiation Protocol.
+ SIP is described in the RFC2543 which is available at
+ http://www.ietf.org/rfc/rfc2543.txt.
+
+Package: libosip1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: oSIP library (for Omnibus SIP)
+ This is the oSIP library (for Omnibus SIP). It has been
+ designed to provide the Internet Community a simple
+ way to support the Session Initiation Protocol.
+ SIP is described in the RFC2543 which is available at
+ http://www.ietf.org/rfc/rfc2543.txt.

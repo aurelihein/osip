@@ -1,0 +1,24 @@
+libosip (0.8.4-1) unstable; urgency=low
+
+  * New Release compliant with latest draft (with new API)
+
+ -- Aymeric MOIZARD <jack@atosc.org> Tue, 16 Apr 2002 11:29:25 +0100
+
+libosip (0.7.9-1) unstable; urgency=low
+
+  * New Release.
+
+ -- Simon Morlat <simon.morlat@linphone.org>  Tue, 16 Mar 2002 21:45:13 +0100
+
+libosip (0.7.8-1) unstable; urgency=low
+
+  * New Release.
+
+ -- Uwe Steinmann <uwe@steinmann.cx>  Wed, 7 Mar 2002 07:27:13 +0100
+
+libosip (0.7.6-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Uwe Steinmann <uwe@steinmann.cx>  Thu, 28 Feb 2002 07:27:13 +0100
+
