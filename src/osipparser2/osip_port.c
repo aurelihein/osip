@@ -430,7 +430,7 @@ osip_trace_disable_level (osip_trace_level_t level)
 {
 }
 
-boolean
+int
 osip_is_trace_level_activate (osip_trace_level_t level)
 {
   return LOG_FALSE;

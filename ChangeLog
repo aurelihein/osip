@@ -1,5 +1,7 @@
-libosip2 (2.0.2)
+libosip2 (2.0.3)
 	* fix compile issue with --disable-trace & --disable-debug
+
+libosip2 (2.0.2)
 	* fix Makefile.am to include debian directory.
 	* fix a bug when response contains a code set to "0".
 	* fix a bug when Mime-version is present but Content-type is undefined.
