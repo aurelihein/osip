@@ -338,6 +338,15 @@ ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
 
       ict->ack = ack;
 
+      if (ict->ack==NULL)
+	{
+	  /* ERROR! */
+	  transaction_set_state (ict, ICT_TERMINATED);
+	  osip->cb_ict_kill_transaction (ict);
+	  /* TODO: MUST BE DELETED NOW */
+	  return;
+	}
+
       /* reset ict->ict_context->destination only if
          it is not yet set. */
       if (ict->ict_context->destination == NULL)
@@ -442,6 +451,15 @@ ict_retransmit_ack (transaction_t * ict, sipevent_t * evt)
 
   msg_free (evt->sip);
   sfree (evt->sip);
+
+  if (ict->ack==NULL)
+    {
+      /* ERROR! */
+      transaction_set_state (ict, ICT_TERMINATED);
+      osip->cb_ict_kill_transaction (ict);
+      /* TODO: MUST BE DELETED NOW */
+      return;
+    }
 
   i = osip->cb_send_message (ict, ict->ack, ict->ict_context->destination,
 			     ict->ict_context->port, ict->out_socket);

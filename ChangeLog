@@ -1,3 +1,6 @@
+libosip (0.9.7)
+	* fix crash when osip can't build ACK for 3456xx to INVITEs.
+	
 libosip (0.9.6)
 	* fix transaction_init for request without mandatory headers.
 	* refuse to create transactions with cseq and method that differs.
