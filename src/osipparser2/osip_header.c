@@ -212,6 +212,9 @@ osip_header_to_str (const osip_header_t * header, char **dest)
     sprintf (*dest, "%s: %s", header->hname, header->hvalue);
   else
     sprintf (*dest, "%s: ", header->hname);
+
+  if (*dest[0] > 'a' && *dest[0] < 'z')
+    *dest[0] = (*dest[0]-32);
   return 0;
 }
 

@@ -434,25 +434,28 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
   comma = strchr (ptr, ',');
 
   hname_len = strlen(hname);
+
+#ifndef DONOTLOWERCASEHEADERS
   osip_tolower (hname);
+#endif
 
   if (comma == NULL
-      || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
-      || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
-      || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
-      || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
-      || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
-      || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
-      || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
-      || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
-      || (hname_len == 10 && strncmp (hname, "user-agent", 10) == 0)
-      || (hname_len == 16 && strncmp (hname, "www-authenticate", 16) == 0)
-      || (hname_len == 19 && strncmp (hname, "authentication-info", 19) == 0)
-      || (hname_len == 18 && strncmp (hname, "proxy-authenticate", 18) == 0)
-      || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
-      || (hname_len == 25 && strncmp (hname, "proxy-authentication-info", 25) == 0)
-      || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
-      || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
+      || (hname_len == 4 && osip_strncasecmp (hname, "date", 4) == 0)
+      || (hname_len == 2 && osip_strncasecmp (hname, "to", 2) == 0)
+      || (hname_len == 4 && osip_strncasecmp (hname, "from", 4) == 0)
+      || (hname_len == 7 && osip_strncasecmp (hname, "call-id", 7) == 0)
+      || (hname_len == 4 && osip_strncasecmp (hname, "cseq", 4) == 0)
+      || (hname_len == 7 && osip_strncasecmp (hname, "subject", 7) == 0)
+      || (hname_len == 7 && osip_strncasecmp (hname, "expires", 7) == 0)
+      || (hname_len == 6 && osip_strncasecmp (hname, "server", 6) == 0)
+      || (hname_len == 10 && osip_strncasecmp (hname, "user-agent", 10) == 0)
+      || (hname_len == 16 && osip_strncasecmp (hname, "www-authenticate", 16) == 0)
+      || (hname_len == 19 && osip_strncasecmp (hname, "authentication-info", 19) == 0)
+      || (hname_len == 18 && osip_strncasecmp (hname, "proxy-authenticate", 18) == 0)
+      || (hname_len == 19 && osip_strncasecmp (hname, "proxy-authorization", 19) == 0)
+      || (hname_len == 25 && osip_strncasecmp (hname, "proxy-authentication-info", 25) == 0)
+      || (hname_len == 12 && osip_strncasecmp (hname, "organization", 12) == 0)
+      || (hname_len == 13 && osip_strncasecmp (hname, "authorization", 13) == 0))
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
     /* or hname is a TEXT-UTF8-TRIM and may     */
