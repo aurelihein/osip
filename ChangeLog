@@ -1,4 +1,5 @@
 libosip (0.9.7)
+	* fix a bug in hdr_wwwauthenticate.c.
 	* patch for debian packaging and version management.
 	* extra free removed for pSOS (smutex_destroy/ssem_destroy)
 	* fix crash when osip can't build ACK for 3456xx to INVITEs.
