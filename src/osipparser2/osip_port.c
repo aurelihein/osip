@@ -250,7 +250,7 @@ osip_tolower (char *word)
   for (; *word; word++)
     *word = (char) tolower (*word);
 #else
-  int i;
+  size_t i;
   size_t len = strlen (word);
 
   for (i = 0; i <= len - 1; i++)
@@ -555,7 +555,7 @@ osip_is_trace_level_activate (osip_trace_level_t level)
 void
 osip_trace_initialize (osip_trace_level_t level, FILE * file)
 {
-  int i = 0;
+  osip_trace_level_t i = 0;
 
   /* enable trace in log file by default */
   logfile = NULL;
@@ -580,7 +580,7 @@ osip_trace_initialize (osip_trace_level_t level, FILE * file)
 void
 osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
 {
-  int i = 0;
+  osip_trace_level_t i = 0;
 #if defined (HAVE_SYSLOG_H)
   openlog (ident, LOG_CONS | LOG_PID, LOG_DAEMON);
   use_syslog = 1;
