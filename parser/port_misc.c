@@ -458,10 +458,20 @@ trace_initialize (trace_level_t level, FILE * file)
 void
 trace_initialize_syslog (trace_level_t level, char* ident)
 {
+  int i = 0;
 #if defined (HAVE_SYSLOG_H)
   openlog(ident, LOG_CONS|LOG_PID, LOG_DAEMON);
   use_syslog=1;
 #endif
+  /* enable all lower levels */
+  while (i < END_TRACE_LEVEL)
+    {
+      if (i < level)
+	tracing_table[i] = LOG_TRUE;
+      else
+	tracing_table[i] = LOG_FALSE;
+      i++;
+    }
 }
 
 /* enable a special debugging level! */
@@ -493,7 +503,7 @@ osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 #ifdef ENABLE_TRACE
 
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
-       if (logfile == NULL)
+       if (logfile == NULL && use_syslog==0)
 	 {			/* user did not initialize logger.. */
 	   return 1;
 	 }
