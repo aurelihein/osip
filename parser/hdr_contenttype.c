@@ -177,7 +177,6 @@ content_type_2char (content_type_t * content_type, char **dest)
       }
   }
   *dest = buf;
-  printf ("length: %s %i %i\n", *dest, strlen (*dest), len);
   return 0;
 }
 
