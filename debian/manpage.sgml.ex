@@ -5,7 +5,7 @@
      the manual page with: `docbook-to-man manpage.sgml | nroff -man |
      less'.  A typical entry in a Makefile or Makefile.am is:
 
-manpage.1: manpage.sgml
+osip.1: osip.sgml
 	docbook-to-man $< > $@
 
     
@@ -17,15 +17,15 @@ manpage.1: manpage.sgml
   -->
 
   <!-- Fill in your name for FIRSTNAME and SURNAME. -->
-  <!ENTITY dhfirstname "<firstname>FIRSTNAME</firstname>">
-  <!ENTITY dhsurname   "<surname>SURNAME</surname>">
+  <!ENTITY dhfirstname "<firstname>Aymeric</firstname>">
+  <!ENTITY dhsurname   "<surname>MOIZARD</surname>">
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>February 28, 2002</date>">
+  <!ENTITY dhdate      "<date>May 15, 2002</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
-  <!ENTITY dhemail     "<email>uwe@steinmann.cx</email>">
-  <!ENTITY dhusername  "Uwe Steinmann">
+  <!ENTITY dhemail     "<email>jack@atosc.org</email>">
+  <!ENTITY dhusername  "Aymeric Moizard">
   <!ENTITY dhucpackage "<refentrytitle>LIBOSIP</refentrytitle>">
   <!ENTITY dhpackage   "libosip">
 
@@ -56,33 +56,33 @@ manpage.1: manpage.sgml
   <refnamediv>
     <refname>&dhpackage;</refname>
 
-    <refpurpose>program to do something</refpurpose>
+    <refpurpose>The GNU oSIP library is a low layer SIP implementation.
+    </refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
       <command>&dhpackage;</command>
 
-      <arg><option>-e <replaceable>this</replaceable></option></arg>
+      <arg><option>-losip<replaceable>The url, SIP and SDP parsers
+      </replaceable></option></arg>
 
-      <arg><option>--example <replaceable>that</replaceable></option></arg>
+      <arg><option>-lfsmtl<replaceable>The SIP transaction manager, the dialog manager</replaceable></option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
     <title>DESCRIPTION</title>
 
     <para>This manual page documents briefly the
-      <command>&dhpackage;</command> and <command>bar</command>
-      commands.</para>
+      <command>&dhpackage;</command> library.</para>
 
-    <para>This manual page was written for the &debian; distribution
-      because the original program does not have a manual page.
-      Instead, it has documentation in the &gnu;
-      <application>Info</application> format; see below.</para>
+    <para>API reference & FAQ can be found at http://www.fsf.org/software/osip/</para>
 
-    <para><command>&dhpackage;</command> is a program that...</para>
+<!--    <para><command>&dhpackage;</command> is a program that...</para>
+-->
 
   </refsect1>
   <refsect1>
+<!--
     <title>OPTIONS</title>
 
     <para>These programs follow the usual GNU command line syntax,
@@ -108,15 +108,18 @@ manpage.1: manpage.sgml
         </listitem>
       </varlistentry>
     </variablelist>
+
+-->
   </refsect1>
   <refsect1>
     <title>SEE ALSO</title>
-
+<!--
     <para>bar (1), baz (1).</para>
 
     <para>The programs are documented fully by <citetitle>The Rise and
       Fall of a Fooish Bar</citetitle> available via the
       <application>Info</application> system.</para>
+-->
   </refsect1>
   <refsect1>
     <title>AUTHOR</title>
