@@ -1,5 +1,6 @@
 libosip (0.9.1)
 	* fix non multi-threaded version. (fifo_size was broken)
+	* Add win32 system logger feature. (compile with SYSTEM_LOGGER_ENABLED)
 
 libosip (0.9.0)
 	* a few warnings fix for win32.
