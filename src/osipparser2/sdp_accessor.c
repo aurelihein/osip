@@ -569,6 +569,21 @@ sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, char *att_field
     return -1;
   if ((pos_media != -1) && (osip_list_size (sdp->m_medias) < pos_media + 1))
     return -1;
+  if (pos_media==-1)
+    {
+      for (i=0;i<osip_list_size(sdp->a_attributes);)
+	{
+	  attr = osip_list_get(sdp->a_attributes,i);
+	  if (strcmp(attr->a_att_field,att_field)==0)
+	    {
+	      osip_list_remove(sdp->a_attributes,i);
+	      sdp_attribute_free(attr);
+	    }
+	  else
+	    i++;
+	}
+      return 0;
+    }
   med = (sdp_media_t *) osip_list_get (sdp->m_medias, pos_media);
   if (med == NULL)
     return -1;
