@@ -90,7 +90,7 @@ osip_event_t *
 __osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -98,7 +98,7 @@ __osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactioni
     {
       if (ist->timer_g_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ist->timer_g_start, >))
+      if (osip_timercmp (&now, &ist->timer_g_start, >))
 	return __osip_event_new (TIMEOUT_G, transactionid);
     }
   return NULL;
@@ -109,7 +109,7 @@ __osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
 			       int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -118,7 +118,7 @@ __osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
       /* may need timer H */
       if (ist->timer_h_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ist->timer_h_start, >))
+      if (osip_timercmp (&now, &ist->timer_h_start, >))
 	return __osip_event_new (TIMEOUT_H, transactionid);
     }
   return NULL;
@@ -129,7 +129,7 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
 			       int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -138,7 +138,7 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
       /* may need timer I */
       if (ist->timer_i_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ist->timer_i_start, >))
+      if (osip_timercmp (&now, &ist->timer_i_start, >))
 	return __osip_event_new (TIMEOUT_I, transactionid);
     }
   return NULL;

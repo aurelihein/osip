@@ -397,7 +397,7 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
 
   if (nist->state != NIST_COMPLETED)	/* start J timer */
     {
-      gettimeofday (&nist->nist_context->timer_j_start, NULL);
+      osip_gettimeofday (&nist->nist_context->timer_j_start, NULL);
       add_gettimeofday (&nist->nist_context->timer_j_start,
 			nist->nist_context->timer_j_length);
     }

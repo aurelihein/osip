@@ -287,7 +287,7 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
   ist->ist_context->timer_g_length = ist->ist_context->timer_g_length * 2;
   if (ist->ist_context->timer_g_length > 4000)
     ist->ist_context->timer_g_length = 4000;
-  gettimeofday (&ist->ist_context->timer_g_start, NULL);
+  osip_gettimeofday (&ist->ist_context->timer_g_start, NULL);
   add_gettimeofday (&ist->ist_context->timer_g_start,
 		    ist->ist_context->timer_g_length);
 
@@ -573,11 +573,11 @@ ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
 
   if(ist->ist_context->timer_g_length != -1)
     {
-      gettimeofday (&ist->ist_context->timer_g_start, NULL);
+      osip_gettimeofday (&ist->ist_context->timer_g_start, NULL);
       add_gettimeofday (&ist->ist_context->timer_g_start,
 			ist->ist_context->timer_g_length);
     }
-  gettimeofday (&ist->ist_context->timer_h_start, NULL);
+  osip_gettimeofday (&ist->ist_context->timer_h_start, NULL);
   add_gettimeofday (&ist->ist_context->timer_h_start,
 		    ist->ist_context->timer_h_length);
   __osip_transaction_set_state (ist, IST_COMPLETED);
@@ -599,7 +599,7 @@ ist_rcv_ack (osip_transaction_t * ist, osip_event_t * evt)
   else				/* IST_CONFIRMED */
     __osip_message_callback (OSIP_IST_ACK_RECEIVED_AGAIN, ist, ist->ack);
   /* set the timer to 0 for reliable, and T4 for unreliable (already set) */
-  gettimeofday (&ist->ist_context->timer_i_start, NULL);
+  osip_gettimeofday (&ist->ist_context->timer_i_start, NULL);
   add_gettimeofday (&ist->ist_context->timer_i_start,
 		    ist->ist_context->timer_i_length);
   __osip_transaction_set_state (ist, IST_CONFIRMED);

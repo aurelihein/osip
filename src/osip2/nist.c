@@ -87,7 +87,7 @@ osip_event_t *
 __osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (nist == NULL)
     return NULL;
@@ -95,7 +95,7 @@ __osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transacti
     {
       if (nist->timer_j_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &nist->timer_j_start, >))
+      if (osip_timercmp (&now, &nist->timer_j_start, >))
 	return __osip_event_new (TIMEOUT_J, transactionid);
     }
   return NULL;

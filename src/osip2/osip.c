@@ -1201,7 +1201,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_transaction_t *tr;
   int pos = 0;
 
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
   lower_tv->tv_sec = now.tv_sec + 3600 * 24 * 265;	/* wake up evry year :-) */
   lower_tv->tv_usec = now.tv_usec;
 
@@ -1235,7 +1235,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 	    min_timercmp (lower_tv, &tr->ict_context->timer_a_start);
 	  if (tr->state == ICT_COMPLETED)
 	    min_timercmp (lower_tv, &tr->ict_context->timer_d_start);
-	  if (timercmp (&now, lower_tv, >))
+	  if (osip_timercmp (&now, lower_tv, >))
 	    {
 	      lower_tv->tv_sec = 0;
 	      lower_tv->tv_usec = 0;
@@ -1268,7 +1268,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 	min_timercmp (lower_tv, &tr->ist_context->timer_h_start);
       if (tr->state == IST_COMPLETED)
 	min_timercmp (lower_tv, &tr->ist_context->timer_g_start);
-      if (timercmp (&now, lower_tv, >))
+      if (osip_timercmp (&now, lower_tv, >))
 	{
 	  lower_tv->tv_sec = 0;
 	  lower_tv->tv_usec = 0;
@@ -1300,7 +1300,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 	min_timercmp (lower_tv, &tr->nict_context->timer_f_start);
       if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
 	min_timercmp (lower_tv, &tr->nict_context->timer_e_start);
-      if (timercmp (&now, lower_tv, >))
+      if (osip_timercmp (&now, lower_tv, >))
 	{
 	  lower_tv->tv_sec = 0;
 	  lower_tv->tv_usec = 0;
@@ -1328,7 +1328,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 
       if (tr->state == NIST_COMPLETED)
 	min_timercmp (lower_tv, &tr->nist_context->timer_j_start);
-      if (timercmp (&now, lower_tv, >))
+      if (osip_timercmp (&now, lower_tv, >))
 	{
 	  lower_tv->tv_sec = 0;
 	  lower_tv->tv_usec = 0;

@@ -61,7 +61,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 	  (*ict)->timer_d_length = 32000;
 	else
 	  (*ict)->timer_d_length = 64 * DEFAULT_T1;
-	gettimeofday (&(*ict)->timer_a_start, NULL);
+	osip_gettimeofday (&(*ict)->timer_a_start, NULL);
 	add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
 	(*ict)->timer_d_start.tv_sec = -1;	/* not started */
       }
@@ -89,7 +89,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
     (*ict)->port = 5060;
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
-  gettimeofday (&(*ict)->timer_b_start, NULL);
+  osip_gettimeofday (&(*ict)->timer_b_start, NULL);
   add_gettimeofday (&(*ict)->timer_b_start, (*ict)->timer_b_length);
 
   /* Oups! A bug! */
@@ -131,7 +131,7 @@ osip_event_t *
 __osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
     return NULL;
@@ -140,7 +140,7 @@ __osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactioni
       /* may need timer A */
       if (ict->timer_a_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ict->timer_a_start, >))
+      if (osip_timercmp (&now, &ict->timer_a_start, >))
 	return __osip_event_new (TIMEOUT_A, transactionid);
     }
   return NULL;
@@ -151,7 +151,7 @@ __osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
 			       int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
     return NULL;
@@ -160,7 +160,7 @@ __osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
       /* may need timer B */
       if (ict->timer_b_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ict->timer_b_start, >))
+      if (osip_timercmp (&now, &ict->timer_b_start, >))
 	return __osip_event_new (TIMEOUT_B, transactionid);
     }
   return NULL;
@@ -171,7 +171,7 @@ __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
 			       int transactionid)
 {
   struct timeval now;
-  gettimeofday (&now, NULL);
+  osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
     return NULL;
@@ -180,7 +180,7 @@ __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
       /* may need timer D */
       if (ict->timer_d_start.tv_sec == -1)
 	return NULL;
-      if (timercmp (&now, &ict->timer_d_start, >))
+      if (osip_timercmp (&now, &ict->timer_d_start, >))
 	return __osip_event_new (TIMEOUT_D, transactionid);
     }
   return NULL;

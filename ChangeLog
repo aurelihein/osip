@@ -1,3 +1,7 @@
+libosip2 (2.2.1)
+	* avoid <winsock.h> inclusion so user can (and must) now include either
+	  <winsock.h> or <winsock2.h> before including <osip/osip2.h>
+
 libosip2 (2.2.0)
 	* remove #ifdef OSIP_RETRANSMIT_2XX to always compile it.
 	* initialize remote_contact_uri when dialog is built with notify.

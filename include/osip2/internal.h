@@ -74,8 +74,22 @@ void __payload_free (__payload_t * payload);
 #endif
 
 #if defined(WIN32) || defined(_WIN32_WCE)
-
+/* Prevent the inclusion of winsock.h */
+#ifdef _WINSOCKAPI_
 #include <windows.h>
+#else
+#define _WINSOCKAPI_
+#include <windows.h>
+/* Allow external inclusion of winsock.h */
+#undef _WINSOCKAPI_
+#endif /* #ifdef _WINSOCKAPI_ */
+
+/* Struct timeval */
+typedef struct timeval {
+        long    tv_sec;         /* seconds */
+        long    tv_usec;        /* and microseconds */
+};
+
 #endif
 
 #if !defined(WIN32) && !defined(_WIN32_WCE) && defined(__PSOS__)
@@ -124,7 +138,15 @@ typedef pthread_t osip_thread_t;
 /* Semaphore and Mutex abstraction layer definition */
 
 #if defined(WIN32) || defined(_WIN32_WCE)
+/* Prevent the inclusion of winsock.h */
+#ifdef _WINSOCKAPI_
 #include <windows.h>
+#else
+#define _WINSOCKAPI_
+#include <windows.h>
+/* Allow external inclusion of winsock.h */
+#undef _WINSOCKAPI_
+#endif /* #ifdef _WINSOCKAPI_ */
 typedef struct
 {
   HANDLE h;

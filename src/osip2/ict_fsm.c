@@ -178,7 +178,7 @@ osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
 
   /* reset timer */
   ict->ict_context->timer_a_length = ict->ict_context->timer_a_length * 2;
-  gettimeofday (&ict->ict_context->timer_a_start, NULL);
+  osip_gettimeofday (&ict->ict_context->timer_a_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_a_start,
 		    ict->ict_context->timer_a_length);
 
@@ -412,7 +412,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
    */
 
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
-  gettimeofday (&ict->ict_context->timer_d_start, NULL);
+  osip_gettimeofday (&ict->ict_context->timer_d_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_d_start,
 		    ict->ict_context->timer_d_length);
   __osip_transaction_set_state (ict, ICT_COMPLETED);

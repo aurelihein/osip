@@ -27,12 +27,6 @@
 
 #ifndef DOXYGEN
 
-void add_gettimeofday (struct timeval *atv, int ms);
-void min_timercmp (struct timeval *tv1, struct timeval *tv2);
-#ifdef WIN32
-int gettimeofday(struct timeval *tp, void *tz);
-#endif
-
 typedef struct osip_statemachine osip_statemachine_t;
 
 struct osip_statemachine

@@ -18,9 +18,7 @@
 */
 
 #include <osip2/internal.h>
-#include <osip2/osip.h>
-
-#include "fsm.h"
+#include <osip2/osip_time.h>
 
 void
 add_gettimeofday (struct timeval *atv, int ms)
@@ -45,7 +43,7 @@ min_timercmp (struct timeval *tv1, struct timeval *tv2)
 {
   if (tv2->tv_sec == -1)
     return;
-  if (timercmp (tv1, tv2, >))
+  if (osip_timercmp (tv1, tv2, >))
     {
       /* replace tv1 with tv2 info */
       tv1->tv_sec = tv2->tv_sec;
@@ -59,7 +57,7 @@ min_timercmp (struct timeval *tv1, struct timeval *tv2)
 #include <sys/timeb.h>
 
 int
-gettimeofday (struct timeval *tp, void *tz)
+osip_gettimeofday (struct timeval *tp, void *tz)
 {
   struct _timeb timebuffer;
 

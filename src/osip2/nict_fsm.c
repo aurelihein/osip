@@ -226,7 +226,7 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
   else				/* in PROCEEDING STATE, TIMER is always 4000 */
     nict->nict_context->timer_e_length = 4000;
 
-  gettimeofday (&nict->nict_context->timer_e_start, NULL);
+  osip_gettimeofday (&nict->nict_context->timer_e_start, NULL);
   add_gettimeofday (&nict->nict_context->timer_e_start,
 		    nict->nict_context->timer_e_length);
 
@@ -306,7 +306,7 @@ nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt)
 
   if (nict->state != NICT_COMPLETED)	/* reset timer K */
     {
-      gettimeofday (&nict->nict_context->timer_k_start, NULL);
+      osip_gettimeofday (&nict->nict_context->timer_k_start, NULL);
       add_gettimeofday (&nict->nict_context->timer_k_start,
 			nict->nict_context->timer_k_length);
     }

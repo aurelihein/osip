@@ -208,6 +208,10 @@ SOURCE=..\..\include\osip2\osip_negotiation.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osip2\osip_time.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osip2\xixt.h
 # End Source File
 # End Group

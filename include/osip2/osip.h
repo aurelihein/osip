@@ -23,11 +23,9 @@
 
 #include <osipparser2/osip_const.h>
 
+/* Time-related functions and data types */
 #include <time.h>
-
-#ifdef WIN32
-#include <Winsock.h>
-#endif
+#include <osip2/osip_time.h>
 
 #ifdef __sun
 #include <sys/types.h>
