@@ -1858,7 +1858,7 @@ sdp_clone(sdp_t *sdp, sdp_t **dest)
   int i;
   char *body;
 
-  i = sdp_init(*dest);
+  i = sdp_init(dest);
   if (i!=0) return -1;
   
   i = sdp_2char(sdp, &body);
