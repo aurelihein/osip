@@ -411,7 +411,7 @@ smutex_lock (smutex_t * mut)
   if (mut)
     {
       if (sm_p (mut->id, SM_WAIT, 0) != 0)
-        return (-1);
+	return (-1);
     }
   return (0);
 }

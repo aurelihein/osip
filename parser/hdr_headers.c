@@ -56,23 +56,24 @@ msg_setheader (sip_t * sip, char *hname, char *hvalue)
   sclrspace (h->hname);
 
   if (hvalue != NULL)
-    {                           /* some headers can be null ("subject:") */
+    {				/* some headers can be null ("subject:") */
       h->hvalue = (char *) smalloc (strlen (hvalue) + 1);
       if (h->hvalue == NULL)
-        {
-          header_free (h);
-          sfree (h);
-          return -1;
-        }
+	{
+	  header_free (h);
+	  sfree (h);
+	  return -1;
+	}
       sstrncpy (h->hvalue, hvalue, strlen (hvalue));
       sclrspace (h->hvalue);
-  } else
+    }
+  else
     h->hvalue = NULL;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
   list_add (sip->headers, h, -1);
-  return 0;                     /* ok */
+  return 0;			/* ok */
 }
 
 /* Get a header in a SIP message.                       */
@@ -84,7 +85,7 @@ msg_getheader (sip_t * sip, int pos, header_t ** dest)
 {
   *dest = NULL;
   if (list_size (sip->headers) <= pos)
-    return -1;                  /* NULL */
+    return -1;			/* NULL */
   *dest = (header_t *) list_get (sip->headers, pos);
   return 0;
 }
@@ -103,7 +104,7 @@ msg_header_getbyname (sip_t * sip, char *hname, int pos, header_t ** dest)
   *dest = NULL;
   i = pos;
   if (list_size (sip->headers) <= pos)
-    return -1;                  /* NULL */
+    return -1;			/* NULL */
   while (list_size (sip->headers) > i)
     {
       char *tmp2;
@@ -112,15 +113,15 @@ msg_header_getbyname (sip_t * sip, char *hname, int pos, header_t ** dest)
       tmp2 = sgetcopy (tmp->hname);
       stolowercase (tmp2);
       if (strcmp (tmp2, hname) == 0)
-        {
-          *dest = tmp;
-          sfree (tmp2);
-          return i;
-        }
+	{
+	  *dest = tmp;
+	  sfree (tmp2);
+	  return i;
+	}
       sfree (tmp2);
       i++;
     }
-  return -1;                    /* not found */
+  return -1;			/* not found */
 }
 
 int

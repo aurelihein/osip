@@ -141,7 +141,7 @@ extern "C"
   struct from_t
   {
     char *displayname;
-    url_t *url;                 /* could contain various urischeme_t ? only in the future */
+    url_t *url;			/* could contain various urischeme_t ? only in the future */
     list_t *gen_params;
   };
 
@@ -297,15 +297,15 @@ extern "C"
 
   struct www_authenticate_t
   {
-    char *auth_type;            /* ( "Basic" | "Digest" )      */
-    char *realm;                /* mandatory ( quoted-string ) */
-    char *domain;               /* optional  <"> 1#URI <">     */
-    char *nonce;                /* mandatory */
-    char *opaque;               /* optional  */
-    char *stale;                /* optional  ( "true" | "false" ) */
-    char *algorithm;            /* optional  ( "MD5"  | token   ) */
-    char *qop_options;          /* optional  */
-    char *auth_param;           /* optional  */
+    char *auth_type;		/* ( "Basic" | "Digest" )      */
+    char *realm;		/* mandatory ( quoted-string ) */
+    char *domain;		/* optional  <"> 1#URI <">     */
+    char *nonce;		/* mandatory */
+    char *opaque;		/* optional  */
+    char *stale;		/* optional  ( "true" | "false" ) */
+    char *algorithm;		/* optional  ( "MD5"  | token   ) */
+    char *qop_options;		/* optional  */
+    char *auth_param;		/* optional  */
   };
 
 /**
@@ -322,19 +322,19 @@ extern "C"
 
   struct authorization_t
   {
-    char *auth_type;            /* ( "Basic" | "Digest" )      */
+    char *auth_type;		/* ( "Basic" | "Digest" )      */
     char *username;
-    char *realm;                /* mandatory ( quoted-string ) */
+    char *realm;		/* mandatory ( quoted-string ) */
     char *nonce;
     char *uri;
     char *response;
-    char *digest;               /* DO NOT USE IT IN AUTHORIZATION_T HEADER?? */
-    char *algorithm;            /* optionnal, default is "md5" */
-    char *cnonce;               /* optionnal */
-    char *opaque;               /* optionnal */
-    char *message_qop;          /* optionnal */
-    char *nonce_count;          /* optionnal */
-    char *auth_param;           /* optionnal */
+    char *digest;		/* DO NOT USE IT IN AUTHORIZATION_T HEADER?? */
+    char *algorithm;		/* optionnal, default is "md5" */
+    char *cnonce;		/* optionnal */
+    char *opaque;		/* optionnal */
+    char *message_qop;		/* optionnal */
+    char *nonce_count;		/* optionnal */
+    char *auth_param;		/* optionnal */
   };
 
 /**

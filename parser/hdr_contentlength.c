@@ -119,7 +119,7 @@ content_length_clone (content_length_t * ctl, content_length_t ** dest)
      if (ctl->value==NULL) return -1;
    */
   i = content_length_init (&cl);
-  if (i == -1)                  /* allocation failed */
+  if (i == -1)			/* allocation failed */
     return -1;
   if (ctl->value != NULL)
     cl->value = sgetcopy (ctl->value);

@@ -38,8 +38,8 @@ typedef struct _ua_context_t
 
   /* only one audio port is allowed at this time.. In the case, we
      receive more than one m audio line, this may fail... */
-  char *m_audio_port;           /* audio port to be used for this session */
-  char *m_video_port;           /* audio port to be used for this session */
+  char *m_audio_port;		/* audio port to be used for this session */
+  char *m_video_port;		/* audio port to be used for this session */
 
 }
 ua_context_t;
@@ -49,8 +49,8 @@ ua_context_t *ua_context = NULL;
 
 int
 ua_sdp_accept_audio_codec (sdp_context_t * context,
-                           char *port, char *number_of_port,
-                           int audio_qty, char *payload)
+			   char *port, char *number_of_port,
+			   int audio_qty, char *payload)
 {
   /* this may come from buggy implementation who                 */
   /* propose several sdp lines while they only want 1 connection */
@@ -65,8 +65,8 @@ ua_sdp_accept_audio_codec (sdp_context_t * context,
 
 int
 ua_sdp_accept_video_codec (sdp_context_t * context,
-                           char *port, char *number_of_port,
-                           int video_qty, char *payload)
+			   char *port, char *number_of_port,
+			   int video_qty, char *payload)
 {
   /* this may come from buggy implementation who                 */
   /* propose several sdp lines while they only want 1 connection */
@@ -80,8 +80,8 @@ ua_sdp_accept_video_codec (sdp_context_t * context,
 
 int
 ua_sdp_accept_other_codec (sdp_context_t * context,
-                           char *type, char *port,
-                           char *number_of_port, char *payload)
+			   char *type, char *port,
+			   char *number_of_port, char *payload)
 {
   /* ... */
   return -1;
@@ -93,7 +93,7 @@ ua_sdp_get_video_port (sdp_context_t * context, int pos_media)
   ua_context_t *ua_con;
 
   ua_con = (ua_context_t *) context->mycontext;
-  return sgetcopy (ua_con->m_video_port);       /* this port should not be static ... */
+  return sgetcopy (ua_con->m_video_port);	/* this port should not be static ... */
   /* also, this method should be called more than once... */
   /* If there is more than one audio line, this may fail :( */
 }
@@ -104,7 +104,7 @@ ua_sdp_get_audio_port (sdp_context_t * context, int pos_media)
   ua_context_t *ua_con;
 
   ua_con = (ua_context_t *) context->mycontext;
-  return sgetcopy (ua_con->m_audio_port);       /* this port should not be static ... */
+  return sgetcopy (ua_con->m_audio_port);	/* this port should not be static ... */
   /* also, this method should be called more than once... */
   /* If there is more than one audio line, this may fail :( */
 }
@@ -113,7 +113,7 @@ int
 main (int argc, char **argv)
 {
   int i;
-  int verbose = 0;              /* 0: verbose, 1 (or nothing: not verbose) */
+  int verbose = 0;		/* 0: verbose, 1 (or nothing: not verbose) */
   char *marker;
   FILE *torture_file;
   char *tmp;
@@ -125,15 +125,15 @@ main (int argc, char **argv)
   if (argc > 3)
     {
       if (0 == strncmp (argv[3], "-v", 2))
-        verbose = 1;
+	verbose = 1;
     }
 
   torture_file = fopen (argv[1], "r");
   if (torture_file == NULL)
     {
       fprintf (stderr,
-               "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
-               argv[0]);
+	       "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
+	       argv[0]);
       exit (1);
     }
 
@@ -162,28 +162,30 @@ main (int argc, char **argv)
   /* ALL CODEC MUST SHARE THE SAME "C=" line and proto as the media 
      will appear on the same "m" line... */
   sdp_config_add_support_for_audio_codec (sgetcopy ("0"),
-                                          NULL,
-                                          sgetcopy ("RTP/AVP"),
-                                          NULL, NULL, NULL,
-                                          NULL, NULL, sgetcopy ("0 PCMU/8000"));
+					  NULL,
+					  sgetcopy ("RTP/AVP"),
+					  NULL, NULL, NULL,
+					  NULL, NULL,
+					  sgetcopy ("0 PCMU/8000"));
   sdp_config_add_support_for_audio_codec (sgetcopy ("3"), NULL,
-                                          sgetcopy ("RTP/AVP"), NULL, NULL,
-                                          NULL, NULL, NULL,
-                                          sgetcopy ("3 GSM/8000"));
+					  sgetcopy ("RTP/AVP"), NULL, NULL,
+					  NULL, NULL, NULL,
+					  sgetcopy ("3 GSM/8000"));
   sdp_config_add_support_for_audio_codec (sgetcopy ("7"), NULL,
-                                          sgetcopy ("RTP/AVP"), NULL, NULL,
-                                          NULL, NULL, NULL,
-                                          sgetcopy ("7 LPC/8000"));
+					  sgetcopy ("RTP/AVP"), NULL, NULL,
+					  NULL, NULL, NULL,
+					  sgetcopy ("7 LPC/8000"));
   sdp_config_add_support_for_audio_codec (sgetcopy ("8"), NULL,
-                                          sgetcopy ("RTP/AVP"), NULL, NULL,
-                                          NULL, NULL, NULL,
-                                          sgetcopy ("8 PCMA/8000"));
+					  sgetcopy ("RTP/AVP"), NULL, NULL,
+					  NULL, NULL, NULL,
+					  sgetcopy ("8 PCMA/8000"));
 
   sdp_config_add_support_for_video_codec (sgetcopy ("31"),
-                                          NULL,
-                                          sgetcopy ("RTP/AVP"),
-                                          NULL, NULL, NULL,
-                                          NULL, NULL, sgetcopy ("31 H261/90000"));
+					  NULL,
+					  sgetcopy ("RTP/AVP"),
+					  NULL, NULL, NULL,
+					  NULL, NULL,
+					  sgetcopy ("31 H261/90000"));
 
   sdp_config_set_fcn_accept_audio_codec (&ua_sdp_accept_audio_codec);
   sdp_config_set_fcn_accept_video_codec (&ua_sdp_accept_video_codec);
@@ -193,24 +195,24 @@ main (int argc, char **argv)
 
   i = 0;
   tmp = (char *) smalloc (500);
-  marker = fgets (tmp, 500, torture_file);      /* lines are under 500 */
+  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
   while (marker != NULL && i < atoi (argv[2]))
     {
       if (0 == strncmp (tmp, "|", 1))
-        i++;
+	i++;
       marker = fgets (tmp, 500, torture_file);
     }
 
   num_test++;
 
-  msg = (char *) smalloc (10000);       /* msg are under 10000 */
+  msg = (char *) smalloc (10000);	/* msg are under 10000 */
   tmpmsg = msg;
 
   if (marker == NULL)
     {
       fprintf (stderr,
-               "Error! The message's number you specified does not exist\n");
-      exit (1);                 /* end of file detected! */
+	       "Error! The message's number you specified does not exist\n");
+      exit (1);			/* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -227,16 +229,18 @@ main (int argc, char **argv)
       fprintf (stdout, "%s", msg);
 
       if (0 == test_sdp_message (msg, verbose))
-        fprintf (stdout, "test %s : ============================ OK\n", argv[2]);
+	fprintf (stdout, "test %s : ============================ OK\n",
+		 argv[2]);
       else
-        fprintf (stdout, "test %s : ============================ FAILED\n",
-                 argv[2]);
-  } else
+	fprintf (stdout, "test %s : ============================ FAILED\n",
+		 argv[2]);
+    }
+  else
     {
       if (0 == test_sdp_message (msg, verbose))
-        fprintf (stdout, "test %s : OK\n", argv[2]);
+	fprintf (stdout, "test %s : OK\n", argv[2]);
       else
-        fprintf (stdout, "test %s : FAILED\n", argv[2]);
+	fprintf (stdout, "test %s : FAILED\n", argv[2]);
     }
 
   sfree (msg);
@@ -258,88 +262,91 @@ test_sdp_message (char *msg, int verbose)
     sdp_init (&sdp);
     if (sdp_parse (sdp, msg) != 0)
       {
-        fprintf (stdout, "ERROR: failed while parsing!\n");
-        sdp_free (sdp);         /* try to free msg, even if it failed! */
-        /* this seems dangerous..... */
-        return -1;
-    } else
+	fprintf (stdout, "ERROR: failed while parsing!\n");
+	sdp_free (sdp);		/* try to free msg, even if it failed! */
+	/* this seems dangerous..... */
+	return -1;
+      }
+    else
       {
-        int i;
+	int i;
 
-        i = sdp_2char (sdp, &result);
-        test_accessor_get_api (sdp);
-        if (i == -1)
-          {
-            fprintf (stdout, "ERROR: failed while printing message!\n");
-            sdp_free (sdp);
-            sfree (sdp);
-            return -1;
-        } else
-          {
-            if (verbose)
-              fprintf (stdout, "%s", result);
-            if (strlen (result) != strlen (msg))
-              fprintf (stdout, "length differ from original message!\n");
-            if (0 == strncmp (result, msg, strlen (result)))
-              fprintf (stdout, "result equals msg!!\n");
-            sfree (result);
-            {
-              sdp_context_t *context;
+	i = sdp_2char (sdp, &result);
+	test_accessor_get_api (sdp);
+	if (i == -1)
+	  {
+	    fprintf (stdout, "ERROR: failed while printing message!\n");
+	    sdp_free (sdp);
+	    sfree (sdp);
+	    return -1;
+	  }
+	else
+	  {
+	    if (verbose)
+	      fprintf (stdout, "%s", result);
+	    if (strlen (result) != strlen (msg))
+	      fprintf (stdout, "length differ from original message!\n");
+	    if (0 == strncmp (result, msg, strlen (result)))
+	      fprintf (stdout, "result equals msg!!\n");
+	    sfree (result);
+	    {
+	      sdp_context_t *context;
 
-              sdp_t *dest;
+	      sdp_t *dest;
 
-              i = sdp_context_init (&context);
-              i = sdp_context_set_mycontext (context, (void *) ua_context);
+	      i = sdp_context_init (&context);
+	      i = sdp_context_set_mycontext (context, (void *) ua_context);
 
-              {
-                sdp_t *sdp;
+	      {
+		sdp_t *sdp;
 
-                sdp_build_offer (context, &sdp,
+		sdp_build_offer (context, &sdp,
 				 ua_context->m_audio_port,
 				 ua_context->m_video_port);
-                sdp_2char (sdp, &result);
-                fprintf (stdout, "Here is the offer:\n%s\n", result);
-                sfree (result);
-                sdp_put_on_hold (sdp);
-                sdp_2char (sdp, &result);
-                fprintf (stdout, "Here is the offer on hold:\n%s\n", result);
-                sfree (result);
-                sdp_free (sdp);
-                sfree (sdp);
-              }
+		sdp_2char (sdp, &result);
+		fprintf (stdout, "Here is the offer:\n%s\n", result);
+		sfree (result);
+		sdp_put_on_hold (sdp);
+		sdp_2char (sdp, &result);
+		fprintf (stdout, "Here is the offer on hold:\n%s\n", result);
+		sfree (result);
+		sdp_free (sdp);
+		sfree (sdp);
+	      }
 
 
 
-              i = sdp_context_set_remote_sdp (context, sdp);
-              if (i != 0)
-                {
-                  fprintf (stdout,
-                           "Initialisation of context failed. Could not negociate\n");
-              } else
-                {
-                  fprintf (stdout, "Trying to execute a SIP negociation:\n");
-                  i = sdp_context_execute_negociation (context);
-                  fprintf (stdout, "return code: %i\n", i);
-                  if (i == 200)
-                    {
-                      dest = sdp_context_get_local_sdp (context);
-                      fprintf (stdout, "SDP answer:\n");
-                      i = sdp_2char (dest, &result);
-                      if (i != 0)
-                        fprintf (stdout,
-                                 "Error found in SDP answer while printing\n");
-                      else
-                        fprintf (stdout, "%s\n", result);
-                      sfree (result);
-                    }
-                  sdp_context_free (context);
-                  sfree (context);
-                  return 0;
-                }
-            }
-          }
-        sdp_free (sdp);
-        sfree (sdp);
+	      i = sdp_context_set_remote_sdp (context, sdp);
+	      if (i != 0)
+		{
+		  fprintf (stdout,
+			   "Initialisation of context failed. Could not negociate\n");
+		}
+	      else
+		{
+		  fprintf (stdout, "Trying to execute a SIP negociation:\n");
+		  i = sdp_context_execute_negociation (context);
+		  fprintf (stdout, "return code: %i\n", i);
+		  if (i == 200)
+		    {
+		      dest = sdp_context_get_local_sdp (context);
+		      fprintf (stdout, "SDP answer:\n");
+		      i = sdp_2char (dest, &result);
+		      if (i != 0)
+			fprintf (stdout,
+				 "Error found in SDP answer while printing\n");
+		      else
+			fprintf (stdout, "%s\n", result);
+		      sfree (result);
+		    }
+		  sdp_context_free (context);
+		  sfree (context);
+		  return 0;
+		}
+	    }
+	  }
+	sdp_free (sdp);
+	sfree (sdp);
       }
   }
   return 0;
@@ -381,7 +388,7 @@ test_accessor_get_api (sdp_t * sdp)
     {
       tmp = sdp_e_email_get (sdp, i);
       if (tmp != NULL)
-        printf ("e_email:        |%s|\n", tmp);
+	printf ("e_email:        |%s|\n", tmp);
       i++;
     }
   while (tmp != NULL);
@@ -390,7 +397,7 @@ test_accessor_get_api (sdp_t * sdp)
     {
       tmp = sdp_p_phone_get (sdp, i);
       if (tmp != NULL)
-        printf ("p_phone:        |%s|\n", tmp);
+	printf ("p_phone:        |%s|\n", tmp);
       i++;
     }
   while (tmp != NULL);
@@ -403,7 +410,7 @@ test_accessor_get_api (sdp_t * sdp)
   tmp5 = sdp_c_addr_multicast_int_get (sdp, -1, k);
   if (tmp != NULL)
     printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-            tmp, tmp2, tmp3, tmp4, tmp5);
+	    tmp, tmp2, tmp3, tmp4, tmp5);
 
   k = 0;
   do
@@ -411,7 +418,7 @@ test_accessor_get_api (sdp_t * sdp)
       tmp = sdp_b_bwtype_get (sdp, -1, k);
       tmp2 = sdp_b_bandwidth_get (sdp, -1, k);
       if (tmp != NULL)
-        printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+	printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
       k++;
     }
   while (tmp != NULL);
@@ -422,15 +429,15 @@ test_accessor_get_api (sdp_t * sdp)
       tmp = sdp_t_start_time_get (sdp, k);
       tmp2 = sdp_t_stop_time_get (sdp, k);
       if (tmp != NULL)
-        printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
+	printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
       i = 0;
       do
-        {
-          tmp2 = sdp_r_repeat_get (sdp, k, i);
-          i++;
-          if (tmp2 != NULL)
-            printf ("r_repeat:    |%s|\n", tmp2);
-        }
+	{
+	  tmp2 = sdp_r_repeat_get (sdp, k, i);
+	  i++;
+	  if (tmp2 != NULL)
+	    printf ("r_repeat:    |%s|\n", tmp2);
+	}
       while (tmp2 != NULL);
       k++;
     }
@@ -452,7 +459,7 @@ test_accessor_get_api (sdp_t * sdp)
       tmp = sdp_a_att_field_get (sdp, -1, k);
       tmp2 = sdp_a_att_value_get (sdp, -1, k);
       if (tmp != NULL)
-        printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
+	printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
       k++;
     }
   while (tmp != NULL);
@@ -466,58 +473,58 @@ test_accessor_get_api (sdp_t * sdp)
       tmp3 = sdp_m_number_of_port_get (sdp, i);
       tmp4 = sdp_m_proto_get (sdp, i);
       if (tmp != NULL)
-        printf ("m_media:        |%s| |%s| |%s| |%s|", tmp, tmp2, tmp3, tmp4);
+	printf ("m_media:        |%s| |%s| |%s| |%s|", tmp, tmp2, tmp3, tmp4);
       k = 0;
       do
-        {
-          tmp = sdp_m_payload_get (sdp, i, k);
-          if (tmp != NULL)
-            printf (" |%s|", tmp);
-          k++;
-        }
+	{
+	  tmp = sdp_m_payload_get (sdp, i, k);
+	  if (tmp != NULL)
+	    printf (" |%s|", tmp);
+	  k++;
+	}
       while (tmp != NULL);
       printf ("\n");
       k = 0;
       do
-        {
-          tmp = sdp_c_nettype_get (sdp, i, k);
-          tmp2 = sdp_c_addrtype_get (sdp, i, k);
-          tmp3 = sdp_c_addr_get (sdp, i, k);
-          tmp4 = sdp_c_addr_multicast_ttl_get (sdp, i, k);
-          tmp5 = sdp_c_addr_multicast_int_get (sdp, i, k);
-          if (tmp != NULL)
-            printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-                    tmp, tmp2, tmp3, tmp4, tmp5);
-          k++;
-        }
+	{
+	  tmp = sdp_c_nettype_get (sdp, i, k);
+	  tmp2 = sdp_c_addrtype_get (sdp, i, k);
+	  tmp3 = sdp_c_addr_get (sdp, i, k);
+	  tmp4 = sdp_c_addr_multicast_ttl_get (sdp, i, k);
+	  tmp5 = sdp_c_addr_multicast_int_get (sdp, i, k);
+	  if (tmp != NULL)
+	    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+		    tmp, tmp2, tmp3, tmp4, tmp5);
+	  k++;
+	}
       while (tmp != NULL);
 
       k = 0;
       do
-        {
-          tmp = sdp_b_bwtype_get (sdp, i, k);
-          tmp2 = sdp_b_bandwidth_get (sdp, i, k);
-          if (tmp != NULL)
-            printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
-          k++;
-        }
+	{
+	  tmp = sdp_b_bwtype_get (sdp, i, k);
+	  tmp2 = sdp_b_bandwidth_get (sdp, i, k);
+	  if (tmp != NULL)
+	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+	  k++;
+	}
       while (tmp != NULL);
 
 
       tmp = sdp_k_keytype_get (sdp, i);
       tmp2 = sdp_k_keydata_get (sdp, i);
       if (tmp != NULL)
-        printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
+	printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
 
       k = 0;
       do
-        {
-          tmp = sdp_a_att_field_get (sdp, i, k);
-          tmp2 = sdp_a_att_value_get (sdp, i, k);
-          if (tmp != NULL)
-            printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
-          k++;
-        }
+	{
+	  tmp = sdp_a_att_field_get (sdp, i, k);
+	  tmp2 = sdp_a_att_value_get (sdp, i, k);
+	  if (tmp != NULL)
+	    printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
+	  k++;
+	}
       while (tmp != NULL);
 
       i++;

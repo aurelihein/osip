@@ -144,14 +144,15 @@ ict_snd_invite (transaction_t * ict, sipevent_t * evt)
   ict->orig_request = evt->sip;
 
   i = osip->cb_send_message (ict, evt->sip, ict->ict_context->destination,
-                             ict->ict_context->port, ict->out_socket);
+			     ict->ict_context->port, ict->out_socket);
 
   if (i == 0)
     {
       if (osip->cb_ict_invite_sent != NULL)
-        osip->cb_ict_invite_sent (ict, ict->orig_request);
+	osip->cb_ict_invite_sent (ict, ict->orig_request);
       transaction_set_state (ict, ICT_CALLING);
-  } else
+    }
+  else
     {
       osip->cb_ict_transport_error (ict, i);
       transaction_set_state (ict, ICT_TERMINATED);
@@ -174,8 +175,8 @@ ict_timeout_a_event (transaction_t * ict, sipevent_t * evt)
   /* retransmit REQUEST */
   i =
     osip->cb_send_message (ict, ict->orig_request,
-                           ict->ict_context->destination,
-                           ict->ict_context->port, ict->out_socket);
+			   ict->ict_context->destination,
+			   ict->ict_context->port, ict->out_socket);
   if (i != 0)
     {
       osip->cb_ict_transport_error (ict, i);
@@ -251,7 +252,7 @@ ict_create_ack (transaction_t * ict, sip_t * response)
   i = from_clone (response->from, &(ack->from));
   if (i != 0)
     goto ica_error;
-  i = to_clone (response->to, &(ack->to));      /* include the tag! */
+  i = to_clone (response->to, &(ack->to));	/* include the tag! */
   if (i != 0)
     goto ica_error;
   i = call_id_clone (response->call_id, &(ack->call_id));
@@ -265,7 +266,8 @@ ict_create_ack (transaction_t * ict, sip_t * response)
 
   ack->strtline->sipmethod = (char *) smalloc (5);
   sprintf (ack->strtline->sipmethod, "ACK");
-  ack->strtline->sipversion = sgetcopy (ict->orig_request->strtline->sipversion);
+  ack->strtline->sipversion =
+    sgetcopy (ict->orig_request->strtline->sipversion);
 
   ack->strtline->statuscode = NULL;
   ack->strtline->reasonphrase = NULL;
@@ -296,10 +298,10 @@ ict_create_ack (transaction_t * ict, sip_t * response)
 
     while (!list_eol (ict->orig_request->routes, pos))
       {
-        orig_route = (route_t *) list_get (ict->orig_request->routes, pos);
-        route_clone (orig_route, &route);
-        list_add (ack->routes, route, -1);
-        pos++;
+	orig_route = (route_t *) list_get (ict->orig_request->routes, pos);
+	route_clone (orig_route, &route);
+	list_add (ack->routes, route, -1);
+	pos++;
       }
   }
 
@@ -329,7 +331,7 @@ ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
       sfree (ict->last_response);
     }
   ict->last_response = evt->sip;
-  if (ict->state != ICT_COMPLETED)      /* not a retransmission */
+  if (ict->state != ICT_COMPLETED)	/* not a retransmission */
     {
       /* automatic handling of ack! */
       sip_t *ack = ict_create_ack (ict, evt->sip);
@@ -339,44 +341,46 @@ ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
       /* reset ict->ict_context->destination only if
          it is not yet set. */
       if (ict->ict_context->destination == NULL)
-        {
-          msg_getroute (ack, 0, &route);
-          if (route != NULL)
-            {
-              int port = 5060;
+	{
+	  msg_getroute (ack, 0, &route);
+	  if (route != NULL)
+	    {
+	      int port = 5060;
 
-              if (route->url->port != NULL)
-                port = satoi (route->url->port);
-              ict_set_destination (ict->ict_context,
-                                   sgetcopy (route->url->host), port);
-          } else
-            {
-              int port = 5060;
+	      if (route->url->port != NULL)
+		port = satoi (route->url->port);
+	      ict_set_destination (ict->ict_context,
+				   sgetcopy (route->url->host), port);
+	    }
+	  else
+	    {
+	      int port = 5060;
 
-              if (ack->strtline->rquri->port != NULL)
-                port = satoi (ack->strtline->rquri->port);
-              ict_set_destination (ict->ict_context,
-                                   sgetcopy (ack->strtline->rquri->host), port);
-            }
-        }
+	      if (ack->strtline->rquri->port != NULL)
+		port = satoi (ack->strtline->rquri->port);
+	      ict_set_destination (ict->ict_context,
+				   sgetcopy (ack->strtline->rquri->host),
+				   port);
+	    }
+	}
       i = osip->cb_send_message (ict, ack, ict->ict_context->destination,
-                                 ict->ict_context->port, ict->out_socket);
+				 ict->ict_context->port, ict->out_socket);
       if (i != 0)
-        {
-          osip->cb_ict_transport_error (ict, i);
-          transaction_set_state (ict, ICT_TERMINATED);
-          osip->cb_ict_kill_transaction (ict);
-          /* TODO: MUST BE DELETED NOW */
-          return;
-        }
+	{
+	  osip->cb_ict_transport_error (ict, i);
+	  transaction_set_state (ict, ICT_TERMINATED);
+	  osip->cb_ict_kill_transaction (ict);
+	  /* TODO: MUST BE DELETED NOW */
+	  return;
+	}
       if (MSG_IS_STATUS_3XX (evt->sip))
-        osip->cb_ict_3xx_received (ict, evt->sip);
+	osip->cb_ict_3xx_received (ict, evt->sip);
       else if (MSG_IS_STATUS_4XX (evt->sip))
-        osip->cb_ict_4xx_received (ict, evt->sip);
+	osip->cb_ict_4xx_received (ict, evt->sip);
       else if (MSG_IS_STATUS_5XX (evt->sip))
-        osip->cb_ict_5xx_received (ict, evt->sip);
+	osip->cb_ict_5xx_received (ict, evt->sip);
       else
-        osip->cb_ict_6xx_received (ict, evt->sip);
+	osip->cb_ict_6xx_received (ict, evt->sip);
     }
 
   /* TEST ME:
@@ -440,14 +444,15 @@ ict_retransmit_ack (transaction_t * ict, sipevent_t * evt)
   sfree (evt->sip);
 
   i = osip->cb_send_message (ict, ict->ack, ict->ict_context->destination,
-                             ict->ict_context->port, ict->out_socket);
+			     ict->ict_context->port, ict->out_socket);
 
   if (i == 0)
     {
       if (osip->cb_ict_ack_sent2 != NULL)
-        osip->cb_ict_ack_sent2 (ict, ict->ack);
+	osip->cb_ict_ack_sent2 (ict, ict->ack);
       transaction_set_state (ict, ICT_COMPLETED);
-  } else
+    }
+  else
     {
       osip->cb_ict_transport_error (ict, i);
       transaction_set_state (ict, ICT_TERMINATED);

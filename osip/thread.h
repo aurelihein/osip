@@ -83,7 +83,7 @@ extern "C"
    }
    sthread_t;
    
-#endif                          /*  */
+#endif				/*  */
 #if !defined(WIN32) && defined(__PSOS__)
     typedef struct
   {
@@ -113,7 +113,7 @@ extern "C"
  * @param arg A pointer on the argument given to the method 'func'.
  */
   sthread_t *sthread_create (int stacksize, sthread_t * thread,
-                             void *(*func) (void *), void *arg);
+			     void *(*func) (void *), void *arg);
 /**
  * Join a thread.
  * @param thread The thread to join.
@@ -139,4 +139,4 @@ extern "C"
 /** @} */
 
 
-#endif                          /* end of _THREAD_H_ */
+#endif				/* end of _THREAD_H_ */

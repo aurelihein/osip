@@ -75,7 +75,7 @@ msg_getroute (sip_t * sip, int pos, route_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->routes) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   route = (route_t *) list_get (sip->routes, pos);
   *dest = route;
   return pos;

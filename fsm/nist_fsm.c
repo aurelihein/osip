@@ -133,104 +133,116 @@ nist_rcv_request (transaction_t * nist, sipevent_t * evt)
   int i;
   osip_t *osip = (osip_t *) nist->config;
 
-  if (nist->state == NIST_PRE_TRYING)   /* announce new REQUEST */
+  if (nist->state == NIST_PRE_TRYING)	/* announce new REQUEST */
     {
       /* Here we have ist->orig_request == NULL */
       nist->orig_request = evt->sip;
 
       if (MSG_IS_REGISTER (evt->sip))
-        {
-          osip->cb_nist_register_received (nist, nist->orig_request);
-      } else if (MSG_IS_BYE (evt->sip))
-        {
-          osip->cb_nist_bye_received (nist, nist->orig_request);
-      } else if (MSG_IS_OPTIONS (evt->sip))
-        {
-          osip->cb_nist_options_received (nist, nist->orig_request);
-      } else if (MSG_IS_INFO (evt->sip))
-        {
-          osip->cb_nist_info_received (nist, nist->orig_request);
-      } else if (MSG_IS_CANCEL (evt->sip))
-        {
-          osip->cb_nist_cancel_received (nist, nist->orig_request);
-      } else if (MSG_IS_NOTIFY (evt->sip))
-        {
-          osip->cb_nist_notify_received (nist, nist->orig_request);
-      } else if (MSG_IS_SUBSCRIBE (evt->sip))
-        {
-          osip->cb_nist_subscribe_received (nist, nist->orig_request);
-      } else
-        {
-          osip->cb_nist_unknown_received (nist, nist->orig_request);
-        }
+	{
+	  osip->cb_nist_register_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_BYE (evt->sip))
+	{
+	  osip->cb_nist_bye_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_OPTIONS (evt->sip))
+	{
+	  osip->cb_nist_options_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_INFO (evt->sip))
+	{
+	  osip->cb_nist_info_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_CANCEL (evt->sip))
+	{
+	  osip->cb_nist_cancel_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_NOTIFY (evt->sip))
+	{
+	  osip->cb_nist_notify_received (nist, nist->orig_request);
+	}
+      else if (MSG_IS_SUBSCRIBE (evt->sip))
+	{
+	  osip->cb_nist_subscribe_received (nist, nist->orig_request);
+	}
+      else
+	{
+	  osip->cb_nist_unknown_received (nist, nist->orig_request);
+	}
     }
-  else                        /* NIST_PROCEEDING or NIST_COMPLETED */
+  else				/* NIST_PROCEEDING or NIST_COMPLETED */
     {
       /* delete retransmission */
       msg_free (evt->sip);
       sfree (evt->sip);
-      
+
       if (osip->cb_nist_request_received2 != NULL)
-        osip->cb_nist_request_received2 (nist, nist->orig_request);
-      if (nist->last_response != NULL)  /* retransmit last response */
-        {
-          via_t *via;
-	  
-          via = (via_t *) list_get (nist->last_response->vias, 0);
-          if (via)
-            {
+	osip->cb_nist_request_received2 (nist, nist->orig_request);
+      if (nist->last_response != NULL)	/* retransmit last response */
+	{
+	  via_t *via;
+
+	  via = (via_t *) list_get (nist->last_response->vias, 0);
+	  if (via)
+	    {
 	      char *host;
 	      int port;
 	      generic_param_t *maddr;
 	      generic_param_t *received;
 	      generic_param_t *rport;
-	      via_param_getbyname(via, "maddr", &maddr);
-	      via_param_getbyname(via, "received", &received);
-	      via_param_getbyname(via, "rport", &rport);
+	      via_param_getbyname (via, "maddr", &maddr);
+	      via_param_getbyname (via, "received", &received);
+	      via_param_getbyname (via, "rport", &rport);
 	      /* 1: user should not use the provided information
-		 (host and port) if they are using a reliable
-		 transport. Instead, they should use the already
-		 open socket attached to this transaction. */
+	         (host and port) if they are using a reliable
+	         transport. Instead, they should use the already
+	         open socket attached to this transaction. */
 	      /* 2: check maddr and multicast usage */
-	      if (maddr!=NULL)
+	      if (maddr != NULL)
 		host = maddr->gvalue;
 	      /* we should check if this is a multicast address and use
-		 set the "ttl" in this case. (this must be done in the
-		 UDP message (not at the SIP layer) */
-	      else if (received!=NULL)
+	         set the "ttl" in this case. (this must be done in the
+	         UDP message (not at the SIP layer) */
+	      else if (received != NULL)
 		host = received->gvalue;
-	      else host = via->host;
-	      
-	      if (rport==NULL||rport->gvalue==NULL)
+	      else
+		host = via->host;
+
+	      if (rport == NULL || rport->gvalue == NULL)
 		{
-		  if (via->port!=NULL) port = satoi(via->port);
-		  else port = 5060;
+		  if (via->port != NULL)
+		    port = satoi (via->port);
+		  else
+		    port = 5060;
 		}
 	      else
-		port = satoi(rport->gvalue);
+		port = satoi (rport->gvalue);
 
-              i = osip->cb_send_message (nist, nist->last_response, host,
-                                         port, nist->out_socket);
-          } else
-            i = -1;
-          if (i != 0)
-            {
-              osip->cb_nist_transport_error (nist, i);
-              transaction_set_state (nist, NIST_TERMINATED);
-              osip->cb_nist_kill_transaction (nist);
-              /* MUST BE DELETED NOW */
-              return;
-          } else
-            {
-              if (MSG_IS_STATUS_1XX (nist->last_response))
-                osip->cb_nist_1xx_sent (nist, nist->last_response);
-              else if (MSG_IS_STATUS_2XX (nist->last_response))
-                osip->cb_nist_2xx_sent2 (nist, nist->last_response);
-              else
-                osip->cb_nist_3456xx_sent2 (nist, nist->last_response);
-              return;
-            }
-        }
+	      i = osip->cb_send_message (nist, nist->last_response, host,
+					 port, nist->out_socket);
+	    }
+	  else
+	    i = -1;
+	  if (i != 0)
+	    {
+	      osip->cb_nist_transport_error (nist, i);
+	      transaction_set_state (nist, NIST_TERMINATED);
+	      osip->cb_nist_kill_transaction (nist);
+	      /* MUST BE DELETED NOW */
+	      return;
+	    }
+	  else
+	    {
+	      if (MSG_IS_STATUS_1XX (nist->last_response))
+		osip->cb_nist_1xx_sent (nist, nist->last_response);
+	      else if (MSG_IS_STATUS_2XX (nist->last_response))
+		osip->cb_nist_2xx_sent2 (nist, nist->last_response);
+	      else
+		osip->cb_nist_3456xx_sent2 (nist, nist->last_response);
+	      return;
+	    }
+	}
       /* we are already in the proper state */
       return;
     }
@@ -261,33 +273,37 @@ nist_snd_1xx (transaction_t * nist, sipevent_t * evt)
       generic_param_t *maddr;
       generic_param_t *received;
       generic_param_t *rport;
-      via_param_getbyname(via, "maddr", &maddr);
-      via_param_getbyname(via, "received", &received);
-      via_param_getbyname(via, "rport", &rport);
+      via_param_getbyname (via, "maddr", &maddr);
+      via_param_getbyname (via, "received", &received);
+      via_param_getbyname (via, "rport", &rport);
       /* 1: user should not use the provided information
-	 (host and port) if they are using a reliable
-	 transport. Instead, they should use the already
-	 open socket attached to this transaction. */
+         (host and port) if they are using a reliable
+         transport. Instead, they should use the already
+         open socket attached to this transaction. */
       /* 2: check maddr and multicast usage */
-      if (maddr!=NULL)
+      if (maddr != NULL)
 	host = maddr->gvalue;
       /* we should check if this is a multicast address and use
-	 set the "ttl" in this case. (this must be done in the
-	 UDP message (not at the SIP layer) */
-      else if (received!=NULL)
+         set the "ttl" in this case. (this must be done in the
+         UDP message (not at the SIP layer) */
+      else if (received != NULL)
 	host = received->gvalue;
-      else host = via->host;
-      
-      if (rport==NULL||rport->gvalue==NULL)
+      else
+	host = via->host;
+
+      if (rport == NULL || rport->gvalue == NULL)
 	{
-	  if (via->port!=NULL) port = satoi(via->port);
-	  else port = 5060;
+	  if (via->port != NULL)
+	    port = satoi (via->port);
+	  else
+	    port = 5060;
 	}
       else
-	port = satoi(rport->gvalue);
+	port = satoi (rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
-                                 port, nist->out_socket);
-  } else
+				 port, nist->out_socket);
+    }
+  else
     i = -1;
   if (i != 0)
     {
@@ -296,7 +312,8 @@ nist_snd_1xx (transaction_t * nist, sipevent_t * evt)
       osip->cb_nist_kill_transaction (nist);
       /* MUST BE DELETED NOW */
       return;
-  } else
+    }
+  else
     osip->cb_nist_1xx_sent (nist, nist->last_response);
 
   transaction_set_state (nist, NIST_PROCEEDING);
@@ -324,33 +341,37 @@ nist_snd_23456xx (transaction_t * nist, sipevent_t * evt)
       generic_param_t *maddr;
       generic_param_t *received;
       generic_param_t *rport;
-      via_param_getbyname(via, "maddr", &maddr);
-      via_param_getbyname(via, "received", &received);
-      via_param_getbyname(via, "rport", &rport);
+      via_param_getbyname (via, "maddr", &maddr);
+      via_param_getbyname (via, "received", &received);
+      via_param_getbyname (via, "rport", &rport);
       /* 1: user should not use the provided information
-	 (host and port) if they are using a reliable
-	 transport. Instead, they should use the already
-	 open socket attached to this transaction. */
+         (host and port) if they are using a reliable
+         transport. Instead, they should use the already
+         open socket attached to this transaction. */
       /* 2: check maddr and multicast usage */
-      if (maddr!=NULL)
+      if (maddr != NULL)
 	host = maddr->gvalue;
       /* we should check if this is a multicast address and use
-	 set the "ttl" in this case. (this must be done in the
-	 UDP message (not at the SIP layer) */
-      else if (received!=NULL)
+         set the "ttl" in this case. (this must be done in the
+         UDP message (not at the SIP layer) */
+      else if (received != NULL)
 	host = received->gvalue;
-      else host = via->host;
-      
-      if (rport==NULL||rport->gvalue==NULL)
+      else
+	host = via->host;
+
+      if (rport == NULL || rport->gvalue == NULL)
 	{
-	  if (via->port!=NULL) port = satoi(via->port);
-	  else port = 5060;
+	  if (via->port != NULL)
+	    port = satoi (via->port);
+	  else
+	    port = 5060;
 	}
       else
-	port = satoi(rport->gvalue);
+	port = satoi (rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
-                                 port, nist->out_socket);
-  } else
+				 port, nist->out_socket);
+    }
+  else
     i = -1;
   if (i != 0)
     {
@@ -359,21 +380,22 @@ nist_snd_23456xx (transaction_t * nist, sipevent_t * evt)
       osip->cb_nist_kill_transaction (nist);
       /* MUST BE DELETED NOW */
       return;
-  } else
+    }
+  else
     {
       if (EVT_IS_SND_STATUS_2XX (evt))
-        osip->cb_nist_2xx_sent (nist, nist->last_response);
+	osip->cb_nist_2xx_sent (nist, nist->last_response);
       else if (MSG_IS_STATUS_3XX (nist->last_response))
-        osip->cb_nist_3xx_sent (nist, nist->last_response);
+	osip->cb_nist_3xx_sent (nist, nist->last_response);
       else if (MSG_IS_STATUS_4XX (nist->last_response))
-        osip->cb_nist_4xx_sent (nist, nist->last_response);
+	osip->cb_nist_4xx_sent (nist, nist->last_response);
       else if (MSG_IS_STATUS_5XX (nist->last_response))
-        osip->cb_nist_5xx_sent (nist, nist->last_response);
+	osip->cb_nist_5xx_sent (nist, nist->last_response);
       else
-        osip->cb_nist_6xx_sent (nist, nist->last_response);
+	osip->cb_nist_6xx_sent (nist, nist->last_response);
     }
 
-  if (nist->state != NIST_COMPLETED)    /* start J timer */
+  if (nist->state != NIST_COMPLETED)	/* start J timer */
     nist->nist_context->timer_j_start = time (NULL);
 
   transaction_set_state (nist, NIST_COMPLETED);

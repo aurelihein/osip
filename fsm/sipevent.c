@@ -43,24 +43,26 @@ osip_parse (char *buf)
     for (kk = 0; kk < 10000; kk++)
       {
 
-        i = msg_init (&(se->sip));
+	i = msg_init (&(se->sip));
 
-        if (msg_parse (se->sip, buf) == -1)
-          {
-            fprintf (stdout, "msg_parse retrun -1\n");
-            msg_free (se->sip);
-            sfree (se->sip);
-        } else
-          {                     /* msg is parsed */
-            msg_free (se->sip);
-            sfree (se->sip);
-          }
+	if (msg_parse (se->sip, buf) == -1)
+	  {
+	    fprintf (stdout, "msg_parse retrun -1\n");
+	    msg_free (se->sip);
+	    sfree (se->sip);
+	  }
+	else
+	  {			/* msg is parsed */
+	    msg_free (se->sip);
+	    sfree (se->sip);
+	  }
       }
     clock_gettime (CLOCK_REALTIME, &tv1);
     pstime1 = ((tv1.tv_sec * 1000) + (tv1.tv_nsec / 1000000));
     fprintf (stdout, "CPU clock ticks for 10000 messages - T1: %i - T2: %i\n",
-             pstime1, pstime);
-    fprintf (stdout, "CPU time for 10000 messages - %d\n", (pstime1 - pstime));
+	     pstime1, pstime);
+    fprintf (stdout, "CPU time for 10000 messages - %d\n",
+	     (pstime1 - pstime));
   }
   sfree (se);
   return NULL;
@@ -70,17 +72,18 @@ osip_parse (char *buf)
   if (msg_parse (se->sip, buf) == -1)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "could not parse message\n"));
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "could not parse message\n"));
       msg_free (se->sip);
       sfree (se->sip);
       sfree (se);
       return NULL;
-  } else
+    }
+  else
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO3, NULL,
-                   "MESSAGE REC. CALLID:%s\n", se->sip->call_id->number));
+		  (__FILE__, __LINE__, OSIP_INFO3, NULL,
+		   "MESSAGE REC. CALLID:%s\n", se->sip->call_id->number));
       se->type = evt_settype_incoming_sipmessage (se->sip);
       return se;
     }
@@ -149,16 +152,17 @@ evt_settype_incoming_sipmessage (sip_t * sip)
   if (MSG_IS_REQUEST (sip))
     {
       if (MSG_IS_INVITE (sip))
-        return RCV_REQINVITE;
+	return RCV_REQINVITE;
       else if (MSG_IS_ACK (sip))
-        return RCV_REQACK;
+	return RCV_REQACK;
       return RCV_REQUEST;
-  } else
+    }
+  else
     {
       if (MSG_IS_STATUS_1XX (sip))
-        return RCV_STATUS_1XX;
+	return RCV_STATUS_1XX;
       else if (MSG_IS_STATUS_2XX (sip))
-        return RCV_STATUS_2XX;
+	return RCV_STATUS_2XX;
       return RCV_STATUS_3456XX;
     }
 }
@@ -170,16 +174,17 @@ evt_settype_outgoing_sipmessage (sip_t * sip)
   if (MSG_IS_REQUEST (sip))
     {
       if (MSG_IS_INVITE (sip))
-        return SND_REQINVITE;
+	return SND_REQINVITE;
       if (MSG_IS_ACK (sip))
-        return SND_REQACK;
+	return SND_REQACK;
       return SND_REQUEST;
-  } else
+    }
+  else
     {
       if (MSG_IS_STATUS_1XX (sip))
-        return SND_STATUS_1XX;
+	return SND_STATUS_1XX;
       else if (MSG_IS_STATUS_2XX (sip))
-        return SND_STATUS_2XX;
+	return SND_STATUS_2XX;
       return SND_STATUS_3456XX;
     }
 }

@@ -69,8 +69,8 @@ msg_init (sip_t ** sip)
   *sip = (sip_t *) smalloc (sizeof (sip_t));
 #ifdef MEMORY_LEAKS
   osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, stdout,
-              "<msg_write.c> msg_init() = %i, malloc-free = %i, address = %x\n",
-              comptr, freesipcptr, *sip);
+	      "<msg_write.c> msg_init() = %i, malloc-free = %i, address = %x\n",
+	      comptr, freesipcptr, *sip);
   fflush (stdout);
 #endif
 
@@ -127,9 +127,9 @@ msg_init (sip_t ** sip)
 
 #ifdef USE_TMP_BUFFER
   (*sip)->message_property = 3;
-  (*sip)->message = NULL;       /* buffer to avoid calling msg_2char many times (for retransmission) */
+  (*sip)->message = NULL;	/* buffer to avoid calling msg_2char many times (for retransmission) */
 #endif
-  return 0;                     /* ok */
+  return 0;			/* ok */
 }
 
 
@@ -176,8 +176,8 @@ msg_free (sip_t * sip)
   comptr--;
   freesipcptr--;
   osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, stdout,
-              "<msg_write.c> msg_free() = %i, malloc-free = %i, address = %x\n",
-              comptr, freesipcptr, sip);
+	      "<msg_write.c> msg_free() = %i, malloc-free = %i, address = %x\n",
+	      comptr, freesipcptr, sip);
 #endif
   if (sip == NULL)
     return;
@@ -189,10 +189,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->accepts, pos))
       {
-        accept = (accept_t *) list_get (sip->accepts, pos);
-        list_remove (sip->accepts, pos);
-        accept_free (accept);
-        sfree (accept);
+	accept = (accept_t *) list_get (sip->accepts, pos);
+	list_remove (sip->accepts, pos);
+	accept_free (accept);
+	sfree (accept);
       }
     sfree (sip->accepts);
   }
@@ -201,11 +201,11 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->accept_encodings, pos))
       {
-        accept_encoding =
-          (accept_encoding_t *) list_get (sip->accept_encodings, pos);
-        list_remove (sip->accept_encodings, pos);
-        accept_encoding_free (accept_encoding);
-        sfree (accept_encoding);
+	accept_encoding =
+	  (accept_encoding_t *) list_get (sip->accept_encodings, pos);
+	list_remove (sip->accept_encodings, pos);
+	accept_encoding_free (accept_encoding);
+	sfree (accept_encoding);
       }
     sfree (sip->accept_encodings);
   }
@@ -214,11 +214,11 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->accept_languages, pos))
       {
-        accept_language =
-          (accept_language_t *) list_get (sip->accept_languages, pos);
-        list_remove (sip->accept_languages, pos);
-        accept_language_free (accept_language);
-        sfree (accept_language);
+	accept_language =
+	  (accept_language_t *) list_get (sip->accept_languages, pos);
+	list_remove (sip->accept_languages, pos);
+	accept_language_free (accept_language);
+	sfree (accept_language);
       }
     sfree (sip->accept_languages);
   }
@@ -227,10 +227,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->alert_infos, pos))
       {
-        alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
-        list_remove (sip->alert_infos, pos);
-        alert_info_free (alert_info);
-        sfree (alert_info);
+	alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
+	list_remove (sip->alert_infos, pos);
+	alert_info_free (alert_info);
+	sfree (alert_info);
       }
     sfree (sip->alert_infos);
   }
@@ -239,10 +239,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->allows, pos))
       {
-        al = (allow_t *) list_get (sip->allows, pos);
-        list_remove (sip->allows, pos);
-        allow_free (al);
-        sfree (al);
+	al = (allow_t *) list_get (sip->allows, pos);
+	list_remove (sip->allows, pos);
+	allow_free (al);
+	sfree (al);
       }
     sfree (sip->allows);
   }
@@ -251,10 +251,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->authorizations, pos))
       {
-        al = (authorization_t *) list_get (sip->authorizations, pos);
-        list_remove (sip->authorizations, pos);
-        authorization_free (al);
-        sfree (al);
+	al = (authorization_t *) list_get (sip->authorizations, pos);
+	list_remove (sip->authorizations, pos);
+	authorization_free (al);
+	sfree (al);
       }
     sfree (sip->authorizations);
   }
@@ -268,10 +268,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->call_infos, pos))
       {
-        call_info = (call_info_t *) list_get (sip->call_infos, pos);
-        list_remove (sip->call_infos, pos);
-        call_info_free (call_info);
-        sfree (call_info);
+	call_info = (call_info_t *) list_get (sip->call_infos, pos);
+	list_remove (sip->call_infos, pos);
+	call_info_free (call_info);
+	sfree (call_info);
       }
     sfree (sip->call_infos);
   }
@@ -280,10 +280,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->contacts, pos))
       {
-        contact = (contact_t *) list_get (sip->contacts, pos);
-        list_remove (sip->contacts, pos);
-        contact_free (contact);
-        sfree (contact);
+	contact = (contact_t *) list_get (sip->contacts, pos);
+	list_remove (sip->contacts, pos);
+	contact_free (contact);
+	sfree (contact);
       }
     sfree (sip->contacts);
   }
@@ -292,10 +292,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->content_encodings, pos))
       {
-        ce = (content_encoding_t *) list_get (sip->content_encodings, pos);
-        list_remove (sip->content_encodings, pos);
-        content_encoding_free (ce);
-        sfree (ce);
+	ce = (content_encoding_t *) list_get (sip->content_encodings, pos);
+	list_remove (sip->content_encodings, pos);
+	content_encoding_free (ce);
+	sfree (ce);
       }
     sfree (sip->content_encodings);
   }
@@ -319,10 +319,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->error_infos, pos))
       {
-        error_info = (error_info_t *) list_get (sip->error_infos, pos);
-        list_remove (sip->error_infos, pos);
-        error_info_free (error_info);
-        sfree (error_info);
+	error_info = (error_info_t *) list_get (sip->error_infos, pos);
+	list_remove (sip->error_infos, pos);
+	error_info_free (error_info);
+	sfree (error_info);
       }
     sfree (sip->error_infos);
   }
@@ -341,10 +341,11 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->proxy_authenticates, pos))
       {
-        al = (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
-        list_remove (sip->proxy_authenticates, pos);
-        proxy_authenticate_free (al);
-        sfree (al);
+	al =
+	  (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
+	list_remove (sip->proxy_authenticates, pos);
+	proxy_authenticate_free (al);
+	sfree (al);
       }
     sfree (sip->proxy_authenticates);
   }
@@ -353,11 +354,11 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->proxy_authorizations, pos))
       {
-        proxy_authorization =
-          (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
-        list_remove (sip->proxy_authorizations, pos);
-        proxy_authorization_free (proxy_authorization);
-        sfree (proxy_authorization);
+	proxy_authorization =
+	  (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
+	list_remove (sip->proxy_authorizations, pos);
+	proxy_authorization_free (proxy_authorization);
+	sfree (proxy_authorization);
       }
     sfree (sip->proxy_authorizations);
   }
@@ -366,10 +367,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->record_routes, pos))
       {
-        record_route = (record_route_t *) list_get (sip->record_routes, pos);
-        list_remove (sip->record_routes, pos);
-        record_route_free (record_route);
-        sfree (record_route);
+	record_route = (record_route_t *) list_get (sip->record_routes, pos);
+	list_remove (sip->record_routes, pos);
+	record_route_free (record_route);
+	sfree (record_route);
       }
     sfree (sip->record_routes);
   }
@@ -378,10 +379,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->routes, pos))
       {
-        route = (route_t *) list_get (sip->routes, pos);
-        list_remove (sip->routes, pos);
-        route_free (route);
-        sfree (route);
+	route = (route_t *) list_get (sip->routes, pos);
+	list_remove (sip->routes, pos);
+	route_free (route);
+	sfree (route);
       }
     sfree (sip->routes);
   }
@@ -395,10 +396,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->vias, pos))
       {
-        via = (via_t *) list_get (sip->vias, pos);
-        list_remove (sip->vias, pos);
-        via_free (via);
-        sfree (via);
+	via = (via_t *) list_get (sip->vias, pos);
+	list_remove (sip->vias, pos);
+	via_free (via);
+	sfree (via);
       }
     sfree (sip->vias);
   }
@@ -407,10 +408,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->www_authenticates, pos))
       {
-        al = (www_authenticate_t *) list_get (sip->www_authenticates, pos);
-        list_remove (sip->www_authenticates, pos);
-        www_authenticate_free (al);
-        sfree (al);
+	al = (www_authenticate_t *) list_get (sip->www_authenticates, pos);
+	list_remove (sip->www_authenticates, pos);
+	www_authenticate_free (al);
+	sfree (al);
       }
     sfree (sip->www_authenticates);
   }
@@ -420,10 +421,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->headers, pos))
       {
-        header = (header_t *) list_get (sip->headers, pos);
-        list_remove (sip->headers, pos);
-        header_free (header);
-        sfree (header);
+	header = (header_t *) list_get (sip->headers, pos);
+	list_remove (sip->headers, pos);
+	header_free (header);
+	sfree (header);
       }
     sfree (sip->headers);
   }
@@ -433,10 +434,10 @@ msg_free (sip_t * sip)
 
     while (!list_eol (sip->bodies, pos))
       {
-        body = (body_t *) list_get (sip->bodies, pos);
-        list_remove (sip->bodies, pos);
-        body_free (body);
-        sfree (body);
+	body = (body_t *) list_get (sip->bodies, pos);
+	list_remove (sip->bodies, pos);
+	body_free (body);
+	sfree (body);
       }
     sfree (sip->bodies);
   }
@@ -465,7 +466,7 @@ body_clone (body_t * body, body_t ** dest)
     {
       i = content_type_clone (body->content_type, &(copy->content_type));
       if (i != 0)
-        goto bc_error1;
+	goto bc_error1;
     }
 
   {
@@ -475,12 +476,12 @@ body_clone (body_t * body, body_t ** dest)
     pos = 0;
     while (!list_eol (body->headers, pos))
       {
-        header = (header_t *) list_get (body->headers, pos);
-        i = header_clone (header, &header2);
-        if (i != 0)
-          goto bc_error1;
-        list_add (copy->headers, header2, -1);  /* insert as last element */
-        pos++;
+	header = (header_t *) list_get (body->headers, pos);
+	i = header_clone (header, &header2);
+	if (i != 0)
+	  goto bc_error1;
+	list_add (copy->headers, header2, -1);	/* insert as last element */
+	pos++;
       }
   }
 
@@ -515,7 +516,7 @@ msg_clone (sip_t * sip, sip_t ** dest)
     {
       i = url_clone (sip->strtline->rquri, &(copy->strtline->rquri));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
 
   {
@@ -525,12 +526,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->accepts, pos))
       {
-        accept = (accept_t *) list_get (sip->accepts, pos);
-        i = accept_clone (accept, &accept2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->accepts, accept2, -1);  /* insert as last element */
-        pos++;
+	accept = (accept_t *) list_get (sip->accepts, pos);
+	i = accept_clone (accept, &accept2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->accepts, accept2, -1);	/* insert as last element */
+	pos++;
       }
   }
   {
@@ -540,13 +541,13 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->accept_encodings, pos))
       {
-        accept_encoding =
-          (accept_encoding_t *) list_get (sip->accept_encodings, pos);
-        i = accept_encoding_clone (accept_encoding, &accept_encoding2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->accept_encodings, accept_encoding2, -1);
-        pos++;
+	accept_encoding =
+	  (accept_encoding_t *) list_get (sip->accept_encodings, pos);
+	i = accept_encoding_clone (accept_encoding, &accept_encoding2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->accept_encodings, accept_encoding2, -1);
+	pos++;
       }
   }
   {
@@ -556,13 +557,13 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->accept_languages, pos))
       {
-        accept_language =
-          (accept_language_t *) list_get (sip->accept_languages, pos);
-        i = accept_language_clone (accept_language, &accept_language2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->accept_languages, accept_language2, -1);
-        pos++;
+	accept_language =
+	  (accept_language_t *) list_get (sip->accept_languages, pos);
+	i = accept_language_clone (accept_language, &accept_language2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->accept_languages, accept_language2, -1);
+	pos++;
       }
   }
   {
@@ -572,12 +573,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->alert_infos, pos))
       {
-        alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
-        i = alert_info_clone (alert_info, &alert_info2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->alert_infos, alert_info2, -1);
-        pos++;
+	alert_info = (alert_info_t *) list_get (sip->alert_infos, pos);
+	i = alert_info_clone (alert_info, &alert_info2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->alert_infos, alert_info2, -1);
+	pos++;
       }
   }
   {
@@ -587,12 +588,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->allows, pos))
       {
-        allow = (allow_t *) list_get (sip->allows, pos);
-        i = allow_clone (allow, &allow2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->allows, allow2, -1);
-        pos++;
+	allow = (allow_t *) list_get (sip->allows, pos);
+	i = allow_clone (allow, &allow2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->allows, allow2, -1);
+	pos++;
       }
   }
   {
@@ -602,19 +603,20 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->authorizations, pos))
       {
-        authorization = (authorization_t *) list_get (sip->authorizations, pos);
-        i = authorization_clone (authorization, &authorization2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->authorizations, authorization2, -1);
-        pos++;
+	authorization =
+	  (authorization_t *) list_get (sip->authorizations, pos);
+	i = authorization_clone (authorization, &authorization2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->authorizations, authorization2, -1);
+	pos++;
       }
   }
   if (sip->call_id != NULL)
     {
       i = call_id_clone (sip->call_id, &(copy->call_id));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   {
     call_info_t *call_info;
@@ -623,12 +625,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->call_infos, pos))
       {
-        call_info = (call_info_t *) list_get (sip->call_infos, pos);
-        i = call_info_clone (call_info, &call_info2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->call_infos, call_info2, -1);
-        pos++;
+	call_info = (call_info_t *) list_get (sip->call_infos, pos);
+	i = call_info_clone (call_info, &call_info2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->call_infos, call_info2, -1);
+	pos++;
       }
   }
   {
@@ -638,12 +640,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->contacts, pos))
       {
-        contact = (contact_t *) list_get (sip->contacts, pos);
-        i = contact_clone (contact, &contact2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->contacts, contact2, -1);
-        pos++;
+	contact = (contact_t *) list_get (sip->contacts, pos);
+	i = contact_clone (contact, &contact2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->contacts, contact2, -1);
+	pos++;
       }
   }
   {
@@ -653,32 +655,32 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->content_encodings, pos))
       {
-        content_encoding =
-          (content_encoding_t *) list_get (sip->content_encodings, pos);
-        i = content_encoding_clone (content_encoding, &content_encoding2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->content_encodings, content_encoding2, -1);
-        pos++;
+	content_encoding =
+	  (content_encoding_t *) list_get (sip->content_encodings, pos);
+	i = content_encoding_clone (content_encoding, &content_encoding2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->content_encodings, content_encoding2, -1);
+	pos++;
       }
   }
   if (sip->contentlength != NULL)
     {
       i = content_length_clone (sip->contentlength, &(copy->contentlength));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   if (sip->content_type != NULL)
     {
       i = content_type_clone (sip->content_type, &(copy->content_type));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   if (sip->cseq != NULL)
     {
       i = cseq_clone (sip->cseq, &(copy->cseq));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   {
     error_info_t *error_info;
@@ -687,25 +689,25 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->error_infos, pos))
       {
-        error_info = (error_info_t *) list_get (sip->error_infos, pos);
-        i = error_info_clone (error_info, &error_info2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->error_infos, error_info2, -1);
-        pos++;
+	error_info = (error_info_t *) list_get (sip->error_infos, pos);
+	i = error_info_clone (error_info, &error_info2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->error_infos, error_info2, -1);
+	pos++;
       }
   }
   if (sip->from != NULL)
     {
       i = from_clone (sip->from, &(copy->from));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   if (sip->mime_version != NULL)
     {
       i = mime_version_clone (sip->mime_version, &(copy->mime_version));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   {
     proxy_authenticate_t *proxy_authenticate;
@@ -714,13 +716,14 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->proxy_authenticates, pos))
       {
-        proxy_authenticate =
-          (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
-        i = proxy_authenticate_clone (proxy_authenticate, &proxy_authenticate2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->proxy_authenticates, proxy_authenticate2, -1);
-        pos++;
+	proxy_authenticate =
+	  (proxy_authenticate_t *) list_get (sip->proxy_authenticates, pos);
+	i =
+	  proxy_authenticate_clone (proxy_authenticate, &proxy_authenticate2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->proxy_authenticates, proxy_authenticate2, -1);
+	pos++;
       }
   }
   {
@@ -730,13 +733,15 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->proxy_authorizations, pos))
       {
-        proxy_authorization =
-          (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
-        i = proxy_authorization_clone (proxy_authorization, &proxy_authorization2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->proxy_authorizations, proxy_authorization2, -1);
-        pos++;
+	proxy_authorization =
+	  (proxy_authorization_t *) list_get (sip->proxy_authorizations, pos);
+	i =
+	  proxy_authorization_clone (proxy_authorization,
+				     &proxy_authorization2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->proxy_authorizations, proxy_authorization2, -1);
+	pos++;
       }
   }
   {
@@ -746,12 +751,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->record_routes, pos))
       {
-        record_route = (record_route_t *) list_get (sip->record_routes, pos);
-        i = record_route_clone (record_route, &record_route2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->record_routes, record_route2, -1);
-        pos++;
+	record_route = (record_route_t *) list_get (sip->record_routes, pos);
+	i = record_route_clone (record_route, &record_route2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->record_routes, record_route2, -1);
+	pos++;
       }
   }
   {
@@ -761,19 +766,19 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->routes, pos))
       {
-        route = (route_t *) list_get (sip->routes, pos);
-        i = route_clone (route, &route2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->routes, route2, -1);
-        pos++;
+	route = (route_t *) list_get (sip->routes, pos);
+	i = route_clone (route, &route2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->routes, route2, -1);
+	pos++;
       }
   }
   if (sip->to != NULL)
     {
       i = to_clone (sip->to, &(copy->to));
       if (i != 0)
-        goto mc_error1;
+	goto mc_error1;
     }
   {
     via_t *via;
@@ -782,12 +787,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->vias, pos))
       {
-        via = (via_t *) list_get (sip->vias, pos);
-        i = via_clone (via, &via2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->vias, via2, -1);
-        pos++;
+	via = (via_t *) list_get (sip->vias, pos);
+	i = via_clone (via, &via2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->vias, via2, -1);
+	pos++;
       }
   }
   {
@@ -797,13 +802,13 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->www_authenticates, pos))
       {
-        www_authenticate =
-          (www_authenticate_t *) list_get (sip->www_authenticates, pos);
-        i = www_authenticate_clone (www_authenticate, &www_authenticate2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->www_authenticates, www_authenticate2, -1);
-        pos++;
+	www_authenticate =
+	  (www_authenticate_t *) list_get (sip->www_authenticates, pos);
+	i = www_authenticate_clone (www_authenticate, &www_authenticate2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->www_authenticates, www_authenticate2, -1);
+	pos++;
       }
   }
 
@@ -814,12 +819,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->headers, pos))
       {
-        header = (header_t *) list_get (sip->headers, pos);
-        i = header_clone (header, &header2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->headers, header2, -1);
-        pos++;
+	header = (header_t *) list_get (sip->headers, pos);
+	i = header_clone (header, &header2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->headers, header2, -1);
+	pos++;
       }
   }
 
@@ -830,12 +835,12 @@ msg_clone (sip_t * sip, sip_t ** dest)
     pos = 0;
     while (!list_eol (sip->bodies, pos))
       {
-        body = (body_t *) list_get (sip->bodies, pos);
-        i = body_clone (body, &body2);
-        if (i != 0)
-          goto mc_error1;
-        list_add (copy->bodies, body2, -1);
-        pos++;
+	body = (body_t *) list_get (sip->bodies, pos);
+	i = body_clone (body, &body2);
+	if (i != 0)
+	  goto mc_error1;
+	list_add (copy->bodies, body2, -1);
+	pos++;
       }
   }
 

@@ -30,7 +30,8 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
   time_t now;
 
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NICT context\n"));
+	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
+	       "allocating NICT context\n"));
 
   *nict = (nict_t *) smalloc (sizeof (nict_t));
   if (*nict == NULL)
@@ -46,7 +47,7 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
     via_t *via;
     char *proto;
 
-    i = msg_getvia (request, 0, &via);  /* get top via */
+    i = msg_getvia (request, 0, &via);	/* get top via */
     if (i != 0)
       goto ii_error_1;
     proto = via_getprotocol (via);
@@ -59,20 +60,21 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
     i = stricmp (proto, "TCP");
 #endif
     if (i != 0)
-      {                         /* for other reliable protocol than TCP, the timer
-                                   must be desactived by the external application */
-        (*nict)->timer_e_length = DEFAULT_T1;
-        (*nict)->timer_e_start = now;   /* started */
+      {				/* for other reliable protocol than TCP, the timer
+				   must be desactived by the external application */
+	(*nict)->timer_e_length = DEFAULT_T1;
+	(*nict)->timer_e_start = now;	/* started */
 
-        (*nict)->timer_k_length = DEFAULT_T4;
-        (*nict)->timer_k_start = -1;    /* not started */
-    } else
-      {                         /* TCP is used: */
-        (*nict)->timer_e_length = -1;   /* E is not ACTIVE */
-        (*nict)->timer_e_start = -1;
+	(*nict)->timer_k_length = DEFAULT_T4;
+	(*nict)->timer_k_start = -1;	/* not started */
+      }
+    else
+      {				/* TCP is used: */
+	(*nict)->timer_e_length = -1;	/* E is not ACTIVE */
+	(*nict)->timer_e_start = -1;
 
-        (*nict)->timer_k_length = 0;    /* MUST do the transition immediatly */
-        (*nict)->timer_k_start = -1;    /* not started */
+	(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
+	(*nict)->timer_k_start = -1;	/* not started */
       }
   }
 
@@ -82,13 +84,14 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
       int port = 5060;
 
       if (route->url->port != NULL)
-        port = satoi (route->url->port);
+	port = satoi (route->url->port);
       nict_set_destination ((*nict), sgetcopy (route->url->host), port);
-  } else
+    }
+  else
     (*nict)->port = 5060;
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
-  (*nict)->timer_f_start = now; /* started */
+  (*nict)->timer_f_start = now;	/* started */
 
   /* Oups! a Bug! */
   /*  (*nict)->port  = 5060; */
@@ -106,7 +109,8 @@ nict_free (nict_t * nict)
   if (nict == NULL)
     return -1;
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
+	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
+	       "free nict ressource\n"));
 
   sfree (nict->destination);
   return 0;
@@ -134,9 +138,9 @@ nict_need_timer_e_event (nict_t * nict, state_t state, int transactionid)
   if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
       if (nict->timer_e_start == -1)
-        return NULL;
+	return NULL;
       if ((now - nict->timer_e_start - 1) * 1000 > nict->timer_e_length)
-        return osip_new_event (TIMEOUT_E, transactionid);
+	return osip_new_event (TIMEOUT_E, transactionid);
     }
   return NULL;
 }
@@ -151,9 +155,9 @@ nict_need_timer_f_event (nict_t * nict, state_t state, int transactionid)
   if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
       if (nict->timer_f_start == -1)
-        return NULL;
+	return NULL;
       if ((now - nict->timer_f_start - 1) * 1000 > nict->timer_f_length)
-        return osip_new_event (TIMEOUT_F, transactionid);
+	return osip_new_event (TIMEOUT_F, transactionid);
     }
   return NULL;
 }
@@ -168,9 +172,9 @@ nict_need_timer_k_event (nict_t * nict, state_t state, int transactionid)
   if (state == NICT_COMPLETED)
     {
       if (nict->timer_k_start == -1)
-        return NULL;
+	return NULL;
       if ((now - nict->timer_k_start - 1) * 1000 > nict->timer_k_length)
-        return osip_new_event (TIMEOUT_K, transactionid);
+	return osip_new_event (TIMEOUT_K, transactionid);
     }
   return NULL;
 }

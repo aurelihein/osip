@@ -152,7 +152,7 @@ extern "C"
   int sclrspace (char *word);
 /* used by the sdp parser: */
   char *sdp_append_string (char *string, int size,
-                           char *cur, char *string_to_append);
+			   char *cur, char *string_to_append);
   int set_next_token (char **dest, char *buf, int end_separator, char **next);
 /* find the next unescaped quote and  */
 /* return its index.                  */
@@ -228,7 +228,9 @@ extern "C"
 /* INPUT: chfr | format string for next args       */
   int
 #if defined(HAVE_STDARG_H) || defined(WIN32) || defined(__VXWORKS_OS__)
-    osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...);
+   
+    osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr,
+		...);
 #else
 /* ERROR? I never tested this */
     osip_trace (fi, li, level, f, chfr, va_list);
@@ -250,4 +252,4 @@ extern "C"
 }
 #endif
 
-#endif                          /* _PORT_H_ */
+#endif				/* _PORT_H_ */

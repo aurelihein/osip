@@ -21,8 +21,8 @@
 #ifndef _SMSG_H_
 #define _SMSG_H_
 
-#include <osip/const.h>         /* constant definitions */
-#include <osip/smsgtypes.h>     /* type     definitions */
+#include <osip/const.h>		/* constant definitions */
+#include <osip/smsgtypes.h>	/* type     definitions */
 
 /**
  * @file smsg.h
@@ -81,7 +81,7 @@ extern "C"
  * Fix the via header for INCOMING requests only.
  * a copy of ip_addr is done.
  */
-  int msg_fix_last_via_header (sip_t *request, char *ip_addr, int port);
+  int msg_fix_last_via_header (sip_t * request, char *ip_addr, int port);
 
 /**
  * Allocate a sip_t element.
@@ -218,7 +218,8 @@ extern "C"
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-  int msg_getaccept_encoding (sip_t * sip, int pos, accept_encoding_t ** dest);
+  int msg_getaccept_encoding (sip_t * sip, int pos,
+			      accept_encoding_t ** dest);
 /**
  * Set the Accept-language header.
  * @param sip The element to work on.
@@ -231,7 +232,8 @@ extern "C"
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-  int msg_getaccept_language (sip_t * sip, int pos, accept_language_t ** dest);
+  int msg_getaccept_language (sip_t * sip, int pos,
+			      accept_language_t ** dest);
 /**
  * Set the Alert-info header.
  * @param sip The element to work on.
@@ -321,7 +323,7 @@ extern "C"
  * @param dest A pointer on the header found.
  */
   int msg_getcontent_disposition (sip_t * sip, int pos,
-                                  content_disposition_t ** dest);
+				  content_disposition_t ** dest);
 /**
  * Set the Content-encoding header.
  * @param sip The element to work on.
@@ -334,7 +336,8 @@ extern "C"
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-  int msg_getcontent_encoding (sip_t * sip, int pos, content_encoding_t ** dest);
+  int msg_getcontent_encoding (sip_t * sip, int pos,
+			       content_encoding_t ** dest);
 /**
  * Set the Content-length header.
  * @param sip The element to work on.
@@ -416,7 +419,7 @@ extern "C"
  * @param dest A pointer on the header found.
  */
   int msg_getproxy_authenticate (sip_t * sip, int pos,
-                                 proxy_authenticate_t ** dest);
+				 proxy_authenticate_t ** dest);
 /**
  * Set the Proxy-authorization header.
  * @param sip The element to work on.
@@ -430,7 +433,7 @@ extern "C"
  * @param dest A pointer on the header found.
  */
   int msg_getproxy_authorization (sip_t * sip, int pos,
-                                  proxy_authorization_t ** dest);
+				  proxy_authorization_t ** dest);
 /**
  * Set the Record-Route header.
  * @param sip The element to work on.
@@ -493,7 +496,8 @@ extern "C"
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-  int msg_getwww_authenticate (sip_t * sip, int pos, www_authenticate_t ** dest);
+  int msg_getwww_authenticate (sip_t * sip, int pos,
+			       www_authenticate_t ** dest);
 /**
  * Allocate and Add an "unknown" header (not defined in oSIP).
  * @param sip The element to work on.
@@ -508,7 +512,8 @@ extern "C"
  * @param pos The index where to start searching for the header.
  * @param dest A pointer to the header found.
  */
-  int msg_header_getbyname (sip_t * sip, char *hname, int pos, header_t ** dest);
+  int msg_header_getbyname (sip_t * sip, char *hname, int pos,
+			    header_t ** dest);
 /**
  * Get one "unknown" header.
  * @param sip The element to work on.
@@ -891,7 +896,7 @@ extern "C"
  * @param dest A pointer on the copy of the element.
  */
   int accept_encoding_clone (accept_encoding_t * header,
-                             accept_encoding_t ** dest);
+			     accept_encoding_t ** dest);
 
 /**
  * Set the value of an Accept-Encoding element.
@@ -1384,7 +1389,8 @@ extern "C"
  * @param header The element to work on.
  * @param hvalue The string to parse.
  */
-  int content_disposition_parse (content_disposition_t * header, char *hvalue);
+  int content_disposition_parse (content_disposition_t * header,
+				 char *hvalue);
 /**
  * Get a string representation of a Content-Disposition element.
  * @param header The element to work on.
@@ -1467,7 +1473,8 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-  int content_length_clone (content_length_t * header, content_length_t ** dest);
+  int content_length_clone (content_length_t * header,
+			    content_length_t ** dest);
 
 /**
  * Allocate a Content-Type element.
@@ -1690,7 +1697,7 @@ extern "C"
  */
 #define from_set_tag(header,value)     generic_param_add((header)->gen_params, sgetcopy("tag"),value)
 
-#ifndef DOXYGEN                 /* avoid DOXYGEN warning */
+#ifndef DOXYGEN			/* avoid DOXYGEN warning */
 /* Compare the username, host and tag part (if exist) of the two froms */
   int from_compare (from_t * header1, from_t * header2);
 #endif
@@ -2233,7 +2240,7 @@ extern "C"
  */
 #define to_get_tag(header,dest) generic_param_getbyname((header)->gen_params, "tag",dest)
 
-#ifndef DOXYGEN                 /* avoid DOXYGEN warning */
+#ifndef DOXYGEN			/* avoid DOXYGEN warning */
 /* Compare the username, host and tag part of the two froms */
 #define to_compare(header1, header2) from_compare((from_t *)header1, (from_t *)header2)
 #endif
@@ -2397,7 +2404,7 @@ extern "C"
  * @param dest A pointer on the copy of the element.
  */
   int www_authenticate_clone (www_authenticate_t * header,
-                              www_authenticate_t ** dest);
+			      www_authenticate_t ** dest);
 
 /**
  * Get value of the auth_type parameter from a Www-Authenticate element.
@@ -2409,7 +2416,8 @@ extern "C"
  * @param header The element to work on.
  * @param value The value of the new parameter.
  */
-  void www_authenticate_setauth_type (www_authenticate_t * header, char *value);
+  void www_authenticate_setauth_type (www_authenticate_t * header,
+				      char *value);
 /**
  * Get value of the realm parameter from a Www-Authenticate element.
  * @param header The element to work on.
@@ -2485,7 +2493,8 @@ extern "C"
  * @param header The element to work on.
  * @param value The value of the new parameter.
  */
-  void www_authenticate_setalgorithm (www_authenticate_t * header, char *value);
+  void www_authenticate_setalgorithm (www_authenticate_t * header,
+				      char *value);
 /**
  * Add the algorithm parameter set to "MD5" in a Www-Authenticate element.
  * @param header The element to work on.
@@ -2501,11 +2510,12 @@ extern "C"
  * @param header The element to work on.
  * @param value The value of the new parameter.
  */
-  void www_authenticate_setqop_options (www_authenticate_t * header, char *value);
+  void www_authenticate_setqop_options (www_authenticate_t * header,
+					char *value);
 
 
 /* trace facilities */
-#ifndef DOXYGEN                 /* avoid DOXYGEN warning */
+#ifndef DOXYGEN			/* avoid DOXYGEN warning */
 #ifdef ENABLE_TRACE
   void msg_logrequest (sip_t * sip, char *fmt);
   void msg_logresponse (sip_t * sip, char *fmt);

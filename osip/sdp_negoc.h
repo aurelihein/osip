@@ -135,7 +135,7 @@ extern "C"
 
   struct sdp_context_t
   {
-    void *mycontext;            /* add the pointer to your personal context */
+    void *mycontext;		/* add the pointer to your personal context */
     sdp_t *remote;
     sdp_t *local;
   };
@@ -359,12 +359,12 @@ extern "C"
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
   int sdp_config_add_support_for_audio_codec (char *payload,
-                                              char *number_of_port,
-                                              char *proto, char *c_nettype,
-                                              char *c_addrtype, char *c_addr,
-                                              char *c_addr_multicast_ttl,
-                                              char *c_addr_multicast_int,
-                                              char *a_rtpmap);
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap);
 /**
  * Add a supported video codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -380,12 +380,12 @@ extern "C"
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
   int sdp_config_add_support_for_video_codec (char *payload,
-                                              char *number_of_port,
-                                              char *proto, char *c_nettype,
-                                              char *c_addrtype, char *c_addr,
-                                              char *c_addr_multicast_ttl,
-                                              char *c_addr_multicast_int,
-                                              char *a_rtpmap);
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap);
 /**
  * Add a supported (non-audio and non-video) codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -401,12 +401,12 @@ extern "C"
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
   int sdp_config_add_support_for_other_codec (char *payload,
-                                              char *number_of_port,
-                                              char *proto, char *c_nettype,
-                                              char *c_addrtype, char *c_addr,
-                                              char *c_addr_multicast_ttl,
-                                              char *c_addr_multicast_int,
-                                              char *a_rtpmap);
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap);
 
 #ifndef DOXYGEN
 /**
@@ -453,7 +453,8 @@ extern "C"
  * @param fcn The callback.
  */
   int
-    sdp_config_set_fcn_set_attributes (int (*fcn) (sdp_context_t *, sdp_t *, int));
+    sdp_config_set_fcn_set_attributes (int (*fcn)
+				       (sdp_context_t *, sdp_t *, int));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -461,8 +462,8 @@ extern "C"
  */
   int
     sdp_config_set_fcn_accept_audio_codec (int (*fcn)
-                                           (sdp_context_t *, char *, char *,
-                                            int, char *));
+					   (sdp_context_t *, char *, char *,
+					    int, char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -470,8 +471,8 @@ extern "C"
  */
   int
     sdp_config_set_fcn_accept_video_codec (int (*fcn)
-                                           (sdp_context_t *, char *, char *,
-                                            int, char *));
+					   (sdp_context_t *, char *, char *,
+					    int, char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -479,8 +480,8 @@ extern "C"
  */
   int
     sdp_config_set_fcn_accept_other_codec (int (*fcn)
-                                           (sdp_context_t *, char *, char *,
-                                            char *, char *));
+					   (sdp_context_t *, char *, char *,
+					    char *, char *));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
@@ -516,7 +517,7 @@ extern "C"
   int sdp_context_execute_negotiation (sdp_context_t * ctx);
 
   int sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
-                       char *video_port);
+		       char *video_port);
 
   /* for non "on-hold sdp" in outgoing invite */
   int sdp_put_on_hold (sdp_t * sdp);

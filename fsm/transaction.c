@@ -24,7 +24,7 @@
 
 int
 transaction_init (transaction_t ** transaction, context_type_t ctx_type,
-                  osip_t * osip, sip_t * request)
+		  osip_t * osip, sip_t * request)
 {
   static int transactionid = 1;
   via_t *topvia;
@@ -33,9 +33,9 @@ transaction_init (transaction_t ** transaction, context_type_t ctx_type,
   time_t now;
 
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO2, NULL,
-               "allocating transaction ressource %i %s\n", transactionid,
-               request->call_id->number));
+	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
+	       "allocating transaction ressource %i %s\n", transactionid,
+	       request->call_id->number));
 
   *transaction = (transaction_t *) smalloc (sizeof (transaction_t));
   if (*transaction == NULL)
@@ -104,28 +104,31 @@ transaction_init (transaction_t ** transaction, context_type_t ctx_type,
       (*transaction)->state = ICT_PRE_CALLING;
       i = ict_init (&((*transaction)->ict_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	goto ti_error_7;
       osip_add_ict (osip, *transaction);
-  } else if (ctx_type == IST)
+    }
+  else if (ctx_type == IST)
     {
       (*transaction)->state = IST_PRE_PROCEEDING;
       i = ist_init (&((*transaction)->ist_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	goto ti_error_7;
       osip_add_ist (osip, *transaction);
-  } else if (ctx_type == NICT)
+    }
+  else if (ctx_type == NICT)
     {
       (*transaction)->state = NICT_PRE_TRYING;
       i = nict_init (&((*transaction)->nict_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	goto ti_error_7;
       osip_add_nict (osip, *transaction);
-  } else
+    }
+  else
     {
       (*transaction)->state = NIST_PRE_TRYING;
       i = nist_init (&((*transaction)->nist_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	goto ti_error_7;
       osip_add_nist (osip, *transaction);
     }
   return 0;
@@ -182,38 +185,41 @@ transaction_free (transaction_t * transaction)
   if (transaction->orig_request != NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                   "free transaction ressource %i %s\n",
-                   transaction->transactionid,
-                   transaction->orig_request->call_id->number));
+		  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+		   "free transaction ressource %i %s\n",
+		   transaction->transactionid,
+		   transaction->orig_request->call_id->number));
     }
   if (transaction->ctx_type == ICT)
     {
       i = osip_remove_ict (transaction->config, transaction);
       ict_free (transaction->ict_context);
       sfree (transaction->ict_context);
-  } else if (transaction->ctx_type == IST)
+    }
+  else if (transaction->ctx_type == IST)
     {
       i = osip_remove_ist (transaction->config, transaction);
       ist_free (transaction->ist_context);
       sfree (transaction->ist_context);
-  } else if (transaction->ctx_type == NICT)
+    }
+  else if (transaction->ctx_type == NICT)
     {
       i = osip_remove_nict (transaction->config, transaction);
       nict_free (transaction->nict_context);
       sfree (transaction->nict_context);
-  } else
+    }
+  else
     {
       i = osip_remove_nist (transaction->config, transaction);
       nist_free (transaction->nist_context);
       sfree (transaction->nist_context);
     }
 
-  if (i != 0)                   /* yet removed ??? */
+  if (i != 0)			/* yet removed ??? */
     {
       OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_BUG, NULL,
-                              "transaction already removed from list %i!\n",
-                              transaction->transactionid));
+			      "transaction already removed from list %i!\n",
+			      transaction->transactionid));
     }
 
   /* empty the fifo */
@@ -261,24 +267,27 @@ transaction_free2 (transaction_t * transaction)
   if (transaction->orig_request != NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                   "free transaction ressource %i %s\n",
-                   transaction->transactionid,
-                   transaction->orig_request->call_id->number));
+		  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+		   "free transaction ressource %i %s\n",
+		   transaction->transactionid,
+		   transaction->orig_request->call_id->number));
     }
   if (transaction->ctx_type == ICT)
     {
       ict_free (transaction->ict_context);
       sfree (transaction->ict_context);
-  } else if (transaction->ctx_type == IST)
+    }
+  else if (transaction->ctx_type == IST)
     {
       ist_free (transaction->ist_context);
       sfree (transaction->ist_context);
-  } else if (transaction->ctx_type == NICT)
+    }
+  else if (transaction->ctx_type == NICT)
     {
       nict_free (transaction->nict_context);
       sfree (transaction->nict_context);
-  } else
+    }
+  else
     {
       nist_free (transaction->nist_context);
       sfree (transaction->nist_context);
@@ -342,17 +351,18 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
     }
 
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO4, NULL,
-               "sipevent tr->transactionid: %i\n", transaction->transactionid));
+	      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+	       "sipevent tr->transactionid: %i\n",
+	       transaction->transactionid));
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO4, NULL,
-               "sipevent tr->state: %i\n", transaction->state));
+	      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+	       "sipevent tr->state: %i\n", transaction->state));
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO4, NULL,
-               "sipevent evt->type: %i\n", evt->type));
+	      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+	       "sipevent evt->type: %i\n", evt->type));
   OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_INFO4, NULL,
-               "sipevent evt->sip: %x\n", evt->sip));
+	      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+	       "sipevent evt->sip: %x\n", evt->sip));
 
   if (transaction->ctx_type == ICT)
     statemachine = ict_get_fsm ();
@@ -365,26 +375,28 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
 
 
   if (-1 == fsm_callmethod (evt->type,
-                            transaction->state, statemachine, evt, transaction))
+			    transaction->state, statemachine, evt,
+			    transaction))
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO3, NULL, "USELESS event!\n"));
+		  (__FILE__, __LINE__, OSIP_INFO3, NULL, "USELESS event!\n"));
       /* message is useless. */
       if (EVT_IS_MSG (evt))
-        {
-          if (evt->sip != NULL)
-            {
-              msg_free (evt->sip);
-              sfree (evt->sip);
-            }
-        }
-  } else
+	{
+	  if (evt->sip != NULL)
+	    {
+	      msg_free (evt->sip);
+	      sfree (evt->sip);
+	    }
+	}
+    }
+  else
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_INFO4, NULL,
-                   "sipevent evt: method called!\n"));
+		  (__FILE__, __LINE__, OSIP_INFO4, NULL,
+		   "sipevent evt: method called!\n"));
     }
-  sfree (evt);                  /* this is the ONLY place for freeing event!! */
+  sfree (evt);			/* this is the ONLY place for freeing event!! */
   return 1;
 }
 
@@ -485,7 +497,8 @@ transaction_set_orig_request (transaction_t * transaction, sip_t * request)
 }
 
 int
-transaction_set_last_response (transaction_t * transaction, sip_t * last_response)
+transaction_set_last_response (transaction_t * transaction,
+			       sip_t * last_response)
 {
   if (transaction == NULL)
     return -1;
@@ -548,7 +561,8 @@ transaction_set_config (transaction_t * transaction, osip_t * osip)
 */
 
 int
-transaction_matching_response_to_xict_17_1_3 (transaction_t * tr, sip_t * response)
+transaction_matching_response_to_xict_17_1_3 (transaction_t * tr,
+					      sip_t * response)
 {
   generic_param_t *b_request;
   generic_param_t *b_response;
@@ -557,31 +571,32 @@ transaction_matching_response_to_xict_17_1_3 (transaction_t * tr, sip_t * respon
   /* some checks to avoid crashing on bad requests */
   if (tr == NULL || (tr->ict_context == NULL && tr->nict_context == NULL) ||
       /* only ict and nict can match a response */
-      response == NULL || response->cseq == NULL || response->cseq->method == NULL)
+      response == NULL || response->cseq == NULL
+      || response->cseq->method == NULL)
     return -1;
 
   topvia_response = list_get (response->vias, 0);
   if (topvia_response == NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Remote UA is not compliant: missing a Via header!\n"));
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "Remote UA is not compliant: missing a Via header!\n"));
       return -1;
     }
   via_param_getbyname (tr->topvia, "branch", &b_request);
   if (b_request == NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_BUG, NULL,
-                   "You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
+		  (__FILE__, __LINE__, OSIP_BUG, NULL,
+		   "You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
       return -1;
     }
   via_param_getbyname (topvia_response, "branch", &b_response);
   if (b_response == NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_BUG, NULL,
-                   "Remote UA is not compliant: missing a branch parameter header!\n"));
+		  (__FILE__, __LINE__, OSIP_BUG, NULL,
+		   "Remote UA is not compliant: missing a branch parameter header!\n"));
       return -1;
     }
 
@@ -604,13 +619,14 @@ transaction_matching_response_to_xict_17_1_3 (transaction_t * tr, sip_t * respon
      branch parameter.
      AMD NOTE: cseq->method is ALWAYS the same than the METHOD of the request.
    */
-  if (0 == strcmp (response->cseq->method, tr->cseq->method))   /* general case */
+  if (0 == strcmp (response->cseq->method, tr->cseq->method))	/* general case */
     return 0;
   return -1;
 }
 
 int
-transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request)
+transaction_matching_request_to_xist_17_2_3 (transaction_t * tr,
+					     sip_t * request)
 {
   generic_param_t *b_origrequest;
   generic_param_t *b_request;
@@ -621,15 +637,16 @@ transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request
   /* some checks to avoid crashing on bad requests */
   if (tr == NULL || (tr->ist_context == NULL && tr->nist_context == NULL) ||
       /* only ist and nist can match a request */
-      request == NULL || request->cseq == NULL || request->cseq->method == NULL)
+      request == NULL || request->cseq == NULL
+      || request->cseq->method == NULL)
     return -1;
 
   topvia_request = list_get (request->vias, 0);
   if (topvia_request == NULL)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Remote UA is not compliant: missing a Via header!\n"));
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "Remote UA is not compliant: missing a Via header!\n"));
       return -1;
     }
   via_param_getbyname (topvia_request, "branch", &b_request);
@@ -637,7 +654,7 @@ transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request
 
   if ((b_origrequest == NULL && b_request != NULL) ||
       (b_origrequest != NULL && b_request == NULL))
-    return -1;                  /* one request is compliant, the other one is not... */
+    return -1;			/* one request is compliant, the other one is not... */
 
   /* Section 17.2.3 Matching Requests to Server Transactions:
      "The branch parameter in the topmost Via header field of the request
@@ -646,42 +663,42 @@ transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request
      compliant to this specification."
    */
 
-  if (b_origrequest != NULL && b_request != NULL)       /* case where both request contains
-                                                           a branch */
+  if (b_origrequest != NULL && b_request != NULL)	/* case where both request contains
+							   a branch */
     {
       length_br = strlen (b_origrequest->gvalue);
       length_br2 = strlen (b_request->gvalue);
       if (length_br != length_br2)
-        return -1;              /* can't be the same */
+	return -1;		/* can't be the same */
       if (0 == strncmp (b_origrequest->gvalue, "z9hG4bK", 7)
-          && 0 == strncmp (b_request->gvalue, "z9hG4bK", 7))
-        {                       /* both request comes from a compliant UA */
-          /* The request
-             matches a transaction if the branch parameter in the request is equal
-             to the one in the top Via header field of the request that created
-             the transaction, the sent-by value in the top Via of the request is
-             equal to the one in the request that created the transaction, and in
-             the case of a CANCEL request, the method of the request that created
-             the transaction was also CANCEL.
-           */
-          if (0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-            return -1;          /* bracnh param does not match */
-          via_param_getbyname (topvia_request, "sent-by", &b_request);
-          via_param_getbyname (tr->topvia, "sent-by", &b_origrequest);
-          if ((b_request != NULL && b_origrequest == NULL) ||
-              (b_request == NULL && b_origrequest != NULL))
-            return -1;          /* sent-by param does not match */
-          if (b_request != NULL /* useless  && b_origrequest!=NULL */
-              && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-            return -1;
-          if (                  /* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
-                                   I always check the CSeq */
-               (!(0 == strcmp (tr->cseq->method, "INVITE") &&
-                  0 == strcmp (request->cseq->method, "ACK")))
-               && 0 != strcmp (tr->cseq->method, request->cseq->method))
-            return -1;
-          return 0;
-        }
+	  && 0 == strncmp (b_request->gvalue, "z9hG4bK", 7))
+	{			/* both request comes from a compliant UA */
+	  /* The request
+	     matches a transaction if the branch parameter in the request is equal
+	     to the one in the top Via header field of the request that created
+	     the transaction, the sent-by value in the top Via of the request is
+	     equal to the one in the request that created the transaction, and in
+	     the case of a CANCEL request, the method of the request that created
+	     the transaction was also CANCEL.
+	   */
+	  if (0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
+	    return -1;		/* bracnh param does not match */
+	  via_param_getbyname (topvia_request, "sent-by", &b_request);
+	  via_param_getbyname (tr->topvia, "sent-by", &b_origrequest);
+	  if ((b_request != NULL && b_origrequest == NULL) ||
+	      (b_request == NULL && b_origrequest != NULL))
+	    return -1;		/* sent-by param does not match */
+	  if (b_request != NULL	/* useless  && b_origrequest!=NULL */
+	      && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
+	    return -1;
+	  if (			/* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
+				   I always check the CSeq */
+	       (!(0 == strcmp (tr->cseq->method, "INVITE") &&
+		  0 == strcmp (request->cseq->method, "ACK")))
+	       && 0 != strcmp (tr->cseq->method, request->cseq->method))
+	    return -1;
+	  return 0;
+	}
     }
 
   /* Back to the old backward compatibilty mechanism for matching requests */
@@ -695,20 +712,23 @@ transaction_matching_request_to_xist_17_2_3 (transaction_t * tr, sip_t * request
       from_param_getbyname (tr->to, "tag", &tag_from1);
       from_param_getbyname (request->to, "tag", &tag_from2);
       if (tag_from1 == NULL && tag_from2 != NULL)
-        {                       /* do not check it as it can be a new tag when the final
-                                   answer has a tag while an INVITE doesn't have one */
-      } else if (tag_from1 != NULL && tag_from2 == NULL)
-        {
-          return -1;
-      } else
-        {
-          if (0 != to_tag_match (tr->to, request->to))
-            return -1;
-        }
-  } else
+	{			/* do not check it as it can be a new tag when the final
+				   answer has a tag while an INVITE doesn't have one */
+	}
+      else if (tag_from1 != NULL && tag_from2 == NULL)
+	{
+	  return -1;
+	}
+      else
+	{
+	  if (0 != to_tag_match (tr->to, request->to))
+	    return -1;
+	}
+    }
+  else
     {
       if (0 != to_tag_match (tr->to, request->to))
-        return -1;
+	return -1;
     }
   if (0 != from_tag_match (tr->from, request->from))
     return -1;
@@ -825,16 +845,17 @@ cseq_match (cseq_t * cseq1, cseq_t * cseq2)
   if (0 == strcmp (cseq1->number, cseq2->number))
     {
       if (0 == strcmp (cseq2->method, "INVITE")
-          || 0 == strcmp (cseq2->method, "ACK"))
-        {
-          if (0 == strcmp (cseq1->method, "INVITE") ||
-              0 == strcmp (cseq1->method, "ACK"))
-            return 0;
-      } else
-        {
-          if (0 == strcmp (cseq1->method, cseq2->method))
-            return 0;
-        }
+	  || 0 == strcmp (cseq2->method, "ACK"))
+	{
+	  if (0 == strcmp (cseq1->method, "INVITE") ||
+	      0 == strcmp (cseq1->method, "ACK"))
+	    return 0;
+	}
+      else
+	{
+	  if (0 == strcmp (cseq1->method, cseq2->method))
+	    return 0;
+	}
     }
   return -1;
 }

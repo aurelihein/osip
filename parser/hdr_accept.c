@@ -62,7 +62,7 @@ msg_getaccept (sip_t * sip, int pos, accept_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->accepts) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   accept = (accept_t *) list_get (sip->accepts, pos);
   *dest = accept;
   return pos;

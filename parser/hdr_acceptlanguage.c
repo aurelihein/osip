@@ -55,8 +55,9 @@ msg_getaccept_language (sip_t * sip, int pos, accept_language_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->accept_languages) <= pos)
-    return -1;                  /* does not exist */
-  accept_language = (accept_language_t *) list_get (sip->accept_languages, pos);
+    return -1;			/* does not exist */
+  accept_language =
+    (accept_language_t *) list_get (sip->accept_languages, pos);
   *dest = accept_language;
   return pos;
 }

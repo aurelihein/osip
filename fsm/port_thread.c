@@ -41,7 +41,7 @@
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 sthread_t *
 sthread_create (int stacksize, sthread_t * thread, void *(*func) (void *),
-                void *arg)
+		void *arg)
 {
   int i;
 
@@ -54,8 +54,8 @@ sthread_create (int stacksize, sthread_t * thread, void *(*func) (void *),
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Error while creating a new thread\n"));
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "Error while creating a new thread\n"));
       return NULL;
     }
   return thread;
@@ -85,13 +85,14 @@ sthread_exit ()
 
 #ifdef WIN32
 sthread_t * sthread_create (int stacksize, sthread_t * thread,
-                             void *(*func) (void *), void *arg) 
+			     void *(*func) (void *), void *arg) 
 {
   if (thread == NULL)
     thread = (sthread_t *) smalloc (sizeof (sthread_t));
   thread->h = (HANDLE) _beginthreadex (NULL, /* default security attr */ 
-                                         0, /* use default one */ 
-                                         (void *) func, arg, 0, &(thread->id));
+					 0, /* use default one */ 
+					 (void *) func, arg, 0,
+					 &(thread->id));
   if (thread->h == 0)
     
     {
@@ -139,7 +140,7 @@ sthread_setpriority (sthread_t * thread, int priority)
 #ifdef __PSOS__
   sthread_t *
 sthread_create (int stacksize, sthread_t * thread,
-                void *(*func) (void *), void *arg)
+		void *(*func) (void *), void *arg)
 {
 
   if (thread == NULL)
@@ -192,13 +193,13 @@ sthread_exit ()
 #ifdef __VXWORKS_OS__
 sthread_t *
 sthread_create (int stacksize, sthread_t * thread, void *(*func) (void *),
-                void *arg)
+		void *arg)
 {
   if (thread == NULL)
     thread = (sthread_t *) smalloc (sizeof (sthread_t));
   thread->id =
     taskSpawn (NULL, 5, 0, stacksize, (FUNCPTR) func, (int) arg, 0, 0, 0, 0,
-               0, 0, 0, 0, 0);
+	       0, 0, 0, 0, 0);
   if (thread->id < 0)
     sfree (thread);
   return thread;

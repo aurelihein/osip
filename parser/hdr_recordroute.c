@@ -66,7 +66,7 @@ msg_getrecord_route (sip_t * sip, int pos, record_route_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->record_routes) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   record_route = (record_route_t *) list_get (sip->record_routes, pos);
   *dest = record_route;
   return pos;
@@ -124,21 +124,22 @@ record_route_2char (record_route_t * record_route, char **dest)
 
     while (!list_eol (record_route->gen_params, pos))
       {
-        u_param = (generic_param_t *) list_get (record_route->gen_params, pos);
+	u_param =
+	  (generic_param_t *) list_get (record_route->gen_params, pos);
 
-        if (u_param->gvalue == NULL)
-          plen = strlen (u_param->gname) + 2;
-        else
-          plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
-        len = len + plen;
-        buf = (char *) realloc (buf, len);
-        tmp = buf;
-        tmp = tmp + strlen (tmp);
-        if (u_param->gvalue == NULL)
-          sprintf (tmp, ";%s", u_param->gname);
-        else
-          sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-        pos++;
+	if (u_param->gvalue == NULL)
+	  plen = strlen (u_param->gname) + 2;
+	else
+	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
+	len = len + plen;
+	buf = (char *) realloc (buf, len);
+	tmp = buf;
+	tmp = tmp + strlen (tmp);
+	if (u_param->gvalue == NULL)
+	  sprintf (tmp, ";%s", u_param->gname);
+	else
+	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+	pos++;
       }
   }
   *dest = buf;

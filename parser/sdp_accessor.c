@@ -44,7 +44,8 @@ sdp_v_version_get (sdp_t * sdp)
 
 int
 sdp_o_origin_set (sdp_t * sdp, char *username, char *sess_id,
-                  char *sess_version, char *nettype, char *addrtype, char *addr)
+		  char *sess_version, char *nettype, char *addrtype,
+		  char *addr)
 {
   if (sdp == NULL)
     return -1;
@@ -215,9 +216,9 @@ sdp_p_phone_get (sdp_t * sdp, int pos)
 
 int
 sdp_c_connection_add (sdp_t * sdp, int pos_media,
-                      char *nettype, char *addrtype,
-                      char *addr, char *addr_multicast_ttl,
-                      char *addr_multicast_int)
+		      char *nettype, char *addrtype,
+		      char *addr, char *addr_multicast_ttl,
+		      char *addr_multicast_int)
 {
   int i;
   sdp_media_t *med;
@@ -253,7 +254,7 @@ sdp_connection_get (sdp_t * sdp, int pos_media, int pos)
 
   if (sdp == NULL)
     return NULL;
-  if (pos_media == -1)          /* pos is useless in this case: 1 global "c=" is allowed */
+  if (pos_media == -1)		/* pos is useless in this case: 1 global "c=" is allowed */
     return sdp->c_connection;
   med = (sdp_media_t *) list_get (sdp->m_medias, pos_media);
   if (med == NULL)
@@ -312,7 +313,8 @@ sdp_c_addr_multicast_int_get (sdp_t * sdp, int pos_media, int pos)
 }
 
 int
-sdp_b_bandwidth_add (sdp_t * sdp, int pos_media, char *bwtype, char *bandwidth)
+sdp_b_bandwidth_add (sdp_t * sdp, int pos_media, char *bwtype,
+		     char *bandwidth)
 {
   int i;
   sdp_media_t *med;
@@ -492,7 +494,7 @@ sdp_k_keytype_get (sdp_t * sdp, int pos_media)
   if (pos_media == -1)
     {
       if (sdp->k_key == NULL)
-        return NULL;
+	return NULL;
       return sdp->k_key->k_keytype;
     }
   if ((pos_media != -1) && (list_size (sdp->m_medias) < pos_media + 1))
@@ -513,7 +515,7 @@ sdp_k_keydata_get (sdp_t * sdp, int pos_media)
   if (pos_media == -1)
     {
       if (sdp->k_key == NULL)
-        return NULL;
+	return NULL;
       return sdp->k_key->k_keydata;
     }
   if ((pos_media != -1) && (list_size (sdp->m_medias) < pos_media + 1))
@@ -525,7 +527,8 @@ sdp_k_keydata_get (sdp_t * sdp, int pos_media)
 }
 
 int
-sdp_a_attribute_add (sdp_t * sdp, int pos_media, char *att_field, char *att_value)
+sdp_a_attribute_add (sdp_t * sdp, int pos_media, char *att_field,
+		     char *att_value)
 {
   int i;
   sdp_media_t *med;
@@ -593,13 +596,13 @@ sdp_endof_media (sdp_t * sdp, int i)
   if (i == -1)
     return 0;
   if (!list_eol (sdp->m_medias, i))
-    return 0;                   /* not end of list */
-  return -1;                    /* end of list */
+    return 0;			/* not end of list */
+  return -1;			/* end of list */
 }
 
 int
 sdp_m_media_add (sdp_t * sdp, char *media,
-                 char *port, char *number_of_port, char *proto)
+		 char *port, char *number_of_port, char *proto)
 {
   int i;
   sdp_media_t *med;

@@ -63,7 +63,7 @@ msg_getproxy_authenticate (sip_t * sip, int pos, proxy_authenticate_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->proxy_authenticates) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
 
   proxy_authenticate = (proxy_authenticate_t *)
     list_get (sip->proxy_authenticates, pos);
