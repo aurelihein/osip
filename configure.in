@@ -137,9 +137,11 @@ fi
 
 if test "$host_os" = "hpux11.00" -o "$host_os" = "hpux11.11" ;then              
         echo "We are on HPUX"                                                   
-else                                                                            
-        echo "We are not on HPUX"                                               
-        SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"                            
+elif test "$host_os" = "osf4.0g" ;then
+        echo "We are on OSF"
+else
+        echo "We are on $host_os"
+        SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -Wall -pedantic"
 fi                                                                              
 
 if test "x$enable_md5" = "xno"; then
@@ -195,6 +197,7 @@ AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(sys/types.h)
 dnl !This is to be removed for autoconf2.50
 
+AC_CHECK_HEADERS(sys/unistd.h)
 AC_CHECK_HEADERS(syslog.h)
 AC_CHECK_HEADERS(ctype.h)
 AC_CHECK_HEADERS(stdio.h)

@@ -1,4 +1,5 @@
 libosip (0.9.4)
+	* re-fix(?) the parsing of the Date header.
 	* verify log strings are NULL terminated.
 	* add syslog support.
 	* continue WINCE port.

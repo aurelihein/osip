@@ -42,8 +42,12 @@
 #include <windows.h>
 #endif
 
-#if defined (HAVE_UNISTD_H)
+#if defined (HAVE_SYS_UNISTD_H)
 #  include <sys/unistd.h>
+#endif
+
+#if defined (HAVE_UNISTD_H)
+#  include <unistd.h>
 #endif
 
 #if defined (HAVE_SYSLOG_H)

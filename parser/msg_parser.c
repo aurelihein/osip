@@ -351,7 +351,8 @@ msg_handle_multiple_values (sip_t * sip, char *hname, char *hvalue)
 
   stolowercase (hname);
 
-  if (comma == NULL || strncmp (hname, "organization", 12) == 0 || (strncmp (hname, "to", 2) == 0 && strlen (hname) == 2) || (strncmp (hname, "from", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
+  if (comma == NULL || (strncmp (hname, "date", 4) == 0 && strlen (hname) == 4 )
+      || strncmp (hname, "organization", 12) == 0 || (strncmp (hname, "to", 2) == 0 && strlen (hname) == 2) || (strncmp (hname, "from", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
       || strncmp (hname, "call-id", 7) == 0 || (strncmp (hname, "cseq", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
       || strncmp (hname, "subject", 7) == 0 || strncmp (hname, "user-agent", 10) == 0 || strncmp (hname, "server", 6) == 0 || strncmp (hname, "www-authenticate", 16) == 0	/* AMD: BUG fix */
       || strncmp (hname, "authentication-info", 19) == 0 || strncmp (hname, "proxy-authenticate", 20) == 0 || strncmp (hname, "proxy-authorization", 19) == 0 || strncmp (hname, "proxy-authentication-info", 25) == 0	/* AMD: BUG fix */
