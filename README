@@ -1,4 +1,4 @@
-Project    : "The GNU oSIP library" is an implementation of SIP - rfc2543. 
+Project    : "The GNU oSIP library" is an implementation of SIP - rfc3261. 
 Last update: 0.8.8
 Email      : jack@atosc.org
 License    : LGPL (http://www.gnu.org)
@@ -11,8 +11,8 @@ www.fsf.org for more information about being part of the "GNU project".
 This is "the GNU oSIP library" (for Omnibus SIP). It has been
 designed to provide the Internet Community a simple
 way to support the Session Initiation Protocol.
-SIP is described in the RFC2543 which is available at
-http://www.ietf.org/rfc/rfc2543.txt.
+SIP is described in the RFC3261 which is available at
+http://www.ietf.org/rfc/rfc3261.txt.
 
 
 FEATURES: (version 0.8.4)
@@ -57,7 +57,7 @@ WARNING: This documentation is up to date for the parser library, but
          is not for the fsm part of oSIP. Main ideas remain unchanged
          but events exchanges between the fsm and the applications layer
          have changed. This was required for being compliant with the
-         latest revision of the rfc2543.
+         latest revision of the rfc3261.
 
 Installation procedure:
 -----------------------

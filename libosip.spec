@@ -15,13 +15,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 This is "the GNU oSIP library" (for Omnibus SIP). It has been designed
 to provide the Internet Community a simple way to support the Session
-Initiation Protocol. SIP is described in the RFC2543 which is
-available at http://www.ietf.org/rfc/rfc2543.txt.
+Initiation Protocol. SIP is described in the RFC3261 which is
+available at http://www.ietf.org/rfc/rfc3261.txt.
 
 %description -l pl
 To jest biblioteka GNU oSIP (Omnibus SIP). Zosta³a zaprojektowana, aby
 dostarczyæ Spo³eczno¶ci Internetowej prost± obs³ugê protoko³u SIP.
-Protokó³ SIP (Session Initiation Protocol) jest opisany w RFC2543.
+Protokó³ SIP (Session Initiation Protocol) jest opisany w RFC3261.
 
 %package devel
 Summary:	The GNU oSIP library - development files
