@@ -91,8 +91,8 @@ call_id_parse(call_id_t *callid, char *hvalue)
   else
     {
       if (end-host+1<2) return -1;
-      callid->host = (char *)smalloc(end-host+1);
-      sstrncpy(callid->host,host+1,end-host);
+      callid->host = (char *)smalloc(end-host); /* fixed 1O/04/2002 */
+      sstrncpy(callid->host,host+1,end-host-1); /* fixed 1O/04/2002 */
       sclrspace(callid->host);
     }
   if (host-hvalue+1<2) return -1;

@@ -393,8 +393,12 @@ void  osip_timers_nict_execute(osip_t *osip);
 void  osip_timers_nist_execute(osip_t *osip);
 /* TODO: void osip_free(osip_t *osip); */
 
+/* obsolete: use osip_find_transaction + osip_create_transaction */
 transaction_t *osip_distribute_event(osip_t *osip,sipevent_t* sipevent);
 transaction_t *osip_transaction_find(list_t *transactions, sipevent_t *se);
+
+transaction_t *osip_find_transaction(osip_t *osip, sipevent_t *se);
+transaction_t *osip_create_transaction(osip_t *osip, sipevent_t *evt);
 
 sipevent_t    *osip_parse(char *buf);
 sipevent_t    *osip_new_event(type_t type,int transactionid);
