@@ -1,4 +1,5 @@
 libosip (0.9.0)
+	* bug fix ("sip:" and "sips:" should be equivalent to "SIP:" and "SIPS:")
 	* remove a printf.
 	* remove DEBUG() macros
 	* move TRACE -> OSIP_TRACE
