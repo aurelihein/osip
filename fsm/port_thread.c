@@ -151,7 +151,7 @@ void sthread_exit()
 #endif
 
 #ifdef __VXWORKS_OS__
-sthread_t 
+sthread_t *
 sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
   if (thread!=NULL)

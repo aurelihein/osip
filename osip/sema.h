@@ -109,7 +109,7 @@ typedef struct _ssem_t {
 } ssem_t;
 #endif
 
-#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(__PSOS__) && !defined(__VXWORKS_OS_))
+#if (!defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && !defined(WIN32) && !defined(__PSOS__) && !defined(__VXWORKS_OS__))
 #error No semaphore implementation found
 #endif
 
