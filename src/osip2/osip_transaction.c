@@ -607,23 +607,33 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
 	     that created the transaction was also CANCEL.
 	   */
 	  if (0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-	    return -1;		/* bracnh param does not match */
-	  osip_via_param_get_byname (topvia_request, "sent-by", &b_request);
-	  osip_via_param_get_byname (tr->topvia, "sent-by", &b_origrequest);
-	  if ((b_request != NULL && b_origrequest == NULL) ||
-	      (b_request == NULL && b_origrequest != NULL))
-	    return -1;		/* sent-by param does not match */
-	  if (b_request != NULL	/* useless  && b_origrequest!=NULL */
-	      && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-	    return -1;
+	    return -1;		/* branch param does not match */
+	  {
+	    /* check the sent-by values */
+	    char *b_port = via_get_port(topvia_request);
+	    char *b_origport = via_get_port(tr->topvia);
+	    char *b_host = via_get_host(topvia_request);
+	    char *b_orighost = via_get_host(tr->topvia);
+	    if ((b_host == NULL || b_orighost == NULL))
+	      return -1;
+	    if (0 != strcmp (b_orighost, b_host))
+	      return -1;
+
+	    if (b_port != NULL && b_origport == NULL
+		&& 0!=strcmp(b_port, "5060"))
+	      return -1;
+	    else if (b_origport != NULL && b_port == NULL
+		&& 0!=strcmp(b_origport, "5060"))
+	      return -1;
+	    else if (b_origport != NULL && b_port != NULL
+		&& 0!=strcmp(b_origport, b_port))
+	      return -1;
+	  }                                                                
 #ifdef AC_BUG
 	  /* audiocodes bug (MP108-fxs-SIP-4-0-282-380) */
 	  if (0 != osip_from_tag_match (tr->from, request->from))
 	    return -1;
 #endif
-	  if (b_request != NULL	/* useless  && b_origrequest!=NULL */
-	      && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-	    return -1;
 	  if (			/* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
 				   I always check the CSeq */
 	       (!(0 == strcmp (tr->cseq->method, "INVITE") &&
