@@ -715,9 +715,6 @@ msg_osip_body_parse2 (osip_message_t * sip, const char *start_of_buf,
       return 0;
     }
 
-  if (sip->content_type == NULL)
-    return -1;
-
   /* find the boundary */
   i = osip_generic_param_get_byname (sip->content_type->gen_params,
 				     "boundary", &ct_param);
@@ -848,9 +845,6 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	return -1;
       return 0;
     }
-
-  if (sip->content_type == NULL)
-    return -1;
 
   /* find the boundary */
   i = osip_generic_param_get_byname (sip->content_type->gen_params,
