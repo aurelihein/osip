@@ -1,6 +1,5 @@
-libosip2 (2.0.7-1) unstable; urgency=low
-  * Fix a parser bug for uncomplete request line.
-  * Update timer facility for windows.
-  * Remove useless #define.
+libosip2 (2.0.9-1) unstable; urgency=low
+  * Fix lookup of generic/uri parameter (use case-insensitive comparison)
+  * Initial release of the new SDP negociator. (old one will be removed)
 
- -- Aymeric MOIZARD <jack@atosc.org>  Sat, 17 Apr 2004 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 01 jun 2004 13:04:32 +0100
