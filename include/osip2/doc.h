@@ -271,26 +271,26 @@ resp. to TU |  1xx             V                     |
  *
  * oSIP also give small facilities which are completly optional.
  *
- * Among them, the <BR>dialog facility</BR>, mainly to be used by
- * SIP End-Points, is a stable extra feature. It will allow you
- * to build a structure described in the rfc3261 (Section 12:
- * Dialogs). Once built, you can reuse this information to match
- * received requests with a particular SIP call or to build a
- * new request within a particular SIP call.
+ * Among them, the <B>dialog facility(osip_dialog.h)</B>, mainly to
+ * be used by SIP End-Points, is a stable extra feature. It will
+ * allow you to build a structure described in the rfc3261 (Section
+ * 12: Dialogs). Once built, you can reuse this information to match
+ * received requests with a particular SIP call or to build a new
+ * request within a particular SIP call.
  *
- * An old feature has been implemented in osip: <BR>a SDP negotiator.
+ * An old feature has been implemented in osip: <B>a SDP negotiator.
  * I advise you to not use this old facility which is not powerfull
- * often uncompliant and not flexible enough.</BR> It's also quite
+ * often uncompliant and not flexible enough.</B> It's also quite
  * unreadable and poorly written (by me!). I'll delete it anyway in
  * future version of osip. I have warned you...
  *
- * However, I'm building a <BR>new SDP negotiator (osip_rfc3264.h).</BR>
+ * However, I'm building a <B>new SDP negotiator (osip_rfc3264.h).</B>
  * While not being fully ready, I hope to get it completed by the
  * end of year 2004. It's promising work and I hope it will be 
  * enough flexible to fit any applications. Time will tell.
  *
- * oSIP finaly contains a MD5 implementation which you'll find usefull
- * when implementing SIP Digest authentication.
+ * oSIP finaly contains a <B>MD5 implementation (osip_md5.h)<B> which
+ * you'll find usefull when implementing SIP Digest authentication.
  * 
  */
 #endif
