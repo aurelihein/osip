@@ -1,4 +1,5 @@
 libosip2 (2.2.1)
+	* fix osip_body_clone method (add terminating NULL)
 	* fix for binary support when multipart is used.
 	* automatic check for reliable protocol SCTP and TLS.
 	* avoid <winsock.h> inclusion so user can (and must) now include either

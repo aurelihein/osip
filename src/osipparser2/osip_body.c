@@ -92,9 +92,10 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
     return -1;
 
   
-  copy->body = (char*)osip_malloc(body->length+1);
+  copy->body = (char*)osip_malloc(body->length+2);
   copy->length = body->length;
   memcpy(copy->body,body->body,body->length);
+  copy->body[body->length]='\0';
 
   if (body->content_type != NULL)
     {
