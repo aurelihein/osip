@@ -733,14 +733,14 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
 			     int mline)
 {
   osip_rfc3264_t *cnf = (osip_rfc3264_t*) config;
+  sdp_media_t *remote_med = NULL;
+  sdp_media_t *local_med = NULL;
   int pos;
   if (cnf==NULL) return -1;
   if (remote_sdp==NULL) return -1;
   if (med==NULL) return -1;
   if (mline<0) return -1;
   if (local_sdp==NULL) return -1;
-  sdp_media_t *remote_med = NULL;
-  sdp_media_t *local_med = NULL;
   pos=0;
   while (!osip_list_eol(remote_sdp->m_medias, pos))
     {
