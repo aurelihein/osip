@@ -1,18 +1,3 @@
 TODO file for oSIP.
 
-Soon to come?
-  *  Make the Documentation more up to date...
-        * current is about 0.7.X.
-  *  improve management of transport layer. (only UDP is completed)
-	4 types should be defined:
-	TCP, UDP, UNKNOWN_RELIABLE, UNKNOWN_UNRELIABLE.
-  *  Support for multiple header on the same line (partially done)
-	* Some nasty behavior can still exist for unknown header
-	that accept ',' in their definition.
-  *  Support for FreeBSD (semget, semop...)
-  *  See BUGs file
-
-Distant future?
-  *  Add a UAC_UAS_Core_Layer?
-  *  Add a Proxy_Core_Layer?
 
