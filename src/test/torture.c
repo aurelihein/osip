@@ -181,6 +181,7 @@ test_message (char *msg, int verbose, int clone)
       {
 	int i;
 	size_t length;
+	osip_message_force_update(sip);
 	i = osip_message_to_str (sip, &result, &length);
 	if (i == -1)
 	  {
