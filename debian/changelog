@@ -1,3 +1,9 @@
+libosip (0.8.5-1) unstable; urgency=low
+
+  * Bug fixed from the SIPit #10. Change in memory management for transaction context.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 29 Apr 2002 14:12:00 +0100
+
 libosip (0.8.4-1) unstable; urgency=low
 
   * New Release compliant with latest draft (with new API)

@@ -4,5 +4,8 @@ SUBDIRS = osip parser fsm test scripts doc conf windows
 rpm:
 	rpm -ba libosip.spec
 
+deb:
+	dpkg-buildpackage -rfakeroot
+
 
 
