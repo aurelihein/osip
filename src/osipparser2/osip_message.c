@@ -409,51 +409,6 @@ osip_message_free (osip_message_t * sip)
   osip_free (sip);
 }
 
-int
-osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
-{
-  int pos;
-  int i;
-  osip_body_t *copy;
-
-  if (body == NULL)
-    return -1;
-
-  i = osip_body_init (&copy);
-  if (i != 0)
-    return -1;
-
-  copy->body = osip_strdup (body->body);
-
-  if (body->content_type != NULL)
-    {
-      i = osip_content_type_clone (body->content_type, &(copy->content_type));
-      if (i != 0)
-	goto bc_error1;
-    }
-
-  {
-    osip_header_t *header;
-    osip_header_t *header2;
-
-    pos = 0;
-    while (!osip_list_eol (body->headers, pos))
-      {
-	header = (osip_header_t *) osip_list_get (body->headers, pos);
-	i = osip_header_clone (header, &header2);
-	if (i != 0)
-	  goto bc_error1;
-	osip_list_add (copy->headers, header2, -1);	/* insert as last element */
-	pos++;
-      }
-  }
-
-  *dest = copy;
-  return 0;
-bc_error1:
-  osip_body_free (copy);
-  return -1;
-}
 
 int
 osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)

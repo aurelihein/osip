@@ -71,6 +71,12 @@ extern "C"
  */
   int osip_body_parse (osip_body_t * body, const char *buf);
 /**
+ * Clone a osip_body_t element.
+ * @param body The element to clone.
+ * @param dest The cloned element.
+ */
+  int osip_body_clone (const osip_body_t * body, osip_body_t ** dest);
+/**
  * Parse a osip_body_t element. (for mime message format) (NOT TESTED, use with care)
  * @param body The element to work on.
  * @param buf The buffer to parse.
