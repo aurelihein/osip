@@ -152,6 +152,10 @@ SOURCE=..\..\src\osip2\osip_transaction.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osip2\port_condv.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osip2\port_fifo.c
 # End Source File
 # Begin Source File
@@ -177,6 +181,10 @@ SOURCE=..\..\include\osip2\internal.h
 # Begin Source File
 
 SOURCE=..\..\include\osip2\osip.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osip2\osip_condv.h
 # End Source File
 # Begin Source File
 

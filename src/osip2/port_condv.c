@@ -49,7 +49,7 @@ osip_cond_init ()
     }
   osip_free (cond);
 
-  return (NULL);
+  return NULL;
 }
 
 int
@@ -65,14 +65,14 @@ osip_cond_destroy (struct osip_cond * _cond)
 int
 osip_cond_signal (struct osip_cond * _cond)
 {
-  return (pthread_cond_signal(&_cond->cv));
+  return pthread_cond_signal(&_cond->cv);
 }
 
 
 int
 osip_cond_wait (struct osip_cond * _cond, struct osip_mutex * _mut)
 {
-  return (pthread_cond_wait(&_cond->cv, (pthread_mutex_t *)_mut)); 
+  return pthread_cond_wait(&_cond->cv, (pthread_mutex_t *)_mut);
 }
 
 
@@ -90,8 +90,8 @@ int
 osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
                        const struct timespec *abstime)
 {
- return(pthread_cond_timedwait(&_cond->cv, (pthread_mutex_t *)_mut, 
-	(const struct timespec *)abstime));
+ return pthread_cond_timedwait(&_cond->cv, (pthread_mutex_t *)_mut, 
+	(const struct timespec *)abstime);
 }
 #else
 #error NO thread implementation found
@@ -112,7 +112,7 @@ osip_cond_init ()
     }
   osip_free (cond);
  
-  return (NULL);
+  return NULL;
 }
 
 int
@@ -134,7 +134,7 @@ osip_cond_destroy (struct osip_cond * _cond)
 int
 osip_cond_signal (struct osip_cond * _cond)
 {
-   return (osip_sem_post(_cond->sem));
+   return osip_sem_post(_cond->sem);
 }
 
 
@@ -144,10 +144,10 @@ osip_cond_wait (struct osip_cond * _cond, struct osip_mutex * _mut)
    int ret1=0, ret2=0, ret3=0;
 
    if (osip_mutex_lock (_cond->mut))
-      return (EINVAL);
+      return -1;
 
    if (osip_mutex_unlock (_mut))
-      return (EINVAL);
+      return -1;
 
    ret1 = osip_sem_wait (_cond->sem);
 
@@ -156,8 +156,8 @@ osip_cond_wait (struct osip_cond * _cond, struct osip_mutex * _mut)
    ret3 = osip_mutex_unlock (_cond->mut);
 
    if (ret1 || ret2 || ret3)
-      return (EINVAL);
-   return (0);
+      return -1;
+   return 0;
 }
 
 
@@ -167,27 +167,27 @@ osip_clock_gettime (osip_clockid_t clock_id, struct timespec *tp)
    struct _timeb time_val;
 
    if (clock_id != OSIP_CLOCK_REALTIME)
-     return (-1);
+     return -1;
 
    if (tp == NULL)
-     return (-1);
+     return -1;
 
    _ftime (&time_val);
    tp->tv_sec = time_val.time;
    tp->tv_nsec = time_val.millitm * 1000000;
-   return (0);
+   return 0;
 }
 
 static int
 _delta_time (const struct timespec *start, const struct timespec *end)
-   {
+{
    int difx;
 
    difx = ((end->tv_sec - start->tv_sec) * 1000) +
            ((end->tv_nsec - start->tv_nsec) / 1000000);
 
-   return(difx);
-   }
+   return difx;
+}
 
 int
 osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
@@ -199,35 +199,35 @@ osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
    HANDLE sem = *((HANDLE *)_cond->sem);
 
    if (sem == NULL)
-     return (EINVAL);
+     return -1;
 
    if (abstime == NULL)
-     return (EINVAL);
+     return -1;
 
    osip_clock_gettime (OSIP_CLOCK_REALTIME, &now);
 
    timeout_ms = _delta_time (&now, abstime);
    if (timeout_ms <= 0)
-     return (ETIMEDOUT);
+     return 1; /* ETIMEDOUT; */
 
    if (osip_mutex_unlock (_mut))
-     return (EINVAL);
+     return -1;
 
    dwRet = WaitForSingleObject (sem, timeout_ms);
 
    if (osip_mutex_lock (_mut))
-     return (EINVAL);
+     return -1;
 
    switch(dwRet)
    {
       case WAIT_OBJECT_0:
-         return (0);
+         return 0;
          break;
       case WAIT_TIMEOUT:
-         return (ETIMEDOUT);
+	     return 1; /* ETIMEDOUT; */
          break;
       default:
-         return (EINVAL);
+         return -1;
          break;
    }
 }
