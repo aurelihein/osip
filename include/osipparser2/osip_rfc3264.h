@@ -265,6 +265,11 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
  */
   int __osip_rfc3264_print_codecs(struct osip_rfc3264 *config);
 
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
 
 
