@@ -166,7 +166,7 @@ void dialog_free(dialog_t *dialog);
  * @param dialog The element to work on.
  * @param type The type of dialog (CALLEE or CALLER).
  */
-void dialog_set_state(dialog_t *dialog, dlg_type_t type);
+void dialog_set_state(dialog_t *dialog, state_t type);
 /**
  * Update the Route-Set as UAS of a dialog.
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
