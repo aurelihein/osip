@@ -25,14 +25,13 @@ AC_SUBST(OSIP_VERSION)
 VERSION=$OSIP_VERSION
 PACKAGE=libosip
 
+AC_MSG_RESULT([Configuring ${PACKAGE} ${VERSION}])
 
 dnl *********************************************************************
 dnl Initialize automake stuff
 AC_CONFIG_AUX_DIR(scripts)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-
-AC_SUBST(ac_aux_dir)
 
 AC_CANONICAL_HOST                                                               
 
