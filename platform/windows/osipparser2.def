@@ -363,3 +363,6 @@ EXPORTS
      via_set_protocol        @359	
      via_set_version        @360
      __osip_init_random_number          @361
+	 MD5Update   @362
+	 MD5Final    @363
+	 MD5Init     @364
