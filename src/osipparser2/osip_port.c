@@ -199,11 +199,7 @@ osip_atoi (const char *number)
 char *
 osip_strncpy (char *dest, const char *src, size_t length)
 {
-#ifdef WIN32
   strncpy (dest, src, length);
-#else
-  strncpy (dest, src, length);
-#endif
   dest[length] = '\0';
   return dest;
 }

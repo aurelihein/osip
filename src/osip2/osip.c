@@ -1202,7 +1202,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   int pos = 0;
 
   osip_gettimeofday (&now, NULL);
-  lower_tv->tv_sec = now.tv_sec + 3600 * 24 * 265;	/* wake up evry year :-) */
+  lower_tv->tv_sec = now.tv_sec + 3600 * 24 * 365;	/* wake up evry year :-) */
   lower_tv->tv_usec = now.tv_usec;
 
 #ifdef OSIP_MT
