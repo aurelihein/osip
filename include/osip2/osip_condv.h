@@ -67,19 +67,7 @@ extern "C"
   };
 #endif
 
-#define OSIP_CLOCK_REALTIME 4002
-
   struct osip_cond;
-
-#if defined(WIN32) || defined(_WIN32_WCE)
-/**
- * osip_clockid_t typedef
- * @defvar osip_clockid_t
- */
-  typedef unsigned int osip_clockid_t;
-#else
-  typedef clockid_t osip_clockid_t;
-#endif
 
 /*
  * Allocate and Initialise a condition variable
@@ -111,13 +99,6 @@ extern "C"
   int osip_cond_timedwait (struct osip_cond * cond, struct osip_mutex * mut,
 			   const struct timespec *abstime);
 
-/**
- * Get the current time of a clock.
- * @param clock_id  the ID of the clock whose time you want to get i.e. CLOCK_REALTIME
- * @param tp pointer to an timespec structure where osip_clock_gettime
- *           can store the time
- */
-  int osip_clock_gettime (osip_clockid_t clock_id, struct timespec *tp);
 
 #ifdef __cplusplus
 }

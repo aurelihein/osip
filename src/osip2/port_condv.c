@@ -77,16 +77,6 @@ osip_cond_wait (struct osip_cond * _cond, struct osip_mutex * _mut)
 
 
 int
-osip_clock_gettime (osip_clockid_t clock_id, struct timespec *tp)
-{
-  if (clock_id != OSIP_CLOCK_REALTIME)
-    return -1;
-
-  clock_gettime(CLOCK_REALTIME, tp);
-  return 0;
-}
-
-int
 osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
                        const struct timespec *abstime)
 {
@@ -160,9 +150,10 @@ osip_cond_wait (struct osip_cond * _cond, struct osip_mutex * _mut)
    return 0;
 }
 
+#define OSIP_CLOCK_REALTIME 4002
 
 int
-osip_clock_gettime (osip_clockid_t clock_id, struct timespec *tp)
+__osip_clock_gettime (unsigned int clock_id, struct timespec *tp)
 {
    struct _timeb time_val;
 
@@ -189,6 +180,7 @@ _delta_time (const struct timespec *start, const struct timespec *end)
    return difx;
 }
 
+
 int
 osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
                         const struct timespec *abstime)
@@ -204,7 +196,7 @@ osip_cond_timedwait (struct osip_cond * _cond, struct osip_mutex * _mut,
    if (abstime == NULL)
      return -1;
 
-   osip_clock_gettime (OSIP_CLOCK_REALTIME, &now);
+   __osip_clock_gettime (OSIP_CLOCK_REALTIME, &now);
 
    timeout_ms = _delta_time (&now, abstime);
    if (timeout_ms <= 0)
