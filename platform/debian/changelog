@@ -1,4 +1,4 @@
-libosip2 (1.99.6-1) unstable; urgency=low
+libosip2 (1.99.7-1) unstable; urgency=low
 
   * Initial release of libosip2. Files and API have been entirely renamed.
 

@@ -1,7 +1,7 @@
 Summary:	The GNU oSIP library
 Summary(pl):	Biblioteka GNU oSIP
 Name:		libosip2
-Version:	1.99.6
+Version:	1.99.7
 Release:	1
 License:	LGPL
 Group:          Development/Libraries
