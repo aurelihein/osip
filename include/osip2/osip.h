@@ -575,6 +575,16 @@ extern "C"
   int osip_transaction_free2 (osip_transaction_t * transaction);
 
 /**
+ * Search in a SIP response the destination where the message
+ * should be sent.
+ * @param response the message to work on.
+ * @param address a pointer to receive the allocated host address.
+ * @param portnum a pointer to receive the host port.
+ */
+  void osip_response_get_destination (osip_message_t * response,
+				      char **address,
+				      int *portnum);
+/**
  * Set the host and port destination used for sending the SIP message.
  * This can be useful for an application with 'DIRECT ROOTING MODE'
  * NOTE: Instead, you should use the 'Route' header facility which
