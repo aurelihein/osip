@@ -30,6 +30,7 @@
 
 smutex_t * smutex_init() {
   smutex_t *mut = (smutex_t *)smalloc(sizeof(smutex_t));
+  if (mut==NULL) return NULL;
   pthread_mutex_init(mut, NULL);
   return mut;
 }

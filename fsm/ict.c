@@ -25,6 +25,7 @@
 int
 ict_init(ict_t **ict, osip_t *osip, sip_t *invite)
 {
+  route_t *route;
   int i;
   time_t now;
 
@@ -74,6 +75,15 @@ ict_init(ict_t **ict, osip_t *osip, sip_t *invite)
       }
   }
 
+  msg_getroute(invite, 0, &route);
+  if (route!=NULL)
+    {
+      int port = 5060;
+      if (route->url->port!=NULL)
+	port = satoi(route->url->port);
+      ict_set_destination((*ict), route->url->host, port);
+    }
+
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
   (*ict)->timer_b_start = now; /* started */
 
@@ -100,6 +110,7 @@ int
 ict_set_destination(ict_t *ict, char *destination, int port)
 {
   if (ict==NULL) return -1;
+  if (ict->destination!=NULL) sfree(ict->destination);
   ict->destination = destination;
   ict->port = port;
   return 0;

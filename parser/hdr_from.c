@@ -202,7 +202,8 @@ from_parse(from_t *from, char *hvalue)
     }
 
   if (gen_params!=NULL)  /* now we are sure a param exist */
-    if (generic_param_parseall(from->gen_params, gen_params)==-1) return -1;
+    if (generic_param_parseall(from->gen_params, gen_params)==-1) 
+      {	return -1; }
 
   /* set the url */
   {
@@ -421,46 +422,64 @@ from_compare(from_t *from1, from_t *from2)
 int
 generic_param_parseall (list_t *gen_params, char *params)
 { 
+  char *pname;
+  char *pvalue;
+
   char *comma;
   char *equal;
   /* find '=' wich is the separator for one param */
   /* find ';' wich is the separator for multiple params */
 
-  equal  = strchr(params,'=');
+  equal  = next_separator(params+1,'=',';');
   comma  = strchr(params+1,';');
   
-  do
+  while (comma!=NULL)
     {
-      char *pname;
-      char *pvalue;
 
-      if (equal-params<2) return -1;
-      pname  = (char *) smalloc(equal-params);
-      sstrncpy(pname, params+1, equal-params-1);
-
-      if (comma!=NULL)
+      if (equal==NULL)
+	{
+	  equal  = comma;
+	  pvalue = NULL;
+	}
+      else
 	{
 	  if (comma-equal<2) return -1;
 	  pvalue = (char *) smalloc(comma-equal);
 	  sstrncpy(pvalue, equal+1, comma-equal-1);
 	}
-      else
-	{ /* this is for the last param (no comma...) */
-	  if (params + strlen(params)-equal <2) return -1;
-	  pvalue = (char *) smalloc(params + strlen(params)-equal );
-	  sstrncpy(pvalue, equal+1, params + strlen(params)-equal-1);
-	}
+
+      if (equal-params<2) { sfree(pvalue); return -1; }
+      pname  = (char *) smalloc(equal-params);
+      sstrncpy(pname, params+1, equal-params-1);
+
       generic_param_add (gen_params, pname, pvalue);
 
-      if (comma==NULL) /* we just set the last param */
-	equal = NULL;
-      else /* continue on next parameter */
-	{
-	  params = comma;
-	  equal   = strchr(params,'=');
-	  comma   = strchr(params+1,';');
-	}
-    } while (equal!=NULL);
+      params = comma;
+      equal  = next_separator(params+1,'=',';');
+      comma  = strchr(params+1,';');
+    }
+
+  /* this is the last header (comma==NULL) */
+  comma = params + strlen(params);
+
+  if (equal==NULL)
+    {
+      equal  = comma; /* at the end */
+      pvalue = NULL;
+    }
+  else
+    {
+      if (comma-equal <2) return -1;
+      pvalue = (char *) smalloc(comma-equal);
+      sstrncpy(pvalue, equal+1, comma-equal-1);
+    }
+  
+  if (equal-params<2) { sfree(pvalue); return -1; }
+  pname  = (char *) smalloc(equal-params);
+  sstrncpy(pname, params+1, equal-params-1);
+
+  generic_param_add (gen_params, pname, pvalue);
+
   return 0;
 }
 

@@ -1,3 +1,5 @@
+sip:alice@example.org;lr
+sip:example.org;lr
 # unknown schemes
 zer:alice@example.org
 mailto:jj@gnu.org

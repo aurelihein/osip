@@ -1,3 +1,6 @@
+sip:j.doe@big.com;tag=34ytr34.2;tag2=34ytr34.2
+sip:j.doe@big.com;tag=34ytr34.2;tag2=34ytr34.2;lr
+sip:j.doe@big.com;lr
 #
 # from with tags and url without brackets
 #

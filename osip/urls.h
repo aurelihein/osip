@@ -416,8 +416,12 @@ char*   url_getport(url_t *url);
  */
 #define url_uheader_getbyname(url,name,dest) url_header_getbyname(url->url_headers,name,dest)
 
-/** @} */
+#ifndef DOXYGEN
+/* internal method */
+char *next_separator(char *ch, int separator_to_find, int before_separator);
+#endif
 
+/** @} */
 
 #ifdef __cplusplus
 }

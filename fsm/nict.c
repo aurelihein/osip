@@ -25,6 +25,7 @@
 int
 nict_init(nict_t **nict, osip_t *osip, sip_t *request)
 {
+  route_t *route;
   int i;
   time_t now;
   TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating NICT context\n"));
@@ -70,6 +71,15 @@ nict_init(nict_t **nict, osip_t *osip, sip_t *request)
       }
   }
 
+  msg_getroute(request, 0, &route);
+  if (route!=NULL)
+    {
+      int port = 5060;
+      if (route->url->port!=NULL)
+	port = satoi(route->url->port);
+      nict_set_destination((*nict), route->url->host, port);
+    }
+
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
   (*nict)->timer_f_start = now; /* started */
 
@@ -96,6 +106,7 @@ int
 nict_set_destination(nict_t *nict, char *destination, int port)
 {
   if (nict==NULL) return -1;
+  if (nict->destination!=NULL) sfree(nict->destination);
   nict->destination = destination;
   nict->port = port;
   return 0;

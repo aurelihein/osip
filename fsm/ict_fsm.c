@@ -299,6 +299,7 @@ ict_create_ack(transaction_t *ict, sip_t *response)
 void
 ict_rcv_3456xx(transaction_t *ict, sipevent_t *evt)
 {
+  route_t *route;
   int i;
   osip_t *osip = (osip_t*)ict->config;
   /* leave this answer to the core application */
@@ -314,6 +315,16 @@ ict_rcv_3456xx(transaction_t *ict, sipevent_t *evt)
       /* automatic handling of ack! */
       sip_t *ack = ict_create_ack(ict, evt->sip);
       ict->ack = ack;
+
+      msg_getroute(ack, 0, &route);
+      if (route!=NULL)
+	{
+	  int port = 5060;
+	  if (route->url->port!=NULL)
+	    port = satoi(route->url->port);
+	  ict_set_destination(ict->ict_context, route->url->host, port);
+	}
+      
       i = osip->cb_send_message(ict, ack, ict->ict_context->destination,
 				ict->ict_context->port, ict->out_socket);
       if (i!=0)
