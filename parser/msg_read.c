@@ -790,7 +790,7 @@ msg_2char (sip_t * sip, char **dest)
          This should be changed...
        */
 
-      sstrncpy (message, "xxxxx", 5);
+      sstrncpy (message, "     ", 5);
       content_length_to_modify = message;
     }
   /*  } */
@@ -869,9 +869,14 @@ msg_2char (sip_t * sip, char **dest)
     /* replace xxxxx by size */
     tmp = (char *) smalloc (15);
     /* to be improved? !!!could be an issue for authentication!!! */
+#ifdef OLD_CODE
     sprintf (tmp, "%i     ", size);
     /* do not use sstrncpy here! */
     strncpy (content_length_to_modify, tmp, 5);
+#else
+    sprintf (tmp, "%i", size);
+    strncpy (content_length_to_modify+5-strlen(tmp), tmp, strlen(tmp));
+#endif
     sfree (tmp);
   }
 
