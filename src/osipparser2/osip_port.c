@@ -724,4 +724,17 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
   return 0;
 }
 
+#ifdef WIN32
 
+void *osip_malloc(size_t size)
+{
+	return malloc(size);
+}
+
+void osip_free(void *ptr)
+{
+	if (ptr==NULL) return;
+	free(ptr);
+}
+
+#endif

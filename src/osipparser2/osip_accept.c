@@ -48,9 +48,7 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
       osip_accept_free (accept);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
 
   osip_list_add (sip->accepts, accept, -1);
   return 0;

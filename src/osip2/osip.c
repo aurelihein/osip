@@ -1209,7 +1209,6 @@ osip_nist_execute (osip_t * osip)
   return 0;
 }
 
-#ifdef NEW_TIMER
 void
 osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 {
@@ -1377,8 +1376,6 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
     }
   return;
 }
-
-#endif
 
 void
 osip_timers_ict_execute (osip_t * osip)

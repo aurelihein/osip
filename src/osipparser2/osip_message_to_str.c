@@ -385,7 +385,6 @@ strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
   return 0;
 }
 
-#ifdef USE_TMP_BUFFER
  /* return values:
     1: structure and buffer "message" are identical.
     2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
@@ -398,16 +397,13 @@ osip_message_get__property (const osip_message_t * sip)
     return -1;
   return sip->message_property;
 }
-#endif
 
 int
 osip_message_force_update (osip_message_t * sip)
 {
-#ifdef USE_TMP_BUFFER
   if (sip == NULL)
     return -1;
   sip->message_property = 2;
-#endif
   return 0;
 }
 
@@ -430,19 +426,9 @@ osip_message_to_str (osip_message_t * sip, char **dest)
   if ((sip == NULL) || (sip->to == NULL) || (sip->from == NULL))
     return -1;
 
-#ifdef USE_TMP_BUFFER
   {
-#ifdef ENABLE_DEBUG
-    static int number_of_call = 0;
-    static int number_of_call_avoided = 0;
-
-    number_of_call++;
-#endif
     if (1 == osip_message_get__property (sip))
       {				/* message is already available in "message" */
-#ifdef ENABLE_DEBUG
-	number_of_call_avoided++;
-#endif
 
 	*dest = osip_strdup (sip->message);	/* is we just return the pointer, people will
 						   get issues while upgrading the library. This
@@ -451,11 +437,6 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 						   changed while moving to another branch
 						   developpement. replacement line will be:
 						   *dest = sip->message; */
-#ifdef ENABLE_DEBUG
-	/* if (number_of_call_avoided % 1000 == 0)
-	   printf ("number of call osip_message_to_str avoided: %i\n",
-	   number_of_call_avoided); */
-#endif
 	return 0;
 
       }
@@ -466,7 +447,6 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	sip->message = NULL;
       }
   }
-#endif
 
   message = (char *) osip_malloc (SIP_MESSAGE_MAX_LENGTH);	/* ???? message could be > 4000  */
   *dest = message;
@@ -862,11 +842,9 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
   if (osip_list_eol (sip->bodies, 0))
     {
-#ifdef USE_TMP_BUFFER
       /* same remark as at the beginning of the method */
       sip->message_property = 1;
       sip->message = osip_strdup (*dest);
-#endif
       return 0;			/* it's all done */
     }
   start_of_bodies = message;
@@ -940,10 +918,8 @@ osip_message_to_str (osip_message_t * sip, char **dest)
     strncpy (content_length_to_modify + 5 - strlen (tmp), tmp, strlen (tmp));
   }
 
-#ifdef USE_TMP_BUFFER
   /* same remark as at the beginning of the method */
   sip->message_property = 1;
   sip->message = osip_strdup (*dest);
-#endif
   return 0;
 }

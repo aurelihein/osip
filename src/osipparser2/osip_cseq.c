@@ -53,9 +53,7 @@ osip_message_set_cseq (osip_message_t * sip, const char *hvalue)
   i = osip_cseq_init (&(sip->cseq));
   if (i != 0)
     return -1;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   i = osip_cseq_parse (sip->cseq, hvalue);
   if (i != 0)
     {

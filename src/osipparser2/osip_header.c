@@ -68,9 +68,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
     }
   else
     h->hvalue = NULL;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->headers, h, -1);
   return 0;			/* ok */
 }
@@ -117,9 +115,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
     }
   else
     h->hvalue = NULL;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->headers, h, 0);
   return 0;			/* ok */
 }

@@ -47,9 +47,7 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
   i = osip_to_init (&(sip->to));
   if (i != 0)
     return -1;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   i = osip_to_parse (sip->to, hvalue);
   if (i != 0)
     {

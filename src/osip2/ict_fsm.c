@@ -174,20 +174,13 @@ void
 osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
 {
   osip_t *osip = (osip_t *) ict->config;
-#ifndef NEW_TIMER
-  time_t now = time (NULL);
-#endif
   int i;
 
   /* reset timer */
   ict->ict_context->timer_a_length = ict->ict_context->timer_a_length * 2;
-#ifdef NEW_TIMER
   gettimeofday (&ict->ict_context->timer_a_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_a_start,
 		    ict->ict_context->timer_a_length);
-#else
-  ict->ict_context->timer_a_start = now;
-#endif
 
   /* retransmit REQUEST */
   i =
@@ -208,11 +201,7 @@ void
 osip_ict_timeout_b_event (osip_transaction_t * ict, osip_event_t * evt)
 {
   ict->ict_context->timer_b_length = -1;
-#ifdef NEW_TIMER
   ict->ict_context->timer_b_start.tv_sec = -1;
-#else
-  ict->ict_context->timer_b_start = -1;
-#endif
 
   __osip_transaction_set_state (ict, ICT_TERMINATED);
   __osip_kill_transaction_callback (OSIP_ICT_KILL_TRANSACTION, ict);
@@ -423,13 +412,9 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
    */
 
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
-#ifdef NEW_TIMER
   gettimeofday (&ict->ict_context->timer_d_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_d_start,
 		    ict->ict_context->timer_d_length);
-#else
-  ict->ict_context->timer_d_start = time (NULL);
-#endif
   __osip_transaction_set_state (ict, ICT_COMPLETED);
 }
 
@@ -437,11 +422,7 @@ void
 osip_ict_timeout_d_event (osip_transaction_t * ict, osip_event_t * evt)
 {
   ict->ict_context->timer_d_length = -1;
-#ifdef NEW_TIMER
   ict->ict_context->timer_d_start.tv_sec = -1;
-#else
-  ict->ict_context->timer_d_start = -1;
-#endif
 
   __osip_transaction_set_state (ict, ICT_TERMINATED);
   __osip_kill_transaction_callback (OSIP_ICT_KILL_TRANSACTION, ict);

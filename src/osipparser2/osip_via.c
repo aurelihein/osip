@@ -47,9 +47,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
       osip_via_free (via);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->vias, via, -1);
   return 0;
 }
@@ -73,9 +71,7 @@ osip_message_append_via (osip_message_t * sip, const char *hvalue)
       osip_via_free (via);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->vias, via, 0);
   return 0;
 }

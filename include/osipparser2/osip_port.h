@@ -145,11 +145,18 @@ extern "C"
 /* MALLOC redirections    */
 /**************************/
 
+#ifndef WIN32
+
 #ifndef osip_malloc
 #define osip_malloc(S) malloc(S)
 #endif
 #ifndef osip_free
 #define osip_free(P) { if (P!=NULL) free(P); }
+#endif
+
+#else
+void *osip_malloc(size_t size);
+void osip_free(void *);
 #endif
 
 #ifdef WIN32

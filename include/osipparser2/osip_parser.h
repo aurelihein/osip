@@ -59,13 +59,11 @@ extern "C"
  * the osip_message_t element since last call of osip_message_to_str() you
  * can call osip_message_force_update() to force a rebuild.
 */
-#ifdef USE_TMP_BUFFER
 /**
  * Check if the element is already built. (so osip_message_to_str won't build it again)
  * @param sip The element to check.
 */
   int osip_message_get__property (const osip_message_t * sip);
-#endif
 
 /**
  * Force a osip_message_t element to be rebuild on next osip_message_to_str() call.

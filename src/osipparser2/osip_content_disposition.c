@@ -44,9 +44,7 @@ osip_message_set_content_disposition (osip_message_t * sip,
       osip_content_disposition_free (content_disposition);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->content_dispositions, content_disposition, -1);
   return 0;
 }

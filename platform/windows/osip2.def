@@ -23,7 +23,6 @@ EXPORTS
      osip_fifo_insert     @19
      osip_fifo_size     @20
      osip_fifo_tryget     @21
-     osip_find_transaction     @22
      osip_find_transaction_and_add_event     @23
      osip_get_application_context     @24
      osip_ict_execute     @25
@@ -126,3 +125,4 @@ EXPORTS
 	 osip_cond_init    @125
 	 osip_cond_signal    @126
 	 osip_cond_timedwait    @127
+	 osip_timers_gettimeout @128

@@ -70,9 +70,7 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
       osip_www_authenticate_free (www_authenticate);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->www_authenticates, www_authenticate, -1);
   return 0;
 }

@@ -61,9 +61,7 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
       osip_route_free (route);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->routes, route, -1);
   return 0;
 }

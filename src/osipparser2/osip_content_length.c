@@ -52,9 +52,7 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
   i = osip_content_length_init (&(sip->content_length));
   if (i != 0)
     return -1;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   i = osip_content_length_parse (sip->content_length, hvalue);
   if (i != 0)
     {

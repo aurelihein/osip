@@ -50,9 +50,7 @@ osip_message_set_proxy_authorization (osip_message_t * sip,
       osip_proxy_authorization_free (proxy_authorization);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->proxy_authorizations, proxy_authorization, -1);
   return 0;
 }

@@ -65,26 +65,16 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 	  (*ict)->timer_d_length = 32000;
 	else
 	  (*ict)->timer_d_length = 64 * DEFAULT_T1;
-#ifdef NEW_TIMER
 	gettimeofday (&(*ict)->timer_a_start, NULL);
 	add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
 	(*ict)->timer_d_start.tv_sec = -1;	/* not started */
-#else
-	(*ict)->timer_a_start = now;
-	(*ict)->timer_d_start = -1;	/* not started */
-#endif
       }
     else
       {				/* TCP is used: */
 	(*ict)->timer_a_length = -1;	/* A is not ACTIVE */
 	(*ict)->timer_d_length = 0;	/* MUST do the transition immediatly */
-#ifdef NEW_TIMER
 	(*ict)->timer_a_start.tv_sec = -1;	/* not started */
 	(*ict)->timer_d_start.tv_sec = -1;	/* not started */
-#else
-	(*ict)->timer_a_start = -1;	/* not started */
-	(*ict)->timer_d_start = -1;	/* not started */
-#endif
       }
   }
 
@@ -103,12 +93,8 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
     (*ict)->port = 5060;
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
-#ifdef NEW_TIMER
   gettimeofday (&(*ict)->timer_b_start, NULL);
   add_gettimeofday (&(*ict)->timer_b_start, (*ict)->timer_b_length);
-#else
-  (*ict)->timer_b_start = now;	/* started */
-#endif
 
   /* Oups! A bug! */
   /*  (*ict)->port  = 5060; */
@@ -145,72 +131,8 @@ osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
   return 0;
 }
 
-#ifndef NEW_TIMER
-
 osip_event_t *
-__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_CALLING)
-    {
-      /* may need timer A */
-      if (ict->timer_a_start == -1)
-	return NULL;
-      if ((now - ict->timer_a_start - 1) * 1000 > ict->timer_a_length)
-	{
-	  return __osip_event_new (TIMEOUT_A, transactionid);
-	}
-    }
-  return NULL;
-}
-
-osip_event_t *
-__osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_CALLING)
-    {
-      /* may need timer B */
-      if (ict->timer_b_start == -1)
-	return NULL;
-      if ((now - ict->timer_b_start) * 1000 > ict->timer_b_length)
-	return __osip_event_new (TIMEOUT_B, transactionid);
-    }
-  return NULL;
-}
-
-osip_event_t *
-__osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_COMPLETED)
-    {
-      /* may need timer D */
-      if (ict->timer_d_start == -1)
-	return NULL;
-      if ((now - ict->timer_d_start) * 1000 > ict->timer_d_length)
-	return __osip_event_new (TIMEOUT_D, transactionid);
-    }
-  return NULL;
-}
-
-#else
-
-osip_event_t *
-__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
+__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactionid)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
@@ -268,4 +190,3 @@ __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
   return NULL;
 }
 
-#endif

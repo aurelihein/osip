@@ -69,9 +69,7 @@ osip_message_set_body (osip_message_t * sip, const char *buf)
       osip_body_free (body);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->bodies, body, -1);
   return 0;
 }
@@ -208,9 +206,7 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf)
       osip_body_free (body);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->bodies, body, -1);
   return 0;
 }

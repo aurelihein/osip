@@ -213,9 +213,6 @@ void
 osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
 {
   osip_t *osip = (osip_t *) nict->config;
-#ifndef NEW_TIMER
-  time_t now = time (NULL);
-#endif
   int i;
 
   /* reset timer */
@@ -229,13 +226,9 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
   else				/* in PROCEEDING STATE, TIMER is always 4000 */
     nict->nict_context->timer_e_length = 4000;
 
-#ifdef NEW_TIMER
   gettimeofday (&nict->nict_context->timer_e_start, NULL);
   add_gettimeofday (&nict->nict_context->timer_e_start,
 		    nict->nict_context->timer_e_length);
-#else
-  nict->nict_context->timer_e_start = now;
-#endif
 
   /* retransmit REQUEST */
   i = osip->cb_send_message (nict, nict->orig_request,
@@ -254,11 +247,7 @@ void
 osip_nict_timeout_f_event (osip_transaction_t * nict, osip_event_t * evt)
 {
   nict->nict_context->timer_f_length = -1;
-#ifdef NEW_TIMER
   nict->nict_context->timer_f_start.tv_sec = -1;
-#else
-  nict->nict_context->timer_f_start = -1;
-#endif
 
   __osip_transaction_set_state (nict, NICT_TERMINATED);
   __osip_kill_transaction_callback (OSIP_NICT_KILL_TRANSACTION, nict);
@@ -268,11 +257,7 @@ void
 osip_nict_timeout_k_event (osip_transaction_t * nict, osip_event_t * evt)
 {
   nict->nict_context->timer_k_length = -1;
-#ifdef NEW_TIMER
   nict->nict_context->timer_k_start.tv_sec = -1;
-#else
-  nict->nict_context->timer_k_start = -1;
-#endif
 
   __osip_transaction_set_state (nict, NICT_TERMINATED);
   __osip_kill_transaction_callback (OSIP_NICT_KILL_TRANSACTION, nict);
@@ -321,13 +306,10 @@ nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt)
 
   if (nict->state != NICT_COMPLETED)	/* reset timer K */
     {
-#ifdef NEW_TIMER
       gettimeofday (&nict->nict_context->timer_k_start, NULL);
       add_gettimeofday (&nict->nict_context->timer_k_start,
 			nict->nict_context->timer_k_length);
-#else
-      nict->nict_context->timer_k_start = time (NULL);
-#endif
     }
   __osip_transaction_set_state (nict, NICT_COMPLETED);
 }
+

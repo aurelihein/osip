@@ -56,34 +56,20 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
 				   must be desactived by the external application */
 	(*ist)->timer_g_length = DEFAULT_T1;
 	(*ist)->timer_i_length = DEFAULT_T4;
-#ifdef NEW_TIMER
 	(*ist)->timer_g_start.tv_sec = -1;	/* not started */
 	(*ist)->timer_i_start.tv_sec = -1;	/* not started */
-#else
-	(*ist)->timer_g_start = -1;	/* not started */
-	(*ist)->timer_i_start = -1;	/* not started */
-#endif
       }
     else
       {				/* TCP is used: */
 	(*ist)->timer_g_length = -1;	/* A is not ACTIVE */
 	(*ist)->timer_i_length = 0;	/* MUST do the transition immediatly */
-#ifdef NEW_TIMER
 	(*ist)->timer_g_start.tv_sec = -1;	/* not started */
 	(*ist)->timer_i_start.tv_sec = -1;	/* not started */
-#else
-	(*ist)->timer_g_start = -1;
-	(*ist)->timer_i_start = -1;	/* not started */
-#endif
       }
   }
 
   (*ist)->timer_h_length = 64 * DEFAULT_T1;
-#ifdef NEW_TIMER
   (*ist)->timer_h_start.tv_sec = -1;	/* not started */
-#else
-  (*ist)->timer_h_start = -1;	/* not started */
-#endif
 
   return 0;
 
@@ -103,73 +89,8 @@ __osip_ist_free (osip_ist_t * ist)
   return 0;
 }
 
-#ifndef NEW_TIMER
-
 osip_event_t *
-__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_COMPLETED)
-    {
-      if (ist->timer_g_start == -1)
-	return NULL;
-      if ((now - ist->timer_g_start - 1) * 1000 > ist->timer_g_length)
-	{
-	  return __osip_event_new (TIMEOUT_G, transactionid);
-	}
-    }
-  return NULL;
-}
-
-osip_event_t *
-__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_COMPLETED)
-    {
-      /* may need timer H */
-      if (ist->timer_h_start == -1)
-	return NULL;
-      if ((now - ist->timer_h_start - 1) * 1000 > ist->timer_h_length)
-	{
-	  return __osip_event_new (TIMEOUT_H, transactionid);
-	}
-    }
-  return NULL;
-}
-
-osip_event_t *
-__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
-			       int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_CONFIRMED)
-    {
-      /* may need timer I */
-      if (ist->timer_i_start == -1)
-	return NULL;
-      if ((now - ist->timer_i_start) * 1000 > ist->timer_i_length)
-	return __osip_event_new (TIMEOUT_I, transactionid);
-    }
-  return NULL;
-}
-
-#else
-
-osip_event_t *
-__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
-			       int transactionid)
+__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
@@ -226,4 +147,3 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
   return NULL;
 }
 
-#endif

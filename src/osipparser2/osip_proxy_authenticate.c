@@ -47,9 +47,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
       osip_proxy_authenticate_free (proxy_authenticate);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   osip_list_add (sip->proxy_authenticates, proxy_authenticate, -1);
   return 0;
 }

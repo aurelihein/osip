@@ -68,9 +68,7 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
   i = osip_content_type_init (&(sip->content_type));
   if (i != 0)
     return -1;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   i = osip_content_type_parse (sip->content_type, hvalue);
   if (i != 0)
     {

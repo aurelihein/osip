@@ -397,13 +397,9 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
 
   if (nist->state != NIST_COMPLETED)	/* start J timer */
     {
-#ifdef NEW_TIMER
       gettimeofday (&nist->nist_context->timer_j_start, NULL);
       add_gettimeofday (&nist->nist_context->timer_j_start,
 			nist->nist_context->timer_j_length);
-#else
-      nist->nist_context->timer_j_start = time (NULL);
-#endif
     }
 
   __osip_transaction_set_state (nist, NIST_COMPLETED);
@@ -414,11 +410,7 @@ void
 osip_nist_timeout_j_event (osip_transaction_t * nist, osip_event_t * evt)
 {
   nist->nist_context->timer_j_length = -1;
-#ifdef NEW_TIMER
   nist->nist_context->timer_j_start.tv_sec = -1;
-#else
-  nist->nist_context->timer_j_start = -1;
-#endif
 
   __osip_transaction_set_state (nist, NIST_TERMINATED);
   __osip_kill_transaction_callback (OSIP_NIST_KILL_TRANSACTION, nist);

@@ -20,8 +20,6 @@
 #include <osip2/internal.h>
 #include <osip2/osip.h>
 
-#ifdef NEW_TIMER
-
 #include "fsm.h"
 
 void
@@ -62,6 +60,5 @@ gettimeofday (struct timeval *tp, void *tz)
   tp->tv_usec = timebuffer.millitm * 1000;
   return 0;
 }
-#endif
 
 #endif

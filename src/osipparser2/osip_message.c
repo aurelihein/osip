@@ -112,10 +112,8 @@ osip_message_init (osip_message_t ** sip)
   (*sip)->headers = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->headers);
 
-#ifdef USE_TMP_BUFFER
   (*sip)->message_property = 3;
   (*sip)->message = NULL;	/* buffer to avoid calling osip_message_to_str many times (for retransmission) */
-#endif
   return 0;			/* ok */
 }
 
@@ -423,9 +421,7 @@ osip_message_free (osip_message_t * sip)
       }
     osip_free (sip->bodies);
   }
-#ifdef USE_TMP_BUFFER
   osip_free (sip->message);
-#endif
   osip_free (sip);
 }
 
@@ -797,10 +793,8 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
       }
   }
 
-#ifdef USE_TMP_BUFFER
   copy->message = osip_strdup (sip->message);
   copy->message_property = sip->message_property;
-#endif
 
   *dest = copy;
   return 0;

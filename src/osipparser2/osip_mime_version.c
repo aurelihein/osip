@@ -42,9 +42,7 @@ osip_message_set_mime_version (osip_message_t * sip, const char *hvalue)
   i = osip_mime_version_init (&(sip->mime_version));
   if (i != 0)
     return -1;
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
   i = osip_mime_version_parse (sip->mime_version, hvalue);
   if (i != 0)
     {

@@ -55,20 +55,12 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
     if (i != 0)
       {
 	(*nist)->timer_j_length = 64 * DEFAULT_T1;
-#ifdef NEW_TIMER
 	(*nist)->timer_j_start.tv_sec = -1;	/* not started */
-#else
-	(*nist)->timer_j_start = -1;	/* not started */
-#endif
       }
     else
       {				/* TCP is used: */
 	(*nist)->timer_j_length = 0;	/* MUST do the transition immediatly */
-#ifdef NEW_TIMER
 	(*nist)->timer_j_start.tv_sec = -1;	/* not started */
-#else
-	(*nist)->timer_j_start = -1;	/* not started */
-#endif
       }
   }
 
@@ -93,31 +85,9 @@ __osip_nist_free (osip_nist_t * nist)
 }
 
 
-#ifndef NEW_TIMER
 
 osip_event_t *
-__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
-				int transactionid)
-{
-  time_t now = time (NULL);
-
-  if (nist == NULL)
-    return NULL;
-  if (state == NIST_COMPLETED)
-    {
-      if (nist->timer_j_start == -1)
-	return NULL;
-      if ((now - nist->timer_j_start) * 1000 > nist->timer_j_length)
-	return __osip_event_new (TIMEOUT_J, transactionid);
-    }
-  return NULL;
-}
-
-#else
-
-osip_event_t *
-__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
-				int transactionid)
+__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transactionid)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
@@ -134,4 +104,3 @@ __osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
   return NULL;
 }
 
-#endif
