@@ -26,7 +26,7 @@
 #include <osipparser2/osip_list.h>
 
 /**
- * @file fifo.h
+ * @file osip_fifo.h
  * @brief oSIP fifo Routines
  *
  * This is a very simple implementation of a fifo.

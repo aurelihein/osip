@@ -617,14 +617,11 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	    osip_body_len = osip_atoi (sip->content_length->value);
 	  else
 	    {			/* if content_length does not exist, set it. */
-	      char *tmp = osip_malloc (8);
+	      char tmp[16];
 
-	      if (tmp == NULL)
-		return -1;
 	      osip_body_len = strlen (start_of_body);
 	      sprintf (tmp, "%i", osip_body_len);
 	      i = osip_message_set_content_length (sip, tmp);
-	      osip_free (tmp);
 	      if (i != 0)
 		return -1;
 	    }

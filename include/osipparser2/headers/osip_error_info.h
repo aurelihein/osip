@@ -24,8 +24,8 @@
 #include <osipparser2/headers/osip_call_info.h>
 
 /**
- * @file osip_cseq.h
- * @brief oSIP osip_cseq header definition.
+ * @file osip_error_info.h
+ * @brief oSIP error info header definition.
  */
 
 /**

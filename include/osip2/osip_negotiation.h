@@ -25,7 +25,7 @@
 
 
 /**
- * @file sdp_negoc.h
+ * @file osip_negotiation.h
  * @brief oSIP and SDP offer/answer model Routines
  *
  * The SDP offer/answer model is where most SIP interoperability issue

@@ -912,20 +912,11 @@ osip_message_to_str (osip_message_t * sip, char **dest)
   /* we NOW have the length of bodies: */
   {
     int size = strlen (start_of_bodies);
+    char tmp[15];
 
-    /* replace xxxxx by size */
-    tmp = (char *) osip_malloc (15);
-    /* to be improved? !!!could be an issue for authentication!!! */
-#ifdef OLD_CODE
-    sprintf (tmp, "%i     ", size);
-    /* do not use osip_strncpy here! */
-    strncpy (content_length_to_modify, tmp, 5);
-#else
     sprintf (tmp, "%i", size);
     /* do not use osip_strncpy here! */
     strncpy (content_length_to_modify+5-strlen(tmp), tmp, strlen(tmp));
-#endif
-    osip_free (tmp);
   }
 
 #ifdef USE_TMP_BUFFER

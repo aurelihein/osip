@@ -24,7 +24,7 @@
 #include <osipparser2/osip_uri.h>
 
 /**
- * @file osip_message.h
+ * @file osip_header.h
  * @brief oSIP SIP Headers Routines
  *
  */

@@ -26,7 +26,7 @@
 #endif
 
 /**
- * @file list.h
+ * @file osip_list.h
  * @brief oSIP list Routines
  *
  * This is a very simple implementation of a linked list.

@@ -23,8 +23,8 @@
 
 
 /**
- * @file osip_proxy_authorization.h
- * @brief oSIP osip_proxy_authorization header definition.
+ * @file osip_authorization.h
+ * @brief oSIP osip_authorization header definition.
  */
 
 /**

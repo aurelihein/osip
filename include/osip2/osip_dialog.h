@@ -23,7 +23,7 @@
 #include <osip2/osip.h>
 
 /**
- * @file dialog.h
+ * @file osip_dialog.h
  * @brief oSIP dialog Routines
  *
  * Dialog management is a powerful facility given by oSIP. This feature is

@@ -24,7 +24,7 @@
 #include <osipparser2/osip_list.h>
 
 /**
- * @file urls.h
+ * @file osip_uri.h
  * @brief oSIP url parser Routines
  *
  * This is the implementation of sip url scheme. It also partially support
