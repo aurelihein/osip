@@ -607,6 +607,33 @@ osip_create_transaction (osip_t * osip, sipevent_t * evt)
   int i;
   context_type_t ctx_type;
 
+  if (evt==NULL)
+    return NULL;
+  if (evt->sip==NULL)
+    return NULL;
+
+  /* make sure the request's method reflect the cseq value. */
+  if (MSG_IS_REQUEST (evt->sip))
+    {
+      /* delete request where cseq method does not match
+	 the method in request-line */
+      if (evt->sip->cseq==NULL || evt->sip->strtline==NULL
+	  || evt->sip->cseq->method==NULL || evt->sip->strtline->sipmethod==NULL)
+	{
+	  return NULL;
+	}
+      if (0 != strcmp (evt->sip->cseq->method, evt->sip->strtline->sipmethod))
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		       "core module: Discard invalid message with method!=cseq!\n"));
+	  return NULL;
+	}
+    }
+
+  if (MSG_IS_ACK (evt->sip)) /* ACK never create transactions */
+    return NULL;
+
   if (EVT_IS_INCOMINGREQ (evt))
     {
       /* we create a new context for this incoming request */

@@ -1,4 +1,6 @@
 libosip (0.9.6)
+	* refuse to create transactions with cseq and method that differs.
+	* check minimum authorized length for method name of request.
 	* fix the state when a retransmission of INVITE is received.
 	* Minor changes in #define definitions just for clarity.
 	

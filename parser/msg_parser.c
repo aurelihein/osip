@@ -42,6 +42,13 @@ startline_parsereq (startline_t * dest, char *buf, char **headers)
   p2 = strchr (buf, ' ');
   if (p2 == NULL)
     return -1;
+  if (p2-buf==0)
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		   "No space allowed here\n"));
+      return -1;
+    }
   dest->sipmethod = (char *) smalloc (p2 - buf + 1);
   sstrncpy (dest->sipmethod, buf, p2 - buf);
 
