@@ -83,6 +83,7 @@ osip_list_size (const osip_list_t * li)
 int
 osip_list_eol (const osip_list_t * li, int i)
 {
+  if(li==NULL) return -1;
   if (i < li->nb_elt)
     return 0;			/* not end of list */
   return 1;			/* end of list */
