@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.62 $)dnl
+AC_REVISION($Revision: 1.63 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -98,6 +98,11 @@ AC_ARG_ENABLE(gperf,
 [  --enable-gperf          enable support for gperf (improve the parser speed).],
 enable_gperf=$enableval,enable_gperf="no")
 
+dnl support for gperf.
+AC_ARG_ENABLE(test,
+[  --enable-test           enable building test programs).],
+enable_test=$enableval,enable_test="no")
+
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
   if test "x$enable_pthread" = "xyes"; then
@@ -112,6 +117,8 @@ fi
 if test "x$enable_gperf" = "xyes"; then
   SIP_PARSER_FLAGS="$SIP_PARSER_FLAGS -DUSE_GPERF"
 fi
+
+AM_CONDITIONAL(COMPILE_TESTS, test "x$enable_test" != "xno")
 
 if test "x$enable_semaphore" = "xyes"; then
   SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DHAVE_SEMAPHORE_H"
