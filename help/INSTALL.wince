@@ -1,16 +1,24 @@
-Install process for wince. (latest tested Pocket PC 2003)
+Install process for wince.
 ____________________________
+
+latest tested:
+libosip2-2.2.1-pre2
+eXosip-0.9.0-pre1
+celib-3.11
+Pocket PC 2003
 
 Installing Required Tools
 -----------------
+
 Development Tools for Mobile Applications (cite the Microsoft and
 unneeded part is ignored )
+
 http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnppcgen/html/devtoolsmobileapps.asp
 
 1.	Uninstall all existing tools, SDKs, and emulators before proceeding.
 
-You should uninstall the following programs before proceeding with
-this installation: 
+You should uninstall the following programs before proceeding with this 
+installation: 
 
 ¡¤	eMbedded Visual Tools 3.0 
 ¡¤	eMbedded Visual C++ 4.0 
@@ -28,56 +36,47 @@ this installation:
 2.	Reboot your PC. 
 
 3.	Install Microsoft ActiveSync 3.7.1
-
-All the Development Tools for Mobile Applications require
-ActiveSync 3.7.1 for application development and deployment. 
+All the Development Tools for Mobile Applications require ActiveSync 3.7.1
+for application development and deployment. 
 
 4.	Install eMbedded Visual C++ 4.0 and Service Pack 3
-
-In order to develop C++ applications for the Pocket PC 2003
-and Smartphone 2003, you must install Microsoft eMbedded Visual
-C++ 4.0 and Service Pack 3. Note that you can install Service Pack 3
-only after eMbedded Visual C++ 4.0 is installed. 
+In order to develop C++ applications for the Pocket PC 2003 and Smartphone 2003,
+you must install Microsoft eMbedded Visual C++ 4.0 and Service Pack 3. Note that
+you can install Service Pack 3 only after eMbedded Visual C++ 4.0 is installed. 
 
 5.	Install Visual Studio .NET 2003
-
-In order to develop applications in C# or Visual Basic .NET for
-Pocket PC 2002, Smartphone 2003 or Pocket PC 2003, you must install
-Visual Studio .NET 2003.
-Pocket PC 2003 devices and the Pocket PC 2003 Emulation images
-already contain the .NET Compact Framework. You must deploy the .NET
-Compact Framework on earlier devices. 
+In order to develop applications in C# or Visual Basic .NET for Pocket PC 2002,
+Smartphone 2003 or Pocket PC 2003, you must install Visual Studio .NET 2003.
+Pocket PC 2003 devices and the Pocket PC 2003 Emulation images already contain
+the .NET Compact Framework. You must deploy the .NET Compact Framework on
+earlier devices. 
 
 6.	Install the Pocket PC 2003 SDK
-
-To develop applications in C++, C#, or Visual Basic .NET for Pocket
-PC 2003 you must install the Pocket PC 2003 SDK. 
+To develop applications in C++, C#, or Visual Basic .NET for Pocket PC 2003
+you must install the Pocket PC 2003 SDK. 
 
 7.	Install the Smartphone 2003 SDK
-
-To develop applications in C++, C#, or Visual Basic .NET for
-Smartphone 2003 you must install the Smartphone 2003 SDK. 
+To develop applications in C++, C#, or Visual Basic .NET for Smartphone 2003
+you must install the Smartphone 2003 SDK. 
 
 8.	Install the Emulators for Pocket PC 2003 Second Edition
-
-To test applications for high resolution and landscape Pocket PCs
-you must install the Emulator Pack for Pocket PC 2003 Second Edition. 
+To test applications for high resolution and landscape Pocket PCs you must
+install the Emulator Pack for Pocket PC 2003 Second Edition. 
 
 9.	Install the Emulators for Smartphone 2003 Second Edition
-
-To test applications for high resolution Smartphones you must
-install the Emulator Pack for Smartphone 2003 Second Edition. 
+To test applications for high resolution Smartphones you must install the
+Emulator Pack for Smartphone 2003 Second Edition. 
 
 
 Downloading Required Library
 -----------------
 1.  oSIP    
-Latest tested version: 2.0.6
-http://osip.atosc.org/download/osip/libosip2-2.0.6.tar.gz
+Latest tested version: 2.2.1-pre2
+http://www.antisip.com/download/libosip2-2.2.1-pre2.tar.gz
 
 2.  eXosip    
-Latest tested version: 0.7.6
-http://osip.atosc.org/download/exosip/eXosip-0.7.6.tar.gz
+Latest tested version: 0.9.0-pre1
+http://www.antisip.com/download/eXosip-0.9.0-pre1.tar.gz
 
 3.  celib    
 Latest tested version: 3.11
@@ -86,31 +85,29 @@ http://prdownloads.sourceforge.net/perlce/celib-3.11-dll-src.tar.gz
 
 Building
 ----------------
-1.  Extract the contents of the 3 files into a same directory
-(e.g. "D:\osip_ce").
+1.  Extract the contents of the 3 files into a same directory (e.g. "D:\osip_ce").
 
-2   New a WCE Pocket PC 2003 MFC AppWizard (exe) project in your
-EVC named   ¡°SipClient¡±. (all the project file locate in the
-¡°SipClient¡± folder) 
+2   New a WCE Pocket PC 2003 MFC AppWizard (exe) project in your EVC named
+   ¡°SipClient¡±. (all the project file locate in the ¡°SipClient¡± folder) 
 
-3   Add all the source code of libosip2-2.0.6 and eXosip-0.7.6
-to project ¡°SipClient¡±.
+3   Add all the source code of libosip2-2.2.1-pre2 and eXosip-0.9.0-pre1 to
+ project ¡°SipClient¡±.
 
 4   Project Setting
 Precompiled Headers:
   Automatic use of precompiled headers
+Preprocessor definitions:
+   OSIP_MT,NEW_TIMER,WIN32,_MT
 Additional include directories:
-   ..\eXosip-0.7.6\include,..\libosip2-2.0.6\include,..\celib-palm-3.0\inc
-Additional library path:
-   ..\celib-palm-3.0\wince-arm-pocket-wce300-release
+   ..\eXosip-0.9.0-pre1\include,..\libosip2-2.2.1-pre2\include,..\celib-palm-3.0\inc
 Object/library modules:
    celib.lib ws2.lib iphlpapi.lib
-Preprocessor definitions:
-   OSIP_MT,NEW_TIMER,WIN32
+Additional library path:
+   ..\celib-palm-3.0\wince-arm-pocket-wce300-release
 
 5   Patch
 Include two head files in the following files.
-osip.h exosip.h osip_negotiation.h osip_condv.h osip_port.h
+osip.h osip_negotiation.h osip_condv.h osip_port.h exosip.h 
 #include <winsock2.h>
 #include "celib.h"
 
@@ -154,5 +151,11 @@ const short _XCE_tolower_[1 + 256] = {
 
 Delete following define from ¡°cecrt_defs.h¡± of celib. (The file operate functions of the ¡°celib¡± seem not work very well.)
     fopen freopen fclose fdopen fileno rewind
+    
+Delete the defining of ¡°struct timeval¡± from "internal.h" of osip2. (The struct has already been defined in celib.)
+
+Modify "osip_rfc3264.c" of osip2. 
+from: #include <osip_rfc3264i.h> /* internal include */
+to: #include "osip_rfc3264i.h" /* internal include */
 
 6   Building
