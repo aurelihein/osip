@@ -57,7 +57,7 @@ nict_init (nict_t ** nict, osip_t * osip, sip_t * request)
 #ifndef WIN32
     i = strncasecmp (proto, "TCP", 3);
 #else
-    i = stricmp (proto, "TCP");
+    i = _stricmp (proto, "TCP");
 #endif
     if (i != 0)
       {				/* for other reliable protocol than TCP, the timer
