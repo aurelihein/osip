@@ -194,7 +194,15 @@ nist_rcv_request(transaction_t *nist, sipevent_t *evt)
 	      return;
 	    }
 	  else
-	    osip->cb_nist_1xx_sent(nist, nist->last_response);	    
+	    {
+	      if (MSG_IS_STATUS_1XX(nist->last_response))
+		osip->cb_nist_1xx_sent(nist, nist->last_response);
+	      else if (MSG_IS_STATUS_2XX(nist->last_response))
+		osip->cb_nist_2xx_sent2(nist, nist->last_response);
+	      else 
+		osip->cb_nist_3456xx_sent2(nist, nist->last_response);
+	      return;
+	    }
 	}
       /* we are already in the proper state */
       return;

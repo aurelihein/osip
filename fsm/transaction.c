@@ -541,7 +541,9 @@ transaction_matching_request_to_xist_17_2_3(transaction_t *tr, sip_t *request)
 	    return -1;
 	  if ( /* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
 		  I always check the CSeq */
-	      0!=strcmp(tr->cseq->method, request->cseq->method))
+	      (!(0==strcmp(tr->cseq->method, "INVITE")&&
+		   0==strcmp(request->cseq->method, "ACK")))
+	      &&0!=strcmp(tr->cseq->method, request->cseq->method))
 	    return -1;
 	  return 0;
 	}

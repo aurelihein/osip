@@ -1,4 +1,5 @@
 libosip (0.8.7)
+	* ist and nist was calling the wrong callback on retransmission.
 	* New checking rules compliant to the latest draft for internal
 	  management of transactions.
 	* "make check" is available and improve results ouput.

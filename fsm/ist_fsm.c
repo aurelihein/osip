@@ -203,7 +203,14 @@ ist_rcv_invite(transaction_t *ist, sipevent_t *evt)
 	      return;
 	    }
 	  else
-	    osip->cb_ist_1xx_sent(ist, ist->last_response);	    
+	    {
+	      if (MSG_IS_STATUS_1XX(ist->last_response))
+		osip->cb_ist_1xx_sent(ist, ist->last_response);
+	      else if (MSG_IS_STATUS_2XX(ist->last_response))
+		osip->cb_ist_2xx_sent2(ist, ist->last_response);
+	      else 
+		osip->cb_ist_3456xx_sent2(ist, ist->last_response);		
+	    }
 	}
       /* we are already in the proper state */
       return;
