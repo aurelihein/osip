@@ -1286,18 +1286,21 @@ sdp_parse_m (sdp_t * sdp, char *buf, char **next)
         else
           more_space_before_crlf = 0;
       }
-    i = set_next_token (&str, tmp, '\r', &tmp_next);
-    if (i != 0)
+    if (tmp_next < crlf) // tmp_next is still less than clrf: no space
       {
-        i = set_next_token (&str, tmp, '\n', &tmp_next);
-        if (i != 0)
-          {
-            sdp_media_free (m_header);
-            sfree (m_header);
-            return -1;
-          }
+	i = set_next_token (&str, tmp, '\r', &tmp_next);
+	if (i != 0)
+	  {
+	    i = set_next_token (&str, tmp, '\n', &tmp_next);
+	    if (i != 0)
+	      {
+		sdp_media_free (m_header);
+		sfree (m_header);
+		return -1;
+	      }
+	  }
+	list_add (m_header->m_payloads, str, -1);
       }
-    list_add (m_header->m_payloads, str, -1);
   }
 
   list_add (sdp->m_medias, m_header, -1);
