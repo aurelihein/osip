@@ -398,7 +398,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 
 	  len = tmp_body - ptr;
 	  length = length + strlen (tmp) + 4;
-	  ptr = realloc (ptr, length);
+	  ptr = osip_realloc (ptr, length);
 	  tmp_body = ptr + len;
 	}
 
@@ -427,7 +427,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 
 	  len = tmp_body - ptr;
 	  length = length + strlen (tmp) + 4;
-	  ptr = realloc (ptr, length);
+	  ptr = osip_realloc (ptr, length);
 	  tmp_body = ptr + len;
 	}
       osip_strncpy (tmp_body, tmp, strlen (tmp));
@@ -449,7 +449,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 
       len = tmp_body - ptr;
       length = length + body->length + 4;
-      ptr = realloc (ptr, length);
+      ptr = osip_realloc (ptr, length);
       tmp_body = ptr + len;
     }
   memcpy(tmp_body,body->body,body->length);

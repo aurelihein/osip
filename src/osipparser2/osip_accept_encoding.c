@@ -155,7 +155,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
 	else
 	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
 	len = len + plen;
-	buf = (char *) realloc (buf, len);
+	buf = (char *) osip_realloc (buf, len);
 	tmp = buf;
 	tmp = tmp + strlen (tmp);
 	if (u_param->gvalue == NULL)

@@ -397,7 +397,7 @@ test_sdp_message (char *msg, int verbose)
   }
   sdp_message_free (sdp);
   
-  return 4; // negotiation failed
+  return 4; /* negotiation failed */
 }
 
 int

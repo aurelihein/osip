@@ -138,7 +138,7 @@ osip_record_route_to_str (const osip_record_route_t * record_route,
 	else
 	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
 	len = len + plen;
-	buf = (char *) realloc (buf, len);
+	buf = (char *) osip_realloc (buf, len);
 	tmp = buf;
 	tmp = tmp + strlen (tmp);
 	if (u_param->gvalue == NULL)

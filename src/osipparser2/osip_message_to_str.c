@@ -184,11 +184,11 @@ strcat_simple_header (char **_string, size_t * malloc_size,
   if (ptr_header != NULL)
     {
       if (*malloc_size < message - string + 100 + size_of_header)
-	/* take some memory avoid to realloc too much often */
+	/* take some memory avoid to osip_realloc too much often */
 	{			/* should not happen often */
 	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
-	  string = realloc (string, *malloc_size);
+	  string = osip_realloc (string, *malloc_size);
 	  if (string == NULL)
 	    {
 	      *_string = NULL;
@@ -211,7 +211,7 @@ strcat_simple_header (char **_string, size_t * malloc_size,
 	{
 	  size_t size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
-	  string = realloc (string, *malloc_size);
+	  string = osip_realloc (string, *malloc_size);
 	  if (string == NULL)
 	    {
 	      *_string = NULL;
@@ -254,11 +254,11 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size,
       elt = (void *) osip_list_get (headers, pos);
 
       if (*malloc_size < message - string + 100 + size_of_header)
-	/* take some memory avoid to realloc too much often */
+	/* take some memory avoid to osip_realloc too much often */
 	{			/* should not happen often */
 	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
-	  string = realloc (string, *malloc_size);
+	  string = osip_realloc (string, *malloc_size);
 	  if (string == NULL)
 	    {
 	      *_string = NULL;
@@ -282,7 +282,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size,
 	{
 	  size_t size = message - string;
 	  *malloc_size = message - string + strlen (tmp) + 100;
-	  string = realloc (string, *malloc_size);
+	  string = osip_realloc (string, *malloc_size);
 	  if (string == NULL)
 	    {
 	      *_string = NULL;
@@ -324,11 +324,11 @@ strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
   while (!osip_list_eol (headers, pos))
     {
       if (*malloc_size < message - string + 100 + size_of_header)
-	/* take some memory avoid to realloc too much often */
+	/* take some memory avoid to osip_realloc too much often */
 	{			/* should not happen often */
 	  size_t size = message - string;
 	  *malloc_size = message - string + size_of_header + 100;
-	  string = realloc (string, *malloc_size);
+	  string = osip_realloc (string, *malloc_size);
 	  if (string == NULL)
 	    {
 	      *_string = NULL;
@@ -357,7 +357,7 @@ strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
 	    {
 	      size_t size = message - string;
 	      *malloc_size = message - string + (int) strlen (tmp) + 100;
-	      string = realloc (string, *malloc_size);
+	      string = osip_realloc (string, *malloc_size);
 	      if (string == NULL)
 		{
 		  *_string = NULL;
@@ -637,7 +637,7 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 	{
 	  size_t size = message - *dest;
 	  malloc_size = message - *dest + 16 + 100;
-	  *dest = realloc (*dest, malloc_size);
+	  *dest = osip_realloc (*dest, malloc_size);
 	  if (*dest == NULL)
 	    return -1;
 	  message = *dest + size;
@@ -791,7 +791,7 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
     {
       size_t size = message - *dest;
       malloc_size = message - *dest + 16 + 100;
-      *dest = realloc (*dest, malloc_size);
+      *dest = osip_realloc (*dest, malloc_size);
       if (*dest == NULL)
 	return -1;
       message = *dest + size;
@@ -885,7 +885,7 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 	  int offset_of_body;
 	  offset_of_body = start_of_bodies - *dest;
 	  malloc_size = message - *dest + body_length + 100;
-	  *dest = realloc (*dest, malloc_size);
+	  *dest = osip_realloc (*dest, malloc_size);
 	  if (*dest == NULL)
 	    return -1;
 	  start_of_bodies = *dest + offset_of_body;

@@ -150,12 +150,16 @@ extern "C"
 #ifndef osip_malloc
 #define osip_malloc(S) malloc(S)
 #endif
+#ifndef osip_realloc
+#define osip_realloc(P,S) realloc(P,S)
+#endif
 #ifndef osip_free
 #define osip_free(P) { if (P!=NULL) free(P); }
 #endif
 
 #else
 void *osip_malloc(size_t size);
+void osip_realloc(void *, size_t size);
 void osip_free(void *);
 #endif
 

@@ -156,7 +156,7 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
 	else
 	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
 	len = len + plen;
-	buf = (char *) realloc (buf, len);
+	buf = (char *) osip_realloc (buf, len);
 	tmp = buf;
 	tmp = tmp + strlen (tmp);
 	if (u_param->gvalue == NULL)

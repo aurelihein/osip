@@ -617,7 +617,7 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 	    plen = strlen (tmp1) + strlen (tmp2) + 3;
 	  }
 	len = len + plen;
-	buf = (char *) realloc (buf, len);
+	buf = (char *) osip_realloc (buf, len);
 	tmp = buf;
 	tmp = tmp + strlen (tmp);
 	if (u_param->gvalue == NULL)
@@ -654,7 +654,7 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 	plen = strlen (tmp1) + strlen (tmp2) + 4;
 
 	len = len + plen;
-	buf = (char *) realloc (buf, len);
+	buf = (char *) osip_realloc (buf, len);
 	tmp = buf;
 	tmp = tmp + strlen (tmp);
 	if (pos == 0)
@@ -934,7 +934,7 @@ __osip_uri_escape_nonascii_and_nondef (const char *string, const char *def)
 	  if (newlen > alloc)
 	    {
 	      alloc *= 2;
-	      ns = realloc (ns, alloc);
+	      ns = osip_realloc (ns, alloc);
 	      if (!ns)
 		return NULL;
 	    }

@@ -199,7 +199,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type,
 	  + strlen (u_param->gvalue);
 	if (len < tmp_len)
 	  {
-	    buf = realloc (buf, tmp_len);
+	    buf = osip_realloc (buf, tmp_len);
 	    len = tmp_len;
 	    tmp = buf + strlen (buf);
 	  }
