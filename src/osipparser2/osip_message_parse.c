@@ -54,6 +54,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   p2 = strchr (buf, ' ');
   if (p2 == NULL)
     return -1;
+  if (*(p2+1) == '\0' || *(p2+2) == '\0' )
+    return -1;
   if (p2 - buf == 0)
     {
       OSIP_TRACE (osip_trace
