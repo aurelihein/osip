@@ -92,55 +92,65 @@ extern "C"
  * @param header The element to work on.
  * @param value The value of the element.
  */
+#define osip_via_set_version via_set_version
   void via_set_version (osip_via_t * header, char *value);
 /**
  * Get the SIP version from a Via header.
  * @param header The element to work on.
  */
+#define osip_via_get_version via_get_version
   char *via_get_version (osip_via_t * header);
 /**
  * Set the protocol in the Via element.
  * @param header The element to work on.
  * @param value The value of the element.
  */
+#define osip_via_set_protocol via_set_protocol
   void via_set_protocol (osip_via_t * header, char *value);
 /**
  * Get the protocol from a Via header.
  * @param header The element to work on.
  */
+#define osip_via_get_protocol via_get_protocol
   char *via_get_protocol (osip_via_t * header);
 /**
  * Set the host in the Via element.
  * @param header The element to work on.
  * @param value The value of the element.
  */
+#define osip_via_set_host via_set_host
   void via_set_host (osip_via_t * header, char *value);
 /**
  * Get the host from a Via header.
  * @param header The element to work on.
  */
+#define osip_via_get_host via_get_host
   char *via_get_host (osip_via_t * header);
 /**
  * Set the port in the Via element.
  * @param header The element to work on.
  * @param value The value of the element.
  */
+#define osip_via_set_port via_set_port
   void via_set_port (osip_via_t * header, char *value);
 /**
  * Get the port from a Via header.
  * @param header The element to work on.
  */
+#define osip_via_get_port via_get_port
   char *via_get_port (osip_via_t * header);
 /**
  * Set the comment in the Via element.
  * @param header The element to work on.
  * @param value The value of the element.
  */
+#define osip_via_set_comment via_set_comment
   void via_set_comment (osip_via_t * header, char *value);
 /**
  * Get the comment from a Via header.
  * @param header The element to work on.
  */
+#define osip_via_get_comment via_get_comment
   char *via_get_comment (osip_via_t * header);
 
 /**
