@@ -404,7 +404,7 @@ payload_t *
 sdp_config_find_audio_payload (char *payload)
 {
   payload_t *my;
-  int length = strlen (payload);
+  size_t length = strlen (payload);
   int pos = 0;
 
   if (payload == NULL)
@@ -424,7 +424,7 @@ payload_t *
 sdp_config_find_video_payload (char *payload)
 {
   payload_t *my;
-  int length = strlen (payload);
+  size_t length = strlen (payload);
   int pos = 0;
 
   if (payload == NULL)
@@ -444,7 +444,7 @@ payload_t *
 sdp_config_find_other_payload (char *payload)
 {
   payload_t *my;
-  int length = strlen (payload);
+  size_t length = strlen (payload);
   int pos = 0;
 
   if (payload == NULL)
