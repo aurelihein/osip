@@ -38,7 +38,7 @@ int __osip_message_call_method (int i, osip_message_t * dest,
 int __osip_message_is_known_header (const char *hname);
 
 int __osip_find_next_occurence (const char *str, const char *buf,
-				const char **index_of_str);
+				const char **index_of_str, const char *end_of_buf);
 int __osip_find_next_crlf (const char *start_of_header,
 			   const char **end_of_header);
 int __osip_find_next_crlfcrlf (const char *start_of_part,

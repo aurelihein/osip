@@ -1,4 +1,5 @@
 libosip2 (2.2.1)
+	* fix for binary support when multipart is used.
 	* automatic check for reliable protocol SCTP and TLS.
 	* avoid <winsock.h> inclusion so user can (and must) now include either
 	  <winsock.h> or <winsock2.h> before including <osip/osip2.h>

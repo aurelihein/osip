@@ -220,16 +220,34 @@ __osip_message_startline_parse (osip_message_t * dest, const char *buf,
 
 int
 __osip_find_next_occurence (const char *str, const char *buf,
-			    const char **index_of_str)
+			    const char **index_of_str, const char *end_of_buf)
 {
+  int i;
   *index_of_str = NULL;		/* AMD fix */
   if ((NULL == str) || (NULL == buf))
     return -1;
   /* TODO? we may prefer strcasestr instead of strstr? */
-  *index_of_str = strstr (buf, str);
-  if (NULL == (*index_of_str))
-    return -1;
-  return 0;
+  for (i=0;i<1000;i++)
+    {
+      *index_of_str = strstr (buf, str);
+      if (NULL == (*index_of_str))
+	{
+	  /* if '\0' (when binary data is used) is located before the separator,
+	     then we have to continue searching */
+	  const char *ptr = buf + strlen(buf);
+	  if (end_of_buf-ptr>0)
+	    {
+	      buf = ptr+1;
+	      continue;
+	    }
+	  return -1;
+	}
+      return 0;
+    }
+  OSIP_TRACE (osip_trace
+	      (__FILE__, __LINE__, OSIP_BUG, NULL,
+	       "This was probably an infinite loop?\n"));
+  return -1;
 }
 
 /* This method replace all LWS with SP located before the
@@ -650,6 +668,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 {
   const char *start_of_body;
   const char *end_of_body;
+  const char *end_of_buf;
   char *tmp;
   int i;
 
@@ -744,11 +763,14 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
   *next_body = NULL;
   start_of_body = start_of_buf;
+
+  end_of_buf = start_of_buf+length;
+
   for (;;)
     {
       i =
 	__osip_find_next_occurence (sep_boundary, start_of_body,
-				    &start_of_body);
+				    &start_of_body, end_of_buf);
       if (i == -1)
 	{
 	  osip_free (sep_boundary);
@@ -757,7 +779,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       i =
 	__osip_find_next_occurence (sep_boundary,
 				    start_of_body + strlen (sep_boundary),
-				    &end_of_body);
+				    &end_of_body, end_of_buf);
       if (i == -1)
 	{
 	  osip_free (sep_boundary);
