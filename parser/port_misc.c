@@ -421,7 +421,7 @@ trace_initialize (trace_level_t level, FILE * file)
   logfile = NULL;
   if (file != NULL)
     logfile = file;
-#ifdef SYSTEM_LOGGER_ENABLED
+#ifndef SYSTEM_LOGGER_ENABLED
   else
     logfile = stdout;
 #endif

@@ -184,9 +184,6 @@ AC_SUBST(EXTRA_LIB)
 AC_SUBST(PARSER_LIB)
 AC_SUBST(FSM_LIB)
 
-AC_ENABLE_SHARED(yes)
-AC_ENABLE_STATIC(no)
-
 dnl Checks for header files.
 
 dnl This is to be removed for autoconf2.50
