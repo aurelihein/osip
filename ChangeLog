@@ -1,4 +1,4 @@
-libosip2 (2.1.0)
+libosip2 (2.2.0)
 	* remove useless prototypes.
 	* fix memory access in parser.
 	* API slightly broken to enable support for binary data.

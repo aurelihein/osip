@@ -1,8 +1,7 @@
-libosip2 (2.0.9-1) unstable; urgency=low
-  * fix detection of CRLFCRLF in osip_util_replace_all_lws.
-  * fix expires header with comma.
-  * fix a few memory leak in parser.
-  * improvements for the new sdp negociator.
-  * fix trace mode.
+libosip2 (2.2.0-1) unstable; urgency=low
+  * remove useless prototypes.
+  * fix memory access in parser.
+  * API slightly broken to enable support for binary data.
+  * improvements of the sip message test suite.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Mon, 12 jul 2004 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 7 Sept 2004 13:04:32 +0100
