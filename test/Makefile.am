@@ -3,7 +3,7 @@ EXTRA_DIST =
 
 noinst_PROGRAMS = torture_test torture_sdp_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
 INCLUDES = -I$(top_srcdir)
-CFLAGS = -Wall @SIP_CFLAGS@ @SIP_PARSER_FLAGS@ @SIP_EXTRA_FLAGS@ @SIP_FLAGS@
+CFLAGS = -Wall @SIP_CFLAGS@ @SIP_PARSER_FLAGS@ @SIP_EXTRA_FLAGS@
 
 twwwa_SOURCES =  twwwa.c
 twwwa_LDFLAGS = -O  -Wall 

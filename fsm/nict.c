@@ -79,11 +79,14 @@ nict_init(nict_t **nict, osip_t *osip, sip_t *request)
 	port = satoi(route->url->port);
       nict_set_destination((*nict), sgetcopy(route->url->host), port);
     }
+  else
+    (*nict)->port  = 5060;
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
   (*nict)->timer_f_start = now; /* started */
 
-  (*nict)->port  = 5060;
+  /* Oups! a Bug! */
+  /*  (*nict)->port  = 5060; */
 
   return 0;
 

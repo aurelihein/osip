@@ -1,4 +1,5 @@
 libosip (0.8.8)
+	* nict.c and ict.c: fix a bug with the setting of the port.
 	* fsm/dialog.c: if 1xx answer does not contain the route set, update
 	  it when the 200 OK comes in.
 	* parser/hdr_acceptencoding.c: msg_2char use realloc() now.
