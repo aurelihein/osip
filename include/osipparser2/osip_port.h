@@ -159,7 +159,7 @@ extern "C"
 
 #else
 void *osip_malloc(size_t size);
-void osip_realloc(void *, size_t size);
+void *osip_realloc(void *, size_t size);
 void osip_free(void *);
 #endif
 

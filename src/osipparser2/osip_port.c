@@ -734,7 +734,7 @@ void *osip_malloc(size_t size)
   return ptr;
 }
 
-void *osip_malloc(void *ptr, size_t size)
+void *osip_realloc(void *ptr, size_t size)
 {
   return realloc(ptr, size);
 }
