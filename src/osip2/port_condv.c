@@ -117,7 +117,7 @@ osip_cond_destroy (struct osip_cond *_cond)
     return 0;
 
   osip_mutex_destroy (_cond->mut);
-
+  osip_free (_cond);
   return (0);
 }
 
