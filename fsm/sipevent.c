@@ -69,7 +69,7 @@ osip_parse(char *buf)
     i = msg_init(&(se->sip));
     if (msg_parse(se->sip, buf)==-1)
       {
-	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"could not parse message :-(\n"));
+	TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"could not parse message\n"));
 	msg_free(se->sip);
 	sfree(se->sip);
 	sfree(se);
@@ -77,8 +77,7 @@ osip_parse(char *buf)
       }
 	else
       {
-	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL5,NULL,"MESSAGE REC. CALLID:%s :-(\n",se->sip->call_id->number));
-                   
+	TRACE(trace(__FILE__,__LINE__,OSIP_INFO3,NULL,"MESSAGE REC. CALLID:%s\n",se->sip->call_id->number));
 	se->type = evt_settype_incoming_sipmessage(se->sip);
 	return se;
       }

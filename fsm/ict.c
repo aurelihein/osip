@@ -29,7 +29,7 @@ ict_init(ict_t **ict, osip_t *osip, sip_t *invite)
   int i;
   time_t now;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating ICT context\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"allocating ICT context\n"));
 
   *ict = (ict_t *)smalloc(sizeof(ict_t));
   if (*ict==NULL) return -1;
@@ -100,7 +100,7 @@ int
 ict_free(ict_t *ict)
 {
   if (ict==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free ict ressource\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free ict ressource\n"));
 
   sfree(ict->destination);
   return 0;

@@ -27,7 +27,7 @@ nist_init(nist_t **nist, osip_t *osip, sip_t *invite)
 {
   int i;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating NIST context\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"allocating NIST context\n"));
 
   *nist = (nist_t *)smalloc(sizeof(nist_t));
   if (*nist==NULL) return -1;
@@ -73,7 +73,7 @@ int
 nist_free(nist_t *nist)
 {
   if (nist==NULL) return -1;
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free nist ressource\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free nist ressource\n"));
 
   return 0;
 }

@@ -171,19 +171,26 @@ typedef int boolean;
 /* levels */
 typedef enum _trace_level {
   TRACE_LEVEL0      = 0,
+#define OSIP_FATAL    0
   TRACE_LEVEL1      = 1,
+#define OSIP_BUG      1
   TRACE_LEVEL2      = 2,
+#define OSIP_ERROR    2
   TRACE_LEVEL3      = 3,
+#define OSIP_WARNING  3
   TRACE_LEVEL4      = 4,
+#define OSIP_INFO1    4
   TRACE_LEVEL5      = 5,
-  END_TRACE_LEVEL   = 6
+#define OSIP_INFO2    5
+  TRACE_LEVEL6      = 6,
+#define OSIP_INFO3    6
+  TRACE_LEVEL7      = 7,
+#define OSIP_INFO4    7
+  END_TRACE_LEVEL   = 8
 } trace_level_t;
 
 #ifndef ENABLE_TRACE
-#define TRACE_INITIALIZE(level, file) do { \
-fprintf(stderr, \
-"Error: TRACE_INITIALIZE() is disabled. (use configure --enable-trace)\n"); \
-                                      } while (0)
+#define TRACE_INITIALIZE(level, file)  do { } while (0)
 #define TRACE_ENABLE_LEVEL(level)      do { } while (0)
 #define TRACE_DISABLE_LEVEL(level)     do { } while (0)
 #define IS_TRACE_LEVEL_ACTIVATE(level) (-1)
@@ -215,9 +222,11 @@ trace(fi,li,level,f,chfr,va_list);
 #endif
 
 #ifdef ENABLE_TRACE
+#ifndef TRACE  /* quick and temporary hack for VC++ */
 #define TRACE(P) P
 #else
 #define TRACE(P) do {} while (0)
+#endif
 #endif
 
 #ifdef __cplusplus

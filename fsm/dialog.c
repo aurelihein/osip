@@ -25,7 +25,7 @@
 
 
 void
-dialog_set_state(dialog_t *dialog, dlg_type_t state)
+dialog_set_state(dialog_t *dialog, state_t state)
 {
   dialog->state = state;
 }
@@ -51,7 +51,7 @@ dialog_update_route_set_as_uas(dialog_t *dialog, sip_t *invite)
   else
     {
       dialog->remote_contact_uri = NULL;
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a contact in invite!\n"));
     }
   return 0;
 }
@@ -71,7 +71,7 @@ dialog_update_route_set_as_uac(dialog_t *dialog, sip_t *response)
   contact_t *contact;
   int i;
 
-  /* I personnaly think it's a bad idea to keep the old
+  /* I personally think it's a bad idea to keep the old
      value in case the new one is broken... */
   if (dialog->remote_contact_uri!=NULL)
     {
@@ -88,7 +88,7 @@ dialog_update_route_set_as_uac(dialog_t *dialog, sip_t *response)
     }
   else
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a contact in response!\n"));
     }
 
   if (dialog->state == DIALOG_EARLY && list_size(dialog->route_set)==0)
@@ -119,7 +119,7 @@ dialog_update_tag_as_uac(dialog_t *dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a tag in response!\n"));
       dialog->remote_tag = NULL;
     }
   else
@@ -229,8 +229,8 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems is not compliant with the latest draft!\n"));
-      return -1;;
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a tag in response!\n"));
+      return -1;
     }
 
   (*dialog) = (dialog_t*)smalloc(sizeof(dialog_t));
@@ -254,7 +254,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
     }
   else
@@ -296,7 +296,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
     else
       {
 	(*dialog)->remote_contact_uri = NULL;
-	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only! (no contact in response)\n"));
+	TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
   (*dialog)->secure = -1; /* non secure */
@@ -318,7 +318,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
  diau_error_1:
   sfree((*dialog)->call_id);
  diau_error_0:
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL0,NULL,"ERROR: Establishment of dialog failed!\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"Could not establish dialog!\n"));
   sfree(*dialog);
   return -1;
 }
@@ -350,7 +350,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
   i = from_get_tag(response->from,&tag);
   if (i!=0)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a tag in response!\n"));
       (*dialog)->remote_tag = NULL;
     }
   else
@@ -393,7 +393,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
     else
       {
 	(*dialog)->remote_contact_uri = NULL;
-	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only! (no contact in response)\n"));
+	TRACE(trace(__FILE__,__LINE__,OSIP_WARNING,NULL,"Remote UA is not compliant: missing a contact in response!\n"));
       }
   }
   (*dialog)->secure = -1; /* non secure */
@@ -415,7 +415,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
  diau_error_1:
   sfree((*dialog)->call_id);
  diau_error_0:
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL0,NULL,"ERROR: Establishment of dialog failed!\n"));
+  TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"Could not establish dialog!\n"));
   sfree(*dialog);
   return -1;
 }

@@ -28,14 +28,11 @@
 #endif
 
 #include <time.h>
-#ifndef __VXWORKS_OS__
-#ifndef WIN32
-#include <sys/time.h>
-#else
-#include <winsock.h>
-#endif
-#else
+
+#if defined(__VXWORKS_OS__)
 #include <selectLib.h>
+#elif !defined(WIN32)
+#include <sys/time.h>
 #endif
 
 #if defined (HAVE_UNISTD_H)
@@ -402,7 +399,6 @@ trace(fi,li,level,f,chfr,va_list)
 {
   va_list ap;
 #ifdef ENABLE_TRACE
-  time_t ti;
 
   if (logfile==NULL)
     { /* user did not initialize logger.. */
@@ -413,14 +409,29 @@ trace(fi,li,level,f,chfr,va_list)
   if (tracing_table[level]==LOG_FALSE)
     return 0;
 
-  ti = time(NULL);
   VA_START(ap, chfr);
 
 #ifdef __VXWORKS_OS__
   /* vxworks can't have a local file */
   f = stdout;
 #endif
-  fprintf(f, "L%i -%li- <%s: %i> ", level, (long int)ti, fi, li);
+  if (level==OSIP_FATAL)
+    fprintf(f, "| FATAL | <%s: %i> ", fi, li);
+  else if (level==OSIP_BUG)
+    fprintf(f, "|  BUG  | <%s: %i> ", fi, li);
+  else if (level==OSIP_ERROR)
+    fprintf(f, "| ERROR | <%s: %i> ", fi, li);
+  else if (level==OSIP_WARNING)
+    fprintf(f, "|WARNING| <%s: %i> ", fi, li);
+  else if (level==OSIP_INFO1)
+    fprintf(f, "| INFO1 | <%s: %i> ", fi, li);
+  else if (level==OSIP_INFO2)
+    fprintf(f, "| INFO2 | <%s: %i> ", fi, li);
+  else if (level==OSIP_INFO3)
+    fprintf(f, "| INFO3 | <%s: %i> ", fi, li);
+  else if (level==OSIP_INFO4)
+    fprintf(f, "| INFO4 | <%s: %i> ", fi, li);
+
   vfprintf(f, chfr,ap);
 
   fflush(f);

@@ -32,7 +32,7 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   int i;
   time_t now;
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: allocating transaction ressource %i %s\n",transactionid, request->call_id->number));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"allocating transaction ressource %i %s\n",transactionid, request->call_id->number));
 
   *transaction = (transaction_t *)smalloc(sizeof(transaction_t));
   if (*transaction==NULL) return -1;
@@ -148,7 +148,7 @@ transaction_free(transaction_t *transaction)
   if (transaction==NULL) return -1;
   if (transaction->orig_request!=NULL)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"INFO: free transaction ressource %i %s\n",transaction->transactionid, transaction->orig_request->call_id->number));
+      TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free transaction ressource %i %s\n",transaction->transactionid, transaction->orig_request->call_id->number));
     }
   if (transaction->ctx_type==ICT)
     {
@@ -177,9 +177,8 @@ transaction_free(transaction_t *transaction)
 
   if (i!=0) /* yet removed ??? */
     {
-      TRACE(trace(__FILE__,__LINE__,
-		  TRACE_LEVEL3,NULL,
-		  "BUG: transaction already removed from list %i!!\n",
+      TRACE(trace(__FILE__,__LINE__, OSIP_BUG,NULL,
+		  "transaction already removed from list %i!\n",
 		  transaction->transactionid));
     }
 
@@ -239,10 +238,10 @@ transaction_execute(transaction_t *transaction, sipevent_t *evt)
         return 0;
       }
 
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"sipevent evt->transactionid: %i\n",evt->transactionid));
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"sipevent tr->state: %i\n",transaction->state));
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"sipevent evt->type: %i\n",evt->type));
-  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"sipevent evt->sip: %x\n",evt->sip));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO4,NULL,"sipevent evt->transactionid: %i\n",evt->transactionid));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO4,NULL,"sipevent tr->state: %i\n",transaction->state));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO4,NULL,"sipevent evt->type: %i\n",evt->type));
+  TRACE(trace(__FILE__,__LINE__,OSIP_INFO4,NULL,"sipevent evt->sip: %x\n",evt->sip));
 
   if (transaction->ctx_type==ICT)
     statemachine = ict_get_fsm();
@@ -259,8 +258,8 @@ transaction_execute(transaction_t *transaction, sipevent_t *evt)
                          evt,
 			 transaction))
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,
-		  "INFO: USELESS event!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_INFO3,NULL,
+		  "USELESS event!\n"));
       /* message is useless. */
       if(EVT_IS_MSG(evt))
         {
@@ -273,7 +272,7 @@ transaction_execute(transaction_t *transaction, sipevent_t *evt)
     }
   else
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"sipevent evt: method called!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_INFO4,NULL,"sipevent evt: method called!\n"));
     }
   sfree(evt); /* this is the ONLY place for freeing event!! */
   return 1;
@@ -433,19 +432,19 @@ transaction_matching_response_to_xict_17_1_3(transaction_t *tr, sip_t *response)
   topvia_response = list_get(response->vias, 0);
   if (topvia_response==NULL)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a response without any Via! The remote UA is not compliant with SIP!\n"));      
+      TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"Remote UA is not compliant: missing a Via header!\n"));      
       return -1;
     }
   via_param_getbyname(tr->topvia, "branch", &b_request);
   if (b_request==NULL)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"BUG: You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_BUG,NULL,"You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
       return -1;
     }
   via_param_getbyname(topvia_response, "branch", &b_response);
   if (b_response==NULL)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a response without any branch! The remote UA is not compliant with SIP!\n"));
+      TRACE(trace(__FILE__,__LINE__,OSIP_BUG,NULL,"Remote UA is not compliant: missing a branch parameter header!\n"));
       return -1;
     }
 
@@ -494,7 +493,7 @@ transaction_matching_request_to_xist_17_2_3(transaction_t *tr, sip_t *request)
   topvia_request = list_get(request->vias, 0);
   if (topvia_request==NULL)
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL3,NULL,"ERROR: You received a request without any Via! The remote UA is not compliant with SIP!\n"));      
+      TRACE(trace(__FILE__,__LINE__,OSIP_ERROR,NULL,"Remote UA is not compliant: missing a Via header!\n"));      
       return -1;
     }
   via_param_getbyname(topvia_request, "branch", &b_request);
