@@ -149,6 +149,22 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
   char *tmp;
   int i;
 
+
+  OSIP_TRACE (osip_trace
+	      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+	       "Using this method is discouraged. See source code explanations!\n"));
+  /*
+    When starting a new transaction and when receiving several answers,
+    you must be prepared to receive several answers from different sources.
+    (because of forking).
+
+    Because some UAs are not compliant (a to tag is missing!), this method
+    may match the wrong dialog when a dialog has been created with an empty
+    tag in the To header.
+
+    Personnaly, I would recommend to discard 1xx>=101 answers without To tags!
+    Just my own feelings.
+  */
   osip_call_id_to_str (answer->call_id, &tmp);
   if (0 != strcmp (dlg->call_id, tmp))
     {
@@ -175,6 +191,19 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
     return -1;			/* impossible... */
   if (i != 0 && dlg->remote_tag == NULL)	/* no tag in response AND no tag in dialog */
     {
+      if (0 ==
+	  osip_from_compare ((osip_from_t *) dlg->local_uri,
+			     (osip_from_t *) answer->from)
+	  && 0 == osip_from_compare (dlg->remote_uri, answer->to))
+	return 0;
+      return -1;
+    }
+
+  if (dlg->remote_tag == NULL)	/* tag in response BUT no tag in dialog */
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		   "Remote UA is not compliant: missing a tag in To fields!\n"));
       if (0 ==
 	  osip_from_compare ((osip_from_t *) dlg->local_uri,
 			     (osip_from_t *) answer->from)
@@ -229,6 +258,18 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
       return -1;
     }
 
+  if (dlg->remote_tag == NULL)	/* tag in response BUT no tag in dialog */
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		   "Remote UA is not compliant: missing a tag in To feilds!\n"));
+      if (0 ==
+	  osip_from_compare ((osip_from_t *) dlg->remote_uri,
+			     (osip_from_t *) request->from)
+	  && 0 == osip_from_compare (dlg->local_uri, request->to))
+	return 0;
+      return -1;
+    }
   /* we don't have to compare
      remote_uri with from
      && local_uri with to.    ----> we have both tag recognized, it's enough..
