@@ -218,7 +218,7 @@ token_set (char *name, char *str, char **result, char **next)
       sclrspace (*result);
 
       /* make sure the element does not contain more parameter */
-      tmp = end + 1;
+      tmp = (*end) ? (end + 1) : end;    //end + 1;
       for (; *tmp == ' ' || *tmp == '\t'; tmp++)
 	{
 	}
