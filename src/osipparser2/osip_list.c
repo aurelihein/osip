@@ -44,7 +44,8 @@ osip_list_special_free (osip_list_t * li, void *(*free_func) (void *))
     {
       element = (void *) osip_list_get (li, pos);
       osip_list_remove (li, pos);
-      free_func (element);
+      if (free_func!=NULL)
+	free_func (element);
     }
   osip_free (li);
 }
@@ -98,6 +99,8 @@ osip_list_add (osip_list_t * li, void *el, int pos)
   __node_t *ntmp;
   int i = 0;
 
+  if (li == NULL) return -1;
+
   if (pos == -1 || pos >= li->nb_elt)
     {				/* insert at the end  */
       pos = li->nb_elt;
@@ -107,22 +110,30 @@ osip_list_add (osip_list_t * li, void *el, int pos)
     {
 
       li->node = (__node_t *) osip_malloc (sizeof (__node_t));
+      if (li->node == NULL) return -1;
       li->node->element = el;
+      li->node->next = NULL;
       li->nb_elt++;
       return li->nb_elt;
     }
 
   ntmp = li->node;		/* exist because nb_elt>0  */
 
-  if (pos == 0)
+  if (pos == 0) /* pos = 0 insert before first elt  */
     {
       li->node = (__node_t *) osip_malloc (sizeof (__node_t));
+      if (li->node == NULL)
+	{
+	  /* leave the list unchanged */
+	  li->node=ntmp;
+	  return -1;
+	}
       li->node->element = el;
       li->node->next = ntmp;
       li->nb_elt++;
       return li->nb_elt;
     }
-  /* pos = 0 insert before first elt  */
+  
 
   while (pos > i + 1)
     {
@@ -135,8 +146,10 @@ osip_list_add (osip_list_t * li, void *el, int pos)
   if (pos == li->nb_elt)
     {
       ntmp->next = (__node_t *) osip_malloc (sizeof (__node_t));
+      if (li->node == NULL) return -1; /* leave the list unchanged */
       ntmp = (__node_t *) ntmp->next;
       ntmp->element = el;
+      ntmp->next = NULL;
       li->nb_elt++;
       return li->nb_elt;
     }
@@ -146,6 +159,11 @@ osip_list_add (osip_list_t * li, void *el, int pos)
     __node_t *nextnode = (__node_t *) ntmp->next;
 
     ntmp->next = (__node_t *) osip_malloc (sizeof (__node_t));
+    if (ntmp->next ==  NULL) {
+      /* leave the list unchanged */
+      ntmp->next=nextnode;
+      return -1;
+    }
     ntmp = (__node_t *) ntmp->next;
     ntmp->element = el;
     ntmp->next = nextnode;
@@ -161,9 +179,11 @@ osip_list_get (const osip_list_t * li, int pos)
   __node_t *ntmp;
   int i = 0;
 
+  if (li == NULL) return NULL;
+
   if (pos < 0 || pos >= li->nb_elt)
     /* element does not exist */
-    return 0;
+    return NULL;
 
 
   ntmp = li->node;		/* exist because nb_elt>0 */
@@ -183,6 +203,8 @@ osip_list_remove (osip_list_t * li, int pos)
 
   __node_t *ntmp;
   int i = 0;
+
+  if (li == NULL) return -1;
 
   if (pos < 0 || pos >= li->nb_elt)
     /* element does not exist */
