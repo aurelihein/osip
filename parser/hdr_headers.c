@@ -42,10 +42,12 @@ msg_setheader(sip_t *sip, char *hname, char *hvalue)
 
   h->hname  = (char *)smalloc(strlen(hname)+1);
   sstrncpy(h->hname , hname, strlen(hname));
+  sclrspace(h->hname);
 
   if (hvalue!=NULL) { /* some headers can be null ("subject:") */
     h->hvalue = (char *)smalloc(strlen(hvalue)+1);
     sstrncpy(h->hvalue , hvalue, strlen(hvalue));
+    sclrspace(h->hvalue);
   } 
   else
     h->hvalue = NULL;

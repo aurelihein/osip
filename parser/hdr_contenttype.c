@@ -126,35 +126,53 @@ content_type_parse(content_type_t *content_type, char *hvalue)
 int
 content_type_2char(content_type_t *content_type, char **dest)
 {
-  char *buf ;
+  char *buf;
+  char *tmp;
+  int len;
 
   *dest = NULL;
   if ((content_type==NULL)||(content_type->type==NULL)
       ||(content_type->subtype==NULL))
     return -1;
 
-  buf =  (char *)smalloc(200);
-  *dest = buf;
+  /* try to guess a long enough length */
+  len = strlen(content_type->type)
+    + strlen(content_type->subtype) + 4  /* for '/', ' ', ';' and '\0' */
+    + 10 * list_size(content_type->gen_params);
+  
+  buf =  (char *)smalloc(len);
+  tmp = buf;
 
-  sprintf(buf,"%s/%s", content_type->type, content_type->subtype);
+  sprintf(tmp,"%s/%s", content_type->type, content_type->subtype);
 
-  buf = buf + strlen(buf);
+  tmp = tmp + strlen(tmp);
   {
     int pos = 0;
     generic_param_t *u_param;
     if (!list_eol(content_type->gen_params,pos))
       { /* needed for cannonical form! (authentication issue of rfc2543) */
-	sprintf(buf," ");
-	buf++;
+	sprintf(tmp," ");
+	tmp++;
       }
     while (!list_eol(content_type->gen_params,pos))
       {
+	int tmp_len;
 	u_param = (generic_param_t *)list_get(content_type->gen_params,pos);
-	sprintf(buf,";%s=%s",u_param->gname,u_param->gvalue);
-	buf = buf + strlen(buf);
+	tmp_len = strlen(buf) + 4 + strlen(u_param->gname)
+	  + strlen(u_param->gvalue);
+	if (len < tmp_len)
+	  {
+	    buf = realloc(buf, tmp_len);
+	    len = tmp_len;
+	    tmp = buf + strlen(buf);
+	  }
+	sprintf(tmp,";%s=%s",u_param->gname,u_param->gvalue);
+	tmp = tmp + strlen(tmp);
 	pos++;
       }
   }
+  *dest = buf;
+  printf("length: %s %i %i\n", *dest, strlen(*dest), len);
   return 0;
 }
 

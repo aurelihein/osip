@@ -283,94 +283,94 @@ char*   url_getport(url_t *url);
  * Set the transport parameter to UDP in a url element.
  * @param url The element to work on.
  */
-#define url_set_transport_udp(url)   url_param_add(url->url_params, "transport", "udp")
+#define url_set_transport_udp(url)   url_param_add(url->url_params, sgetcopy("transport"), sgetcopy("udp"))
 /**
  * Set the transport parameter to TCP in a url element.
  * @param url The element to work on.
  */
-#define url_set_transport_tcp(url)   url_param_add(url->url_params, "transport", "tcp")
+#define url_set_transport_tcp(url)   url_param_add(url->url_params, sgetcopy("transport"), sgetcopy("tcp"))
 /**
  * Set the transport parameter to SCTP in a url element.
  * @param url The element to work on.
  */
-#define url_set_transport_sctp(url)  url_param_add(url->url_params, "transport", "sctp")
+#define url_set_transport_sctp(url)  url_param_add(url->url_params, sgetcopy("transport"), sgetcopy("sctp"))
 /**
  * Set the transport parameter to TLS in a url element.
  * @param url The element to work on.
  */
-#define url_set_transport_tls(url)   url_param_add(url->url_params, "transport", "tls")
+#define url_set_transport_tls(url)   url_param_add(url->url_params, sgetcopy("transport"), sgetcopy("tls"))
 /**
  * Set the transport parameter to TLS in a url element.
  * @param url The element to work on.
  * @param value The value describing the transport protocol.
  */
-#define url_set_transport(url,value) url_param_add(url->url_params, "transport", value)
+#define url_set_transport(url,value) url_param_add(url->url_params, sgetcopy("transport"), value)
 
 /**
  * Set the user parameter to PHONE in a url element.
  * @param url The element to work on.
  */
-#define url_set_user_phone(url)   url_param_add(url->url_params, "user", "phone")
+#define url_set_user_phone(url)   url_param_add(url->url_params, sgetcopy("user"), sgetcopy("phone"))
 /**
  * Set the user parameter to IP in a url element.
  * @param url The element to work on.
  */
-#define url_set_user_ip(url)      url_param_add(url->url_params, "user", "ip")
+#define url_set_user_ip(url)      url_param_add(url->url_params, sgetcopy("user"), sgetcopy("ip"))
 /**
  * Set the user parameter in a url element.
  * @param url The element to work on.
  * @param value The value describing the user url.
  */
-#define url_set_user(url, value)  url_param_add(url->url_params, "user", value)
+#define url_set_user(url, value)  url_param_add(url->url_params, sgetcopy("user"), value)
 
 /**
  * Set a method parameter to INVITE in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_invite(url)  url_param_add(url->url_params, "method", "INVITE")
+#define url_set_method_invite(url)  url_param_add(url->url_params, sgetcopy("method"), sgetcopy("INVITE"))
 /**
  * Set a method parameter to ACK in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_ack(url)     url_param_add(url->url_params, "method", "ACK")
+#define url_set_method_ack(url)     url_param_add(url->url_params, sgetcopy("method"), sgetcopy("ACK"))
 /**
  * Set a method parameter to OPTIONS in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_options(url) url_param_add(url->url_params, "method", "OPTIONS")
+#define url_set_method_options(url) url_param_add(url->url_params, sgetcopy("method"), sgetcopy("OPTIONS"))
 /**
  * Set a method parameter to BYE in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_bye(url)     url_param_add(url->url_params, "method", "BYE")
+#define url_set_method_bye(url)     url_param_add(url->url_params, sgetcopy("method"), sgetcopy("BYE"))
 /**
  * Set a method parameter to CANCEL in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_cancel(url)  url_param_add(url->url_params, "method", "CANCEL")
+#define url_set_method_cancel(url)  url_param_add(url->url_params, sgetcopy("method"), sgetcopy("CANCEL"))
 /**
  * Set a method parameter to REGISTER in a url element.
  * @param url The element to work on.
  */
-#define url_set_method_register(url) url_param_add(url->url_params,"method", "REGISTER")
+#define url_set_method_register(url) url_param_add(url->url_params,sgetcopy("method"), sgetcopy("REGISTER"))
 /**
  * Set a method parameter in a url element.
  * @param url The element to work on.
  * @param value The value for the method parameter.
  */
-#define url_set_method(url, value) url_param_add(url->url_params, "method", value)
+#define url_set_method(url, value) url_param_add(url->url_params, sgetcopy("method"), value)
 /**
  * Set a ttl parameter in a url element.
  * @param url The element to work on.
  * @param value The value for the ttl parameter.
  */
-#define url_set_ttl(url, value)    url_param_add(url->url_params, "ttl", value)
+#define url_set_ttl(url, value)    url_param_add(url->url_params, sgetcopy("ttl"), value)
 /**
  * Set a maddr parameter in a url element.
  * @param url The element to work on.
  * @param value The value for the maddr parameter.
  */
-#define url_set_maddr(url, value)  url_param_add(url->url_params, "maddr", value)
+#define url_set_maddr(url, value)  url_param_add(url->url_params, sgetcopy("maddr"), value)
 
 /**
  * Get a url parameter in a url element.

@@ -100,6 +100,44 @@ accept_encoding_parse(accept_encoding_t *accept_encoding, char *hvalue)
 int
 accept_encoding_2char(accept_encoding_t *accept_encoding, char **dest)
 {
+  char *buf;
+  char *tmp;
+  int len;
+
+  *dest = NULL;
+  if ((accept_encoding==NULL)||(accept_encoding->element==NULL))
+    return -1;
+
+  len = strlen(accept_encoding->element)+1;
+  buf = (char *)smalloc(len);
+  if (buf==NULL) return -1;
+  tmp = buf;
+
+  sprintf(tmp,"%s",accept_encoding->element);
+  {
+    int pos = 0;
+    int plen;
+    generic_param_t *u_param;
+    while (!list_eol(accept_encoding->gen_params,pos))
+      { 
+	u_param = (generic_param_t *)list_get(accept_encoding->gen_params,pos);
+	plen=strlen(u_param->gname)+strlen(u_param->gvalue)+2;
+	len = len+plen;
+	buf = (char *)realloc(buf,len);
+	tmp = buf;
+	tmp = tmp + strlen(tmp);
+	sprintf(tmp,";%s=%s",u_param->gname,u_param->gvalue);
+	pos++;
+      }             
+  }
+  (*dest) = buf;                  
+  return 0;
+}
+
+#if 0
+int
+accept_encoding_2char(accept_encoding_t *accept_encoding, char **dest)
+{
   char *buf ;
 
   *dest = NULL;
@@ -125,6 +163,7 @@ accept_encoding_2char(accept_encoding_t *accept_encoding, char **dest)
   }
   return 0;
 }
+#endif
 
 
 /* deallocates a accept_encoding_t structure.  */

@@ -1,4 +1,9 @@
 libosip (0.8.8)
+	* parser/hdr_acceptencoding.c: msg_2char use realloc() now.
+	  (Thanks to chenshx for his patch)
+	* improve support of other scheme in the fsm. It is now able
+          to manage transaction with non-sipurl in the To or From header!
+	* urls.h: fix MACROs for adding parameters.
 	* new optional algo using gpref (thanks to <chenshx@mail.datang.com>)
 	  use ./configure --enable-gpref
 	* new debugging tools with mpatrol: ./configure --enable-mpatrol
