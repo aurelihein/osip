@@ -315,6 +315,11 @@ extern "C"
 #define MSG_IS_PRACK(msg)    (MSG_IS_REQUEST(msg) && \
 			      0==strncmp((msg)->sip_method,"PRACK",5))
 
+
+#define MSG_IS_UPDATE(msg)    (MSG_IS_REQUEST(msg) && \
+			      0==strncmp((msg)->sip_method,"UPDATE",6))
+
+
 /**
  * Test if the message is a response with status between 100 and 199
  * @param msg the SIP message.
