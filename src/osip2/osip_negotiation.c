@@ -1016,7 +1016,7 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
  * - Limitation, only one codec will be proposed
  */
 int
-__sdp_build_offer (osip_negotiation_t *config,
+__osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 		   osip_negotiation_ctx_t * con,
 		   sdp_message_t ** sdp, char *audio_port,
 		   char *video_port, char *audio_codec, char *video_codec)

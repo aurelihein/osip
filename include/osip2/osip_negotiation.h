@@ -490,7 +490,7 @@ extern "C"
 					sdp_message_t ** sdp,
 					char *audio_port,
 					char *video_port);
-  int __sdp_build_offer (osip_negotiation_t *,
+  int __osip_negotiation_sdp_build_offer (osip_negotiation_t *,
 			 osip_negotiation_ctx_t * con, sdp_message_t ** sdp, char *audio_port,
 			 char *video_port, char *audio_codec, char *video_codec);
 
@@ -498,11 +498,6 @@ extern "C"
   int osip_negotiation_sdp_message_put_on_hold (sdp_message_t * sdp);
   /* for an "on hold sdp" in outgoing invite */
   int osip_negotiation_sdp_message_put_off_hold (sdp_message_t * sdp);
-
-#ifndef DOXYGEN
-/* deprecated for spelling reasons... */
-#define osip_negotiation_ctx_execute_negotiation osip_negotiation_ctx_execute_negotiation
-#endif
 
 /** @} */
 

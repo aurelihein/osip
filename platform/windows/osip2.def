@@ -123,4 +123,4 @@ EXPORTS
      osip_transaction_set_in_socket     @119
      osip_transaction_set_out_socket     @120
      osip_transaction_set_your_instance     @121
-     
+     __osip_negotiation_sdp_build_offer     @122
