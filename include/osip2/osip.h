@@ -446,14 +446,21 @@ extern "C"
   struct osip_ict
   {
     /* state machine is implied... */
-
+#ifdef NEW_TIMER
+    int            timer_a_length; /* A=T1, A=2xT1... (unreliable tr only)  */
+    struct timeval timer_a_start;
+    int            timer_b_length; /* B = 64* T1                            */
+    struct timeval timer_b_start;  /* fire when transaction timeouts        */
+    int            timer_d_length; /* D >= 32s for unreliable tr (or 0)     */
+    struct timeval timer_d_start;  /* should be equal to timer H            */
+#else
     int timer_a_length;	   /* A=T1, A=2xT1... (unreliable transport only)  */
     time_t timer_a_start;
     int timer_b_length;	   /* B = 64* T1                                   */
     time_t timer_b_start;  /* fire when transaction timeouts               */
     int timer_d_length;    /* D >= 32s for unreliable transport (else = 0) */
-    time_t timer_d_start;  /* should be equal to timer H */
-
+    time_t timer_d_start;  /* should be equal to timer H                   */
+#endif
     char *destination;	   /* url used to send requests         */
     int port;		   /* port of next hop                  */
 
@@ -469,13 +476,21 @@ extern "C"
   {
     /* state machine is implied... */
 
+#ifdef NEW_TIMER
+    int            timer_e_length; /* A=T1, A=2xT1... (unreliable tr. only) */
+    struct timeval timer_e_start;  /*  (else = -1) not active               */
+    int            timer_f_length; /* B = 64* T1                            */
+    struct timeval timer_f_start;  /* fire when transaction timeouts        */
+    int            timer_k_length; /* K = T4 (else = 0)                     */
+    struct timeval timer_k_start;
+#else
     int timer_e_length;    /* A=T1, A=2xT1... (unreliable transport only)  */
     time_t timer_e_start;  /*  (else = -1) not active                      */
     int timer_f_length;	   /* B = 64* T1                                   */
     time_t timer_f_start;  /* fire when transaction timeouts               */
     int timer_k_length;	   /* K = T4 (else = 0)                            */
     time_t timer_k_start;
-
+#endif
     char *destination;	   /* url used to send requests         */
     int port;		   /* port of next hop                  */
 
@@ -489,14 +504,21 @@ extern "C"
 
   struct osip_ist
   {
-
+#ifdef NEW_TIMER
+    int            timer_g_length; /* G=MIN(T1*2,T2) for unreliable trans.  */
+    struct timeval timer_g_start;  /* 0 when reliable transport is used!    */
+    int            timer_h_length; /* H = 64* T1                            */
+    struct timeval timer_h_start;  /* fire when if no ACK is received       */
+    int            timer_i_length; /* I = T4 for unreliable transport (or 0)*/
+    struct timeval timer_i_start;  /* absorb all ACK                        */
+#else
     int timer_g_length;   /* G=MIN(T1*2,T2) for unreliable transport    */
     time_t timer_g_start; /* else = 0 when reliable transport is used!  */
     int timer_h_length;	  /* H = 64* T1                                 */
     time_t timer_h_start; /* fire when if no ACK is received            */
     int timer_i_length;	  /* I = T4 for unreliable transport (else = 0) */
     time_t timer_i_start; /* absorb all ACK                             */
-
+#endif
   };
 
 /**
@@ -507,10 +529,13 @@ extern "C"
 
   struct osip_nist
   {
-
+#ifdef NEW_TIMER
+    int            timer_j_length; /* J = 64*T1 (else 0) */
+    struct timeval timer_j_start;
+#else
     int timer_j_length;		/* J = 64*T1 (else 0) */
     time_t timer_j_start;
-
+#endif
   };
 
 /**
@@ -903,6 +928,17 @@ extern "C"
  */
   int osip_nist_execute (osip_t * osip);
 
+#ifdef NEW_TIMER
+/**
+ * Retreive the minimum timer value to be used by an application
+ * so that the osip_timer_*_execute method don't have to be called
+ * often.
+ * 
+ * @param osip The element to work on.
+ * @param lower_tv The minimum timer when the application should wake up.
+ */
+  void osip_timers_gettimeout(osip_t * osip, struct timeval *lower_tv);
+#endif
 /**
  * Check if an ict transactions needs a timer event.
  * @param osip The element to work on.

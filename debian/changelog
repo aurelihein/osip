@@ -1,6 +1,4 @@
-libosip2 (2.0.4-1) unstable; urgency=low
-  * fix random number generation on windows.
-  * fix for MingGw compiler
-  * set paramter of sdp_negociation_t structure to NULL on init.
+libosip2 (2.0.5-1) unstable; urgency=low
+  * New optionnal timer interface. (will become the default)
 
  -- Aymeric MOIZARD <jack@atosc.org>  Fri, 3 Oct 2003 13:04:32 +0100

@@ -23,6 +23,11 @@
 #include <osipparser2/osip_message.h>
 #include <osip2/osip.h>
 
+#ifdef NEW_TIMER
+void add_gettimeofday(struct timeval *atv, int ms);
+void min_timercmp(struct timeval *tv1, struct timeval *tv2);
+#endif
+
 typedef struct osip_statemachine osip_statemachine_t;
 
 struct osip_statemachine

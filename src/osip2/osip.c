@@ -1176,6 +1176,168 @@ osip_nist_execute (osip_t * osip)
   return 0;
 }
 
+#ifdef NEW_TIMER
+void
+osip_timers_gettimeout(osip_t * osip, struct timeval *lower_tv)
+{
+  struct timeval now;
+  osip_transaction_t *tr;
+  int pos = 0;
+
+  gettimeofday(&now, NULL);
+  lower_tv->tv_sec = now.tv_sec+3600*24*265; /* wake up evry year :-) */
+  lower_tv->tv_usec = now.tv_usec;
+
+#ifdef OSIP_MT
+  osip_mutex_lock (ict_fastmutex);
+#endif
+  /* handle ict timers */
+  while (!osip_list_eol (osip->osip_ict_transactions, pos))
+    {
+      tr = (osip_transaction_t *) osip_list_get (osip->osip_ict_transactions, pos);
+
+      if (1 <= osip_fifo_size (tr->transactionff))
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+		       "1 Pending event already in transaction !\n"));
+	  lower_tv->tv_sec = 0;
+	  lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	  osip_mutex_unlock (ict_fastmutex);
+#endif
+	  return;
+	}
+      else
+	{
+	  if (tr->state == ICT_CALLING)
+	    min_timercmp(lower_tv, &tr->ict_context->timer_b_start);
+	  if (tr->state == ICT_CALLING)
+	    min_timercmp(lower_tv, &tr->ict_context->timer_a_start);
+	  if (tr->state == ICT_COMPLETED)
+	    min_timercmp(lower_tv, &tr->ict_context->timer_d_start);
+	  if (timercmp(&now, lower_tv, > ))
+	    {
+	      lower_tv->tv_sec = 0;
+	      lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	      osip_mutex_unlock (ict_fastmutex);
+#endif
+	      return;
+	    }
+	}
+      pos++;
+    }
+#ifdef OSIP_MT
+  osip_mutex_unlock (ict_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+  osip_mutex_lock (ist_fastmutex);
+#endif
+  /* handle ist timers */
+  while (!osip_list_eol (osip->osip_ist_transactions, pos))
+    {
+      tr = (osip_transaction_t *) osip_list_get (osip->osip_ist_transactions, pos);
+
+      if (tr->state == IST_CONFIRMED)
+	min_timercmp(lower_tv, &tr->ist_context->timer_i_start);
+      if (tr->state == IST_COMPLETED)
+	min_timercmp(lower_tv, &tr->ist_context->timer_h_start);
+      if (tr->state == IST_COMPLETED)
+	min_timercmp(lower_tv, &tr->ist_context->timer_g_start);
+      if (timercmp(&now, lower_tv, > ))
+	{
+	  lower_tv->tv_sec = 0;
+	  lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	  osip_mutex_unlock (ist_fastmutex);
+#endif
+	  return;
+	}
+      pos++;
+    }
+#ifdef OSIP_MT
+  osip_mutex_unlock (ist_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+  osip_mutex_lock (nict_fastmutex);
+#endif
+  /* handle nict timers */
+  while (!osip_list_eol (osip->osip_nict_transactions, pos))
+    {
+      tr = (osip_transaction_t *) osip_list_get (osip->osip_nict_transactions, pos);
+
+      if (tr->state == NICT_COMPLETED)
+	min_timercmp(lower_tv, &tr->nict_context->timer_k_start);
+      if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
+	min_timercmp(lower_tv, &tr->nict_context->timer_f_start);
+      if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
+	min_timercmp(lower_tv, &tr->nict_context->timer_e_start);
+      if (timercmp(&now, lower_tv, > ))
+	{
+	  lower_tv->tv_sec = 0;
+	  lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	  osip_mutex_unlock (nict_fastmutex);
+#endif
+	  return;
+	}
+      pos++;
+    }
+#ifdef OSIP_MT
+  osip_mutex_unlock (nict_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+  osip_mutex_lock (nist_fastmutex);
+#endif
+  /* handle nist timers */
+  while (!osip_list_eol (osip->osip_nist_transactions, pos))
+    {
+      tr = (osip_transaction_t *) osip_list_get (osip->osip_nist_transactions, pos);
+
+      if (tr->state == NIST_COMPLETED)
+	min_timercmp(lower_tv, &tr->nist_context->timer_j_start);
+      if (timercmp(&now, lower_tv, > ))
+	{
+	  lower_tv->tv_sec = 0;
+	  lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	  osip_mutex_unlock (nist_fastmutex);
+#endif
+	  return;
+	}
+      pos++;
+    }
+#ifdef OSIP_MT
+  osip_mutex_unlock (nist_fastmutex);
+#endif
+
+  lower_tv->tv_sec  = lower_tv->tv_sec  - now.tv_sec;
+  lower_tv->tv_usec = lower_tv->tv_usec - now.tv_usec;
+
+  /* just make sure the value is correct! */
+  if (lower_tv->tv_usec<0)
+    {
+      lower_tv->tv_usec=lower_tv->tv_usec+1000000;
+      lower_tv->tv_sec--;
+    }
+  if (lower_tv->tv_sec<0)
+    {
+      lower_tv->tv_sec  = 0;
+      lower_tv->tv_usec = 0;
+    }
+  if (lower_tv->tv_usec>1000000)
+    {
+      lower_tv->tv_usec = lower_tv->tv_usec-1000000;
+      lower_tv->tv_sec++;
+    }
+  return;
+}
+
+#endif
 
 void
 osip_timers_ict_execute (osip_t * osip)
