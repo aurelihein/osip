@@ -55,7 +55,7 @@ sdp_o_origin_set (sdp_t * sdp, char *username, char *sess_id,
   sdp->o_nettype = nettype;
   sdp->o_addrtype = addrtype;
   sdp->o_addr = addr;
-  return -1;
+  return 0;
 }
 
 char *
