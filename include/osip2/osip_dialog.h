@@ -145,7 +145,7 @@ extern "C"
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
  * NOTE: bis-09 says that updating the route-set means: update the contact
  *       field only (AND NOT THE ROUTE-SET). This method follow this behaviour.
- * NOTE: This method should be called for each request (except 100 Trying)
+ * NOTE: This method should be called for each request
  *       received for a dialog.
  * @param dialog The element to work on.
  * @param invite The invite received.
