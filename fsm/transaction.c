@@ -615,10 +615,45 @@ transaction_matching_response_to_xict_17_1_3 (transaction_t * tr,
   via_param_getbyname (topvia_response, "branch", &b_response);
   if (b_response == NULL)
     {
+#ifdef FWDSUPPORT
+      // livio01042003: see if other criteria are met.
+      // Check that: Call-ID, CSeq, To, and From fields are the same 
+      
+      // the from tag (unique)
+      if (from_tag_match(tr->from, response->from)!=0)
+	return -1;
+      // the Cseq field
+      if (cseq_match(tr->cseq, response->cseq)!=0)
+	return 0;
+      // the To field
+      if (response->to->url->username==NULL && tr->from->url->username!=NULL)
+	return -1;
+      if (response->to->url->username!=NULL && tr->from->url->username==NULL)
+	return -1;
+      if (response->to->url->username!=NULL && tr->from->url->username!=NULL)
+	{
+	  /* if different -> return -1 */
+	  if (strcmp(response->to->url->host, tr->from->url->host) ||
+	      strcmp(response->to->url->username, tr->from->url->username))
+	    return -1;
+	}
+      else
+	{
+	  /* if different -> return -1 */
+	  if (strcmp(response->to->url->host, tr->from->url->host))
+	    return -1;
+	}
+
+      // the Call-ID field
+      if (call_id_match(tr->callid, response->call_id)!=0)
+	return -1;
+      return 0;
+#else
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_BUG, NULL,
 		   "Remote UA is not compliant: missing a branch parameter header!\n"));
       return -1;
+#endif
     }
 
   /*
