@@ -191,6 +191,8 @@ sclrspace (char *word)
 
   if (word == NULL)
     return -1;
+  if (*word == '\0')
+    return 0;
   len = strlen (word);
 
   pbeg = word;

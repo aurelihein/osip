@@ -363,6 +363,7 @@ transaction_execute (transaction_t * transaction, sipevent_t * evt)
   else
     statemachine = nist_get_fsm ();
 
+
   if (-1 == fsm_callmethod (evt->type,
                             transaction->state, statemachine, evt, transaction))
     {

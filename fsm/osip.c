@@ -567,12 +567,12 @@ __osip_find_transaction (osip_t * osip, sipevent_t * evt, int consume)
     {                           /* we add the event before releasing the mutex!! */
       if (transaction != NULL)
         {
-          transaction_add_event (transaction, evt);
+	  transaction_add_event (transaction, evt);
 #ifdef OSIP_MT
-          smutex_unlock (mut);
+	  smutex_unlock (mut);
 #endif
-          return transaction;
-        }
+	  return transaction;
+	}
     }
 #ifdef OSIP_MT
   smutex_unlock (mut);
@@ -617,42 +617,6 @@ osip_create_transaction (osip_t * osip, sipevent_t * evt)
   evt->transactionid = transaction->transactionid;
   return transaction;
 }
-
-#if 0
-/* This method is not compliant with the latest rfc2543bis-09 draft. */
-transaction_t *
-osip_transaction_find (list_t * transactions, sipevent_t * evt)
-{
-  int pos = 0;
-  transaction_t *transaction;
-
-  while (!list_eol (transactions, pos))
-    {
-      transaction = (transaction_t *) list_get (transactions, pos);
-      if (0 == call_id_match (transaction->callid,
-                              evt->sip->call_id)
-          && 0 == callleg_match (transaction->to,
-                                 transaction->from,
-                                 evt->sip->to, evt->sip->from)
-          && 0 == cseq_match (transaction->cseq, evt->sip->cseq))
-        {
-          if (0 == strncmp (transaction->cseq->method,
-                            evt->sip->cseq->method,
-                            strlen (transaction->cseq->method))
-              ||
-              ((0 == strncmp (transaction->cseq->method, "INVITE", 6))
-               && 0 == strncmp (evt->sip->cseq->method, "ACK", 3)))
-            {
-              evt->transactionid = transaction->transactionid;
-              return transaction;
-            }
-        }
-      pos++;
-    }
-  /*not found */
-  return NULL;
-}
-#endif
 
 transaction_t *
 osip_transaction_find (list_t * transactions, sipevent_t * evt)
@@ -931,23 +895,32 @@ osip_timers_ict_execute (osip_t * osip)
 
       tr = (transaction_t *) list_get (osip->ict_transactions, pos);
 
-      evt = ict_need_timer_b_event (tr->ict_context, tr->state, tr->transactionid);
-      if (evt != NULL)
-        fifo_add (tr->transactionff, evt);
+      if (1<=fifo_size(tr->transactionff))
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO2, NULL,
+		       "1 Pending event already in transaction !\n"));
+	}
       else
-        {
-          evt =
-            ict_need_timer_a_event (tr->ict_context, tr->state, tr->transactionid);
-          if (evt != NULL)
-            fifo_add (tr->transactionff, evt);
-          else
-            {
-              evt = ict_need_timer_d_event (tr->ict_context, tr->state,
-                                            tr->transactionid);
-              if (evt != NULL)
-                fifo_add (tr->transactionff, evt);
-            }
-        }
+	{
+	  evt = ict_need_timer_b_event (tr->ict_context, tr->state, tr->transactionid);
+	  if (evt != NULL)
+	    fifo_add (tr->transactionff, evt);
+	  else
+	    {
+	      evt =
+		ict_need_timer_a_event (tr->ict_context, tr->state, tr->transactionid);
+	      if (evt != NULL)
+		fifo_add (tr->transactionff, evt);
+	      else
+		{
+		  evt = ict_need_timer_d_event (tr->ict_context, tr->state,
+						tr->transactionid);
+		  if (evt != NULL)
+		    fifo_add (tr->transactionff, evt);
+		}
+	    }
+	}
       pos++;
     }
 #ifdef OSIP_MT

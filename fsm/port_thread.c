@@ -97,7 +97,8 @@ sthread_create (int stacksize, sthread_t * thread,
 
   if (thread->h == 0)
     {
-      fprintf (stdout, "Error while creating a new thread\n");
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not create new thread\n"));
       return NULL;
     }
 
@@ -117,12 +118,19 @@ sthread_join (sthread_t * thread)
     {
       i = TerminateThread ((HANDLE) thread->h, 0);
       if (i == 0)
-        fprintf (stdout, "Error while joining thread!\n");
+        {
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not join thread\n"));
+	}
       else
-        fprintf (stdout, "Yes! thread joined!\n");
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO4, NULL, "Thread joined!\n"));
+	}
   } else
     {
-      fprintf (stdout, "sthread_join did not tried to join the thread!\n");
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "No thread to join?\n"));
       return -1;
     }
 
@@ -150,7 +158,8 @@ sthread_create (int stacksize, sthread_t * thread,
 
   if (thread->h == 0)
     {
-      fprintf (stdout, "Error while creating a new thread\n");
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not create thread!\n"));
       return NULL;
     }
 
@@ -167,10 +176,14 @@ sthread_join (sthread_t * thread)
 
   i = WaitForSingleObject (thread->h, INFINITE);
   if (i == WAIT_OBJECT_0)
-    fprintf (stdout, "thread joined!\n");
+    {
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_INFO4, NULL, "thread joined!\n"));
+    }
   else
     {
-      fprintf (stdout, "ERROR!! thread joined ERROR!!\n");
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not join thread!\n"));
       return -1;
     }
   CloseHandle (thread->h);

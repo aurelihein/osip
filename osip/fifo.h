@@ -94,6 +94,11 @@ extern "C"
  * @param element The pointer on the element to add.
  */
   int fifo_add (fifo_t * ff, void *element);
+/**
+ * Get the number of element in a fifo.
+ * @param ff The element to work on.
+ */
+  int fifo_size (fifo_t * ff);
 #ifdef OSIP_MT
 /**
  * Get an element from a fifo or block until one is added.

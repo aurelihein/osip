@@ -53,8 +53,8 @@ fifo_add (fifo_t * ff, void *el)
       list_add (ff->queue, el, -1);     /* insert at end of queue */
   } else
     {
-      fprintf (stdout, "<port_fifo.c> (fifo_t:%x) WARNING STACK IS OVERLOADED\n",
-               (int) ff);
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "too much traffic in fifo.\n"));
 #ifdef OSIP_MT
       smutex_unlock (ff->qislocked);
 #endif
@@ -87,8 +87,8 @@ fifo_insert (fifo_t * ff, void *el)
       list_add (ff->queue, el, 0);      /* insert at end of queue */
   } else
     {
-      fprintf (stdout, "<port_fifo.c> (fifo_t:%x) WARNING STACK IS OVERLOADED\n",
-               (int) ff);
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "too much traffic in fifo.\n"));
 #ifdef OSIP_MT
       smutex_unlock (ff->qislocked);
 #endif
@@ -105,6 +105,18 @@ fifo_insert (fifo_t * ff, void *el)
   smutex_unlock (ff->qislocked);
 #endif
   return 0;
+}
+
+
+int
+fifo_size (fifo_t * ff)
+{
+  int i;
+  smutex_lock (ff->qislocked);
+
+  i = list_size (ff->queue);
+  smutex_unlock (ff->qislocked);
+  return i;
 }
 
 #ifdef OSIP_MT
@@ -126,8 +138,8 @@ fifo_get (fifo_t * ff)
       /* ff->nb_elt--; */
   } else
     {
-      fprintf (stdout, "<port_fifo.c>  (fifo_t:%x) No element available?\n",
-               (int) ff);
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "no element in fifo.\n"));
       smutex_unlock (ff->qislocked);
       return 0;                 /* pile vide */
     }
@@ -168,8 +180,8 @@ fifo_tryget (fifo_t * ff)
 #ifdef OSIP_MT
   else
     {                           /* this case MUST never happen... */
-      fprintf (stdout, "<port_fifo.c>  (fifo_t:%x) No element available?\n",
-               (int) ff);
+      OSIP_TRACE (osip_trace
+		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "no element in fifo.\n"));
       smutex_unlock (ff->qislocked);
       return 0;
     }
