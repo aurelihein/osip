@@ -206,7 +206,7 @@ help/Makefile
 help/man/Makefile
 help/doxygen/Makefile
 platform/Makefile
-platform/debian/Makefile
 platform/rpm/Makefile
-platform/windows/Makefile)
+platform/windows/Makefile
+debian/Makefile)
 

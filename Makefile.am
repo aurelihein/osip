@@ -6,7 +6,7 @@ rpm-package:
 	cd platform && $(MAKE) rpm-package
 
 deb:
-	cd platform && $(MAKE) deb
+	dpkg-buildpackage -rfakeroot
 
 indent:
 	indent */*/*.c
