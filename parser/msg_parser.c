@@ -698,7 +698,7 @@ msg_parse (sip_t * sip, char *buf)
   buf = next_header_index;
 
   /* this is a *very* simple test... (which handle most cases...) */
-  if (strlen (buf) < 5)
+  if (strlen (buf) < 3)
     {
       /* this is mantory in the oSIP stack */
       if (sip->contentlength == NULL)
