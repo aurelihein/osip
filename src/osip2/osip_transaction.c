@@ -613,6 +613,14 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
 	  if (b_request != NULL	/* useless  && b_origrequest!=NULL */
 	      && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
 	    return -1;
+#ifdef AC_BUG
+	  /* audiocodes bug (MP108-fxs-SIP-4-0-282-380) */
+	  if (0 != osip_from_tag_match (tr->from, request->from))
+	    return -1;
+#endif
+	  if (b_request != NULL	/* useless  && b_origrequest!=NULL */
+	      && 0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
+	    return -1;
 	  if (			/* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
 				   I always check the CSeq */
 	       (!(0 == strcmp (tr->cseq->method, "INVITE") &&
