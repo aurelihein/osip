@@ -149,22 +149,6 @@ via_parse (via_t * via, char *hvalue)
   char *via_params;
   char *comment;
 
-  /* How to parse:
-
-     we'll place the pointers:
-     version    =>  first '/'
-     protocol   =>  second '/'
-     host       =>  beginning of host
-     port       =>  beginning of port
-     via_params =>  beginning parameters
-     comment    =>  beginning of comment
-
-     examples:
-
-     SIP/2.0/UDP my.sip.fr:4000;ttl=16;maddr=224.2.0.1 ;branch=dlze.1 (o server)
-     ^   ^                ^ ^                                      ^
-   */
-
   version = strchr (hvalue, '/');
   if (version == NULL)
     return -1;
@@ -181,7 +165,7 @@ via_parse (via_t * via, char *hvalue)
   sstrncpy (via->version, version + 1, protocol - version - 1);
   sclrspace (via->version);
 
-  /* Here: we avoid matching a additionnal space */
+  /* Here: we avoid matching an additionnal space */
   host = strchr (protocol + 1, ' ');
   if (host == NULL)
     return -1;                  /* fixed in 0.8.4 */
@@ -193,7 +177,7 @@ via_parse (via_t * via, char *hvalue)
           if (strlen (host) == 1)
             return -1;          /* via is malformed */
         }
-      /* here we match the real space located after the protocol name */
+      /* here, we match the real space located after the protocol name */
       host = strchr (host + 1, ' ');
       if (host == NULL)
         return -1;              /* fixed in 0.8.4 */
