@@ -118,9 +118,9 @@
   <refsect1>
     <title>osip general overview.</title>
 
-    <para>At that time, the file is obsolete but the file help/man/osip.html
-       in the source distribution should give you a nice amount of informations
-       about the osip stack.</para>
+    <para>The file help/man/osip.html in the source distribution
+       should give you a nice amount of informations about the
+       osip stack.</para>
 
   </refsect1>
   <refsect1>
