@@ -149,7 +149,6 @@ extern "C"
 /* RANDOM number support  */
 /**************************/
 
-  void __osip_init_random_number ();
   unsigned int osip_build_random_number ();
 
 /**************************/

@@ -66,25 +66,24 @@ FILE *logfile = NULL;
 int tracing_table[END_TRACE_LEVEL];
 static int use_syslog = 0;
 
-/* a,b, and x are used to generate random callid with a long period. */
-static unsigned int a = 0;
-static unsigned int b = 0;
-static unsigned int x = 0;
-
-void
-__osip_init_random_number ()
-{
-  srand ((unsigned int) time (NULL));
-  a = 4 * (1 + (int) (20000000.0 * rand () / (RAND_MAX + 1.0))) + 1;
-  b = 2 * (1 + (int) (30324000.0 * rand () / (RAND_MAX + 1.0))) + 1;
-  x = (1 + (int) (23445234.0 * rand () / (RAND_MAX + 1.0)));
-}
+static unsigned int random_seed_set = 0;
 
 unsigned int
 osip_build_random_number ()
 {
-  x = a * x + b;
-  return x;
+    if (!random_seed_set) {
+#ifndef WIN32
+	struct timeval tv;
+
+        gettimeofday(&tv, NULL);
+	srand(tv.tv_usec);
+        random_seed_set = 1;
+#else
+	srand(time(NULL));
+#endif
+    }
+
+    return rand();
 }
 
 #if defined(__linux)

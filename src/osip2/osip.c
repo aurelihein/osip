@@ -51,10 +51,6 @@ __osip_global_init ()
   /* load the parser configuration */
   parser_init ();
 
-  /* give a seed for all calls to rand() */
-  srand (time (NULL));
-  __osip_init_random_number ();
-
 #ifdef OSIP_MT
   ict_fastmutex = osip_mutex_init ();
   ist_fastmutex = osip_mutex_init ();
