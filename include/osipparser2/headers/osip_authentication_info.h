@@ -28,14 +28,14 @@
  */
 
 /**
- * @defgroup oSIP_TYPES oSIP type definitions
- * @ingroup oSIP
+ * @defgroup oSIP_AUTH_INFO oSIP authentication-info header definition.
+ * @ingroup oSIP_HEADERS
  * @{
  */
 
 /**
- * Structure for WWW-Authenticate headers.
- * @defvar osip_authentication_info_t
+ * Structure for Authentication-Info headers.
+ * @var osip_authentication_info_t
  */
   typedef struct osip_authentication_info osip_authentication_info_t;
 

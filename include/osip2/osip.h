@@ -831,7 +831,7 @@ extern "C"
  * @param dialog The dialog the ACK is part of.
  * @param ack The ACK that has just been sent in response to a 200 Ok.
  * @param dest The destination host.
- * @param sock The destination port.
+ * @param port The destination port.
  * @param sock The socket to be used to send the message. (optional).
  */
   void osip_start_ack_retransmissions (osip_t * osip,
