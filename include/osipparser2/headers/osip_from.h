@@ -47,9 +47,9 @@
  */
   struct osip_from
   {
-    char *displayname;
-    osip_uri_t *url;			/* could contain various urischeme_t ? only in the future */
-    osip_list_t *gen_params;
+    char *displayname;       /**< Display Name */ 
+    osip_uri_t *url;         /**< url */
+    osip_list_t *gen_params; /**< other From parameters */
   };
 
 #ifdef __cplusplus

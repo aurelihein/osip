@@ -44,8 +44,8 @@
  */
   struct osip_cseq
   {
-    char *method;
-    char *number;
+    char *method;    /**< CSeq method */
+    char *number;    /**< CSeq number */
   };
 
 #ifdef __cplusplus

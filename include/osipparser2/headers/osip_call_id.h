@@ -44,8 +44,8 @@
  */
   struct osip_call_id
   {
-    char *number;
-    char *host;
+    char *number;    /**< Call-ID number */
+    char *host;      /**< Call-ID host information */
   };
 
 #ifdef __cplusplus

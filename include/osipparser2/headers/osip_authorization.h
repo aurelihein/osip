@@ -45,19 +45,19 @@
  */
   struct osip_authorization
   {
-    char *auth_type;		/* ( "Basic" | "Digest" )      */
-    char *username;
-    char *realm;		/* mandatory ( quoted-string ) */
-    char *nonce;
-    char *uri;
-    char *response;
-    char *digest;		/* DO NOT USE IT IN AUTHORIZATION_T HEADER?? */
-    char *algorithm;		/* optionnal, default is "md5" */
-    char *cnonce;		/* optionnal */
-    char *opaque;		/* optionnal */
-    char *message_qop;		/* optionnal */
-    char *nonce_count;		/* optionnal */
-    char *auth_param;		/* optionnal */
+    char *auth_type;		/**< Authentication Type (Basic or Digest) */
+    char *username;		/**< login */
+    char *realm;		/**< realm (as a quoted-string) */
+    char *nonce;		/**< nonce */
+    char *uri;  		/**< uri */
+    char *response;		/**< response */
+    char *digest;		/**< digest */
+    char *algorithm;		/**< algorithm (optionnal) */
+    char *cnonce;		/**< cnonce (optionnal) */
+    char *opaque;		/**< opaque (optionnal) */
+    char *message_qop;		/**< message_qop (optionnal) */
+    char *nonce_count;		/**< nonce_count (optionnal) */
+    char *auth_param;		/**< other parameters (optionnal) */
   };
 
 

@@ -45,7 +45,7 @@
  */
   struct osip_content_length
   {
-    char *value;
+    char *value;    /**< value for Content-Length (size of attachments) */
   };
 
 #ifdef __cplusplus

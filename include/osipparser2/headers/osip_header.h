@@ -51,8 +51,8 @@
  */
   struct osip_header
   {
-    char *hname;
-    char *hvalue;
+    char *hname;     /**< Name of header */
+    char *hvalue;    /**< Value for header */
   };
 
 /**

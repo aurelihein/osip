@@ -46,9 +46,9 @@
  */
   struct osip_content_type
   {
-    char *type;
-    char *subtype;
-    osip_list_t *gen_params;
+    char *type;                 /**< Type of attachement */
+    char *subtype;              /**< Sub-Type of attachement */
+    osip_list_t *gen_params;    /**< Content-Type parameters */
   };
 
 #ifdef __cplusplus
