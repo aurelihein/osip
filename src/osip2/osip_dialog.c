@@ -27,6 +27,8 @@
 void
 osip_dialog_set_state (osip_dialog_t * dialog, state_t state)
 {
+  if (dialog == NULL)
+    return ;
   dialog->state = state;
 }
 
@@ -36,6 +38,11 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
 {
   osip_contact_t *contact;
   int i;
+
+  if (dialog == NULL)
+    return -1;
+  if (invite == NULL)
+    return -1;
 
   if (osip_list_eol (invite->contacts, 0))
     {
@@ -62,6 +69,13 @@ int
 osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
 				     osip_message_t * invite)
 {
+  if (dialog == NULL)
+    return -1;
+  if (invite == NULL ||
+      invite->cseq == NULL ||
+      invite->cseq->number == NULL)
+    return -1;
+
   dialog->remote_cseq = osip_atoi (invite->cseq->number);
   return 0;
 }
@@ -73,6 +87,11 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
   /* only the remote target URI is updated here... */
   osip_contact_t *contact;
   int i;
+
+  if (dialog == NULL)
+    return -1;
+  if (response == NULL)
+    return -1;
 
   if (osip_list_eol (response->contacts, 0))
     {				/* no contact header in response? */
@@ -128,8 +147,13 @@ osip_dialog_update_tag_as_uac (osip_dialog_t * dialog,
   osip_generic_param_t *tag;
   int i;
 
+  if (dialog == NULL)
+    return -1;
+  if (response == NULL || response->to == NULL)
+    return -1;
+
   i = osip_to_get_tag (response->to, &tag);
-  if (i != 0)
+  if (i != 0 || tag==NULL || tag->gvalue==NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -149,6 +173,11 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
   char *tmp;
   int i;
 
+  if (dlg == NULL)
+    return -1;
+  if (answer == NULL || answer->call_id==NULL ||
+      answer->from==NULL || answer->to==NULL)
+    return -1;
 
   OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -228,6 +257,12 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
   int i;
   char *tmp;
 
+  if (dlg == NULL)
+    return -1;
+  if (request == NULL || request->call_id==NULL ||
+      request->from==NULL || request->to==NULL)
+    return -1;
+
   osip_call_id_to_str (request->call_id, &tmp);
   if (0 != strcmp (dlg->call_id, tmp))
     {
@@ -292,6 +327,8 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
     return -1;
+
+  memset (*dialog, 0, sizeof (osip_dialog_t));
 
   (*dialog)->your_instance = NULL;
 
@@ -408,6 +445,7 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   if (*dialog == NULL)
     return -1;
 
+  memset (*dialog, 0, sizeof (osip_dialog_t));
   (*dialog)->your_instance = NULL;
 
   (*dialog)->type = CALLER;
@@ -504,6 +542,7 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   if (*dialog == NULL)
     return -1;
 
+  memset (*dialog, 0, sizeof (osip_dialog_t));
   (*dialog)->your_instance = NULL;
 
   (*dialog)->type = CALLEE;
