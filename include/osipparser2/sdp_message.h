@@ -382,12 +382,12 @@ extern "C"
  * @param value The token value.
  */
   int sdp_message_e_email_add (sdp_message_t * sdp, char *value);
+  #define sdp_e_email_get sdp_message_e_email_get
 /**
  * Get one of the email ('e' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos the index of the email line.
  */
-  #define sdp_e_email_get sdp_message_e_email_get
   char *sdp_message_e_email_get (sdp_message_t * sdp, int pos);
 /**
  * Set the version in a SDP packet.

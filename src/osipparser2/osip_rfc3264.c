@@ -140,6 +140,7 @@ int osip_rfc3264_reset_media (struct osip_rfc3264 *config)
 /**
  * Add a media (for audio) in the configuration.
  * @param config The element to work on.
+ * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
 int osip_rfc3264_add_audio_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos)
@@ -178,6 +179,7 @@ int osip_rfc3264_del_audio_media (struct osip_rfc3264 *config, int pos)
 /**
  * Add a media (for video) in the configuration.
  * @param config The element to work on.
+ * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
 int osip_rfc3264_add_video_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos)
@@ -216,6 +218,7 @@ int osip_rfc3264_del_video_media (struct osip_rfc3264 *config, int pos)
 /**
  * Add a media (for t38) in the configuration.
  * @param config The element to work on.
+ * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
 int osip_rfc3264_add_t38_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos)
@@ -254,6 +257,8 @@ int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos)
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
+ * @param payload The payload to find.
+ * @param rtpmap The rtpmap for the payload.
  */
   sdp_media_t *osip_rfc3264_find_audio (struct osip_rfc3264 *config, char *payload,
 					char *rtpmap)
@@ -313,6 +318,8 @@ int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos)
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
+ * @param payload The payload to find.
+ * @param rtpmap The rtpmap for the payload.
  */
   sdp_media_t *osip_rfc3264_find_video (struct osip_rfc3264 *config, char *payload,
 					char *rtpmap)
@@ -372,6 +379,7 @@ int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos)
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
+ * @param payload The payload to find.
  */
   sdp_media_t *osip_rfc3264_find_t38 (struct osip_rfc3264 *config, char *payload)
 {
@@ -383,6 +391,7 @@ int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos)
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
+ * @param payload The payload to find.
  */
   sdp_media_t *osip_rfc3264_find_app (struct osip_rfc3264 *config, char *payload)
 {
