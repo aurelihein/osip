@@ -32,6 +32,8 @@ int
 msg_setproxy_authenticate(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->proxy_authenticate!=NULL)
+    return -1;
   i = proxy_authenticate_init(&(sip->proxy_authenticate));
   if (i==-1)
     return -1;

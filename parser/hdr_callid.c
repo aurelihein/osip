@@ -31,6 +31,8 @@ int
 msg_setcall_id(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->call_id!=NULL)
+    return -1;
   i =  call_id_init(&(sip->call_id));
   if (i==-1) /* allocation failed */
       return -1;

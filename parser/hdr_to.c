@@ -37,6 +37,8 @@ int
 msg_setto(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->to!=NULL)
+    return -1;
   i = to_init(&(sip->to));
   if (i==-1)
     return -1;

@@ -48,6 +48,8 @@ int
 msg_setcontent_type(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->content_type!=NULL)
+    return -1;
   i = content_type_init(&(sip->content_type));
   if (i!=0)
     return -1;

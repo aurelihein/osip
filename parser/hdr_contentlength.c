@@ -39,6 +39,8 @@ int
 msg_setcontent_length(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->contentlength!=NULL)
+    return -1;
   i = content_length_init(&(sip->contentlength));
   if (i==-1)
     return -1;

@@ -52,6 +52,8 @@ int
 msg_setauthorization(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->authorization!=NULL)
+    return -1;
   i = authorization_init(&(sip->authorization));
   if (i==-1)
     return -1;

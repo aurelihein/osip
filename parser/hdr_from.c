@@ -41,6 +41,8 @@ int
 msg_setfrom(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->from!=NULL)
+    return -1;
   i = from_init(&(sip->from));
   if (i!=0)
     return -1;

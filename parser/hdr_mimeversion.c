@@ -32,6 +32,8 @@ int
 msg_setmime_version(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->mime_version!=NULL)
+    return -1;
   i = mime_version_init(&(sip->mime_version));
   if (i==-1)
     return -1;

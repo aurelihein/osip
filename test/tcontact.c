@@ -18,6 +18,10 @@
 */
 
 
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <osip/port.h>

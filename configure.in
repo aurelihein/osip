@@ -151,7 +151,7 @@ fi
 
 if test "x$enable_mpatrol" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DENABLE_MPATROL"
-  EXTRA_LIB="$EXTRA_LIB -lmpatrolmt -lelf"
+  EXTRA_LIB="$EXTRA_LIB -lmpatrolmt -lelf -lpthread"
 fi
 
 dnl Checks for libraries. (those one are needed for sun)

@@ -41,6 +41,8 @@ int
 msg_setcseq(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->cseq!=NULL)
+    return -1;
   i = cseq_init(&(sip->cseq));
   if (i==-1)
     return -1;

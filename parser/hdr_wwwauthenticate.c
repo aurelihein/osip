@@ -47,6 +47,8 @@ int
 msg_setwww_authenticate(sip_t *sip, char *hvalue)
 {
   int i;
+  if (sip->www_authenticate!=NULL)
+    return -1;
   i = www_authenticate_init(&(sip->www_authenticate));
   if (i==-1)
     return -1;

@@ -17,6 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+
+#ifdef ENABLE_MPATROL
+#include <mpatrol.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -121,6 +126,7 @@ main(int argc, char **argv)
 
     sfree(msg);
     sfree(tmp);
+    fclose(torture_file);
 
     return 0;
 }
@@ -162,15 +168,6 @@ test_message(char *msg, int verbose, int clone)
     else
       {
 	int i;
-	i = msg_2char(sip, &result);
-	if (i == -1)
-	  {
-	    fprintf(stdout,"ERROR: failed while printing message!\n");
-	    msg_free(sip);
-	    sfree(sip);
-	    return -1;
-	  }
-	
 	i = msg_2char(sip, &result);
 	if (i == -1)
 	  {
