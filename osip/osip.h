@@ -793,7 +793,7 @@ int ist_init(ist_t **ist, osip_t *osip, sip_t *invite);
  * @param ist The element to free.
  */
 int ist_free(ist_t *ist);
-int ist_set_auto_send_100(ist_t *ist, int bool);
+int ist_set_auto_send_100(ist_t *ist, int abool);
 /**
  * Check if this transaction needs a TIMEOUT_G event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
