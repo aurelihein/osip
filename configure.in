@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.64 $)dnl
+AC_REVISION($Revision: 1.65 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -25,7 +25,12 @@ AC_SUBST(LIBOSIP_SO_VERSION, $LIBOSIP_SO_VERSION)
 
 AC_SUBST(OSIP_VERSION)
 
-VERSION=$OSIP_VERSION
+if test "x$PRERELEASE" = "x"; then
+ VERSION=$OSIP_VERSION
+else
+ VERSION="$OSIP_VERSION-$PRERELEASE"
+fi
+
 PACKAGE=libosip2
 
 AC_MSG_RESULT([Configuring ${PACKAGE} ${VERSION}])
