@@ -1,0 +1,5 @@
+libosip2 (1.99.6-1) unstable; urgency=low
+
+  * Initial release of libosip2. Files and API have been entirely renamed.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 5 May 2003 13:04:32 +0100

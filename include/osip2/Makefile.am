@@ -1,0 +1,9 @@
+
+EXTRA_DIST = internal.h
+
+osip2_includedir=$(includedir)/osip2
+
+osip2_include_HEADERS= \
+osip.h     osip_dialog.h osip_negotiation.h \
+osip_mt.h  osip_fifo.h
+
