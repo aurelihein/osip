@@ -1,3 +1,6 @@
+libosip (0.9.6)
+	* fix the state when a retransmission of INVITE is received.
+	
 libosip (0.9.5)
 	* fix a memory leak for retransmissions in msg_2char. 
 	* fix a bug when startline end with CRCRLF.

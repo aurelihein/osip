@@ -260,6 +260,7 @@ ist_rcv_invite (transaction_t * ist, sipevent_t * evt)
 		osip->cb_ist_3456xx_sent2 (ist, ist->last_response);
 	    }
 	}
+      return;
     }
 
   /* we come here only if it was the first INVITE received */
