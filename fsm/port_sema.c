@@ -375,9 +375,7 @@ ssem_trywait (ssem_t * sem)
 
   if (sem == NULL)
     return -1;
-  if ((err = WaitForSingleObject (sem->h, 0)) == WAIT_TIMEOUT)
-    return (-1);
-  if (err == WAIT_TIMEOUT)
+  if ((err = WaitForSingleObject (sem->h, 0)) == WAIT_OBJECT_0)
     return (0);
   return (EBUSY);
 }
