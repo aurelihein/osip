@@ -316,6 +316,9 @@ osip_transaction_free2 (osip_transaction_t * transaction)
 int
 osip_transaction_add_event (osip_transaction_t * transaction, osip_event_t * evt)
 {
+  if (evt==NULL) return -1;
+  if (transaction==NULL) return -1;
+  evt->transactionid=transaction->transactionid;
   osip_fifo_add (transaction->transactionff, evt);
   return 0;
 }
