@@ -1,5 +1,8 @@
-libosip2 (2.0.9-1) unstable; urgency=low
+libosip2 (2.0.8-1) unstable; urgency=low
   * Fix lookup of generic/uri parameter (use case-insensitive comparison)
   * Initial release of the new SDP negociator. (old one will be removed)
+  * fix bug in parser (windows)
+  * fix lookup of generic_paramter and uri_parameter.
+  * fix memory leak in condition variable (windows).
 
  -- Aymeric MOIZARD <jack@atosc.org>  Mon, 01 jun 2004 13:04:32 +0100
