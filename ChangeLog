@@ -1,4 +1,5 @@
 libosip (0.9.4)
+	* fix win32 compilation for Debug release.
 	* re-fix(?) the parsing of the Date header.
 	* verify log strings are NULL terminated.
 	* add syslog support.
