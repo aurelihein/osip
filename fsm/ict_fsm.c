@@ -279,6 +279,8 @@ ict_create_ack (transaction_t * ict, sip_t * response)
     via_t *orig_via;
 
     msg_getvia (ict->orig_request, 0, &orig_via);
+    if (orig_via == NULL)
+      goto ica_error;
     via_clone (orig_via, &via);
     list_add (ack->vias, via, -1);
   }

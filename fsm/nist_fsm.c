@@ -176,16 +176,18 @@ nist_rcv_request (transaction_t * nist, sipevent_t * evt)
           via_t *via;
 
           via = (via_t *) list_get (nist->last_response->vias, 0);
-          {
-            int port;
+          if (via)
+            {
+              int port;
 
-            if (via->port == NULL)
-              port = 5060;
-            else
-              port = atoi (via->port);  /* we should use strtol to handle errors */
-            i = osip->cb_send_message (nist, nist->last_response, via->host,
-                                       port, nist->out_socket);
-          }
+              if (via->port == NULL)
+                port = 5060;
+              else
+                port = atoi (via->port);        /* we should use strtol to handle errors */
+              i = osip->cb_send_message (nist, nist->last_response, via->host,
+                                         port, nist->out_socket);
+          } else
+            i = -1;
           if (i != 0)
             {
               osip->cb_nist_transport_error (nist, i);
@@ -227,16 +229,18 @@ nist_snd_1xx (transaction_t * nist, sipevent_t * evt)
   nist->last_response = evt->sip;
 
   via = (via_t *) list_get (nist->last_response->vias, 0);
-  {
-    int port;
+  if (via)
+    {
+      int port;
 
-    if (via->port == NULL)
-      port = 5060;
-    else
-      port = atoi (via->port);  /* we should use strtol to handle errors */
-    i = osip->cb_send_message (nist, nist->last_response, via->host,
-                               port, nist->out_socket);
-  }
+      if (via->port == NULL)
+        port = 5060;
+      else
+        port = atoi (via->port);        /* we should use strtol to handle errors */
+      i = osip->cb_send_message (nist, nist->last_response, via->host,
+                                 port, nist->out_socket);
+  } else
+    i = -1;
   if (i != 0)
     {
       osip->cb_nist_transport_error (nist, i);
@@ -265,16 +269,18 @@ nist_snd_23456xx (transaction_t * nist, sipevent_t * evt)
   nist->last_response = evt->sip;
 
   via = (via_t *) list_get (nist->last_response->vias, 0);
-  {
-    int port;
+  if (via)
+    {
+      int port;
 
-    if (via->port == NULL)
-      port = 5060;
-    else
-      port = atoi (via->port);  /* we should use strtol to handle errors */
-    i = osip->cb_send_message (nist, nist->last_response, via->host,
-                               port, nist->out_socket);
-  }
+      if (via->port == NULL)
+        port = 5060;
+      else
+        port = atoi (via->port);        /* we should use strtol to handle errors */
+      i = osip->cb_send_message (nist, nist->last_response, via->host,
+                                 port, nist->out_socket);
+  } else
+    i = -1;
   if (i != 0)
     {
       osip->cb_nist_transport_error (nist, i);

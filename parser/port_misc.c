@@ -73,9 +73,22 @@ new_random_number ()
   return x;
 }
 
+#if defined(__linux)
+#include <limits.h>
+#endif
+
 int
 satoi (char *number)
 {
+#if defined(__linux) || defined(HAVE_STRTOL)
+  int i;
+
+  i = strtol (number, (char **) NULL, 10);
+  if (i == LONG_MIN || i == LONG_MAX)
+    return -1;
+  return i;
+#endif
+
   return atoi (number);
 }
 
