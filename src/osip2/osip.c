@@ -1270,6 +1270,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_mutex_lock (ist_fastmutex);
 #endif
   /* handle ist timers */
+  pos = 0;
   while (!osip_list_eol (osip->osip_ist_transactions, pos))
     {
       tr =
@@ -1301,6 +1302,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_mutex_lock (nict_fastmutex);
 #endif
   /* handle nict timers */
+  pos = 0;
   while (!osip_list_eol (osip->osip_nict_transactions, pos))
     {
       tr =
@@ -1332,6 +1334,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_mutex_lock (nist_fastmutex);
 #endif
   /* handle nist timers */
+  pos = 0;
   while (!osip_list_eol (osip->osip_nist_transactions, pos))
     {
       tr =
