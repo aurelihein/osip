@@ -1,3 +1,6 @@
+libosip (0.8.6)
+	* documentation started with Doxygen.
+
 libosip (0.8.5)
 	* Dialog fully tested and hoped to be correct.
 	* osip_create_transaction: can now be used to create ICT and NICT

@@ -294,7 +294,7 @@ msg_2char(sip_t *sip, char **dest)
 }
 #endif
 
-  message = (char *)smalloc(4000); /* ???? message could be > 4000  */
+  message = (char *)smalloc(SIP_MESSAGE_MAX_LENGTH); /* ???? message could be > 4000  */
   *dest = message;
 
   /* add the first line of message */

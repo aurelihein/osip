@@ -191,6 +191,13 @@ transaction_free(transaction_t *transaction)
 }
 
 int
+transaction_add_event(transaction_t *transaction, sipevent_t *evt)
+{
+  fifo_add(transaction->transactionff,evt);
+  return 0;
+}
+
+int
 transaction_execute(transaction_t *transaction, sipevent_t *evt)
 {
   statemachine_t *statemachine;
@@ -252,6 +259,13 @@ transaction_set_your_instance(transaction_t *transaction, void *instance)
   if (transaction==NULL) return -1;
   transaction->your_instance = instance;
   return 0;
+}
+
+void *
+transaction_get_your_instance(transaction_t *transaction)
+{
+  if (transaction==NULL) return NULL;
+  return transaction->your_instance;
 }
 
 int
