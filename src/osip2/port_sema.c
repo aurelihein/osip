@@ -232,7 +232,7 @@ osip_mutex_destroy (struct osip_mutex *_mut)
 int
 osip_mutex_lock (struct osip_mutex *_mut)
 {
-  osip_mutex_t *mut = (osip_mutex_t *) mut;
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
     return -1;
   return semTake (mut, WAIT_FOREVER);

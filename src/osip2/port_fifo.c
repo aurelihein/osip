@@ -133,7 +133,7 @@ osip_fifo_size (osip_fifo_t * ff)
 void *
 osip_fifo_get (osip_fifo_t * ff)
 {
-  void *el;
+  void *el = NULL;
   int i = osip_sem_wait (ff->qisempty);
 
   if (i != 0)
@@ -169,7 +169,7 @@ osip_fifo_get (osip_fifo_t * ff)
 void *
 osip_fifo_tryget (osip_fifo_t * ff)
 {
-  void *el;
+  void *el = NULL;
 
 #ifdef OSIP_MT
   if (0 != osip_sem_trywait (ff->qisempty))
