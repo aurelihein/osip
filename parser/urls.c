@@ -54,6 +54,7 @@ url_init(url_t **url)
   (*url)->url_headers = (list_t *)  smalloc(sizeof(list_t));
   list_init((*url)->url_headers);
 
+  (*url)->string = NULL;
   return 0;
 }
 
@@ -114,13 +115,29 @@ url_parse(url_t *url, char *buf)
   char *port;
   char *params;
   char *headers;
+  char *tmp;
 
   /* basic tests */
   if (buf==NULL)
     return -1;
-  if (0!=strncmp(buf,"sip:",4))
-    return -1;        /* not a sip url */
 
+  tmp = strchr(buf, ':');
+  if (tmp==NULL) return -1;
+  
+  if (tmp-buf<2)  return -1;
+  url->scheme = (char *) smalloc(tmp-buf+1);
+  sstrncpy(url->scheme, buf, tmp-buf);
+
+  if (strlen(url->scheme)<3
+      ||0==strncmp(url->scheme, "sip:", 4)
+      ||0==strncmp(url->scheme, "sips:", 5))
+    { /* Is not a sipurl ! */
+      int i = strlen(tmp+1);
+      if (i<2)  return -1;
+      url->string = (char *) smalloc(i+1);
+      sstrncpy(url->string, tmp+1, i);
+      return 0;
+    }
   /*  law number 1:
       if ('?' exists && is_located_after '@')
       or   if ('?' exists && '@' is not there -no username-)
@@ -147,11 +164,11 @@ url_parse(url_t *url, char *buf)
       else
 	/* password exists */
 	{
-	  if (host-password<2) return -1;
+	  if (host-password<2)  return -1;
 	  url->password = (char *) smalloc(host-password);
 	  sstrncpy(url->password, password+1, host-password-1);
 	}
-      if (password-username<2) return -1;
+      if (password-username<2)  return -1;
       url->username = (char *) smalloc(password-username);
       sstrncpy(url->username, username+1, password-username-1);
     }
@@ -174,38 +191,47 @@ url_parse(url_t *url, char *buf)
   else
     /* params exist */
     {
-      char *tmp;
-      if (headers-params+1<2) return -1;
+      if (headers-params+1<2)  return -1;
       tmp = smalloc(headers-params+1);
       tmp = sstrncpy(tmp, params, headers-params);
       url_parse_params(url,tmp);
       sfree(tmp);
     }
 
-  port = next_separator(host+1, ':', ';');
-  if (port!=NULL)
-    { /* verify this value is also located before the headers params */
-      if (port>headers) port = NULL; /* Bug fixed: 24/08/2001 */
-    } 
-  
-  if (port!=NULL)
-    /* port exists */
+  port = params-1;
+  while (port>host&&*port!=']'&&*port!=':')
+    port--;
+  if (*port==':')
     {
-      if ((params-port<2)&&(params-port>8)) return -1; /* error cases */
-      url->port = (char *)smalloc(params-port);
-      sstrncpy(url->port, port+1, params-port-1);
-      sclrspace(url->port);
+      if (host==port)
+	port = params;
+      else
+	{
+	  if ((params-port<2)&&(params-port>8)) return -1; /* error cases */
+	  url->port = (char *)smalloc(params-port);
+	  sstrncpy(url->port, port+1, params-port-1);
+	  sclrspace(url->port);
+	}
     }
   else
-    port = params;
+    port=params;
+  /* adjust port for ipv6 address */
+  tmp = port;
+  while (tmp>host&&*tmp!=']')
+    tmp--;
+  if (*tmp==']')
+    {
+      port = tmp;
+      while (host<port&&*host!='[')
+	host++;
+      if (host>=port) return -1;
+    }
 
-  /* we should test here if the host part looks */
-  /* like an IP address or FQDN */
-  
   if (port-host<2) return -1;
   url->host = (char *)smalloc(port-host);
   sstrncpy(url->host, host+1, port-host-1);
   sclrspace(url->host);
+
   return 0;
 }
 
@@ -299,13 +325,13 @@ url_parse_headers (url_t *url, char *headers)
 
       if (and!=NULL)
 	{
-	  if (and-equal<2) return -1;
+	  if (and-equal<2) { sfree(hname); return -1; }
 	  hvalue = (char *) smalloc(and-equal);
 	  sstrncpy(hvalue, equal+1, and-equal-1);
 	}
       else
 	{ /* this is for the last header (no and...) */
-	  if (headers+strlen(headers)-equal+1 <2) return -1;
+	  if (headers+strlen(headers)-equal+1 <2) { sfree(hname);return -1; }
 	  hvalue = (char *) smalloc(headers + strlen(headers)-equal +1);
 	  sstrncpy(hvalue, equal+1, headers + strlen(headers)-equal);
 	}
@@ -354,7 +380,7 @@ url_parse_params (url_t *url, char *params)
 	  sstrncpy(pvalue, equal+1, comma-equal-1);
 	}
 
-      if (equal-params<2) return -1;
+      if (equal-params<2) { sfree(pvalue); return -1; }
       pname  = (char *) smalloc(equal-params);
       sstrncpy(pname, params+1, equal-params-1);
 
@@ -380,7 +406,7 @@ url_parse_params (url_t *url, char *params)
       sstrncpy(pvalue, equal+1, comma-equal-1);
     }
   
-  if (equal-params<2) return -1;
+  if (equal-params<2) { sfree(pvalue); return -1; }
   pname  = (char *) smalloc(equal-params);
   sstrncpy(pname, params+1, equal-params-1);
 
@@ -393,11 +419,26 @@ int
 url_2char(url_t *url, char **dest) {
 
   char *buf;
+  if (url==NULL) return -1;
+  if (url->host==NULL&&url->string==NULL) return -1;
+  if (url->scheme==NULL&&url->string!=NULL) return -1;
+  if (url->string==NULL&&url->scheme==NULL)
+    url->scheme = sgetcopy("sip:"); /* default is sipurl */
 
   buf = (char *) smalloc(200*sizeof(char));
   *dest = buf;
-  sprintf(buf,"sip:");
-  buf = buf + 4;
+  if (url->string!=NULL)
+    {
+      sprintf(buf,"%s:", url->scheme);
+      buf = buf + strlen(url->scheme)+1;  
+      sprintf(buf,"%s", url->string);
+      buf = buf + strlen(url->string);      
+      return 0;
+    }
+
+  sprintf(buf, "%s:", url->scheme);
+  buf = buf + strlen(url->scheme)+1;
+
   if (url->username!=NULL)
     {
       sprintf(buf,"%s",url->username);
@@ -414,9 +455,16 @@ url_2char(url_t *url, char **dest) {
       buf ++;
     }
   /*   if (url->host!=NULL)  mandatory */
-  sprintf(buf,"%s",url->host);
-  buf = buf + strlen(url->host);
-
+  if (strchr(url->host,':')!=NULL)
+    {
+      sprintf(buf,"[%s]",url->host);
+      buf = buf + strlen(url->host)+2;
+    }
+  else
+    {
+      sprintf(buf,"%s",url->host);
+      buf = buf + strlen(url->host);
+    }
   if (url->port!=NULL)
     {
     sprintf(buf,":%s",url->port);
@@ -485,6 +533,8 @@ url_free(url_t *url)
      sfree(url->url_headers); 
    }
 
+   sfree(url->string);
+
    url->scheme      = NULL;
    url->username    = NULL;
    url->password    = NULL;
@@ -492,6 +542,7 @@ url_free(url_t *url)
    url->port        = NULL;
    url->url_params  = NULL;
    url->url_headers = NULL;
+   url->string      = NULL;
 }
 
 int
@@ -515,6 +566,8 @@ url_clone(url_t *url, url_t **dest)
   ur->host = sgetcopy(url->host);
   if (url->port!=NULL)
     ur->port = sgetcopy(url->port);
+  if (url->string!=NULL)
+    ur->string = sgetcopy(url->string);
 
   {
     int pos = 0;
@@ -590,7 +643,11 @@ url_param_add(list_t *url_params, char *pname, char *pvalue)
     return -1;
   i = url_param_set (url_param, pname, pvalue);
   if (i!=0)
-    return -1;
+    {
+      url_param_free(url_param);
+      sfree(url_param);
+      return -1;
+    }
   list_add(url_params, url_param, -1);
   return 0;
 }
@@ -647,77 +704,3 @@ url_param_clone(url_param_t *uparam, url_param_t **dest)
   *dest = up;
   return 0;
 }
-/*
-int
-url_header_init(url_header_t **url_header)
-{
-  *url_header = (url_header_t *)smalloc(sizeof(url_header_t));
-  (*url_header)->gname  = NULL;
-  (*url_header)->gvalue = NULL;
-  return 0;
-}
-
-int
-url_header_set(url_header_t *url_header, char *hname, char *hvalue)
-{
-  url_header->gname  = hname;
-  url_header->gvalue = hvalue;
-  return 0;
-}
-
-void
-url_header_free(url_header_t *url_header)
-{
-  sfree(url_header->gname);
-  sfree(url_header->gvalue);
-  url_header->gname  = NULL;
-  url_header->gvalue = NULL;
-}
-
-int
-url_header_add(list_t *url_headers, char *hname, char *hvalue)
-{
-  int i;
-  url_header_t *url_header;
-  i = url_header_init(&url_header);
-  if (i!=0)
-    return -1;
-  i = url_header_set (url_header, hname, hvalue);
-  if (i!=0)
-    return -1;
-  list_add(url_headers, url_header, -1);
-  return 0;
-}
-
-void
-url_header_freelist(list_t *params)
-{
-  url_header_t *u_header;
-  while (!list_eol(params,0))
-    {
-      u_header = (url_header_t *)list_get(params,0);
-      list_remove(params,0);
-      url_header_free(u_header);
-      sfree(u_header);
-    }
-}
-
-int
-url_header_getbyname(list_t *headers, char *hname, url_header_t **url_header)
-{
-  int pos = 0;
-  url_header_t *u_header;
-  *url_header = NULL;
-  while (!list_eol(headers,pos))
-    {
-      u_header = (url_header_t *)list_get(headers,pos);
-      if (strncmp(u_header->gname,hname,strlen(hname))==0)
-	{
-	  *url_header = u_header;
-	  return 0;
-	}
-      pos++;
-    }
-  return -1;
-}
-*/

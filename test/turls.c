@@ -62,6 +62,7 @@ main(int argc, char **argv)
 	      if (url_2char(url, &dest)!=-1)
 		{
 		  printf ("result:       |%s|\n", dest);
+		  url_test_accessor_api(url);
 		  sfree(dest);
 		}
 	    }
@@ -74,5 +75,65 @@ main(int argc, char **argv)
       res = fgets(a_url, 200, urls_file); /* lines are under 200 */
     }
   sfree(a_url);
+  return 0;
+}
+
+int
+url_test_accessor_api(url_t *url)
+{
+  if (url->scheme!=NULL)
+    fprintf(stdout,"%s:",url->scheme);
+  if (url->string!=NULL)
+    {
+      fprintf(stdout,"|%s",url->string);
+      fprintf(stdout, "\n");
+      return 0;
+    }
+  if (url->username!=NULL)
+    fprintf(stdout,"%s|",url->username);
+  if ((url->password!=NULL)&&(url->username!=NULL))
+    fprintf(stdout,":%s|",url->password);
+  if (url->username!=NULL)
+    fprintf(stdout,"@|");
+  /*   if (url->host!=NULL)  mandatory */
+  if (strchr(url->host,':')!=NULL)
+    fprintf(stdout,"[%s]|",url->host);
+  else
+    fprintf(stdout,"%s|",url->host);
+  if (url->port!=NULL)
+    fprintf(stdout,":%s|",url->port);
+
+  fprintf(stdout, "\nuri-params\n");
+
+  {
+    int pos = 0;
+    url_param_t *u_param;
+    while (!list_eol(url->url_params,pos))
+      {
+	u_param = (url_param_t *)list_get(url->url_params,pos);
+	if (u_param->gvalue!=NULL)
+	  fprintf(stdout,";%s|=|%s|",u_param->gname,u_param->gvalue);
+	else
+	  fprintf(stdout,";%s|",u_param->gname);
+	pos++;
+      }
+  }
+
+  fprintf(stdout, "\nheaders\n");
+
+  {
+    int pos = 0;
+    url_header_t *u_header;
+    while (!list_eol(url->url_headers,pos))
+      {
+	u_header = (url_header_t *)list_get(url->url_headers,pos);
+	if (pos==0)
+	  fprintf(stdout,"?%s|=|%s|",u_header->gname,u_header->gvalue);
+	else
+	  fprintf(stdout,"&%s|=|%s|",u_header->gname,u_header->gvalue);
+	pos++;
+      }
+  }
+  fprintf(stdout, "\n");
   return 0;
 }

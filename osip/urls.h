@@ -66,6 +66,8 @@ typedef struct _sipurl_t {
   char *port;
   list_t *url_params;
   list_t *url_headers;
+
+  char *string; /* other schemes */
 } url_t ;
 
 int     url_init(url_t **url);

@@ -1,3 +1,9 @@
+# unknown schemes
+zer:alice@example.org
+mailto:jj@gnu.org
+http://www.example.org/file.html
+ftp://www.example.org/index.html
+au://au.provider.org:6878/
 #
 # contact with tags and url without brackets
 #
