@@ -1,5 +1,6 @@
-libosip2 (2.0.6-1) unstable; urgency=low
-  * improve configure.in file
-  * tiny other fix (doxygen, prototypes, warnings)
+libosip2 (2.0.7-1) unstable; urgency=low
+  * Fix a parser bug for uncomplete request line.
+  * Update timer facility for windows.
+  * Remove useless #define.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Fri, 23 Jan 2004 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Sat, 17 Apr 2004 13:04:32 +0100
