@@ -78,10 +78,10 @@ int parser_init() {
   pconfig[17].setheader=&msg_setfrom;
   pconfig[18].hname=CALL_ID_SHORT;   /* "i" */
   pconfig[18].setheader=&msg_setcall_id;
-  pconfig[19].hname=CONTACT_SHORT;   /* "m" */
-  pconfig[19].setheader=&msg_setcontact;
-  pconfig[20].hname=CONTENT_LENGTH_SHORT;   /* "l" */
-  pconfig[20].setheader=&msg_setcontent_length;
+  pconfig[19].hname=CONTENT_LENGTH_SHORT;   /* "l" */
+  pconfig[19].setheader=&msg_setcontent_length;
+  pconfig[20].hname=CONTACT_SHORT;   /* "m" */
+  pconfig[20].setheader=&msg_setcontact;
   pconfig[21].hname=MIME_VERSION;
   pconfig[21].setheader=&msg_setmime_version;
   pconfig[22].hname=PROXY_AUTHENTICATE;

@@ -207,7 +207,7 @@ url_parse(url_t *url, char *buf)
 	port = params;
       else
 	{
-	  if ((params-port<2)&&(params-port>8)) return -1; /* error cases */
+	  if ((params-port<2)||(params-port>8)) return -1; /* error cases */
 	  url->port = (char *)smalloc(params-port);
 	  sstrncpy(url->port, port+1, params-port-1);
 	  sclrspace(url->port);

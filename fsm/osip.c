@@ -402,6 +402,118 @@ osip_distribute_event(osip_t *osip,sipevent_t* evt)
 }
 
 transaction_t *
+osip_find_transaction(osip_t *osip,sipevent_t* evt)
+{
+  transaction_t *transaction = NULL;
+
+  if (EVT_IS_INCOMINGMSG(evt))
+    {
+      /* event is for ict */
+      if (MSG_IS_REQUEST(evt->sip))
+	{
+	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
+	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
+	    {
+#ifdef OSIP_MT
+	      smutex_lock(ist_fastmutex);
+#endif
+	      transaction = osip_transaction_find(osip->ist_transactions, evt);
+#ifdef OSIP_MT
+	      smutex_unlock(ist_fastmutex);
+#endif
+	    }
+	  else 
+	    {
+#ifdef OSIP_MT
+	      smutex_lock(nist_fastmutex);
+#endif
+	      transaction = osip_transaction_find(osip->nist_transactions, evt);
+#ifdef OSIP_MT
+	      smutex_unlock(nist_fastmutex);
+#endif
+	    }
+	}
+      else
+	{
+	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
+	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
+	    {
+#ifdef OSIP_MT
+	      smutex_lock(ict_fastmutex);
+#endif
+	      transaction = osip_transaction_find(osip->ict_transactions, evt);
+#ifdef OSIP_MT
+	      smutex_unlock(ict_fastmutex);
+#endif
+	    }
+	  else 
+	    {
+#ifdef OSIP_MT
+	      smutex_lock(nict_fastmutex);
+#endif
+	      transaction = osip_transaction_find(osip->nict_transactions, evt);
+#ifdef OSIP_MT
+	      smutex_unlock(nict_fastmutex);
+#endif
+	    }
+	}
+      if (transaction!=NULL)
+	return transaction;
+
+      if (EVT_IS_RCV_STATUS_1XX(evt)
+	  ||EVT_IS_RCV_STATUS_2XX(evt)
+	  ||EVT_IS_RCV_STATUS_3456XX(evt)
+	  ||EVT_IS_RCV_ACK(evt))
+	{
+	  /* EXCEPT FOR 2XX (or late answers?) THAT MUST BE GIVEN TO THE CORE LAYER!!! */
+	  
+	  /* TODO */
+	  
+	  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL2,NULL,"WARNING: transaction does not yet exist... %x callid:%s\n",evt,evt->sip->call_id->number));
+	  return NULL;
+	}
+      /* new request! */
+      return NULL;
+    }
+  else 
+    {
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL2,stdout,"BUG: wrong event type %x\n",evt));
+      return NULL;
+    }
+}
+
+transaction_t *
+osip_create_transaction(osip_t *osip, sipevent_t *evt)
+{
+  transaction_t *transaction;
+  int i;
+  context_type_t ctx_type;
+
+  /* we create a new context for this incoming request */
+  if (0==strcmp(evt->sip->cseq->method,"INVITE"))
+    ctx_type = IST;
+  else
+    ctx_type = NIST;
+  
+  i = transaction_init(&transaction,
+		       ctx_type,
+		       osip,
+		       evt->sip);
+  if (i==-1)
+    {
+      msg_free(evt->sip);
+      sfree(evt->sip);
+      sfree(evt); /* transaction thread will not delete it */
+      return NULL;
+    }
+  evt->transactionid = transaction->transactionid;
+  
+  evt->transactionid = transaction->transactionid;
+  fifo_add(transaction->transactionff,evt);
+  return transaction;
+}
+
+transaction_t *
 osip_transaction_find(list_t *transactions, sipevent_t *evt)
 {
   int pos=0;

@@ -1,3 +1,10 @@
+libosip (0.8.4)
+	* urls.c: bug in line 210.
+	* msg_cparser.c: switch CONTACT_SHORT & CONTENT_LENGTH_SHORT in table.
+	* osip.c: add osip_find_transaction() and osip_create_transaction()
+	  This is needed so SIP messages like retransmission of 200 OK for
+	  INVITE are not discarded by osip_distribute_event()
+	
 libosip (0.8.3)
 	* add lock/unlock methods for searching in transactions
 	* improve reliability when a NULL pointer is given to *_free methods.
