@@ -217,6 +217,7 @@ extern "C"
 
 /* these are defined in all cases, but are empty when oSIP is compiled
    without trace */
+  void trace_initialize_syslog (trace_level_t level, char* ident);
   void trace_initialize (trace_level_t level, FILE * file);
   void trace_enable_level (trace_level_t level);
   void trace_disable_level (trace_level_t level);

@@ -41,6 +41,10 @@
 #  include <sys/unistd.h>
 #endif
 
+#if defined (HAVE_SYSLOG_H)
+#  include <syslog.h>
+#endif
+
 #if defined (HAVE_SYS_SELECT_H)
 #  include <sys/select.h>
 #endif
@@ -51,6 +55,7 @@
 
 FILE *logfile = NULL;
 int tracing_table[END_TRACE_LEVEL];
+static int use_syslog = 0;
 
 /* a,b, and x are used to generate random callid with a long period. */
 static unsigned int a = 0;
@@ -399,6 +404,10 @@ int sclrlws(char *word) {
 /**********************************************************/
 #ifndef ENABLE_TRACE
 void
+trace_initialize_syslog (trace_level_t level, char* ident)
+{
+}
+void
 trace_initialize (trace_level_t level, FILE * file)
 {
 }
@@ -446,6 +455,15 @@ trace_initialize (trace_level_t level, FILE * file)
     }
 }
 
+void
+trace_initialize_syslog (trace_level_t level, char* ident)
+{
+#if defined (HAVE_SYSLOG_H)
+  openlog(ident, LOG_CONS|LOG_PID, LOG_DAEMON);
+  use_syslog=1;
+#endif
+}
+
 /* enable a special debugging level! */
 void
 trace_enable_level (trace_level_t level)
@@ -469,16 +487,7 @@ is_trace_level_activate (trace_level_t level)
 #endif
 
 int
-#if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__) || defined(WIN32) || defined(_WIN32_WCE)
 osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
-#else
-osip_trace (fi, li, level, f, chfr, va_list)
-     char *fi;
-     char *li;
-     int level;
-     FILE *f;
-     char *chfr
-#endif
      {
        va_list ap;
 #ifdef ENABLE_TRACE
@@ -503,7 +512,7 @@ osip_trace (fi, li, level, f, chfr, va_list)
        f = stdout;
 #endif
 
-       if (f)
+       if (f&&use_syslog==0)
 	 {
 	   if (level == OSIP_FATAL)
 	     fprintf (f, "| FATAL | <%s: %i> ", fi, li);
@@ -526,6 +535,47 @@ osip_trace (fi, li, level, f, chfr, va_list)
 
 	   fflush (f);
 	 }
+#if defined (HAVE_SYSLOG_H)
+       else if (use_syslog==1)
+	 {
+	   char buffer[512];
+	   int in = 0;
+	   if (level == OSIP_FATAL)
+	     in = snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+	   else if (level == OSIP_BUG)
+	     in = snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+	   else if (level == OSIP_ERROR)
+	     in = snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+	   else if (level == OSIP_WARNING)
+	     in = snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO1)
+	     in = snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO2)
+	     in = snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO3)
+	     in = snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+	   else if (level == OSIP_INFO4)
+	     in = snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+
+	   vsnprintf (buffer + in, 511 - in, chfr, ap);
+	   if (level == OSIP_FATAL)
+	     syslog (LOG_ERR, "%s", buffer);
+	   else if (level == OSIP_BUG)
+	     syslog(LOG_ERR, "%s", buffer);
+	   else if (level == OSIP_ERROR)
+	     syslog(LOG_ERR, "%s", buffer);
+	   else if (level == OSIP_WARNING)
+	     syslog(LOG_WARNING, "%s", buffer);
+	   else if (level == OSIP_INFO1)
+	     syslog(LOG_INFO, "%s", buffer);
+	   else if (level == OSIP_INFO2)
+	     syslog(LOG_INFO, "%s", buffer);
+	   else if (level == OSIP_INFO3)
+	     syslog(LOG_DEBUG, "%s", buffer);
+	   else if (level == OSIP_INFO4)
+	     syslog(LOG_DEBUG, "%s", buffer);
+	 }
+#endif
 #ifdef SYSTEM_LOGGER_ENABLED
        else
 	 {

@@ -195,6 +195,7 @@ AC_CHECK_HEADERS(unistd.h)
 AC_CHECK_HEADERS(sys/types.h)
 dnl !This is to be removed for autoconf2.50
 
+AC_CHECK_HEADERS(syslog.h)
 AC_CHECK_HEADERS(ctype.h)
 AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdarg.h)
