@@ -296,7 +296,7 @@ resp. to TU |  1xx             V                     |
  * end of year 2004. It's promising work and I hope it will be 
  * enough flexible to fit any applications. Time will tell.
  *
- * oSIP finaly contains a <B>MD5 implementation (osip_md5.h)<B> which
+ * oSIP finaly contains a <B>MD5 implementation (osip_md5.h)</B> which
  * you'll find usefull when implementing SIP Digest authentication.
  * 
  */
