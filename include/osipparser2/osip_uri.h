@@ -49,6 +49,10 @@ extern "C"
  */
   typedef struct osip_uri_param osip_uri_param_t;
 
+/**
+ * Structure for referencing url parameters.
+ * @struct osip_uri_param
+ */
   struct osip_uri_param
   {
     char *gname;
@@ -160,6 +164,10 @@ extern "C"
  */
   typedef struct osip_uri osip_uri_t;
 
+/**
+ * Structure for referencing SIP urls.
+ * @struct osip_uri
+ */
   struct osip_uri
   {
     char *scheme;

@@ -41,7 +41,7 @@ extern "C"
 
 /**
  * Structure to hold support for codecs.
- * @defvar osip_rfc3264
+ * @struct osip_rfc3264
  */
   struct osip_rfc3264;
 

@@ -56,10 +56,14 @@ extern "C"
 
 /**
  * Structure for referencing a fifo.
- * @defvar osip_fifo_t
+ * @var osip_fifo_t
  */
   typedef struct osip_fifo osip_fifo_t;
 
+/**
+ * Structure for referencing a fifo.
+ * @var osip_fifo
+ */
   struct osip_fifo
   {
 #ifdef OSIP_MT

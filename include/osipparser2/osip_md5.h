@@ -61,7 +61,10 @@ If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
 #endif
 
 
-/* MD5 context. */
+/**
+ * Structure for holding MD5 context.
+ * @var MD5_CTX
+ */
   typedef struct
   {
     UINT4 state[4];		/* state (ABCD) */

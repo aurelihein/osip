@@ -50,10 +50,14 @@ extern "C"
 #ifndef DOXYGEN
 /**
  * Structure for referencing a node in a osip_list_t element.
- * @defvar __node_t
+ * @var __node_t
  */
   typedef struct __node __node_t;
 
+/**
+ * Structure for referencing a node in a osip_list_t element.
+ * @struct __node
+ */
   struct __node
   {
     void *next;			/* next __node_t */
@@ -63,10 +67,14 @@ extern "C"
 
 /**
  * Structure for referencing a list of elements.
- * @defvar osip_list_t
+ * @var osip_list_t
  */
   typedef struct osip_list osip_list_t;
 
+/**
+ * Structure for referencing a list of elements.
+ * @struct osip_list
+ */
   struct osip_list
   {
 

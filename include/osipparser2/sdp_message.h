@@ -48,10 +48,14 @@ extern "C"
 
 /**
  * Structure for referencing bandwidth header.
- * @defvar sdp_bandwidth_t
+ * @var sdp_bandwidth_t
  */
   typedef struct sdp_bandwidth sdp_bandwidth_t;
 
+/**
+ * SDP bandwidth definition.
+ * @struct sdp_bandwidth
+ */
   struct sdp_bandwidth
   {
     char *b_bwtype;
@@ -71,10 +75,14 @@ extern "C"
 
 /**
  * Structure for referencing time description header.
- * @defvar sdp_time_descr_t
+ * @var sdp_time_descr_t
  */
   typedef struct sdp_time_descr sdp_time_descr_t;
 
+/**
+ * SDP Time description definition.
+ * @struct sdp_time_descr
+ */
   struct sdp_time_descr
   {
     char *t_start_time;
@@ -95,10 +103,14 @@ extern "C"
 
 /**
  * Structure for referencing key header.
- * @defvar sdp_key_t
+ * @var sdp_key_t
  */
   typedef struct sdp_key sdp_key_t;
 
+/**
+ * SDP key definition.
+ * @struct sdp_key
+ */
   struct sdp_key
   {
     char *k_keytype;		/* "prompt", "clear", "base64", "uri" */
@@ -118,10 +130,14 @@ extern "C"
 
 /**
  * Structure for referencing an attribute header.
- * @defvar sdp_attribute_t
+ * @var sdp_attribute_t
  */
   typedef struct sdp_attribute sdp_attribute_t;
 
+/**
+ * SDP attribute definition.
+ * @struct sdp_attribute
+ */
   struct sdp_attribute
   {
     char *a_att_field;
@@ -142,10 +158,14 @@ extern "C"
 
 /**
  * Structure for referencing a connection header.
- * @defvar sdp_connection_t
+ * @var sdp_connection_t
  */
   typedef struct sdp_connection sdp_connection_t;
 
+/**
+ * SDP connection definition.
+ * @struct sdp_connection
+ */
   struct sdp_connection
   {
     char *c_nettype;
@@ -168,10 +188,14 @@ extern "C"
 
 /**
  * Structure for referencing a media header.
- * @defvar sdp_media_t
+ * @var sdp_media_t
  */
   typedef struct sdp_media sdp_media_t;
 
+/**
+ * SDP media definition.
+ * @struct sdp_media
+ */
   struct sdp_media
   {
     char *m_media;
@@ -200,10 +224,14 @@ extern "C"
 
 /**
  * Structure for referencing a SDP packet.
- * @defvar sdp_message_t
+ * @var sdp_message_t
  */
   typedef struct sdp_message sdp_message_t;
 
+/**
+ * SDP message definition.
+ * @struct sdp_message
+ */
   struct sdp_message
   {
     char *v_version;

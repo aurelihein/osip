@@ -438,10 +438,14 @@ extern "C"
 
 /**
  * Structure for INVITE CLIENT TRANSACTION (outgoing INVITE transaction).
- * @defvar osip_ict_t
+ * @var osip_ict_t
  */
   typedef struct osip_ict osip_ict_t;
 
+/**
+ * Structure for INVITE CLIENT TRANSACTION.
+ * @struct osip_ict
+ */
   struct osip_ict
   {
     /* state machine is implied... */
@@ -458,10 +462,14 @@ extern "C"
 
 /**
  * Structure for NON-INVITE CLIENT TRANSACTION (outgoing NON-INVITE transaction).
- * @defvar osip_nict_t
+ * @var osip_nict_t
  */
   typedef struct osip_nict osip_nict_t;
 
+/**
+ * Structure for NON-INVITE CLIENT TRANSACTION.
+ * @struct osip_nict
+ */
   struct osip_nict
   {
     /* state machine is implied... */
@@ -479,10 +487,14 @@ extern "C"
 
 /**
  * Structure for INVITE SERVER TRANSACTION (incoming INVITE transaction).
- * @defvar osip_ist_t
+ * @var osip_ist_t
  */
   typedef struct osip_ist osip_ist_t;
 
+/**
+ * Structure for INVITE SERVER TRANSACTION.
+ * @struct osip_ist
+ */
   struct osip_ist
   {
     int timer_g_length;		/* G=MIN(T1*2,T2) for unreliable trans.  */
@@ -495,10 +507,14 @@ extern "C"
 
 /**
  * Structure for NON-INVITE SERVER TRANSACTION (incoming SERVER transaction).
- * @defvar osip_nist_t
+ * @var osip_nist_t
  */
   typedef struct osip_nist osip_nist_t;
 
+/**
+ * Structure for NON-INVITE SERVER TRANSACTION.
+ * @struct osip_nist
+ */
   struct osip_nist
   {
     int timer_j_length;		/* J = 64*T1 (else 0) */
@@ -507,10 +523,14 @@ extern "C"
 
 /**
  * Structure for transaction handling.
- * @defvar osip_transaction_t
+ * @var osip_transaction_t
  */
   typedef struct osip_transaction osip_transaction_t;
 
+/**
+ * Structure for transaction handling
+ * @struct osip_transaction
+ */
   struct osip_transaction
   {
 
@@ -655,8 +675,16 @@ extern "C"
 #ifdef OSIP_RETRANSMIT_2XX
   struct osip_dialog;
 
+/**
+ * Structure for 2XX retransmission management.
+ * @var ixt_t
+ */
   typedef struct ixt_t ixt_t;
 
+/**
+ * Structure for 2XX retransmission management.
+ * @struct ixt
+ */
   struct ixt_t
   {
     /* any ACK received that match this context will set counter to -1 */
@@ -678,10 +706,14 @@ extern "C"
  * In order to use osip, you have to manage at least one global instance
  * of an osip_t element. Then, you'll register a set of required callbacks
  * and a set of optional ones.
- * @defvar osip_t
+ * @var osip_t
  */
   typedef struct osip osip_t;
 
+/**
+ * Structure for osip handling.
+ * @struct osip
+ */
   struct osip
   {
 
@@ -732,15 +764,19 @@ extern "C"
 					 osip_transport_error_cb_t cb);
 
 /**
- * Structure for sipevent handling.
+ * Structure for osip event handling.
  * A osip_event_t element will have a type and will be related
  * to a transaction. In the general case, it is used by the
  * application layer to give SIP messages to the oSIP finite
  * state machine.
- * @defvar osip_event_t
+ * @var osip_event_t
  */
   typedef struct osip_event osip_event_t;
 
+/**
+ * Structure for osip event handling.
+ * @struct osip_event
+ */
   struct osip_event
   {
     type_t type;

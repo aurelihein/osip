@@ -36,11 +36,15 @@
  */
 
 /**
- * Structure for Body
- * @defvar osip_body_t
+ * Structure for holding Body
+ * @var osip_body_t
  */
 typedef struct osip_body osip_body_t;
 
+/**
+ * Structure for holding Body
+ * @struct osip_body
+ */
 struct osip_body
 {
   char *body;
