@@ -91,7 +91,7 @@ quoted_string_set (char *name, char *str, char **result, char **next)
       char *quote1;
       char *quote2;
 
-      { /* the oSIP stack can detect improperly some paramater!!    */
+      {                         /* the oSIP stack can detect improperly some paramater!!    */
         /* for exemple "noncecount" (found in vovida!) is detected  */
         /* as "nonce". This get rid of this behavior.               */
         char *hack = strchr (str, '=');

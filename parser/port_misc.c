@@ -258,7 +258,7 @@ set_next_token (char **dest, char *buf, int end_separator, char **next)
 #if 0
 /*  not yet done!!! :-)
  */
-  int
+int
 set_next_token_better (char **dest, char *buf, int end_separator,
                        int *forbidden_tab[], int size_tab, char **next)
 {
