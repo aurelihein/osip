@@ -567,12 +567,12 @@ __osip_find_transaction (osip_t * osip, sipevent_t * evt, int consume)
     {                           /* we add the event before releasing the mutex!! */
       if (transaction != NULL)
         {
-	  transaction_add_event (transaction, evt);
+          transaction_add_event (transaction, evt);
 #ifdef OSIP_MT
-	  smutex_unlock (mut);
+          smutex_unlock (mut);
 #endif
-	  return transaction;
-	}
+          return transaction;
+        }
     }
 #ifdef OSIP_MT
   smutex_unlock (mut);
@@ -895,32 +895,33 @@ osip_timers_ict_execute (osip_t * osip)
 
       tr = (transaction_t *) list_get (osip->ict_transactions, pos);
 
-      if (1<=fifo_size(tr->transactionff))
-	{
-	  OSIP_TRACE (osip_trace
-		      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-		       "1 Pending event already in transaction !\n"));
-	}
-      else
-	{
-	  evt = ict_need_timer_b_event (tr->ict_context, tr->state, tr->transactionid);
-	  if (evt != NULL)
-	    fifo_add (tr->transactionff, evt);
-	  else
-	    {
-	      evt =
-		ict_need_timer_a_event (tr->ict_context, tr->state, tr->transactionid);
-	      if (evt != NULL)
-		fifo_add (tr->transactionff, evt);
-	      else
-		{
-		  evt = ict_need_timer_d_event (tr->ict_context, tr->state,
-						tr->transactionid);
-		  if (evt != NULL)
-		    fifo_add (tr->transactionff, evt);
-		}
-	    }
-	}
+      if (1 <= fifo_size (tr->transactionff))
+        {
+          OSIP_TRACE (osip_trace
+                      (__FILE__, __LINE__, OSIP_INFO4, NULL,
+                       "1 Pending event already in transaction !\n"));
+      } else
+        {
+          evt =
+            ict_need_timer_b_event (tr->ict_context, tr->state, tr->transactionid);
+          if (evt != NULL)
+            fifo_add (tr->transactionff, evt);
+          else
+            {
+              evt =
+                ict_need_timer_a_event (tr->ict_context, tr->state,
+                                        tr->transactionid);
+              if (evt != NULL)
+                fifo_add (tr->transactionff, evt);
+              else
+                {
+                  evt = ict_need_timer_d_event (tr->ict_context, tr->state,
+                                                tr->transactionid);
+                  if (evt != NULL)
+                    fifo_add (tr->transactionff, evt);
+                }
+            }
+        }
       pos++;
     }
 #ifdef OSIP_MT

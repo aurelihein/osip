@@ -234,15 +234,17 @@ smutex_unlock (smutex_t * mut)
 ssem_t *
 ssem_init (unsigned int value)
 {
-   SEM_ID initsem;
-   ssem_t *x;
-   x = (ssem_t *)smalloc(sizeof(ssem_t));
-   if (x==NULL) return NULL;
-   initsem =  semCCreate (SEM_Q_FIFO, value);
-   x->semId = initsem;
-   x->refCnt = value;
-   x->sem_name = NULL;
-   return x;
+  SEM_ID initsem;
+  ssem_t *x;
+
+  x = (ssem_t *) smalloc (sizeof (ssem_t));
+  if (x == NULL)
+    return NULL;
+  initsem = semCCreate (SEM_Q_FIFO, value);
+  x->semId = initsem;
+  x->refCnt = value;
+  x->sem_name = NULL;
+  return x;
 }
 
 int

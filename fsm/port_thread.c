@@ -98,7 +98,8 @@ sthread_create (int stacksize, sthread_t * thread,
   if (thread->h == 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not create new thread\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Could not create new thread\n"));
       return NULL;
     }
 
@@ -119,18 +120,18 @@ sthread_join (sthread_t * thread)
       i = TerminateThread ((HANDLE) thread->h, 0);
       if (i == 0)
         {
-	  OSIP_TRACE (osip_trace
-		      (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not join thread\n"));
-	}
-      else
-	{
-	  OSIP_TRACE (osip_trace
-		      (__FILE__, __LINE__, OSIP_INFO4, NULL, "Thread joined!\n"));
-	}
+          OSIP_TRACE (osip_trace
+                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                       "Could not join thread\n"));
+      } else
+        {
+          OSIP_TRACE (osip_trace
+                      (__FILE__, __LINE__, OSIP_INFO4, NULL, "Thread joined!\n"));
+        }
   } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "No thread to join?\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL, "No thread to join?\n"));
       return -1;
     }
 
@@ -159,7 +160,8 @@ sthread_create (int stacksize, sthread_t * thread,
   if (thread->h == 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not create thread!\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Could not create thread!\n"));
       return NULL;
     }
 
@@ -178,12 +180,12 @@ sthread_join (sthread_t * thread)
   if (i == WAIT_OBJECT_0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_INFO4, NULL, "thread joined!\n"));
-    }
-  else
+                  (__FILE__, __LINE__, OSIP_INFO4, NULL, "thread joined!\n"));
+  } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL, "Could not join thread!\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Could not join thread!\n"));
       return -1;
     }
   CloseHandle (thread->h);
