@@ -786,8 +786,7 @@ __osip_find_transaction (osip_t * osip, osip_event_t * evt, int consume)
 	}
       else
 	{
-	  if (0 == strcmp (evt->sip->cseq->method, "INVITE")
-	      || 0 == strcmp (evt->sip->cseq->method, "ACK"))
+	  if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
 	    {
 	      transactions = osip->osip_ict_transactions;
 #ifdef OSIP_MT
@@ -807,8 +806,7 @@ __osip_find_transaction (osip_t * osip, osip_event_t * evt, int consume)
     {
       if (MSG_IS_RESPONSE (evt->sip))
 	{
-	  if (0 == strcmp (evt->sip->cseq->method, "INVITE")
-	      || 0 == strcmp (evt->sip->cseq->method, "ACK"))
+	  if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
 	    {
 	      transactions = osip->osip_ist_transactions;
 #ifdef OSIP_MT
