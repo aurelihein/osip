@@ -716,6 +716,7 @@ msg_parse (sip_t * sip, char *buf)
 int
 msg_fix_last_via_header (sip_t *request, char *ip_addr, int port)
 {
+  generic_param_t *rport;
   via_t *via;
   /* get Top most Via header: */
   if (request==NULL||request->strtline==NULL)
@@ -727,6 +728,16 @@ msg_fix_last_via_header (sip_t *request, char *ip_addr, int port)
   if (via==NULL||via->host==NULL)
     /* Hey, we could build it? */
     return -1;
+
+  via_param_getbyname(via, "rport", &rport);
+  if (rport!=NULL)
+    {
+      if (rport->gvalue==NULL)
+	{
+	  rport->gvalue = (char *) smalloc(8);
+	  snprintf(rport->gvalue, 8, "%i", port);
+	} /* else bug? */
+    }
 
   /* only add the received parameter if the 'sent-by' value does not contains
      this ip address */

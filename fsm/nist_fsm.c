@@ -183,8 +183,10 @@ nist_rcv_request (transaction_t * nist, sipevent_t * evt)
 	      int port;
 	      generic_param_t *maddr;
 	      generic_param_t *received;
+	      generic_param_t *rport;
 	      via_param_getbyname(via, "maddr", &maddr);
 	      via_param_getbyname(via, "received", &received);
+	      via_param_getbyname(via, "rport", &rport);
 	      /* 1: user should not use the provided information
 		 (host and port) if they are using a reliable
 		 transport. Instead, they should use the already
@@ -199,8 +201,14 @@ nist_rcv_request (transaction_t * nist, sipevent_t * evt)
 		host = received->gvalue;
 	      else host = via->host;
 	      
-	      if (via->port!=NULL) port = satoi(via->port);
-	      else port = 5060;
+	      if (rport==NULL||rport->gvalue==NULL)
+		{
+		  if (via->port!=NULL) port = satoi(via->port);
+		  else port = 5060;
+		}
+	      else
+		port = satoi(rport->gvalue);
+
               i = osip->cb_send_message (nist, nist->last_response, host,
                                          port, nist->out_socket);
           } else
@@ -252,8 +260,10 @@ nist_snd_1xx (transaction_t * nist, sipevent_t * evt)
       int port;
       generic_param_t *maddr;
       generic_param_t *received;
+      generic_param_t *rport;
       via_param_getbyname(via, "maddr", &maddr);
       via_param_getbyname(via, "received", &received);
+      via_param_getbyname(via, "rport", &rport);
       /* 1: user should not use the provided information
 	 (host and port) if they are using a reliable
 	 transport. Instead, they should use the already
@@ -268,8 +278,13 @@ nist_snd_1xx (transaction_t * nist, sipevent_t * evt)
 	host = received->gvalue;
       else host = via->host;
       
-      if (via->port!=NULL) port = satoi(via->port);
-      else port = 5060;
+      if (rport==NULL||rport->gvalue==NULL)
+	{
+	  if (via->port!=NULL) port = satoi(via->port);
+	  else port = 5060;
+	}
+      else
+	port = satoi(rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
                                  port, nist->out_socket);
   } else
@@ -308,8 +323,10 @@ nist_snd_23456xx (transaction_t * nist, sipevent_t * evt)
       int port;
       generic_param_t *maddr;
       generic_param_t *received;
+      generic_param_t *rport;
       via_param_getbyname(via, "maddr", &maddr);
       via_param_getbyname(via, "received", &received);
+      via_param_getbyname(via, "rport", &rport);
       /* 1: user should not use the provided information
 	 (host and port) if they are using a reliable
 	 transport. Instead, they should use the already
@@ -324,8 +341,13 @@ nist_snd_23456xx (transaction_t * nist, sipevent_t * evt)
 	host = received->gvalue;
       else host = via->host;
       
-      if (via->port!=NULL) port = satoi(via->port);
-      else port = 5060;
+      if (rport==NULL||rport->gvalue==NULL)
+	{
+	  if (via->port!=NULL) port = satoi(via->port);
+	  else port = 5060;
+	}
+      else
+	port = satoi(rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
                                  port, nist->out_socket);
   } else

@@ -1,5 +1,5 @@
 libosip (0.9.2)
-	* add support for the received parameter inside the osip stack.
+	* add support for the received and rport parameters inside the osip stack.
 	* sdp_negoc.c: fix the video support.
 	
 libosip (0.9.1)

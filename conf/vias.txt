@@ -1,7 +1,7 @@
 #
 # examples from the rfc
 #
-SIP/2.0/UDP my.ex.fr:4054;ttl=16; maddr=224.2.0.1; branch=a7c6a8dlze.1 (Acme server)
+SIP/2.0/UDP my.ex.fr :4054 ;ttl=16; maddr=224.2.0.1; branch=a7c6a8dlze.1 (Acme server)
 SIP/2.0/UDP adk8
 SIP/2.0/UDP callerspc.univ.edu
 SIP/2.0/UDP 10.0.1.1:5061
