@@ -590,7 +590,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  hvalue = NULL;	/* some headers (subject) can be empty */
 	else
 	  {
-	    hvalue = (char *) osip_malloc ((end) - colon_index);
+	    hvalue = (char *) osip_malloc ((end) - colon_index+1);
 	    osip_strncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
 	    osip_clrspace (hvalue);
 	  }
@@ -603,7 +603,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
       i = msg_handle_multiple_values (sip, hname, hvalue);
 
       osip_free (hname);
-      osip_free (hvalue);
+      if (hvalue!=NULL) osip_free (hvalue);
       if (i == -1)
 	{
 	  OSIP_TRACE (osip_trace
@@ -791,11 +791,7 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
   const char *next_header_index;
   char *tmp;
   char *beg;
-#ifdef WIN32
-  tmp = _alloca (length + 2);
-#else
-  tmp = alloca (length + 2);
-#endif
+  tmp = osip_malloc (length + 2);
   if (tmp==NULL)
     {
       OSIP_TRACE (osip_trace
@@ -814,6 +810,7 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "Could not parse start line of message.\n"));
+      osip_free(beg);
       return -1;
     }
   tmp = (char *) next_header_index;
@@ -825,6 +822,7 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "error in msg_headers_parse()\n"));
+      osip_free(beg);
       return -1;
     }
   tmp = (char *) next_header_index;
@@ -835,10 +833,12 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
       /* this is mantory in the oSIP stack */
       if (sip->content_length == NULL)
 	osip_message_set_content_length (sip, "0");
+      osip_free(beg);
       return 0;			/* no body found */
     }
 
   i = msg_osip_body_parse (sip, tmp, &next_header_index, length-(tmp-beg));
+  osip_free(beg);
   if (i == -1)
     {
       OSIP_TRACE (osip_trace
