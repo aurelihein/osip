@@ -571,9 +571,12 @@ ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
 				 ist->last_response);
     }
 
-  gettimeofday (&ist->ist_context->timer_g_start, NULL);
-  add_gettimeofday (&ist->ist_context->timer_g_start,
-		    ist->ist_context->timer_g_length);
+  if(ist->ist_context->timer_g_length != -1)
+    {
+      gettimeofday (&ist->ist_context->timer_g_start, NULL);
+      add_gettimeofday (&ist->ist_context->timer_g_start,
+			ist->ist_context->timer_g_length);
+    }
   gettimeofday (&ist->ist_context->timer_h_start, NULL);
   add_gettimeofday (&ist->ist_context->timer_h_start,
 		    ist->ist_context->timer_h_length);
