@@ -79,7 +79,12 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
       return -1;
     }
   if (p1 - p2 < 2)
-    return -1;
+    {
+      osip_free(dest->sip_method);
+      dest->sip_method = NULL;
+      return -1;
+    }
+
   requesturi = (char *) osip_malloc (p1 - p2);
   osip_strncpy (requesturi, p2 + 1, (p1 - p2 - 1));
   osip_clrspace (requesturi);
@@ -87,8 +92,14 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   osip_uri_init (&(dest->req_uri));
   i = osip_uri_parse (dest->req_uri, requesturi);
   osip_free (requesturi);
-  if (i == -1)
-    return -1;
+  if (i != 0)
+    {
+      osip_free(dest->sip_method);
+      dest->sip_method = NULL;
+      osip_uri_free(dest->req_uri);
+      dest->req_uri = NULL;
+      return -1;
+    }
 
   /* find the the version and the beginning of headers */
   {
@@ -103,13 +114,32 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
 	    OSIP_TRACE (osip_trace
 			(__FILE__, __LINE__, OSIP_ERROR, NULL,
 			 "No crlf found\n"));
+ 	    osip_free(dest->sip_method);
+ 	    dest->sip_method = NULL;
+ 	    osip_uri_free(dest->req_uri);
+ 	    dest->req_uri = NULL;
 	    return -1;
 	  }
       }
     if (hp - p1 < 2)
-      return -1;
+      {
+ 	osip_free(dest->sip_method);
+ 	dest->sip_method = NULL;
+ 	osip_uri_free(dest->req_uri);
+ 	dest->req_uri = NULL;
+ 	return -1;
+      }
+ 
+
     dest->sip_version = (char *) osip_malloc (hp - p1);
     osip_strncpy (dest->sip_version, p1 + 1, (hp - p1 - 1));
+
+    if (0!=osip_strcasecmp(dest->sip_version, "SIP/2.0"))
+      {
+ 	OSIP_TRACE (osip_trace
+ 		    (__FILE__, __LINE__, OSIP_ERROR, NULL,
+ 		     "Wrong version number\n"));
+      }
 
     hp++;
     if ((*hp) && ('\r' == hp[-1]) && ('\n' == hp[0]))
@@ -412,6 +442,7 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
       || strncmp (hname, "call-id", 7) == 0 || (strncmp (hname, "cseq", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
       || strncmp (hname, "subject", 7) == 0 || strncmp (hname, "user-agent", 10) == 0 || strncmp (hname, "server", 6) == 0 || strncmp (hname, "www-authenticate", 16) == 0	/* AMD: BUG fix */
       || strncmp (hname, "authentication-info", 19) == 0 || strncmp (hname, "proxy-authenticate", 20) == 0 || strncmp (hname, "proxy-authorization", 19) == 0 || strncmp (hname, "proxy-authentication-info", 25) == 0	/* AMD: BUG fix */
+      || strncmp (hname, "expires", 7) == 0
       || strncmp (hname, "authorization", 13) == 0)
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
