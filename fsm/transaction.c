@@ -74,13 +74,13 @@ transaction_init (transaction_t ** transaction, context_type_t ctx_type,
   i = transaction_set_from (*transaction, request->from);
   if (i != 0)
     goto ti_error_2;
-  transaction_set_to (*transaction, request->to);
+  i = transaction_set_to (*transaction, request->to);
   if (i != 0)
     goto ti_error_3;
-  transaction_set_call_id (*transaction, request->call_id);
+  i = transaction_set_call_id (*transaction, request->call_id);
   if (i != 0)
     goto ti_error_4;
-  transaction_set_cseq (*transaction, request->cseq);
+  i = transaction_set_cseq (*transaction, request->cseq);
   if (i != 0)
     goto ti_error_5;
   /* RACE conditions can happen for server transactions */
