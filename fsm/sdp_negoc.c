@@ -801,7 +801,7 @@ sdp_put_on_hold(sdp_t *sdp)
       else if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "recvonly"))
 	{
 	  recv_send = 0;
-	  snprintf(rcvsnd, 8, "sendonly");
+	  sprintf(rcvsnd, "sendonly");
 	}
       pos++;
       rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
@@ -821,7 +821,7 @@ sdp_put_on_hold(sdp_t *sdp)
 	  else if (rcvsnd!=NULL && 0==strcmp(rcvsnd, "recvonly"))
 	    {
 	      recv_send = 0;
-	      snprintf(rcvsnd, 8, "sendonly");
+	      sprintf(rcvsnd, "sendonly");
 	    }
 	  pos++;
 	  rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
