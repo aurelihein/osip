@@ -159,6 +159,13 @@ extern "C"
  */
   int osip_message_parse (osip_message_t * sip, const char *message);
 /**
+ * Parse a osip_message_t element.
+ * @param sip The resulting element.
+ * @param message The buffer to parse.
+ * @param message The length of buffer to parse.
+ */
+  int osip_message_parse2 (osip_message_t * sip, const char *buf, size_t length);
+/**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
