@@ -509,7 +509,10 @@ int sdp_context_execute_negotiation(sdp_context_t *ctx);
 
 int sdp_build_offer(sdp_context_t *con, sdp_t **sdp, char *audio_port, char *video_port);
 
+  /* for non "on-hold sdp" in outgoing invite */
 int sdp_put_on_hold(sdp_t *sdp);
+  /* for an "on hold sdp" in outgoing invite */
+int sdp_put_off_hold(sdp_t *sdp);
 
 #ifndef DOXYGEN
 /* deprecated for spelling reasons... */

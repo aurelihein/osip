@@ -837,3 +837,43 @@ sdp_put_on_hold(sdp_t *sdp)
 
   return 0;
 }
+
+int
+sdp_put_off_hold(sdp_t *sdp)
+{
+  int pos;
+  int pos_media = -1;
+  char *rcvsnd;
+  pos =0;
+  rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+  while (rcvsnd!=NULL)
+    {
+      if (rcvsnd!=NULL && (0==strcmp(rcvsnd, "sendonly")
+			   || 0==strcmp(rcvsnd, "recvonly")) )
+	{
+	  sprintf(rcvsnd, "sendrecv");
+	}
+      pos++;
+      rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+    }
+
+  pos_media=0;
+  while (!sdp_endof_media(sdp, pos_media))
+    {
+      pos=0;
+      rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+      while (rcvsnd!=NULL)
+	{
+	  if (rcvsnd!=NULL && (0==strcmp(rcvsnd, "sendonly")
+			       || 0==strcmp(rcvsnd, "recvonly")) )
+	    {
+	      sprintf(rcvsnd, "sendrecv");
+	    }
+	  pos++;
+	  rcvsnd = sdp_a_att_field_get(sdp, pos_media, pos);
+	}
+      pos_media++;
+    }
+
+  return 0;
+}
