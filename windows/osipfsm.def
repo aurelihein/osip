@@ -270,4 +270,7 @@ EXPORTS
     transaction_set_topvia  @269  
     transaction_set_your_instance  @270  
     via_match  @271  
+    transaction_free2  @272  
+    osip_get_application_context  @273  
+    osip_set_application_context  @274  
 
