@@ -148,6 +148,10 @@ SOURCE=..\..\src\osip2\osip_negotiation.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osip2\osip_time.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osip2\osip_transaction.c
 # End Source File
 # Begin Source File
