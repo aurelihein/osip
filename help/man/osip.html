@@ -10,7 +10,7 @@ CONTENT="oSIP"><META
 NAME="KEYWORD"
 CONTENT="SIP"><META
 NAME="KEYWORD"
-CONTENT="rfc2543"><META
+CONTENT="rfc3261"><META
 NAME="KEYWORD"
 CONTENT="library"><META
 NAME="KEYWORD"
@@ -373,7 +373,7 @@ HREF="#AEN1341"
 ><DT
 ><A
 HREF="#AEN1361"
->Definition and purpose of sipevent</A
+>Definition and purpose of osip_event</A
 ></DT
 ><DT
 ><A
@@ -443,7 +443,7 @@ NAME="SIP-PROTOCOL"
 >Chapter 1. The SIP protocol</A
 ></H1
 ><P
->SIP is a signaling protocol used to initiate and control multimedia sessions. It is already published by IETF (www.ietf.org) as the rfc2543.</P
+>SIP is a signaling protocol used to initiate and control multimedia sessions. It is already published by IETF (www.ietf.org) as the rfc3261.</P
 ><P
 >SIP is part of the IETF effort to bring telephony on the IP network.  It is about to become the standard used by the emerging IP telephony industry. As simple as the mail protocol, it may become as popular...</P
 ><DIV
@@ -477,7 +477,7 @@ NAME="AEN45"
 >SIP is extensible</A
 ></H1
 ><P
->The rfc2543 defines 6 types of transaction (INVITE, BYE, CANCEL...). Those transactions are used to negotiate media, set up, modify and terminate calls. Many services are already provided this way but SIP is designed for extensibility and the transactional model can be reused (transparently for servers) by new type of transaction to create some supplementary services. Here is a list of possible services:</P
+>The rfc3261 defines 6 types of transaction (INVITE, BYE, CANCEL...). Those transactions are used to negotiate media, set up, modify and terminate calls. Many services are already provided this way but SIP is designed for extensibility and the transactional model can be reused (transparently for servers) by new type of transaction to create some supplementary services. Here is a list of possible services:</P
 ><P
 ></P
 ><TABLE
@@ -512,7 +512,7 @@ CLASS="QUOTE"
 >"SIP transparently supports name mapping and redirection services, allowing the implementation of ISDN and Intelligent Network telephony subscriber services. These facilities also enable personal mobility."</SPAN
 ></P
 ><P
->rfc2543.txt (Section 1.1)</P
+>rfc3261.txt (Section 1.1)</P
 ><P
 >SIP servers are used to locate users and distribute location (through urls) on demand. This way, end user agents have very minimal requirements and still have access to a wide variety of services.</P
 ><P
@@ -537,10 +537,10 @@ NAME="AEN63"
 >SIP syntax</A
 ></H1
 ><P
->SIP is a text protocol based on utf8 encoding. (making it more readable and easier to debug) SIP describes a syntax for SIP requests, URL, responses and their headers. The full syntax is available at <A
-HREF="http://www.columbia.edu/~hgs/"
+>SIP is a text protocol based on utf8 encoding. (making it more readable and easier to debug) SIP describes a syntax for SIP requests, URL, responses and their headers. The full syntax is available in the <A
+HREF="http://www.ietf.org/rfc/rfc3261.txt"
 TARGET="_top"
->Columbia</A
+>rfc3261</A
 > in an augmented BNF form.</P
 ><P
 >The syntax is borrowed from the MAIL and HTTP syntax. 6 types of requests are defined by SIP. The basic available methods are:</P
@@ -576,7 +576,7 @@ BORDER="0"
 ><P
 ></P
 ><P
->As you can see in the BNF definition of request (see rfc2543.txt section 3), SIP is not limited to this short list of methods and includes in its definition the extension-method token. Any other request can be handled by oSIP. NOTIFY and SUBSCRIBE are good examples of new possible methods. These ones are used specifically to provide presence capabilities to your SIP phone without much effort.</P
+>As you can see in the BNF definition of request (see rfc3261.txt section 3), SIP is not limited to this short list of methods and includes in its definition the extension-method token. Any other request can be handled by oSIP. NOTIFY and SUBSCRIBE are good examples of new possible methods. These ones are used specifically to provide presence capabilities to your SIP phone without much effort.</P
 ><P
 ><DIV
 CLASS="EXAMPLE"
@@ -589,7 +589,8 @@ CLASS="EXAMPLE"
 ><PRE
 CLASS="PROGRAMLISTING"
 >INVITE sip:jacK@atosc.org SIP/2.0
-Via: SIP/2.0/UDP home.sipworld.org
+Via: SIP/2.0/UDP home.sipworld.org;branch=z9hG4bK776asdhds
+Max-Forwards: 70
 To: sip:jacK@atosc.org
 From: sip:cha@sipworld.org
 Call-ID: 35778645354@home.sipworld.org
@@ -621,7 +622,10 @@ NAME="AEN81"
 ><P
 >In order to control sessions, SIP uses transactions. Transactions (INVITE, CANCEL, BYE...) usually result in a modification of a current session. Some other transactions (SUBSCRIBE, NOTIFY...) are not bound to a session. A transaction is composed of one request and its responses (many informational responses and one final response). The following headers: To, From, Call-ID and CSeq are used to identify messages within a transaction.</P
 ><P
->As SIP can use unreliable transport protocol (UDP is recommended on the IP network), SIP also defines retransmission rules for messages within a transaction.</P
+>Since the rfc3261, The "branch" parameter from the "Via" header provides a unique string to match requests and responses within a transactions.
+</P
+><P
+>As SIP often use unreliable transport protocol (UDP is recommended but TCP or TLS can be prefered), SIP also defines retransmission rules for messages within a transaction.</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
@@ -635,12 +639,14 @@ CLASS="PROGRAMLISTING"
 >&#13;	          UAC1               UAS2
 
 	  jacks    |   INVITE         |
-	initiate a |-----------------&#62;|   Bob's
-	  call     |                  | Phone starts
-	           |       180 Ringing|   ringing
-	           |&#60;-----------------|
-	           |       180 Ringing|
-        	   |&#60;-----------------|
+	initiate a |-----------------&#62;|
+	  call     |                  |
+	           |       100 Trying |
+	           |&#60;-----------------|   Bob's
+	           |       180 Ringing|  Phone starts
+	           |&#60;-----------------|   ringing
+	           |                  |
+        	   |                  |
 	           |           200 OK |
 	           |&#60;-----------------|
 	           |   ACK            |
@@ -656,7 +662,7 @@ NAME="AEN89"
 >SIP sessions</A
 ></H1
 ><P
->Transactions are used by user agent as means to control sessions. A session is always initiated by an INVITE. SIP defines a large set of answer codes. A proxy may answer you the well known "404 User Not found" as for an HTTP error. Errors have different levels. A transaction can fail but still proposes new locations to try. Responses from class 3xx serve as redirection mechanism. 4xx, 5xx and 6xx responses are respectively reserved for client error, server error and global failure.</P
+>Transactions are used by user agent as means to control sessions. A session is always initiated by an INVITE. SIP defines a large set of answer codes. A proxy may answer you the well known "404 User Not found" as for an HTTP error. Errors have different levels. A transaction can fail but still proposes new locations to try. Responses from class 3xx are used to redirect calls. 4xx, 5xx and 6xx responses are respectively reserved for client error, server error and global failure.</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
@@ -669,7 +675,7 @@ CLASS="EXAMPLE"
 >This session is initiated with an INVITE transaction to join jack at home.net. A redirection to jack's office is made by the redirect server of home.net. UA1 understands the redirection and sends a new INVITE towards the real User Agent (UA2) currently used by jack at office.atosc.org. UA2 first rings and jack accepts the call with a 200 OK response. After several minutes, jack and bob want to use their new cameras. The session is modified with an INVITE sent by jack to negotiate new parameters for video. The session is finally ended by bob.</P
 ><PRE
 CLASS="PROGRAMLISTING"
->         BOB           home.net    Jack (atosc.org)
+>         BOB           home.net    Jack (office.home.net)
          UA1            PROXY            UA2
           | REGISTER      |               .
           |--------------&#62;|               .
@@ -690,16 +696,16 @@ later...  .               .               .
           |&#60;--------------|               .
           | ACK           |               .
           |--------------&#62;|               .
-          | INVITE jack@office.atosc.org  |
+          | INVITE jack@office.home.net   |
           | audio                         |
           |------------------------------&#62;|
-          |                  180 Ringing  |
+          |                  100 Trying   |
           |&#60;------------------------------|
           |                  180 Ringing  |
           |&#60;------------------------------|
           |                       200 OK  |
           |&#60;------------------------------|
-          | ACK jack@office.atosc.org     |
+          | ACK jack@office.home.net      |
           |------------------------------&#62;|
           .                               .
 later     .                               .
@@ -714,7 +720,7 @@ later     .                               .
           .                               .
 later     .                               .
           .                               .
-          | BYE jack@office.atosc.org     |
+          | BYE jack@office.home.net      |
           |------------------------------&#62;|
           |                       200 OK  |
           |&#60;------------------------------|
@@ -730,7 +736,7 @@ NAME="AEN97"
 >Server behavior</A
 ></H1
 ><P
->SIP defines behaviors for proxy, redirect and registrar server. For complete information, please read the RFC...</P
+>SIP defines behaviors for proxy and registrar server. For complete information, please read the RFC...</P
 ><P
 >Usually, a user agent sends its requests to an outbound proxy. As users do not know the current location of their correspondent, they use for the sip url a username and a domain. The outbound proxy (where firewall capabilities can be inserted) uses DNS SRV RECORDS to find servers belonging to the requested domain. Once the server is found, the request is forwarded. This server is the inbound proxy of the correspondent. If the user is available, its application must have registered its location before, so the proxy is now able to forward the request to the real user location. On local network, other standards may be used to find user. (finger,...)</P
 ></DIV
@@ -743,8 +749,8 @@ NAME="AEN101"
 >Chapter 3. The oSIP Library</A
 ></H1
 ><P
->Having a good knowledge of SIP is recommended for this section. If you plan to use SIP, you should read more carefully the rfc2543 from <A
-HREF="http://www.ietf.org/"
+>Having a good knowledge of SIP is recommended for this section. If you plan to use SIP, you should read more carefully the rfc3261 from <A
+HREF="http://www.ietf.org/rfc/rfc3261.txt"
 TARGET="_top"
 >ietf.org.</A
 ></P
@@ -762,6 +768,8 @@ NAME="AEN105"
 >The oSIP library is at first a free software project. In the context of the third generation network, more and more telecom operators will use IP technology, the favorite land of Linux. One aspect of this evolution is that the future of Linux is highly dependent on the multimedia tools that will be available. oSIP, as a SIP implementation, will allow building interoperable registrar, user-agent (software phones), and proxy thus giving more chance to Linux to be part of the next generation telephony products.</P
 ><P
 >But oSIP is not only targeted towards PC applications. oSIP is enough flexible and tiny to be used on small OS with low requirements. From the 0.7.0 release, the thread support is now optional and the design of the application is entirely chosen by the end-developer. oSIP will now perfectly fit cellulars or any embeded systems. oSIP is known to run on the real time OS VxWorks and other ports should be simple.</P
+><P
+>Around 2002, the API has been totally refined and osip2 was first release. The code and API is now much more readable and heavy work has been previously done to update from rfc3543 to rfc3261.</P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -780,7 +788,7 @@ NAME="AEN112"
 >The parser</A
 ></H2
 ><P
->oSIP now supports utf8 and the full SIP grammar. The release 0.7.0 contains a compliant SIP parser with minimal exceptions. Also, the new parser has just been released (25th of July 2001) and may have some bugs. Please report them to <TT
+>oSIP should be provide a fully compliant SIP parser. If you ever see something missing or not correct, please report bugs to <TT
 CLASS="EMAIL"
 >&#60;<A
 HREF="mailto:osip@atosc.org"
@@ -812,12 +820,12 @@ NAME="AEN120"
 >The parser</A
 ></H1
 ><P
->oSIP contains a parser which is able to read and write any SIP message as described in the RFC. Currently oSIP is able to parse only a minimal set of headers such as Via, Call-ID, To, From, Contact, CSeq, Route, Record-Route, mime-version, Content-Type, and Content-Length. All other headers are stored as strings. Efforts will be done to support more headers.</P
+>oSIP contains a parser which is able to read and write any SIP message as described in the RFC. Currently oSIP is able to parse only a minimal set of headers such as Via, Call-ID, To, From, Contact, CSeq, Route, Record-Route, mime-version, Content-Type, and Content-Length. All other headers are stored as strings so that you can access it with the API for generic headers.</P
 ><P
->By now, the SIP parser supports multiple attachments through the MIME format. (this part is new and remains untested)</P
+>By now, the SIP parser supports multiple attachments through the MIME format. (this part has not been tested a lot, reports bugs)</P
 ><FONT
 COLOR="RED"
->Unwanted behaviors may happen sometimes. Messages could be somewhat transformed after being analyzed by oSIP. oSIP cannot maintain reliability: (Nevertheless, oSIP remains fully SIP compliant)</FONT
+>oSIP may alter Incoming SIP messages when messages contains: </FONT
 ><P
 ></P
 ><TABLE
@@ -857,11 +865,7 @@ NAME="AEN131"
 ><P
 >oSIP presents an easy to use interface. Transactions are modeled through 4 finite state machines which is the core of the oSIP library. Each transaction uses a separate FIFO filled by external modules. Events are processed on demand by user. A set of dynamic callback registered by user allow the application to be informed of each transaction's evolution.</P
 ><P
-><IMG
-SRC="osip_model.png"
-ALIGN="CENTER"></P
-><P
->Building an application on the top of oSIP will require to build several modules as shown in the above graphic. First, you'll have to build a module to manage the transport facilities. This way, oSIP is independent from any transport layer. Then, you'll be required to build a module for timers management (a basic and far from excellent sample is provided). This module will be responsible of retransmission and will decide when the transaction context can be deleted safely. The third required module is the biggest part of the multimedia application. This modules will have to maintain and update the state of SIP sessions over transactions.</P
+>Building an application on the top of oSIP will require to build several modules. First, you'll have to build a module to manage the transport protocole (send and rcv methods). This way, oSIP is independent from any transport layer. Then, you'll be required to build a module for transaction management where a few methods of osip must be regularly called so that osip can run the finite state machines events. The third required module is the biggest part of the multimedia application. This modules will have to maintain and update the state of SIP sessions over transactions.</P
 ><P
 >The transaction manager has been heavily tested and is already stable. Also, oSIP does not require much memory and runs fast. Since release 0.7.0, the library can be used either in multi-threaded mode or not!</P
 ></DIV
@@ -874,7 +878,7 @@ NAME="AEN137"
 >Who will benefit from oSIP</A
 ></H1
 ><P
->oSIP offers a simple interface to add SIP capabilities in multimedia applications. Also, oSIP is not tight to any kind of SIP agents or OSs. You can build either end-user agents, stateless proxy and gateway. If you want to implement a proxy, please read "notes for proxy implementation" in the chapter called "the transaction manager".</P
+>oSIP offers a low level interface to build any SIP applications (proxy, Endpoint, Server or gateway). Also, oSIP is not tight to any kind of OSs. If you want to implement a proxy, please read "notes for proxy implementation" in the chapter called "the transaction manager".</P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -906,18 +910,24 @@ NAME="AEN145"
 ><P
 ><TT
 CLASS="VARNAME"
->./libosip-x.x.x/parser </TT
->is the source directory for the SIP parser.</P
+>./libosip-x.x.x/src/osipparser2 </TT
+><UL
+>is the source directory for the SIP parser.</UL
+></P
 ><P
 ><TT
 CLASS="VARNAME"
->-losipparser-x.x.x </TT
->is the library containing the SIP parser</P
+>-losipparser2 </TT
+><UL
+>is the library containing the SIP parser</UL
+></P
 ><P
 ><TT
 CLASS="VARNAME"
->#include &#60;osip/smsg.h&#62; </TT
->is the include file describing the external SIP parser API</P
+>#include &#60;osipparser2/osip_parser.h&#62; </TT
+><UL
+>is the include file describing the external SIP parser API</UL
+></P
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -938,16 +948,16 @@ NAME="AEN155"
 ><P
 >URL are used to describe entirely a SIP entity: user, registrar, proxy have their own urls. oSIP uses the <SPAN
 CLASS="TYPE"
->url_t</SPAN
+>osip_uri_t</SPAN
 > type definition in the request-uri and in the following headers: "to", "from", "contact", "route", and "record-route".</P
 ><P
 >type definition of <SPAN
 CLASS="TYPE"
->url_t</SPAN
+>osip_uri_t</SPAN
 >.</P
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct _sipurl_t {
+>typedef struct osip_uri {
   char *scheme;
   char *username;
   char *password;
@@ -955,7 +965,7 @@ CLASS="PROGRAMLISTING"
   char *port;
   list_t *url_params;
   list_t *url_headers;
-} url_t ;</PRE
+} osip_uri_t ;</PRE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -971,14 +981,14 @@ CLASS="FUNCSYNOPSIS"
 ></P
 ><PRE
 CLASS="FUNCSYNOPSISINFO"
->#include &#60;smsg.h&#62;</PRE
+>#include &#60;osipparser2/osip_uri.h&#62;</PRE
 ><P
 ></P
 ></DIV
 ><H1
 ><A
 NAME="FUNCTION.URL-INIT"
->url_init</A
+>osip_uri_init</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -987,7 +997,7 @@ NAME="AEN167"
 ></A
 ><H2
 >Name</H2
->url_init&nbsp;--&nbsp;Allocate and initialize the <TT
+>osip_uri_init&nbsp;--&nbsp;Allocate and initialize the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -1008,8 +1018,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_init</CODE
->(url_t **url);</CODE
+>int osip_uri_init</CODE
+>(osip_uri_t **url);</CODE
 ></P
 ><P
 ></P
@@ -1020,7 +1030,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.URL-FREE"
->url_free</A
+>osip_uri_free</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1029,7 +1039,7 @@ NAME="AEN181"
 ></A
 ><H2
 >Name</H2
->url_free&nbsp;--&nbsp;free resources contained in <TT
+>osip_uri_free&nbsp;--&nbsp;free resources contained in <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -1050,8 +1060,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_free</CODE
->(url_t ** url);</CODE
+>void osip_uri_free</CODE
+>(osip_uri_t ** url);</CODE
 ></P
 ><P
 ></P
@@ -1060,7 +1070,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.URL-PARSE"
->url_parse</A
+>osip_uri_parse</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1069,7 +1079,7 @@ NAME="AEN194"
 ></A
 ><H2
 >Name</H2
->url_parse&nbsp;--&nbsp;Parse <TT
+>osip_uri_parse&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -1095,8 +1105,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_parse</CODE
->(url_t * url
+>int osip_uri_parse</CODE
+>(osip_uri_t * url,
 char * field_value);</CODE
 ></P
 ><P
@@ -1108,7 +1118,7 @@ char * field_value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.URL-2CHAR"
->url_2char</A
+>osip_uri_to_str</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1117,7 +1127,7 @@ NAME="AEN210"
 ></A
 ><H2
 >Name</H2
->url_2char&nbsp;--&nbsp;Allocate a string in <TT
+>osip_uri_to_str&nbsp;--&nbsp;Allocate a string in <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -1143,8 +1153,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_2char</CODE
->(url_t *url
+>int osip_uri_to_str</CODE
+>(osip_uri_t *url
 char **field_value);</CODE
 ></P
 ><P
@@ -1156,7 +1166,7 @@ char **field_value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.URL-CLONE"
->url_clone</A
+>osip_uri_clone</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1165,7 +1175,7 @@ NAME="AEN226"
 ></A
 ><H2
 >Name</H2
->url_clone&nbsp;--&nbsp;duplicate the <TT
+>osip_uri_clone&nbsp;--&nbsp;duplicate the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -1186,9 +1196,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_clone</CODE
->(url_t *url
-url_t **dest);</CODE
+>int osip_uri_clone</CODE
+>(osip_uri_t *url,
+osip_uri_t **dest);</CODE
 ></P
 ><P
 ></P
@@ -1199,7 +1209,7 @@ url_t **dest);</CODE
 ><H1
 ><A
 NAME="FUNCTION.URL-UPARAM-ADD"
->url_uparam_add</A
+>osip_uri_uparam_add</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1208,7 +1218,7 @@ NAME="AEN241"
 ></A
 ><H2
 >Name</H2
->url_uparam_add&nbsp;--&nbsp;allocate and add a new url parameter in the <TT
+>osip_uri_uparam_add&nbsp;--&nbsp;allocate and add a new url parameter in the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -1229,8 +1239,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_uparam_add</CODE
->(url_t *url
+>int osip_uri_uparam_add</CODE
+>(osip_uri_t *url,
 char *pname
 char *pvalue);</CODE
 ></P
@@ -1243,7 +1253,7 @@ char *pvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.URL-UHEADER-ADD"
->url_uheader_add</A
+>osip_uri_uheader_add</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1252,7 +1262,7 @@ NAME="AEN257"
 ></A
 ><H2
 >Name</H2
->url_uheader_add&nbsp;--&nbsp;allocate and add a new url header element in the <TT
+>osip_uri_uheader_add&nbsp;--&nbsp;allocate and add a new url header element in the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -1273,8 +1283,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_uheader_add</CODE
->(url_t *url
+>int osip_uri_uheader_add</CODE
+>(osip_uri_t *url
 char *hname
 char *hvalue);</CODE
 ></P
@@ -1286,8 +1296,8 @@ char *hvalue);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.URL-UPARAM-GETBYNAME"
->url_uparam_getbyname</A
+NAME="FUNCTION.URL-UPARAM-GET_BYNAME"
+>osip_uri_uparam_get_byname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1296,7 +1306,7 @@ NAME="AEN273"
 ></A
 ><H2
 >Name</H2
->url_uparam_getbyname&nbsp;--&nbsp;Find a url parameter with <TT
+>osip_uri_uparam_get_byname&nbsp;--&nbsp;Find a url parameter with <TT
 CLASS="PARAMETER"
 ><I
 >pname</I
@@ -1322,10 +1332,10 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_uparam_getbyname</CODE
->(url_t *url
+>int osip_uri_uparam_get_byname</CODE
+>(osip_uri_t *url
 char *pname
-url_param_t **url_param);</CODE
+osip_uri_param_t **osip_uri_param);</CODE
 ></P
 ><P
 ></P
@@ -1340,10 +1350,10 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN289"
->API for url_param_t and url_header_t</A
+>API for osip_uri_param_t and osip_uri_header_t</A
 ></H2
 ><P
->url_param_t and url_header_t are data types used inside a SIP-URL. Methods are provided to allocate, free or clone resources.</P
+>osip_uri_param_t and osip_uri_header_t are data types used inside a SIP-URL. Methods are provided to allocate, free or clone resources.</P
 ><DIV
 CLASS="IMPORTANT"
 ><BLOCKQUOTE
@@ -1351,31 +1361,28 @@ CLASS="IMPORTANT"
 ><P
 ><B
 >Important: </B
->The API is the same for url parameters and header parameters. You just have to replace "url_" with "header_".</P
+>The API is the same for url parameters and header parameters. You just have to replace "_param_" with "_header_".</P
 ></BLOCKQUOTE
 ></DIV
 ><DIV
 CLASS="EXAMPLE"
 ><P
 ><B
->Example 4-1. type definitions of url_param_t and header_param_t.</B
+>Example 4-1. type definitions of osip_uri_param_t and header_param_t.</B
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->  typedef struct _url_param_t {
+>  typedef struct osip_uri_param {
     char *pname;
     char *pvalue;
-  } url_param_t;
+  } osip_uri_param_t;
 
-  typedef struct _url_header_t {
-    char *hname;
-    char *hvalue;
-  } url_header_t;</PRE
+  typedef osip_uri_param_t osip_uri_header_t;</PRE
 ></DIV
 ><H1
 ><A
 NAME="FUNCTION.URL-PARAM-INIT"
->url_param_init</A
+>osip_uri_param_init</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1384,10 +1391,10 @@ NAME="AEN298"
 ></A
 ><H2
 >Name</H2
->url_param_init&nbsp;--&nbsp;Allocate and initialize the <TT
+>osip_uri_param_init&nbsp;--&nbsp;Allocate and initialize the <TT
 CLASS="PARAMETER"
 ><I
->url_param</I
+>osip_uri_param</I
 ></TT
 > element.</DIV
 ><DIV
@@ -1405,8 +1412,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int url_param_init</CODE
->(url_param_t **url_param);</CODE
+>int osip_uri_param_init</CODE
+>(osip_uri_param_t **osip_uri_param);</CODE
 ></P
 ><P
 ></P
@@ -1417,7 +1424,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.URL-PARAM-FREE"
->url_param_free</A
+>osip_uri_param_free</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1426,10 +1433,10 @@ NAME="AEN312"
 ></A
 ><H2
 >Name</H2
->url_param_free&nbsp;--&nbsp;free resources contained in <TT
+>osip_uri_param_free&nbsp;--&nbsp;free resources contained in <TT
 CLASS="PARAMETER"
 ><I
->url_param</I
+>osip_uri_param</I
 ></TT
 ></DIV
 ><DIV
@@ -1447,8 +1454,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_param_free</CODE
->(url_param_t **url_param);</CODE
+>void osip_uri_param_free</CODE
+>(osip_uri_param_t **osip_uri_param);</CODE
 ></P
 ><P
 ></P
@@ -1457,7 +1464,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.URL-PARAM-SET"
->url_param_set</A
+>osip_uri_param_set</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1466,7 +1473,7 @@ NAME="AEN325"
 ></A
 ><H2
 >Name</H2
->url_param_set&nbsp;--&nbsp;Set <TT
+>osip_uri_param_set&nbsp;--&nbsp;Set <TT
 CLASS="PARAMETER"
 ><I
 >name</I
@@ -1479,7 +1486,7 @@ CLASS="PARAMETER"
 > in the <TT
 CLASS="PARAMETER"
 ><I
->url_param</I
+>osip_uri_param</I
 ></TT
 > element.</DIV
 ><DIV
@@ -1497,9 +1504,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_param_set</CODE
->(url_param_t *url_param
-char *pname
+>void osip_uri_param_set</CODE
+>(osip_uri_param_t *osip_uri_param,
+char *pname,
 char *pvalue);</CODE
 ></P
 ><P
@@ -1511,7 +1518,7 @@ char *pvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.URL-PARAM-FREELIST"
->url_param_freelist</A
+>osip_uri_param_freelist</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1520,10 +1527,10 @@ NAME="AEN343"
 ></A
 ><H2
 >Name</H2
->url_param_freelist&nbsp;--&nbsp;free resources contained in the list <TT
+>osip_uri_param_freelist&nbsp;--&nbsp;free resources contained in the list <TT
 CLASS="PARAMETER"
 ><I
->url_params</I
+>osip_uri_params</I
 ></TT
 > elements.</DIV
 ><DIV
@@ -1541,8 +1548,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_param_freelist</CODE
->(list_t *url_params);</CODE
+>void osip_uri_param_freelist</CODE
+>(list_t *osip_uri_params);</CODE
 ></P
 ><P
 ></P
@@ -1551,7 +1558,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.URL-PARAM-ADD"
->url_param_add</A
+>osip_uri_param_add</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1560,15 +1567,15 @@ NAME="AEN356"
 ></A
 ><H2
 >Name</H2
->url_param_add&nbsp;--&nbsp;add <TT
+>osip_uri_param_add&nbsp;--&nbsp;add <TT
 CLASS="PARAMETER"
 ><I
->url_param</I
+>osip_uri_param</I
 ></TT
 > in the list <TT
 CLASS="PARAMETER"
 ><I
->url_params</I
+>osip_uri_params</I
 ></TT
 >.</DIV
 ><DIV
@@ -1586,9 +1593,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_param_add</CODE
->(list_t *url_params
-char *pname
+>void osip_uri_param_add</CODE
+>(list_t *osip_uri_params,
+char *pname,
 char *pvalue);</CODE
 ></P
 ><P
@@ -1599,8 +1606,8 @@ char *pvalue);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.URL-PARAM-GETBYNAME"
->url_param_getbyname</A
+NAME="FUNCTION.URL-PARAM-GET_BYNAME"
+>osip_uri_param_get_byname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1609,10 +1616,10 @@ NAME="AEN373"
 ></A
 ><H2
 >Name</H2
->url_param_getbyname&nbsp;--&nbsp;Find the <TT
+>osip_uri_param_get_byname&nbsp;--&nbsp;Find the <TT
 CLASS="PARAMETER"
 ><I
->url_param</I
+>osip_uri_param</I
 ></TT
 > with <TT
 CLASS="PARAMETER"
@@ -1622,7 +1629,7 @@ CLASS="PARAMETER"
 > in the list <TT
 CLASS="PARAMETER"
 ><I
->url_params</I
+>osip_uri_params</I
 ></TT
 >.</DIV
 ><DIV
@@ -1640,10 +1647,10 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void url_param_getbyname</CODE
->(list_t *url_params
-char *pname
-url_param_t **url_param);</CODE
+>void osip_uri_param_get_byname</CODE
+>(list_t *osip_uri_params,
+char *pname,
+osip_uri_param_t **osip_uri_param);</CODE
 ></P
 ><P
 ></P
@@ -1670,7 +1677,7 @@ NAME="AEN392"
 >Definition and purpose</A
 ></H2
 ><P
->The rfc2543 defines around 40 headers. SIP Messages are mainly composed of a list of headers. This first part documents the API to create, allocate, parse and print the SIP headers elements. The second one shows that headers also have a extended API only applicable for one type of header. The extended API presented below is for the "To" header. Nevertheless, the extended API for the "To" header is also valid for the "From", "Contact", "Route" and "Record-Route" headers.</P
+>The rfc3261 defines around 40 headers. SIP Messages are mainly composed of a list of headers. This first part documents the API to create, allocate, parse and print the SIP headers elements. The second one shows that headers also have a extended API only applicable for one type of header. The extended API presented below is for the "To" header. Nevertheless, the extended API for the "To" header is also valid for the "From", "Contact", "Route" and "Record-Route" headers.</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
@@ -1679,11 +1686,11 @@ CLASS="EXAMPLE"
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct _to_t {
+>typedef struct osip_to_t {
   char *displayname;
-  url_t *url;
+  osip_uri_t *url;
   list_t *gen_params;
-} to_t;</PRE
+} osip_to_t;</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -1695,7 +1702,7 @@ NAME="AEN398"
 >Common API for all implemented header.</A
 ></H2
 ><P
->The SIP parser can parse entirely the following headers: Via, To, From, CSeq, Call-Id, Contact, Route, Record-Route, Content-Type, Content-length, Mime-Version. The other headers are accessible as strings through a special API.</P
+>The SIP parser can parse entirely a few headers such as: Via, To, From, CSeq, Call-Id, Contact, Route, Record-Route, Content-Type, Content-length, Mime-Version (see API for a complete list of headers API). The other headers are accessible as strings through a special API.</P
 ><DIV
 CLASS="IMPORTANT"
 ><BLOCKQUOTE
@@ -1703,16 +1710,16 @@ CLASS="IMPORTANT"
 ><P
 ><B
 >Important: </B
->This API presented below is applicable for all known headers: Simply replace "to_" by one of the following list: "via_", "to_", "from_", "contact", "route_", "record_route_", "content_type_", "content_length_", "mime_version_", "cseq_", "call_id_"</P
+>This API presented below is applicable for all known headers: Simply replace "osip_to_" by one of the following list: "osip_via_", "osip_from_", "osip_contact", "osip_route_", "osip_record_route_", "osip_content_type_", "osip_content_length_", "osip_mime_version_", "osip_cseq_", "osip_call_id_" (see API for a complete list of headers API)</P
 ></BLOCKQUOTE
 ></DIV
 ><FONT
 COLOR="RED"
->If you are interested in developing new headers, you just have to re-use the API proposed below. Contributions are welcomed...</FONT
+>If you are interested in developing new headers, you just have to re-use the API proposed below. Contributions are welcomed. Be aware that only patch that do not break the compatibility will be accepted. DONT CHANGE THE OSIP_MESSAGE_T TYPEDEF.</FONT
 ><P
 >As an example, the following methods concern the API to manipulate a <SPAN
 CLASS="TYPE"
->to_t</SPAN
+>osip_to_t</SPAN
 > structure.</P
 ><DIV
 CLASS="FUNCSYNOPSIS"
@@ -1720,14 +1727,14 @@ CLASS="FUNCSYNOPSIS"
 ></P
 ><PRE
 CLASS="FUNCSYNOPSISINFO"
->#include &#60;smsg.h&#62;</PRE
+>#include &#60;osipparser2/osip_parser.h&#62;</PRE
 ><P
 ></P
 ></DIV
 ><H1
 ><A
 NAME="FUNCTION.TO-INIT"
->to_init</A
+>osip_to_init</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1736,7 +1743,7 @@ NAME="AEN409"
 ></A
 ><H2
 >Name</H2
->to_init&nbsp;--&nbsp;Allocate and initialize the structure <TT
+>osip_to_init&nbsp;--&nbsp;Allocate and initialize the structure <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -1757,8 +1764,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_init</CODE
->(to_t **to);</CODE
+>int osip_to_init</CODE
+>(osip_to_t **to);</CODE
 ></P
 ><P
 ></P
@@ -1769,7 +1776,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TO-FREE"
->to_free</A
+>osip_to_free</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1778,7 +1785,7 @@ NAME="AEN423"
 ></A
 ><H2
 >Name</H2
->to_free&nbsp;--&nbsp;free resources contained in <TT
+>osip_to_free&nbsp;--&nbsp;free resources contained in <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -1799,8 +1806,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void to_free</CODE
->(to_t **to);</CODE
+>void osip_to_free</CODE
+>(osip_to_t **to);</CODE
 ></P
 ><P
 ></P
@@ -1809,7 +1816,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TO-PARSE"
->to_parse</A
+>osip_to_parse</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1818,7 +1825,7 @@ NAME="AEN436"
 ></A
 ><H2
 >Name</H2
->to_parse&nbsp;--&nbsp;Parse <TT
+>osip_to_parse&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -1844,8 +1851,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_parse</CODE
->(to_t *to
+>int osip_to_parse</CODE
+>(osip_to_t *to,
 char *field_value);</CODE
 ></P
 ><P
@@ -1856,8 +1863,8 @@ char *field_value);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.TO-2CHAR"
->to_2char</A
+NAME="FUNCTION.TO-STR"
+>osip_to_to_str</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1866,7 +1873,7 @@ NAME="AEN452"
 ></A
 ><H2
 >Name</H2
->to_2char&nbsp;--&nbsp;Allocate a string in <TT
+>osip_to_to_str&nbsp;--&nbsp;Allocate a string in <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -1892,8 +1899,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_2char</CODE
->(to_t *to
+>int osip_to_to_str</CODE
+>(osip_to_t *to,
 char **field_value);</CODE
 ></P
 ><P
@@ -1905,7 +1912,7 @@ char **field_value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-CLONE"
->to_clone</A
+>osip_to_clone</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1914,7 +1921,7 @@ NAME="AEN468"
 ></A
 ><H2
 >Name</H2
->to_clone&nbsp;--&nbsp;duplicate the <TT
+>osip_to_clone&nbsp;--&nbsp;duplicate the <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -1935,9 +1942,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_clone</CODE
->(to_t *to
-to_t **dest);</CODE
+>int osip_to_clone</CODE
+>(osip_to_t *to,
+osip_to_t **dest);</CODE
 ></P
 ><P
 ></P
@@ -1959,7 +1966,7 @@ NAME="AEN482"
 ><H1
 ><A
 NAME="FUNCTION.TO-SETDISPLAYNAME"
->to_setdisplayname</A
+>osip_to_set_displayname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -1968,7 +1975,7 @@ NAME="AEN486"
 ></A
 ><H2
 >Name</H2
->to_setdisplayname&nbsp;--&nbsp;set the display name in the <TT
+>osip_to_set_displayname&nbsp;--&nbsp;set the display name in the <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -1989,8 +1996,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void to_setdisplayname</CODE
->(to_t *to
+>void osip_to_set_displayname</CODE
+>(osip_to_t *to,
 char *value);</CODE
 ></P
 ><P
@@ -2000,7 +2007,7 @@ char *value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-GETDISPLAYNAME"
->to_getdisplayname</A
+>osip_to_get_displayname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2009,7 +2016,7 @@ NAME="AEN500"
 ></A
 ><H2
 >Name</H2
->to_getdisplayname&nbsp;--&nbsp;return the display name from the <TT
+>osip_to_get_displayname&nbsp;--&nbsp;return the display name from the <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -2030,8 +2037,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->char *to_getdisplayname</CODE
->(to_t *to);</CODE
+>char *osip_to_get_displayname</CODE
+>(osip_to_t *to);</CODE
 ></P
 ><P
 ></P
@@ -2040,7 +2047,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TO-SETURL"
->to_seturl</A
+>osip_to_set_url</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2049,7 +2056,7 @@ NAME="AEN513"
 ></A
 ><H2
 >Name</H2
->to_seturl&nbsp;--&nbsp;set the <TT
+>osip_to_set_url&nbsp;--&nbsp;set the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -2075,9 +2082,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void to_seturl</CODE
->(to_t *to
-url_t *url);</CODE
+>void osip_to_set_url</CODE
+>(osip_to_t *to,
+osip_uri_t *url);</CODE
 ></P
 ><P
 ></P
@@ -2086,7 +2093,7 @@ url_t *url);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-GETURL"
->to_geturl</A
+>osip_to_get_url</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2095,7 +2102,7 @@ NAME="AEN528"
 ></A
 ><H2
 >Name</H2
->to_geturl&nbsp;--&nbsp;return the <TT
+>osip_to_get_url&nbsp;--&nbsp;return the <TT
 CLASS="PARAMETER"
 ><I
 >url</I
@@ -2121,8 +2128,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->url_t *to_geturl</CODE
->(to_t *to);</CODE
+>osip_uri_t *osip_to_get_url</CODE
+>(osip_to_t *to);</CODE
 ></P
 ><P
 ></P
@@ -2131,7 +2138,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TO-PARAM-ADD"
->to_param_add</A
+>osip_to_param_add</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2140,7 +2147,7 @@ NAME="AEN542"
 ></A
 ><H2
 >Name</H2
->to_param_add&nbsp;--&nbsp;add a <TT
+>osip_to_param_add&nbsp;--&nbsp;add a <TT
 CLASS="PARAMETER"
 ><I
 >gen_param</I
@@ -2166,9 +2173,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_param_add</CODE
->(to_t *to
-char *name
+>int osip_to_param_add</CODE
+>(osip_to_t *to,
+char *name,
 char *value);</CODE
 ></P
 ><P
@@ -2180,7 +2187,7 @@ char *value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-PARAM-GET"
->to_param_get</A
+>osip_to_param_get</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2189,7 +2196,7 @@ NAME="AEN559"
 ></A
 ><H2
 >Name</H2
->to_param_get&nbsp;--&nbsp;return the <TT
+>osip_to_param_get&nbsp;--&nbsp;return the <TT
 CLASS="PARAMETER"
 ><I
 >param</I
@@ -2220,9 +2227,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_param_get</CODE
->(to_t *to
-int pos
+>int osip_to_param_get</CODE
+>(osip_to_t *to,
+int pos,
 generic_param_t **gp);</CODE
 ></P
 ><P
@@ -2232,7 +2239,7 @@ generic_param_t **gp);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-GETTAG"
->to_gettag</A
+>osip_to_get_tag</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2241,7 +2248,7 @@ NAME="AEN576"
 ></A
 ><H2
 >Name</H2
->to_gettag&nbsp;--&nbsp;return the value associated with the tag parameter from the <TT
+>osip_to_get_tag&nbsp;--&nbsp;return the value associated with the tag parameter from the <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -2262,8 +2269,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void to_gettag</CODE
->(to_t *to
+>void osip_to_get_tag</CODE
+>(osip_to_t *to,
 generic_param_t **dest);</CODE
 ></P
 ><P
@@ -2273,7 +2280,7 @@ generic_param_t **dest);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TO-SETTAG"
->to_settag</A
+>osip_to_set_tag</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2282,7 +2289,7 @@ NAME="AEN590"
 ></A
 ><H2
 >Name</H2
->to_settag&nbsp;--&nbsp;set the <TT
+>osip_to_set_tag&nbsp;--&nbsp;set the <TT
 CLASS="PARAMETER"
 ><I
 >tag</I
@@ -2308,8 +2315,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void to_settag</CODE
->(to_t *to
+>void osip_to_set_tag</CODE
+>(osip_to_t *to,
 char *tag);</CODE
 ></P
 ><P
@@ -2318,8 +2325,8 @@ char *tag);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.TO-PARAM-GETBYNAME"
->to_param_getbyname</A
+NAME="FUNCTION.TO-PARAM-GET_BYNAME"
+>osip_to_param_get_byname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2328,7 +2335,7 @@ NAME="AEN605"
 ></A
 ><H2
 >Name</H2
->to_param_getbyname&nbsp;--&nbsp;get the parameter with <TT
+>osip_to_param_get_byname&nbsp;--&nbsp;get the parameter with <TT
 CLASS="PARAMETER"
 ><I
 >pname</I
@@ -2354,9 +2361,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int to_param_getbyname</CODE
->(to_t *to
-char *pname
+>int osip_to_param_get_byname</CODE
+>(osip_to_t *to,
+char *pname,
 generic_param_t **dest);</CODE
 ></P
 ><P
@@ -2390,9 +2397,9 @@ CLASS="PROGRAMLISTING"
   } generic_param_t;
 
   /* to, from and contact headers are defined as below */ 
-  typedef struct _to_t {
+  typedef struct _osip_to_t {
       char *displayname;
-      url_t *url;
+      osip_uri_t *url;
       list_t *gen_params;
   }</PRE
 ></DIV
@@ -2532,8 +2539,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 CLASS="FUNCDEF"
 >void generic_param_set</CODE
->(generic_param_t *gen_param
-char *pname
+>(generic_param_t *gen_param,
+char *pname,
 char *pvalue);</CODE
 ></P
 ><P
@@ -2543,7 +2550,7 @@ char *pvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.GENERIC-PARAM-GETNAME"
->generic_param_getname</A
+>generic_param_get_name</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2552,7 +2559,7 @@ NAME="AEN675"
 ></A
 ><H2
 >Name</H2
->generic_param_getname&nbsp;--&nbsp;Get <TT
+>generic_param_get_name&nbsp;--&nbsp;Get <TT
 CLASS="PARAMETER"
 ><I
 >name</I
@@ -2578,7 +2585,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->char *generic_param_getname</CODE
+>char *generic_param_get_name</CODE
 >(generic_param_t *gen_param);</CODE
 ></P
 ><P
@@ -2626,7 +2633,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 CLASS="FUNCDEF"
 >void generic_param_setname</CODE
->(generic_param_t *gen_param
+>(generic_param_t *gen_param,
 char *pname);</CODE
 ></P
 ><P
@@ -2636,7 +2643,7 @@ char *pname);</CODE
 ><H1
 ><A
 NAME="FUNCTION.GENERIC-PARAM-GETVALUE"
->generic_param_getvalue</A
+>generic_param_get_value</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2645,7 +2652,7 @@ NAME="AEN705"
 ></A
 ><H2
 >Name</H2
->generic_param_getvalue&nbsp;--&nbsp;Get <TT
+>generic_param_get_value&nbsp;--&nbsp;Get <TT
 CLASS="PARAMETER"
 ><I
 >value</I
@@ -2671,7 +2678,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->char *generic_param_getvalue</CODE
+>char *generic_param_get_value</CODE
 >(generic_param_t *gen_param);</CODE
 ></P
 ><P
@@ -2782,8 +2789,8 @@ char *value);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.GENERIC-PARAM-GETBYNAME"
->generic_param_getbyname</A
+NAME="FUNCTION.GENERIC-PARAM-GET_BYNAME"
+>generic_param_get_byname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2792,7 +2799,7 @@ NAME="AEN753"
 ></A
 ><H2
 >Name</H2
->generic_param_getbyname&nbsp;--&nbsp;find element containing <TT
+>generic_param_get_byname&nbsp;--&nbsp;find element containing <TT
 CLASS="PARAMETER"
 ><I
 >name</I
@@ -2823,7 +2830,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int generic_param_getbyname</CODE
+>int generic_param_get_byname</CODE
 >(list_t *gen_params
 char *name
 generic_param_t **gen_param);</CODE
@@ -2910,37 +2917,56 @@ CLASS="TYPE"
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct _sip_t {
-  /* Start-Line definition */
-  char *sipversion;
-  /* req */
-  osip_uri_t *rquri;
-  char *sipmethod;
-  /* resp */
-  char *statuscode;
-  char *reasonphrase;
-  /* End of Start-Line definition */
+> typedef struct osip_message
+  {
+    char *sip_version;                /**< SIP version (SIP request only) */
+    osip_uri_t *req_uri;              /**< Request-Uri (SIP request only) */
+    char *sip_method;                 /**< METHOD (SIP request only) */
 
-  /* for all header fully implemented by oSIP */
-  from_t           *from;
-  to_t             *to;
-  call_id_t        *call_id;
-  cseq_t           *cseq;
-  list_t           *vias;
-  list_t           *contacts;
-  list_t           *record_routes;
-  list_t           *routes;
-  content_type_t   *content_type;
-  content_length_t *contentlength;
-  mime_version_t   *mime_version;
+    int status_code;                  /**< Status Code (SIP answer only) */
+    char *reason_phrase;              /**< Reason Phrase (SIP answer only) */
 
-  /* for all other headers */
-  list_t           *headers;
+    osip_list_t *accepts;             /**< Accept headers */
+    osip_list_t *accept_encodings;    /**< Accept-Encoding headers */
+    osip_list_t *accept_languages;    /**< Accept-Language headers */
+    osip_list_t *alert_infos;         /**< Alert-Info headers */
+    osip_list_t *allows;              /**< Allows headers */
+    osip_list_t *authentication_infos;/**< authentication_info headers */
+    osip_list_t *authorizations;      /**< Authorizations headers */
+    osip_call_id_t *call_id;          /**< Call-ID header */
+    osip_list_t *call_infos;          /**< Call-Infos header */
+    osip_list_t *contacts;            /**< Contacts headers */
+    osip_list_t *content_dispositions;/**< Content-Dispositions headers */
+    osip_list_t *content_encodings;   /**< Content-Encodings headers */
+    osip_content_length_t *content_length;   /**< Content-Length header */
+    osip_content_type_t *content_type;       /**< Content-Type header */
+    osip_cseq_t *cseq;                /**< CSeq header */
+    osip_list_t *error_infos;         /**< Error-Info headers */
+    osip_from_t *from;                /**< From header */
+    osip_mime_version_t *mime_version;/**< Mime-Version header */
+    osip_list_t *proxy_authenticates; /**< Proxy-Authenticate headers */
+    osip_list_t *proxy_authentication_infos; /**< P-Authentication-Info headers */
+    osip_list_t *proxy_authorizations;/**< Proxy-authorization headers */
+    osip_list_t *record_routes;       /**< Record-Route headers */
+    osip_list_t *routes;              /**< Route headers */
+    osip_to_t *to;                    /**< To header */
+    osip_list_t *vias;                /**< Vias headers */
+    osip_list_t *www_authenticates;   /**< WWW-Authenticate headers */
 
-  /* for all attachments */
-  list_t           *bodies;
+    osip_list_t *headers;             /**< Other headers */
 
-} sip_t;</PRE
+    osip_list_t *bodies;              /**< List of attachements */
+
+    /*
+       1: structure and buffer "message" are identical.
+       2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
+     */
+    int message_property;             /**@internal */
+    char *message;                    /**@internal */
+    size_t message_length;            /**@internal */
+
+    void *application_data;           /**can be used by upper layer*/
+  } osip_message_t;</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -2957,14 +2983,14 @@ CLASS="FUNCSYNOPSIS"
 ></P
 ><PRE
 CLASS="FUNCSYNOPSISINFO"
->#include &#60;smsg.h&#62;</PRE
+>#include &#60;osipparser2/osip_parser.h&#62;</PRE
 ><P
 ></P
 ></DIV
 ><H1
 ><A
 NAME="FUNCTION.MSG-INIT"
->msg_init</A
+>osip_message_init</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -2973,7 +2999,7 @@ NAME="AEN799"
 ></A
 ><H2
 >Name</H2
->msg_init&nbsp;--&nbsp;Allocate and initialize the structure <TT
+>osip_message_init&nbsp;--&nbsp;Allocate and initialize the structure <TT
 CLASS="PARAMETER"
 ><I
 >msg</I
@@ -2994,8 +3020,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_init</CODE
->(sip_t **msg);</CODE
+>int osip_message_init</CODE
+>(osip_message_t **msg);</CODE
 ></P
 ><P
 ></P
@@ -3037,7 +3063,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 CLASS="FUNCDEF"
 >void osip_message_free</CODE
->(sip_t **msg);</CODE
+>(osip_message_t **msg);</CODE
 ></P
 ><P
 ></P
@@ -3046,7 +3072,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-PARSE"
->msg_parse</A
+>osip_message_parse</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3055,7 +3081,7 @@ NAME="AEN826"
 ></A
 ><H2
 >Name</H2
->msg_parse&nbsp;--&nbsp;Parse <TT
+>osip_message_parse&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -3081,8 +3107,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_parse</CODE
->(sip_t *msg
+>int osip_message_parse</CODE
+>(osip_message_t *msg,
 char *field_value);</CODE
 ></P
 ><P
@@ -3094,7 +3120,7 @@ char *field_value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-2CHAR"
->msg_2char</A
+>osip_message_to_str</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3103,7 +3129,7 @@ NAME="AEN842"
 ></A
 ><H2
 >Name</H2
->msg_2char&nbsp;--&nbsp;Allocate a string in <TT
+>osip_message_to_str&nbsp;--&nbsp;Allocate a string in <TT
 CLASS="PARAMETER"
 ><I
 >field_value</I
@@ -3129,8 +3155,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_2char</CODE
->(sip_t *msg
+>int osip_message_to_str</CODE
+>(osip_message_t *msg,
 char **field_value);</CODE
 ></P
 ><P
@@ -3142,7 +3168,7 @@ char **field_value);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-CLONE"
->msg_clone</A
+>osip_message_clone</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3151,7 +3177,7 @@ NAME="AEN858"
 ></A
 ><H2
 >Name</H2
->msg_clone&nbsp;--&nbsp;duplicate the <TT
+>osip_message_clone&nbsp;--&nbsp;duplicate the <TT
 CLASS="PARAMETER"
 ><I
 >msg</I
@@ -3172,9 +3198,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_clone</CODE
->(sip_t *msg
-sip_t **dest);</CODE
+>int osip_message_clone</CODE
+>(osip_message_t *msg,
+osip_message_t **dest);</CODE
 ></P
 ><P
 ></P
@@ -3185,7 +3211,7 @@ sip_t **dest);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETHEADER"
->msg_setheader</A
+>osip_message_set_header</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3194,7 +3220,7 @@ NAME="AEN873"
 ></A
 ><H2
 >Name</H2
->msg_setheader&nbsp;--&nbsp;Parse <TT
+>osip_message_set_header&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3220,9 +3246,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setheader</CODE
->(sip_t *sip
-char *hname
+>int osip_message_set_header</CODE
+>(osip_message_t *sip,
+char *hname,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3234,7 +3260,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETHEADER"
->msg_getheader</A
+>osip_message_get_header</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3243,7 +3269,7 @@ NAME="AEN890"
 ></A
 ><H2
 >Name</H2
->msg_getheader&nbsp;--&nbsp;set in <TT
+>osip_message_get_header&nbsp;--&nbsp;set in <TT
 CLASS="PARAMETER"
 ><I
 >dest</I
@@ -3274,9 +3300,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_getheader</CODE
->(sip_t *sip
-int pos
+>int osip_message_get_header</CODE
+>(osip_message_t *sip,
+int pos,
 header_t **header);</CODE
 ></P
 ><P
@@ -3287,8 +3313,8 @@ header_t **header);</CODE
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.MSG-HEADER-GETBYNAME"
->msg_header_getbyname</A
+NAME="FUNCTION.MSG-HEADER-GET_BYNAME"
+>osip_message_header_get_byname</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3297,7 +3323,7 @@ NAME="AEN908"
 ></A
 ><H2
 >Name</H2
->msg_header_getbyname&nbsp;--&nbsp;find the first header (after index <TT
+>osip_message_header_get_byname&nbsp;--&nbsp;find the first header (after index <TT
 CLASS="PARAMETER"
 ><I
 >pos</I
@@ -3328,10 +3354,10 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_header_getbyname</CODE
->(char *hname
-sip_t *sip
-int pos
+>int osip_message_header_get_byname</CODE
+>(char *hname,
+osip_message_t *sip,
+int pos,
 header_t **dest);</CODE
 ></P
 ><P
@@ -3343,7 +3369,7 @@ header_t **dest);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETCALL-ID"
->msg_setcall_id</A
+>osip_message_set_call_id</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3352,7 +3378,7 @@ NAME="AEN927"
 ></A
 ><H2
 >Name</H2
->msg_setcall_id&nbsp;--&nbsp;Parse <TT
+>osip_message_set_call_id&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3378,8 +3404,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setcall_id</CODE
->(sip_t *sip
+>int osip_message_set_call_id</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3391,7 +3417,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETCALL-ID"
->msg_getcall_id</A
+>osip_message_get_call_id</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3400,7 +3426,7 @@ NAME="AEN943"
 ></A
 ><H2
 >Name</H2
->msg_getcall_id&nbsp;--&nbsp;return the call_id attribute from the <TT
+>osip_message_get_call_id&nbsp;--&nbsp;return the call_id attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -3421,8 +3447,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->call_id_t *msg_getcall_id</CODE
->(sip_t *sip);</CODE
+>osip_call_id_t *osip_message_get_call_id</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -3433,7 +3459,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETCSEQ"
->msg_setcseq</A
+>osip_message_set_cseq</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3442,7 +3468,7 @@ NAME="AEN957"
 ></A
 ><H2
 >Name</H2
->msg_setcseq&nbsp;--&nbsp;Parse <TT
+>osip_message_set_cseq&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3468,8 +3494,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setcseq</CODE
->(sip_t *sip
+>int osip_message_set_cseq</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3481,7 +3507,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETCSEQ"
->msg_getcseq</A
+>osip_message_get_cseq</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3490,7 +3516,7 @@ NAME="AEN973"
 ></A
 ><H2
 >Name</H2
->msg_getcseq&nbsp;--&nbsp;return the cseq attribute from the <TT
+>osip_message_get_cseq&nbsp;--&nbsp;return the cseq attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -3511,8 +3537,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->cseq_t *msg_getcseq</CODE
->(sip_t *sip);</CODE
+>osip_cseq_t *osip_message_get_cseq</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -3523,7 +3549,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETCONTACT"
->msg_setcontact</A
+>osip_message_set_contact</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3532,7 +3558,7 @@ NAME="AEN987"
 ></A
 ><H2
 >Name</H2
->msg_setcontact&nbsp;--&nbsp;Parse <TT
+>osip_message_set_contact&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3558,8 +3584,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setcontact</CODE
->(sip_t *sip
+>int osip_message_set_contact</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3571,7 +3597,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETCONTACT"
->msg_getcontact</A
+>osip_message_get_contact</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3580,7 +3606,7 @@ NAME="AEN1003"
 ></A
 ><H2
 >Name</H2
->msg_getcontact&nbsp;--&nbsp;set in <TT
+>osip_message_get_contact&nbsp;--&nbsp;set in <TT
 CLASS="PARAMETER"
 ><I
 >dest</I
@@ -3611,9 +3637,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_getcontact</CODE
->(sip_t *sip
-int pos
+>int osip_message_get_contact</CODE
+>(osip_message_t *sip,
+int pos,
 contact_t **contact);</CODE
 ></P
 ><P
@@ -3625,7 +3651,7 @@ contact_t **contact);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETFROM"
->msg_setfrom</A
+>osip_message_set_from</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3634,7 +3660,7 @@ NAME="AEN1021"
 ></A
 ><H2
 >Name</H2
->msg_setfrom&nbsp;--&nbsp;Parse <TT
+>osip_message_set_from&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3660,8 +3686,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setfrom</CODE
->(sip_t *sip
+>int osip_message_set_from</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3673,7 +3699,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETFROM"
->msg_getfrom</A
+>osip_message_get_from</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3682,7 +3708,7 @@ NAME="AEN1037"
 ></A
 ><H2
 >Name</H2
->msg_getfrom&nbsp;--&nbsp;return the from attribute from the <TT
+>osip_message_get_from&nbsp;--&nbsp;return the from attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -3703,8 +3729,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->from_t *msg_getfrom</CODE
->(sip_t *sip);</CODE
+>osip_from_t *osip_message_get_from</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -3715,7 +3741,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETTO"
->msg_setto</A
+>osip_message_set_to</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3724,7 +3750,7 @@ NAME="AEN1051"
 ></A
 ><H2
 >Name</H2
->msg_setto&nbsp;--&nbsp;Parse <TT
+>osip_message_set_to&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3750,8 +3776,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setto</CODE
->(sip_t *sip
+>int osip_message_set_to</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3763,7 +3789,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETTO"
->msg_getto</A
+>osip_message_get_to</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3772,7 +3798,7 @@ NAME="AEN1067"
 ></A
 ><H2
 >Name</H2
->msg_getto&nbsp;--&nbsp;return the <TT
+>osip_message_get_to&nbsp;--&nbsp;return the <TT
 CLASS="PARAMETER"
 ><I
 >to</I
@@ -3798,8 +3824,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->to_t *msg_getto</CODE
->(sip_t *sip);</CODE
+>osip_to_t *osip_message_get_to</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -3810,7 +3836,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETVIA"
->msg_setvia</A
+>osip_message_set_via</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3819,7 +3845,7 @@ NAME="AEN1082"
 ></A
 ><H2
 >Name</H2
->msg_setvia&nbsp;--&nbsp;Parse <TT
+>osip_message_set_via&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3845,8 +3871,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setvia</CODE
->(sip_t *sip
+>int osip_message_set_via</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3858,7 +3884,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETVIA"
->msg_getvia</A
+>osip_message_get_via</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3867,7 +3893,7 @@ NAME="AEN1098"
 ></A
 ><H2
 >Name</H2
->msg_getvia&nbsp;--&nbsp;set in <TT
+>osip_message_get_via&nbsp;--&nbsp;set in <TT
 CLASS="PARAMETER"
 ><I
 >dest</I
@@ -3898,10 +3924,10 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_getvia</CODE
->(sip_t *sip
-int pos
-via_t **via);</CODE
+>int osip_message_get_via</CODE
+>(osip_message_t *sip,
+int pos,
+osip_via_t **via);</CODE
 ></P
 ><P
 ></P
@@ -3912,7 +3938,7 @@ via_t **via);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETRECORD-ROUTE"
->msg_setrecord_route</A
+>osip_message_set_record_route</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3921,7 +3947,7 @@ NAME="AEN1116"
 ></A
 ><H2
 >Name</H2
->msg_setrecord_route&nbsp;--&nbsp;Parse <TT
+>osip_message_set_record_route&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -3947,8 +3973,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setrecord_route</CODE
->(sip_t *sip
+>int osip_message_set_record_route</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -3960,7 +3986,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETRECORD-ROUTE"
->msg_getrecord_route</A
+>osip_message_get_record_route</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -3969,7 +3995,7 @@ NAME="AEN1132"
 ></A
 ><H2
 >Name</H2
->msg_getrecord_route&nbsp;--&nbsp;set in <TT
+>osip_message_get_record_route&nbsp;--&nbsp;set in <TT
 CLASS="PARAMETER"
 ><I
 >dest</I
@@ -4000,9 +4026,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_getrecord_route</CODE
->(sip_t *sip
-int pos
+>int osip_message_get_record_route</CODE
+>(osip_message_t *sip,
+int pos,
 record_route_t **record_route);</CODE
 ></P
 ><P
@@ -4014,7 +4040,7 @@ record_route_t **record_route);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETROUTE"
->msg_setroute</A
+>osip_message_set_route</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4023,7 +4049,7 @@ NAME="AEN1150"
 ></A
 ><H2
 >Name</H2
->msg_setroute&nbsp;--&nbsp;Parse <TT
+>osip_message_set_route&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -4049,8 +4075,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setroute</CODE
->(sip_t *sip
+>int osip_message_set_route</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -4062,7 +4088,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETROUTE"
->msg_getroute</A
+>osip_message_get_route</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4071,7 +4097,7 @@ NAME="AEN1166"
 ></A
 ><H2
 >Name</H2
->msg_getroute&nbsp;--&nbsp;set in <TT
+>osip_message_get_route&nbsp;--&nbsp;set in <TT
 CLASS="PARAMETER"
 ><I
 >dest</I
@@ -4102,9 +4128,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_getroute</CODE
->(sip_t *sip
-int pos
+>int osip_message_get_route</CODE
+>(osip_message_t *sip,
+int pos,
 route_t **route);</CODE
 ></P
 ><P
@@ -4116,7 +4142,7 @@ route_t **route);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETCONTENT-LENGTH"
->msg_setcontent_length</A
+>osip_message_set_content_length</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4125,7 +4151,7 @@ NAME="AEN1184"
 ></A
 ><H2
 >Name</H2
->msg_setcontent_length&nbsp;--&nbsp;Parse <TT
+>osip_message_set_content_length&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -4151,8 +4177,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setcontent_length</CODE
->(sip_t *sip
+>int osip_message_set_content_length</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -4164,7 +4190,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETCONTENT-LENGTH"
->msg_getcontent_length</A
+>osip_message_get_content_length</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4173,7 +4199,7 @@ NAME="AEN1200"
 ></A
 ><H2
 >Name</H2
->msg_getcontent_length&nbsp;--&nbsp;return the content_length attribute from the <TT
+>osip_message_get_content_length&nbsp;--&nbsp;return the content_length attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -4194,8 +4220,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->content_length_t * msg_getcontent_length</CODE
->(sip_t *sip);</CODE
+>content_length_t * osip_message_get_content_length</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -4204,7 +4230,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETCONTENT-TYPE"
->msg_setcontent_type</A
+>osip_message_set_content_type</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4213,7 +4239,7 @@ NAME="AEN1213"
 ></A
 ><H2
 >Name</H2
->msg_setcontent_type&nbsp;--&nbsp;Parse <TT
+>osip_message_set_content_type&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -4239,8 +4265,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setcontent_type</CODE
->(sip_t *sip
+>int osip_message_set_content_type</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -4252,7 +4278,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETCONTENT-TYPE"
->msg_getcontent_type</A
+>osip_message_get_content_type</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4261,7 +4287,7 @@ NAME="AEN1229"
 ></A
 ><H2
 >Name</H2
->msg_getcontent_type&nbsp;--&nbsp;return the content_type attribute from the <TT
+>osip_message_get_content_type&nbsp;--&nbsp;return the content_type attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -4282,8 +4308,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->content_type_t * msg_getcontent_type</CODE
->(sip_t *sip);</CODE
+>content_type_t * osip_message_get_content_type</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -4292,7 +4318,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.MSG-SETMIME-VERSION"
->msg_setmime_version</A
+>osip_message_set_mime_version</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4301,7 +4327,7 @@ NAME="AEN1242"
 ></A
 ><H2
 >Name</H2
->msg_setmime_version&nbsp;--&nbsp;Parse <TT
+>osip_message_set_mime_version&nbsp;--&nbsp;Parse <TT
 CLASS="PARAMETER"
 ><I
 >hvalue</I
@@ -4327,8 +4353,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int msg_setmime_version</CODE
->(sip_t *sip
+>int osip_message_set_mime_version</CODE
+>(osip_message_t *sip,
 char *hvalue);</CODE
 ></P
 ><P
@@ -4340,7 +4366,7 @@ char *hvalue);</CODE
 ><H1
 ><A
 NAME="FUNCTION.MSG-GETMIME-VERSION"
->msg_getmime_version</A
+>osip_message_get_mime_version</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -4349,7 +4375,7 @@ NAME="AEN1258"
 ></A
 ><H2
 >Name</H2
->msg_getmime_version&nbsp;--&nbsp;return the mime_version attribute from the <TT
+>osip_message_get_mime_version&nbsp;--&nbsp;return the mime_version attribute from the <TT
 CLASS="PARAMETER"
 ><I
 >sip</I
@@ -4370,8 +4396,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->mime_version_t * msg_getmime_version</CODE
->(sip_t *sip);</CODE
+>mime_version_t * osip_message_get_mime_version</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -4397,28 +4423,27 @@ CLASS="EXAMPLE"
 ><PRE
 CLASS="PROGRAMLISTING"
 >/* a few MACROS to ease readability of code */
-#define MSG_IS_RESPONSE(resp)     (resp-&#62;strtline-&#62;statuscode!=NULL)
-#define MSG_IS_REQUEST(req)       (req-&#62;strtline-&#62;statuscode==NULL)
+ MSG_IS_RESPONSE(resp)
+ MSG_IS_REQUEST(req)
 
-#define MSG_IS_INVITE(msg)  (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"INVITE",6))
-#define MSG_IS_ACK(msg)     (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"ACK",6))
-#define MSG_IS_BYE(msg)     (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"BYE",6))
-#define MSG_IS_REGISTER(msg) (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"REGISTER",6))
-#define MSG_IS_CANCEL(msg)  (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"CANCEL",6))
-#define MSG_IS_OPTIONS(msg) (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"OPTIONS",6))
-#define MSG_IS_INFO(msg)    (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"INFO",6))
-#define MSG_IS_PRACK(msg)   (0==strncmp(msg-&#62;strtline-&#62;sipmethod,"PRACK",6))
+ MSG_IS_INVITE(msg)
+ MSG_IS_ACK(msg)
+ MSG_IS_BYE(msg)
+ MSG_IS_REGISTER(msg)
+ MSG_IS_CANCEL(msg)
+ MSG_IS_OPTIONS(msg)
+ MSG_IS_INFO(msg)
+ MSG_IS_PRACK(msg)
 
-#define MSG_IS_STATUS_1XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"1",1))
-#define MSG_IS_STATUS_2XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"2",1))
-#define MSG_IS_STATUS_3XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"3",1))
-#define MSG_IS_STATUS_4XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"4",1))
-#define MSG_IS_STATUS_5XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"5",1))
-#define MSG_IS_STATUS_6XX(msg)    (0==strncmp(msg-&#62;strtline-&#62;statuscode,"6",1))
-#define MSG_TEST_CODE(resp, code) (resp-&#62;strtline-&#62;statuscode!=NULL \
-				   &#38;&#38; code==(int)satoi(resp-&#62;strtline-&#62;statuscode))
-#define MSG_IS_RESPONSEFOR(resp,requestname) \
-                                  (0==strcmp(resp-&#62;cseq-&#62;method,requestname))</PRE
+ MSG_IS_STATUS_1XX(msg)
+ MSG_IS_STATUS_2XX(msg)
+ MSG_IS_STATUS_3XX(msg)
+ MSG_IS_STATUS_4XX(msg)
+ MSG_IS_STATUS_5XX(msg)
+ MSG_IS_STATUS_6XX(msg)
+
+ MSG_TEST_CODE(resp, code)
+ MSG_IS_RESPONSEFOR(resp,requestname)</PRE
 ></DIV
 ></DIV
 ></DIV
@@ -4431,7 +4456,7 @@ NAME="AEN1276"
 >The parser HOW-TO.</A
 ></H1
 ><P
->Building a message is not a complex task and does not require to be a C expert. Nevertheless, it requires you to be a SIP expert! The document describing SIP (rfc2543.txt) provides all you need to build correct requests and response. You will have to know which header MUST be included ("To", "From", "Call-ID", "Cseq" are the most common...), which header MUST NOT be included, and which header MAY appear in the message.  </P
+>Building a message is not a complex task and does not require to be a C expert. Nevertheless, it requires you to be a SIP expert! The document describing SIP (rfc3261.txt) provides all you need to build correct requests and response. You will have to know which header MUST be included ("To", "From", "Call-ID", "Cseq" are the most common...), which header MUST NOT be included, and which header MAY appear in the message.  </P
 ><DIV
 CLASS="SECT2"
 ><HR><H2
@@ -4459,30 +4484,26 @@ NAME="AEN1284"
 ><P
 >oSIP has a standard approach to request allocation of structures. For each SIP related one, (like <SPAN
 CLASS="TYPE"
->sip_t</SPAN
+>osip_message_t</SPAN
 >, or <SPAN
 CLASS="TYPE"
->from_t</SPAN
->) a method "xxxx_init()" exists and MUST be used to request allocation. Using this method with the correspondent "xxxx_free()" allows a competitive memory management thus avoiding as many memory leaks as possible.</P
+>osip_from_t</SPAN
+>) a method "osip_xxxx_init()" exists and MUST be used to request allocation. It must be used along with "osip_xxxx_free()".</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
 ><B
->Example 4-7. allocation of sip_t and url_t.</B
+>Example 4-7. allocation of osip_message_t and osip_uri_t.</B
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
-> sip_t  *msg;
- msg_init(&#38;msg);
-
+> osip_message_t *msg;
+ osip_message_init(&#38;msg);
  osip_message_free(msg);
- free(msg);
 
- url_t *url;
- url_init(&#38;url);
-
- url_free(url);
- free(url);</PRE
+ osip_uri_t *url;
+ osip_uri_init(&#38;url);
+ osip_uri_free(url);</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -4498,15 +4519,15 @@ NAME="AEN1292"
 ><PRE
 CLASS="PROGRAMLISTING"
 > /* make a request line. */
- url_t  *uri;
- url_init(&#38;uri);
- url_setscheme(url,sstrdup("sip"));
- url_setuserinfo(url,sstrdup("jack"));
- url_sethost(url,sstrdup("atosc.org"));
+ osip_uri_t  *uri;
+ osip_uri_init(&#38;uri);
+ osip_uri_set_scheme(url,osip_strdup("sip"));
+ osip_uri_set_username(url,osip_strdup("jack"));
+ osip_uri_set_host(url,osip_strdup("atosc.org"));
 
- msg_setmethod(msg,sstrdup("INVITE"));
- msg_seturi(msg,uri);
- msg_setversion(msg,sstrdup("2.0"));</PRE
+ osip_message_set_method(msg,osip_strdup("INVITE"));
+ osip_message_set_uri(msg,uri);
+ osip_message_set_version(msg,osip_strdup("2.0"));</PRE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -4553,7 +4574,7 @@ BORDER="0"
 ></TR
 ><TR
 ><TD
->Content-length</TD
+>Content-length (mandatory for TCP, recommended for ALL)</TD
 ></TR
 ><TR
 ><TD
@@ -4571,74 +4592,74 @@ CLASS="EXAMPLE"
 ><PRE
 CLASS="PROGRAMLISTING"
 > {
-  url_t    *url;
-  to_t     *to;
-  url_init(&#38;url);
-  url_setusername(url,sstrdup("jack"));
-  url_sethost(url,sstrdup("atosc.org"));
+  osip_uri_t    *url;
+  osip_to_t     *to;
+  osip_uri_init(&#38;url);
+  osip_uri_set_username(url,osip_strdup("jack"));
+  osip_uri_set_host(url,osip_strdup("atosc.org"));
 
-  to_init(&#38;to);
-  to_seturl(to,url);
-  to_setdisplayname(to,sstrdup("jack..."));
+  osip_to_init(&#38;to);
+  osip_to_set_url(to,url);
+  osip_to_set_displayname(to,osip_strdup("Aymeric MOIZARD"));
 
-  msg_setto(msg, to);
+  osip_message_set_to(msg, to);
  }
 
-  /* the same API is available for the from_t structure */
+  /* the same API is available for the osip_from_t structure */
  {
-  from_t   *from;
-  /* allocate a url_t */
-  url_init(&#38;url);
-  url_setusername(url,sstrdup("cha"));
-  url_sethost(url,sstrdup("anywhere.org"));
+  osip_from_t   *from;
+  /* allocate a osip_uri_t */
+  osip_uri_init(&#38;url);
+  osip_uri_set_username(url,osip_strdup("cha"));
+  osip_uri_set_host(url,osip_strdup("anywhere.org"));
 
-  /* allocate a from_t */
-  from_init(&#38;from);
-  from_seturl(from,url);
-  from_setdisplayname(from,sstrdup("My love"));
-  from_set_tag(from,sstrdup("a48a"));
+  /* allocate a osip_from_t */
+  osip_from_init(&#38;from);
+  osip_from_set_url(from,url);
+  osip_from_set_displayname(from,osip_strdup("My love"));
+  osip_from_set_tag(from,osip_strdup("a48a"));
 
-  msg_setfrom(msg, from);
- }
-
- {
-  via_t    *via;
-  via_init(&#38;via);
-
-  via_setversion(via,sstrdup("2.0"));
-  via_setprotocol(via,sstrdup("UDP"));
-  via_sethost(via,sstrdup("137.137.137.137"));
-  via_set_branch(via,sstrdup("branch"),sstrdup("a7c6a8dlze.1"));
-
-  msg_setvia(msg, via);
+  osip_message_set_from(msg, from);
  }
 
  {
-  cseq_t   *cseq;
+  osip_via_t    *via;
+  osip_via_init(&#38;via);
+
+  osip_via_set_version(via,osip_strdup("2.0"));
+  osip_via_set_protocol(via,osip_strdup("UDP"));
+  osip_via_set_host(via,osip_strdup("137.137.137.137"));
+  osip_via_set_branch(via,osip_strdup("branch"),osip_strdup("z9hG4bK776asdhds.1"));
+
+  osip_message_set_via(msg, via);
+ }
+
+ {
+  osip_cseq_t   *cseq;
   cseq_init(&#38;cseq);
   ...
 
-  msg_setcseq(msg, cseq);
+  osip_message_set_cseq(msg, cseq);
  }
 
  {
-  callid_t *callid;
-  callid_init(&#38;callid);
+  osip_call_id_t *callid;
+  osip_call_id_init(&#38;callid);
 
-  callid_setnumber(callid,sstrdup("f81d4"));
-  callid_sethost(callid,sstrdup("foo.atosc.org"));
+  osip_callid_set_number(callid,osip_strdup("f81d4"));
+  osip_callid_set_host(callid,osip_strdup("foo.atosc.org"));
 
-  msg_setcallid(msg, callid);
+  osip_message_set_callid(msg, callid);
  }
 
  /* this API can also be used, but it is much more time consuming! */
- msg_setcontact(msg,"sip:jacK@office.atosc.org");
+ osip_message_set_contact(msg,"sip:jacK@office.atosc.org");
 
  /* Let's add some headers */
- msg_setheader(msg,sstrdup("SuBjecT"),sstrdup("Need support for oSIP!"));
+ osip_message_set_header(msg,osip_strdup("SuBjecT"),osip_strdup("Need support for oSIP!"));
 
  /* add a body */
- msg_setbody(msg,"v=0\r\no=user1 53655765 2353687637 IN IP4 128.3.4.5\r\ns=Mbone Audio\r\ni=Discussion of Mbone Engineering Issues\r\ne=mbone@somewhere.com\r\nc=IN IP4 128.3.4.5\r\nt=0 0\r\nm=audio 3456 RTP/AVP 0\r\na=rtpmap:0 PCMU/8000\r\n");</PRE
+ osip_message_set_body(msg,"v=0\r\no=user1 53655765 2353687637 IN IP4 128.3.4.5\r\ns=Mbone Audio\r\ni=Discussion of Mbone Engineering Issues\r\ne=mbone@somewhere.com\r\nc=IN IP4 128.3.4.5\r\nt=0 0\r\nm=audio 3456 RTP/AVP 0\r\na=rtpmap:0 PCMU/8000\r\n");</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -4650,18 +4671,21 @@ NAME="AEN1313"
 >make a string from a structure</A
 ></H2
 ><P
->For sip_t like for the structure used for the headers (to_t, from_t, call_id_t...), a method exist to retrieve printed version of the element.</P
+>For osip_message_t like for the structure used for the headers (osip_to_t, osip_from_t, osip_call_id_t...), a method exist to retrieve printed version of the element.</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
 ><B
->Example 4-9. Method xxxx_2char</B
+>Example 4-9. Method xxxx_to_str</B
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->  char *astring;
-  astring = sip_2char(msg);
-  free(astring);</PRE
+>  char *astring = NULL;
+  int length;
+  i = osip_message_to_str(msg, &#38;astring, &#38;length);
+  if (i!=0)
+     return -1;
+  osip_free(astring);</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -4682,8 +4706,7 @@ CLASS="EXAMPLE"
 >This is how you must free all memory.</P
 ><PRE
 CLASS="PROGRAMLISTING"
-> sip_free(msg);
- free(msg);</PRE
+> osip_messagefree(msg);</PRE
 ></DIV
 ><P
 >The parser may sometimes be too much tolerant. It will accept silently some of your mistakes. As an example, the parser should accept a display name (for a "To" header) with a comma inside. The developer MUST enclose the string between quotes. To keep the application interoperable, please always keep an eye on the rfc and control every characters you put in SIP message.</P
@@ -4719,17 +4742,17 @@ NAME="AEN1331"
 ><P
 ><TT
 CLASS="VARNAME"
->./libosip-x.x.x/fsm </TT
+>./libosip-x.x.x/src/osip2 </TT
 >is the source directory for the SIP finite state machines.</P
 ><P
 ><TT
 CLASS="VARNAME"
->-losipfsm-x.x.x </TT
+>-losip2 </TT
 >is the library containing the SIP finite state machines</P
 ><P
 ><TT
 CLASS="VARNAME"
->#include &#60;osip/osip.h&#62; </TT
+>#include &#60;osip2/osip.h&#62; </TT
 >is the include file describing the external SIP parser API</P
 ></DIV
 ><DIV
@@ -4749,9 +4772,9 @@ NAME="AEN1341"
 >Definition and purpose of transaction</A
 ></H2
 ><P
->Transactions are used to store the context of one "SIP transactions" as defined in the rfc2543. oSIP uses the <SPAN
+>Transactions are used to store the context of one "SIP transactions" as defined in the rfc3261. oSIP uses the <SPAN
 CLASS="TYPE"
->transaction_t</SPAN
+>osip_transaction_t</SPAN
 > internally so you probably don't need to understand each attribute.</P
 ><DIV
 CLASS="EXAMPLE"
@@ -4796,46 +4819,50 @@ CLASS="VARNAME"
 ><TT
 CLASS="VARNAME"
 >transactionff</TT
-> is a FIFO used to receive all events (sipevent_t) which concern this transaction.</P
-><P
->The <TT
-CLASS="VARNAME"
->proxy</TT
-> attribute give the host and port to be used for requests. (all requests will be forced to go to the proxy whatever the request-uri contains.</P
+> is a FIFO used to receive all events (osip_event_t) which concern this transaction.</P
 ><DIV
 CLASS="EXAMPLE"
 ><P
 ><B
 >Example 5-2. type definition of <SPAN
 CLASS="TYPE"
->transaction_t</SPAN
+>osip_transaction_t</SPAN
 >.</B
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct _transaction_t {
-  void *your_instance;       /* add whatever you want here.       */
-  int transactionid;         /* simple id used to identify the tr.*/
-  fifo_t *transactionff;     /* events must be added in this FIFO */
-  url_t *proxy;              /* url used to send requests        */    
+>typedef struct osip__transaction {
+    void *your_instance;        /**< User Defined Pointer. */
+    int transactionid;          /**< Internal Transaction Identifier. */
+    osip_fifo_t *transactionff; /**< events must be added in this fifo */
 
-  from_t    *from;           /* CALL-LEG definition */
-  to_t      *to;
-  call_id_t *callid;
-  cseq_t    *cseq;
-  sip_t *lastrequest;        /* last request received or sent     */
-  sip_t *lastresponse;       /* last response received or sent    */
+    osip_via_t *topvia;         /**< CALL-LEG definition (Top Via) */
+    osip_from_t *from;          /**< CALL-LEG definition (From)    */
+    osip_to_t *to;              /**< CALL-LEG definition (To)      */
+    osip_call_id_t *callid;     /**< CALL-LEG definition (Call-ID) */
+    osip_cseq_t *cseq;          /**< CALL-LEG definition (CSeq)    */
 
-  state_t state;             /* state of transaction              */
-  statemachine_t *statemachine; /* state-machine of transaction   */
+    osip_message_t *orig_request;  /**< Initial request            */
+    osip_message_t *last_response; /**< Last response              */
+    osip_message_t *ack;           /**< ack request sent           */
 
-  time_t birth_time;         /* birth_date of transaction         */
-  time_t completed_time;     /* end   date of transaction         */
-  int retransmissioncounter; /* facilities for internal timer     */
+    state_t state;              /**< Current state of the transaction */
 
-  void *config;              /* transaction is managed by config */
-                             /* of type osip_t */
-} transaction_t;</PRE
+    time_t birth_time;          /**< birth date of transaction        */
+    time_t completed_time;      /**< end   date of transaction        */
+
+    int in_socket;              /**< Optional socket for incoming message */
+    int out_socket;             /**< Optional place for outgoing message */
+
+    void *config;               /**@internal transaction is managed by osip_t  */
+
+    osip_fsm_type_t ctx_type;   /**< Type of the transaction */
+    osip_ict_t *ict_context;    /**@internal */
+    osip_ist_t *ist_context;    /**@internal */
+    osip_nict_t *nict_context;  /**@internal */
+    osip_nist_t *nist_context;  /**@internal */
+
+} osip_transaction_t;</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -4844,10 +4871,10 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="AEN1361"
->Definition and purpose of sipevent</A
+>Definition and purpose of osip_event</A
 ></H2
 ><P
->sipevents objects are used to control the context of one "SIP transaction" element. There is 3 types of SIP events for the finite state machines:</P
+>osip_events objects are used to control the context of one "SIP transaction" element. There is 3 types of SIP events for the finite state machines:</P
 ><P
 ></P
 ><TABLE
@@ -4888,16 +4915,16 @@ CLASS="EXAMPLE"
 ><B
 >Example 5-3. type definition of <SPAN
 CLASS="TYPE"
->sipevent_t</SPAN
+>osip_event_t</SPAN
 >.</B
 ></P
 ><PRE
 CLASS="PROGRAMLISTING"
->typedef struct _sipevent_t {
+>typedef struct osip_event {
   type_t type;
   int transactionid;
-  sip_t *sip;
-} sipevent_t;</PRE
+  osip_message_t *sip;
+} osip_event_t;</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -4914,7 +4941,7 @@ CLASS="FUNCSYNOPSIS"
 ></P
 ><PRE
 CLASS="FUNCSYNOPSISINFO"
->#include &#60;osip.h&#62;</PRE
+>#include &#60;osip2/osip.h&#62;</PRE
 ><P
 ></P
 ></DIV
@@ -5002,47 +5029,6 @@ CLASS="FUNCDEF"
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.OSIP-INIT-PROXY"
->osip_init_proxy</A
-></H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN1410"
-></A
-><H2
->Name</H2
->osip_init_proxy&nbsp;--&nbsp;set the default proxy to be used for all transactions related to <TT
-CLASS="PARAMETER"
-><I
->osip</I
-></TT
->.</DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1414"
-></A
-><H2
->Description</H2
-><DIV
-CLASS="FUNCSYNOPSIS"
-><P
-></P
-><P
-><CODE
-><CODE
-CLASS="FUNCDEF"
->void osip_init_proxy</CODE
->(osip_t *osip
-url_t *url);</CODE
-></P
-><P
-></P
-></DIV
-></DIV
-><H1
-><A
 NAME="FUNCTION.OSIP-EXECUTE"
 >osip_execute</A
 ></H1
@@ -5057,8 +5043,8 @@ NAME="AEN1424"
 CLASS="PARAMETER"
 ><I
 >osip</I
-></TT
->. (This method is only designed for NON-MULTI THREADED application.)</DIV
+>.</TT
+></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
@@ -5083,8 +5069,8 @@ CLASS="FUNCDEF"
 ></DIV
 ><H1
 ><A
-NAME="FUNCTION.OSIP-DISTRIBUTE-EVENT"
->osip_distribute_event</A
+NAME="FUNCTION.OSIP-FIND-TRANSACTION-AND-ADD-EVENT"
+>osip_find_transaction_and_add_event</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -5093,7 +5079,7 @@ NAME="AEN1437"
 ></A
 ><H2
 >Name</H2
->osip_distribute_event&nbsp;--&nbsp;distribute a SIP event (message) in the right FIFO of <TT
+>osip_find_transaction_and_add_event&nbsp;--&nbsp;distribute a SIP event (message) in the right FIFO of <TT
 CLASS="PARAMETER"
 ><I
 >osip</I
@@ -5114,9 +5100,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->transaction_t *osip_distribute_event</CODE
->(osip_t *osip
-sipevent_t *se);</CODE
+>osip_transaction_t *osip_find_transaction_and_add_event</CODE
+>(osip_t *osip,
+osip_event_t *se);</CODE
 ></P
 ><P
 ></P
@@ -5155,8 +5141,9 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->sipevent_t *osip_parse</CODE
->(char *buf);</CODE
+>osip_event_t *osip_parse</CODE
+>(char *buf,
+size_t length);</CODE
 ></P
 ><P
 ></P
@@ -5196,7 +5183,7 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->sipevent_t *osip_new_event</CODE
+>osip_event_t *osip_new_event</CODE
 >(type_t type
 int transactionid);</CODE
 ></P
@@ -5232,8 +5219,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->sipevent_t *osip_new_incoming_event</CODE
->(sip_t *sip);</CODE
+>osip_event_t *osip_new_incoming_event</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -5267,162 +5254,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->sipevent_t *osip_new_outgoing_event</CODE
->(sip_t *sip);</CODE
-></P
-><P
-></P
-></DIV
-></DIV
-><H1
-><A
-NAME="FUNCTION.OSIP-FIND-ASINCOMINGMESSAGE"
->osip_find_asincomingmessage</A
-></H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN1503"
-></A
-><H2
->Name</H2
->osip_find_asincomingmessage&nbsp;--&nbsp;find (or create) the transaction related to the SIP incoming event.</DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1506"
-></A
-><H2
->Description</H2
-><DIV
-CLASS="FUNCSYNOPSIS"
-><P
-></P
-><P
-><CODE
-><CODE
-CLASS="FUNCDEF"
->transaction_t *osip_find_asincomingmessage</CODE
->(osip_t *osip
-sipevent_t *sipevent);</CODE
-></P
-><P
-></P
-></DIV
-></DIV
-><H1
-><A
-NAME="FUNCTION.OSIP-FIND-ASOUTGOINGMESSAGE"
->osip_find_asoutgoingmessage</A
-></H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN1516"
-></A
-><H2
->Name</H2
->osip_find_asoutgoingmessage&nbsp;--&nbsp;find the transaction related to the SIP outgoing event.</DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1519"
-></A
-><H2
->Description</H2
-><DIV
-CLASS="FUNCSYNOPSIS"
-><P
-></P
-><P
-><CODE
-><CODE
-CLASS="FUNCDEF"
->transaction_t *osip_find_asoutgoingmessage</CODE
->(osip_t *osip
-sipevent_t *sipevent);</CODE
-></P
-><P
-></P
-></DIV
-></DIV
-><H1
-><A
-NAME="FUNCTION.OSIP-FIND-BYID"
->osip_find_byid</A
-></H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN1529"
-></A
-><H2
->Name</H2
->osip_find_byid&nbsp;--&nbsp;find the transaction with <TT
-CLASS="PARAMETER"
-><I
->transactionid</I
-></TT
-> attribute.</DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1533"
-></A
-><H2
->Description</H2
-><DIV
-CLASS="FUNCSYNOPSIS"
-><P
-></P
-><P
-><CODE
-><CODE
-CLASS="FUNCDEF"
->transaction_t *osip_find_byid</CODE
->(osip_t *osip
-int transactionid);</CODE
-></P
-><P
-></P
-></DIV
-></DIV
-><H1
-><A
-NAME="FUNCTION.OSIP-REMOVE-BYID"
->osip_remove_byid</A
-></H1
-><DIV
-CLASS="REFNAMEDIV"
-><A
-NAME="AEN1543"
-></A
-><H2
->Name</H2
->osip_remove_byid&nbsp;--&nbsp;remove the transaction with <TT
-CLASS="PARAMETER"
-><I
->transactionid</I
-></TT
-> attribute.</DIV
-><DIV
-CLASS="REFSECT1"
-><A
-NAME="AEN1547"
-></A
-><H2
->Description</H2
-><DIV
-CLASS="FUNCSYNOPSIS"
-><P
-></P
-><P
-><CODE
-><CODE
-CLASS="FUNCDEF"
->int osip_remove_byid</CODE
->(osip_t *osip
-int transactionid);</CODE
+>osip_event_t *osip_new_outgoing_event</CODE
+>(osip_message_t *sip);</CODE
 ></P
 ><P
 ></P
@@ -5431,7 +5264,7 @@ int transactionid);</CODE
 ><H1
 ><A
 NAME="FUNCTION.TRANSACTION-INIT"
->transaction_init</A
+>osip_transaction_init</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -5440,7 +5273,7 @@ NAME="AEN1557"
 ></A
 ><H2
 >Name</H2
->transaction_init&nbsp;--&nbsp;Allocate and initialize the <TT
+>osip_transaction_init&nbsp;--&nbsp;Allocate and initialize the <TT
 CLASS="PARAMETER"
 ><I
 >transaction</I
@@ -5461,8 +5294,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int transaction_init</CODE
->(transaction_t **transaction);</CODE
+>int osip_transaction_init</CODE
+>(osip_transaction_t **transaction);</CODE
 ></P
 ><P
 ></P
@@ -5471,7 +5304,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TRANSACTION-FREE"
->transaction_free</A
+>osip_transaction_free</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -5480,7 +5313,7 @@ NAME="AEN1570"
 ></A
 ><H2
 >Name</H2
->transaction_free&nbsp;--&nbsp;free resources contained in <TT
+>osip_transaction_free&nbsp;--&nbsp;free resources contained in <TT
 CLASS="PARAMETER"
 ><I
 >transaction</I
@@ -5501,8 +5334,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->void transaction_free</CODE
->(transaction_t *transaction);</CODE
+>void osip_transaction_free</CODE
+>(osip_transaction_t *transaction);</CODE
 ></P
 ><P
 ></P
@@ -5511,7 +5344,7 @@ CLASS="FUNCDEF"
 ><H1
 ><A
 NAME="FUNCTION.TRANSACTION-EXECUTE"
->transaction_execute</A
+>osip_transaction_execute</A
 ></H1
 ><DIV
 CLASS="REFNAMEDIV"
@@ -5520,7 +5353,7 @@ NAME="AEN1583"
 ></A
 ><H2
 >Name</H2
->transaction_execute&nbsp;--&nbsp;consume sipevent in the context of <TT
+>osip_transaction_execute&nbsp;--&nbsp;consume osip_event in the context of <TT
 CLASS="PARAMETER"
 ><I
 >transaction</I
@@ -5541,8 +5374,8 @@ CLASS="FUNCSYNOPSIS"
 ><CODE
 ><CODE
 CLASS="FUNCDEF"
->int transaction_execute</CODE
->(transaction_t *transaction);</CODE
+>int osip_transaction_execute</CODE
+>(osip_transaction_t *transaction);</CODE
 ></P
 ><P
 ></P
@@ -5563,49 +5396,93 @@ NAME="AEN1595"
 >The following methods allow you to register, on initialization of the osip stack, the methods that will be used to handle transactions. Some of those methods are mandatory (announcements of requests, and final responses) and some are optional (announcements of provisional responses and retransmissions).</P
 ><PRE
 CLASS="PROGRAMLISTING"
->void osip_setcb_rcvinvite  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvack     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvbye     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvcancel  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvinfo    (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvoptions (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvregister(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvprack   (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcvunkrequest(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+>
+  typedef void (*osip_message_cb_t) (int type, osip_transaction_t *,
+                                     osip_message_t *);
+    OSIP_ICT_INVITE_SENT = 0,               /**< INVITE MESSAGE SENT */
+    OSIP_ICT_INVITE_SENT_AGAIN,             /**< INVITE MESSAGE RETRANSMITTED */
+    OSIP_ICT_ACK_SENT,                      /**< ACK MESSAGE SENT */
+    OSIP_ICT_ACK_SENT_AGAIN,                /**< ACK MESSAGE RETRANSMITTED */
+    OSIP_ICT_STATUS_1XX_RECEIVED,           /**< 1XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED,           /**< 2XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,     /**< 2XX FOR INVITE RECEIVED AGAIN */
+    OSIP_ICT_STATUS_3XX_RECEIVED,           /**< 3XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_4XX_RECEIVED,           /**< 4XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_5XX_RECEIVED,           /**< 5XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_6XX_RECEIVED,           /**< 6XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN,  /**< RESPONSE RECEIVED AGAIN */
 
-void osip_setcb_sndinvite  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndack     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndbye     (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndcancel  (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndinfo    (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndoptions (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndregister(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndprack   (osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_sndunkrequest(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+    OSIP_IST_INVITE_RECEIVED,               /**< INVITE MESSAGE RECEIVED */
+    OSIP_IST_INVITE_RECEIVED_AGAIN,         /**< INVITE MESSAGE RECEIVED AGAN */
+    OSIP_IST_ACK_RECEIVED,                  /**< ACK MESSAGE RECEIVED */
+    OSIP_IST_ACK_RECEIVED_AGAIN,            /**< ACK MESSAGE RECEIVED AGAIN */
+    OSIP_IST_STATUS_1XX_SENT,               /**< 1XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT,               /**< 2XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT_AGAIN,         /**< 2XX FOR INVITE RETRANSMITTED */
+    OSIP_IST_STATUS_3XX_SENT,               /**< 3XX FOR INVITE SENT */
+    OSIP_IST_STATUS_4XX_SENT,               /**< 4XX FOR INVITE SENT */
+    OSIP_IST_STATUS_5XX_SENT,               /**< 5XX FOR INVITE SENT */
+    OSIP_IST_STATUS_6XX_SENT,               /**< 6XX FOR INVITE SENT */
+    OSIP_IST_STATUS_3456XX_SENT_AGAIN,      /**< RESPONSE RETRANSMITTED */
 
-void osip_setcb_rcv1xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcv2xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcv3xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcv4xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcv5xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_rcv6xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+    OSIP_NICT_REGISTER_SENT,                /**< REGISTER MESSAGE SENT */
+    OSIP_NICT_BYE_SENT,                     /**< BYE MESSAGE SENT */
+    OSIP_NICT_OPTIONS_SENT,                 /**< OPTIONS MESSAGE SENT */
+    OSIP_NICT_INFO_SENT,                    /**< INFO MESSAGE SENT */
+    OSIP_NICT_CANCEL_SENT,                  /**< CANCEL MESSAGE SENT */
+    OSIP_NICT_NOTIFY_SENT,                  /**< NOTIFY MESSAGE SENT */
+    OSIP_NICT_SUBSCRIBE_SENT,               /**< SUBSCRIBE MESSAGE SENT */
+    OSIP_NICT_UNKNOWN_REQUEST_SENT,         /**< UNKNOWN REQUEST MESSAGE SENT */
+    OSIP_NICT_REQUEST_SENT_AGAIN,           /**< REQUEST MESSAGE RETRANMITTED */
+    OSIP_NICT_STATUS_1XX_RECEIVED,          /**< 1XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_2XX_RECEIVED,          /**< 2XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_2XX_RECEIVED_AGAIN,    /**< 2XX FOR MESSAGE RECEIVED AGAIN */
+    OSIP_NICT_STATUS_3XX_RECEIVED,          /**< 3XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_4XX_RECEIVED,          /**< 4XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_5XX_RECEIVED,          /**< 5XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_6XX_RECEIVED,          /**< 6XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_3456XX_RECEIVED_AGAIN, /**< RESPONSE RECEIVED AGAIN */
 
-void osip_setcb_snd1xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_snd2xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_snd3xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_snd4xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_snd5xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
-void osip_setcb_snd6xx(osip_t *cf,void (*cb)(sipevent_t*,transaction_t*));
+    OSIP_NIST_REGISTER_RECEIVED,            /**< REGISTER RECEIVED */
+    OSIP_NIST_BYE_RECEIVED,                 /**< BYE RECEIVED */
+    OSIP_NIST_OPTIONS_RECEIVED,             /**< OPTIONS RECEIVED */
+    OSIP_NIST_INFO_RECEIVED,                /**< INFO RECEIVED */
+    OSIP_NIST_CANCEL_RECEIVED,              /**< CANCEL RECEIVED */
+    OSIP_NIST_NOTIFY_RECEIVED,              /**< NOTIFY RECEIVED */
+    OSIP_NIST_SUBSCRIBE_RECEIVED,           /**< SUBSCRIBE RECEIVED */
 
-void osip_setcb_rcvresp_retransmission(osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_sndreq_retransmission (osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_sndresp_retransmission(osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_rcvreq_retransmission (osip_t *cf,void (*cb)(transaction_t*));
+    OSIP_NIST_UNKNOWN_REQUEST_RECEIVED,     /**< UNKNWON REQUEST RECEIVED */
+    OSIP_NIST_REQUEST_RECEIVED_AGAIN,       /**< UNKNWON REQUEST RECEIVED AGAIN */
+    OSIP_NIST_STATUS_1XX_SENT,              /**< 1XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT,              /**< 2XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT_AGAIN,        /**< 2XX FOR MESSAGE RETRANSMITTED */
+    OSIP_NIST_STATUS_3XX_SENT,              /**< 3XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_4XX_SENT,              /**< 4XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_5XX_SENT,              /**< 5XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_6XX_SENT,              /**< 6XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_3456XX_SENT_AGAIN,     /**< RESPONSE RETRANSMITTED */
 
-void osip_setcb_killtransaction   (osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_endoftransaction  (osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_connection_refused(osip_t *cf,void (*cb)(transaction_t*));
-void osip_setcb_network_error     (osip_t *cf,void (*cb)(transaction_t*));</PRE
+  int osip_set_message_callback (osip_t *osip, int type, osip_message_cb_t cb);
+
+
+  typedef void (*osip_kill_transaction_cb_t) (int type, osip_transaction_t *);
+    OSIP_ICT_KILL_TRANSACTION,      /**< end of Client INVITE transaction */
+    OSIP_IST_KILL_TRANSACTION,      /**< end of Server INVITE transaction */
+    OSIP_NICT_KILL_TRANSACTION,     /**< end of Client Non-INVITE transaction */
+    OSIP_NIST_KILL_TRANSACTION,     /**< end of Server Non-INVITE transaction */
+  int osip_set_kill_transaction_callback (osip_t *osip, int type,
+                                          osip_kill_transaction_cb_t cb);
+
+  typedef void (*osip_transport_error_cb_t) (int type, osip_transaction_t *,
+                                             int error);
+    OSIP_ICT_TRANSPORT_ERROR,             /**< transport error for ICT */
+    OSIP_IST_TRANSPORT_ERROR,             /**< transport error for IST */
+    OSIP_NICT_TRANSPORT_ERROR,            /**< transport error for NICT */
+    OSIP_NIST_TRANSPORT_ERROR,            /**< transport error for NIST */
+  int osip_set_transport_error_callback (osip_t *osip, int type,
+                                         osip_transport_error_cb_t cb);
+
+</PRE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -5620,38 +5497,19 @@ NAME="AEN1600"
 ><PRE
 CLASS="PROGRAMLISTING"
 >/* FOR INCOMING TRANSACTION */
-#define EVT_IS_RCV_INVITE(event)       (event-&#62;type==RCV_REQINVITE)
-#define EVT_IS_RCV_ACK(event)          (event-&#62;type==RCV_REQACK)
-#define EVT_IS_RCV_REQUEST(event)      (event-&#62;type==RCV_REQUEST)
-#define EVT_IS_RCV_STATUS_1XX(event)   (event-&#62;type==RCV_STATUS_1XX)
-#define EVT_IS_RCV_STATUS_23456XX(event)   (event-&#62;type==RCV_STATUS_23456XX)
+#define EVT_IS_RCV_INVITE(event)
+#define EVT_IS_RCV_ACK(event)
+#define EVT_IS_RCV_REQUEST(event)
+#define EVT_IS_RCV_STATUS_1XX(event)
+#define EVT_IS_RCV_STATUS_23456XX(event)
 
 /* FOR OUTGOING TRANSACTION */
-#define EVT_IS_SND_INVITE(event)       (event-&#62;type==SND_REQINVITE)
-#define EVT_IS_SND_ACK(event)          (event-&#62;type==SND_REQACK)
-#define EVT_IS_SND_REQUEST(event)      (event-&#62;type==SND_REQUEST)
-#define EVT_IS_SND_STATUS_1XX(event)   (event-&#62;type==SND_STATUS_1XX)
-#define EVT_IS_SND_STATUS_23456XX(event)   (event-&#62;type==SND_STATUS_23456XX)
+#define EVT_IS_SND_INVITE(event)
+#define EVT_IS_SND_ACK(event)
+#define EVT_IS_SND_REQUEST(event)
+#define EVT_IS_SND_STATUS_1XX(event)
+#define EVT_IS_SND_STATUS_23456XX(event)
 
-#define EVT_IS_INCOMINGMSG(event)      (event-&#62;type&#62;=RCV_REQINVITE \
-                	               &#38;&#38;event-&#62;type&#60;=RCV_STATUS_23456XX)
-#define EVT_IS_INCOMINGREQ(event)      (EVT_IS_RCV_INVITE(event) \
-                                       ||EVT_IS_RCV_ACK(event) \
-                                       ||EVT_IS_RCV_REQUEST(event))
-#define EVT_IS_INCOMINGRESP(event)     (EVT_IS_RCV_STATUS_1XX(event) \
-                                       ||EVT_IS_RCV_STATUS_23456XX(event))
-#define EVT_IS_OUTGOINGMSG(event)      (event-&#62;type&#62;=SND_REQINVITE \
-                	               &#38;&#38;event-&#62;type&#60;=SND_STATUS_23456XX)
-#define EVT_IS_OUTGOINGREQ(event)      (EVT_IS_SND_INVITE(event) \
-                                       ||EVT_IS_SND_ACK(event) \
-                                       ||EVT_IS_SND_REQUEST(event))
-#define EVT_IS_OUTGOINGRESP(event)     (EVT_IS_SND_STATUS_1XX(event) \
-                                       ||EVT_IS_SND_STATUS_23456XX(event))
-#define EVT_IS_MSG(event)              (event-&#62;type&#62;=RCV_REQINVITE \
-                	               &#38;&#38;event-&#62;type&#60;=SND_STATUS_23456XX)
-#define EVT_IS_KILL_TRANSACTION(event) (event-&#62;type==KILL_TRANSACTION)
-#define EVT_IS_UNKNOWN_EVT(event)      (event-&#62;type==UNKNOWN_EVT)
-#define EVT_IS_TIMEOUT(event)          (event-&#62;type==TIMEOUT)</PRE
 ></DIV
 ></DIV
 ><DIV
@@ -5663,7 +5521,7 @@ NAME="AEN1604"
 >The finite state machines HOW-TO</A
 ></H1
 ><P
->oSIP contains 4 finite state machines. SIP defines 2 kinds of transactions. INVITE and other than INVITE transactions differs slightly. INVITE transactions must be followed by an ACK which is part of the state machine for INVITE. Also, different rules apply for retransmission mechanism.</P
+>oSIP contains 4 finite state machines. SIP defines 2 kinds of transactions. INVITE and other than INVITE transactions differs slightly. INVITE transactions must be followed by an ACK which is not always part of the state machine for INVITE (only the ACK for final answer are above 299 are handled by the invite transactions: watch out the rfc3261). Also, different rules apply for retransmission mechanism.</P
 ><P
 >A finite state machine is an ideal way to implement the transaction layer. Threads are waiting for events. Events come from the user layer, transport layer or the timer management facility. The stack always provides information about the state of the transaction to the application layer. This is done through the set of dynamic callbacks.
 <DIV
@@ -5721,56 +5579,97 @@ NAME="AEN1616"
 CLASS="PROGRAMLISTING"
 >  osip_t  *osip;
 
-  if (-1==osip_global_init())
+  if (-1==osip_init(&#38;osip))
     return -1; /* mutex is not initialized properly */
 
-  osip_init(&#38;osip);
-  osip_init_proxy(osip,url_of_proxy);
+  osip_set_kill_transaction_callback(osip ,OSIP_ICT_KILL_TRANSACTION,
+                                 &cb_ict_kill_transaction);
+  osip_set_kill_transaction_callback(osip ,OSIP_NIST_KILL_TRANSACTION,
+                                 &cb_ist_kill_transaction);
+  osip_set_kill_transaction_callback(osip ,OSIP_NICT_KILL_TRANSACTION,
+                                 &cb_nict_kill_transaction);
+  osip_set_kill_transaction_callback(osip ,OSIP_NIST_KILL_TRANSACTION,
+                                 &cb_nist_kill_transaction);
+          
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,
+                        &cb_rcvresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN,
+                        &cb_rcvresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_ICT_INVITE_SENT_AGAIN,
+                        &cb_sndreq_retransmission);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_2XX_SENT_AGAIN,
+                        &cb_sndresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_3456XX_SENT_AGAIN,
+                        &cb_sndresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_IST_INVITE_RECEIVED_AGAIN,
+                        &cb_rcvreq_retransmission);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_2XX_RECEIVED_AGAIN,
+                        &cb_rcvresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_3456XX_RECEIVED_AGAIN,
+                        &cb_rcvresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_NICT_REQUEST_SENT_AGAIN,
+                        &cb_sndreq_retransmission);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_2XX_SENT_AGAIN,
+                        &cb_sndresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
+                        &cb_sndresp_retransmission);
+  osip_set_message_callback(osip ,OSIP_NIST_REQUEST_RECEIVED_AGAIN,
+                        &cb_rcvreq_retransmission);
+  
 
-  osip_setcb_rcvresp_retransmission(cf,&#38;cb_rcvresp_retransmission);
-  osip_setcb_sndreq_retransmission(cf,&#38;cb_sndreq_retransmission);
-  osip_setcb_sndresp_retransmission(cf,&#38;cb_sndresp_retransmission);
-  osip_setcb_rcvreq_retransmission(cf,&#38;cb_rcvreq_retransmission);
-  
-  osip_setcb_killtransaction(cf,&#38;cb_killtransaction);
-  osip_setcb_endoftransaction(cf,&#38;cb_endoftransaction);
-  
-  osip_setcb_connection_refused(cf,&#38;cb_connection_refused);
-  osip_setcb_network_error(cf,&#38;cb_network_error);
-  
-  osip_setcb_rcv1xx(cf,&#38;cb_rcv1xx);
-  osip_setcb_rcv2xx(cf,&#38;cb_rcv2xx);
-  osip_setcb_rcv3xx(cf,&#38;cb_rcv3xx);
-  osip_setcb_rcv4xx(cf,&#38;cb_rcv4xx);
-  osip_setcb_rcv5xx(cf,&#38;cb_rcv5xx);
-  osip_setcb_rcv6xx(cf,&#38;cb_rcv6xx);
-  
-  osip_setcb_sndinvite  (cf,&#38;cb_sndinvite);
-  osip_setcb_sndack     (cf,&#38;cb_sndack);
-  osip_setcb_sndbye     (cf,&#38;cb_sndbye);
-  osip_setcb_sndcancel  (cf,&#38;cb_sndcancel);
-  osip_setcb_sndinfo    (cf,&#38;cb_sndinfo);
-  osip_setcb_sndoptions (cf,&#38;cb_sndoptions);
-  osip_setcb_sndregister(cf,&#38;cb_sndregister);
-  osip_setcb_sndprack   (cf,&#38;cb_sndprack);
-  osip_setcb_sndunkrequest(cf,&#38;cb_sndunkrequest);
+  osip_set_message_callback(osip ,OSIP_ICT_INVITE_SENT,     &cb_sndinvite);
+  osip_set_message_callback(osip ,OSIP_ICT_ACK_SENT,        &cb_sndack);
+  osip_set_message_callback(osip ,OSIP_NICT_REGISTER_SENT,  &cb_sndregister);
+  osip_set_message_callback(osip ,OSIP_NICT_BYE_SENT,       &cb_sndbye);
+  osip_set_message_callback(osip ,OSIP_NICT_CANCEL_SENT,    &cb_sndcancel);
+  osip_set_message_callback(osip ,OSIP_NICT_INFO_SENT,      &cb_sndinfo);
+  osip_set_message_callback(osip ,OSIP_NICT_OPTIONS_SENT,   &cb_sndoptions);
+  osip_set_message_callback(osip ,OSIP_NICT_SUBSCRIBE_SENT, &cb_sndsubscribe);
+  osip_set_message_callback(osip ,OSIP_NICT_NOTIFY_SENT,    &cb_sndnotify);
+  /*  osip_set_cb_nict_sndprack   (osip,&cb_sndprack); */
+  osip_set_message_callback(osip ,OSIP_NICT_UNKNOWN_REQUEST_SENT, &cb_sndunkrequest);
 
-  osip_setcb_snd1xx(cf,&#38;cb_snd1xx);
-  osip_setcb_snd2xx(cf,&#38;cb_snd2xx);
-  osip_setcb_snd3xx(cf,&#38;cb_snd3xx);
-  osip_setcb_snd4xx(cf,&#38;cb_snd4xx);
-  osip_setcb_snd5xx(cf,&#38;cb_snd5xx);
-  osip_setcb_snd6xx(cf,&#38;cb_snd6xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_1XX_RECEIVED, &cb_rcv1xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_2XX_RECEIVED, &cb_rcv2xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_3XX_RECEIVED, &cb_rcv3xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_4XX_RECEIVED, &cb_rcv4xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_5XX_RECEIVED, &cb_rcv5xx);
+  osip_set_message_callback(osip ,OSIP_ICT_STATUS_6XX_RECEIVED, &cb_rcv6xx);
+  
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_1XX_SENT, &cb_snd1xx);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_2XX_SENT, &cb_snd2xx);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_3XX_SENT, &cb_snd3xx);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_4XX_SENT, &cb_snd4xx);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_5XX_SENT, &cb_snd5xx);
+  osip_set_message_callback(osip ,OSIP_IST_STATUS_6XX_SENT, &cb_snd6xx);
+  
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_1XX_RECEIVED, &cb_rcv1xx);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_2XX_RECEIVED, &cb_rcv2xx);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_3XX_RECEIVED, &cb_rcv3xx);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_4XX_RECEIVED, &cb_rcv4xx);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_5XX_RECEIVED, &cb_rcv5xx);
+  osip_set_message_callback(osip ,OSIP_NICT_STATUS_6XX_RECEIVED, &cb_rcv6xx);
+      
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_1XX_SENT, &cb_snd1xx);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_2XX_SENT, &cb_snd2xx);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_3XX_SENT, &cb_snd3xx);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_4XX_SENT, &cb_snd4xx);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_5XX_SENT, &cb_snd5xx);
+  osip_set_message_callback(osip ,OSIP_NIST_STATUS_6XX_SENT, &cb_snd6xx);
+  
+  osip_set_message_callback(osip ,OSIP_IST_INVITE_RECEIVED,     &cb_rcvinvite);
+  osip_set_message_callback(osip ,OSIP_IST_ACK_RECEIVED,        &cb_rcvack);
+  osip_set_message_callback(osip ,OSIP_IST_ACK_RECEIVED_AGAIN,  &cb_rcvack2);
+  osip_set_message_callback(osip ,OSIP_NIST_REGISTER_RECEIVED,  &cb_rcvregister);
+  osip_set_message_callback(osip ,OSIP_NIST_BYE_RECEIVED,       &cb_rcvbye);
+  osip_set_message_callback(osip ,OSIP_NIST_CANCEL_RECEIVED,    &cb_rcvcancel);
+  osip_set_message_callback(osip ,OSIP_NIST_INFO_RECEIVED,      &cb_rcvinfo);
+  osip_set_message_callback(osip ,OSIP_NIST_OPTIONS_RECEIVED,   &cb_rcvoptions);
+  osip_set_message_callback(osip ,OSIP_NIST_SUBSCRIBE_RECEIVED, &cb_rcvsubscribe);
+  osip_set_message_callback(osip ,OSIP_NIST_NOTIFY_RECEIVED,    &cb_rcvnotify);
+  osip_set_message_callback(osip ,OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, &cb_rcvunkrequest);
 
-  osip_setcb_rcvinvite  (cf,&#38;cb_rcvinvite);
-  osip_setcb_rcvack     (cf,&#38;cb_rcvack);
-  osip_setcb_rcvbye     (cf,&#38;cb_rcvbye);
-  osip_setcb_rcvcancel  (cf,&#38;cb_rcvcancel);
-  osip_setcb_rcvinfo    (cf,&#38;cb_rcvinfo);
-  osip_setcb_rcvoptions (cf,&#38;cb_rcvoptions);
-  osip_setcb_rcvregister(cf,&#38;cb_rcvregister);
-  osip_setcb_rcvprack   (cf,&#38;cb_rcvprack);
-  osip_setcb_rcvunkrequest(cf,&#38;cb_rcvunkrequest);</PRE
+</PRE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -5787,17 +5686,17 @@ CLASS="PROGRAMLISTING"
 >int
 create_session(osip_t *osip)
 {
-  sip_t         *invite;
-  transaction_t *transaction;
+  osip_message_t  *invite;
+  osip_transaction_t   *transaction;
 
   /* You must create your own SIP message. */
-  msg_init (&#38;invite);
+  osip_message_init (&#38;invite);
   your_own_method_to_setup_messages(invite);
 
   /* When it is the first invite, allocate    */
   /* and start a new transaction (prepare the
   /* context and start a thread.)             */
-  trn_init(&#38;transaction,
+  osip_transaction_init(&#38;transaction,
 	   osip,
 	   invite-&#62;to,
 	   invite-&#62;from,
@@ -5811,22 +5710,18 @@ create_session(osip_t *osip)
 }
 
 int
-osip_sendmsg(transaction_t *transaction,sip_t *msg)
+osip_sendmsg(osip_transaction_t *transaction,osip_message_t *msg)
 {
-    sipevent_t *sipevent;
+    osip_event_t *evt;
 
-    sipevent = osip_new_outgoing_sipmessage(msg);
-    sipevent-&#62;transactionid =  transaction-&#62;transactionid;
+    evt = osip_new_outgoing_sipmessage(msg);
 
 /* depending on your application model, you can choose */
 /* either to consume the event are add it in the fifo  */
 /* and delay the operations */
 
-#ifdef OSIP_MT
-    fifo_add(transaction-&#62;transactionff,sipevent);
-#else
-    transaction_execute(transaction,sipevent);
-#endif
+    osip_fifo_add(transaction-&#62;transactionff,evt);
+    osip_transaction_execute(transaction,evt);
 
     return 0;
 }&#13;</PRE
@@ -5840,9 +5735,9 @@ NAME="AEN1625"
 >Notes for proxy implementation</A
 ></H2
 ><P
->The transaction layer provided for oSIP is usable by user agents, registrar, redirect server and some type of conference server. A state machine for statefull proxy will be added in the future. The existing state machines are not easily usable for proxy implementation!</P
+>The transaction layer provided for oSIP is usable by user agents, registrar, redirect server and some type of conference server.</P
 ><P
->For stateless proxy, a state machine is very simple (No state is needed!). Nevertheless, A state machine will be implemented. its only role will be to cache results for a short time.</P
+>For stateless proxy, no state machine is required.</P
 ></DIV
 ></DIV
 ><DIV
@@ -5861,11 +5756,11 @@ NAME="AEN1629"
 BORDER="0"
 ><TR
 ><TD
->choose which transport protocol you want (UDP is recommended)</TD
+>Read all the rfc about SIP!.</TD
 ></TR
 ><TR
 ><TD
->use one socket for all transactions or one per each.</TD
+>implement the transport layer (UDP, TCP, TLS?)</TD
 ></TR
 ><TR
 ><TD
@@ -5878,8 +5773,6 @@ BORDER="0"
 ></TABLE
 ><P
 ></P
-><P
->By now, UDP is recommended for SIP for servers as well as other user agents. When implementing a server, you may face many parallel transactions. If you use one connection per each transaction, the application may run quickly out of resources. (Also, you can't always guess if other applications on the same computer require many sockets too). For servers, you may also take care when using a multi threaded architecture with one thread per transactions. For a highly used server, you may quickly run out of thread resources. (Specifically, the standard kernel from debian support a low number of threads).</P
 ><P
 >If your application wants to access a database and make IP address resolution, this could leave your application in a blocked state for a while. In this case, a multi threaded application could be very useful and avoid some issues. It worth to say that performance of your application will heavily rely on how you will deal with those issue.</P
 ></DIV
@@ -5899,7 +5792,7 @@ NAME="AEN1640"
 ></A
 ><P
 >SIP, <I
->Session Initiation Protocole - rfc2543.txt</I
+>Session Initiation Protocole - rfc3261.txt</I
 >, ietf.</P
 ><DIV
 CLASS="BIBLIOENTRYBLOCK"
