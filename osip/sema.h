@@ -44,7 +44,7 @@ extern "C" {
 #endif
 
 #ifdef WIN32
-#include <Windows.h>
+#include <windows.h>
 typedef struct {
     HANDLE h;
 } smutex_t;
