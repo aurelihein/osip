@@ -10,8 +10,7 @@ URL:		http://www.fsf.org/software/osip/osip.html
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
-tmpdir:         /tmpdir
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	/tmpdir/%{name}-%{version}-root-%(id -u -n)
 
 %description
 This is "the GNU oSIP library". It has been designed to provide
