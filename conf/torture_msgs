@@ -14,6 +14,60 @@ Proxy-Authorization: Digest
  username="me@other.domain.example.com",realm="other.domain.example.com",
  uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
  nonce="6acda19788645eb8ee3f991d8d5b1367",
+ cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5,opaque=""
+Proxy-Authorization: Digest 
+     username="me@other.domain.example.com"     ,realm="other.domain.example.com",
+ uri="sip:192.168.1.10",     response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ opaque="0788cb7106dd0d9214a3dfcd7f11aff7"    ,   	 cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5
+Proxy-Authorization: Digest 
+ username="me@other.domain.example.com",	realm="other.domain.example.com",
+ uri="sip:192.168.1.10"	,response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ cnonce="555698a3"		,		qop=auth,
+ nc=00000001,algorithm=md5,opaque=""
+Proxy-Authorization: Digest 
+ username="me@other.domain.example.com" 	, 	realm="other.domain.example.com",
+ uri="sip:192.168.1.10" , response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ opaque="0788cb7106dd0d9214a3dfcd7f11aff7",cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5
+Proxy-Authorization: Digest 
+	 	username="1me@other.domain.example.com",realm="other.domain.example.com",
+	 uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+	nonce="6acda19788645eb8ee3f991d8d5b1367",
+ cnonce="555698a3" ,qop=auth, 
+ nc=00000001,algorithm=md5,opaque=""	
+Proxy-Authorization: Digest 	
+ username="2me@other.domain.example.com" , 	realm="other.domain.example.com"
+ ,	 uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ algorithm=md5,nonce="6acda19788645eb8ee3f991d8d5b1367"	,
+ opaque="0788cb7106dd0d9214a3dfcd7f11aff7",      cnonce="555698a3",qop=auth,
+ nc=123456
+Proxy-Authorization: Digest 
+ username="3me@other.domain.example.com",realm="other.domain.example.com",
+ uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5,opaque=""
+Proxy-Authorization: Digest 
+ username="4me@other.domain.example.com",realm="other.domain.example.com",
+ uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ opaque="0788cb7106dd0d9214a3dfcd7f11aff7",cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5
+Proxy-Authorization: Digest 
+ username="5me@other.domain.example.com",realm="other.domain.example.com",
+ uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
+ cnonce="555698a3",qop=auth,
+ nc=00000001,algorithm=md5,opaque=""
+Proxy-Authorization: Digest 
+ username="6me@other.domain.example.com",realm="other.domain.example.com",
+ uri="sip:192.168.1.10",response="15d2e3a1b3af1e3e4cac32e60ec45116",
+ nonce="6acda19788645eb8ee3f991d8d5b1367",
  opaque="0788cb7106dd0d9214a3dfcd7f11aff7",cnonce="555698a3",qop=auth,
  nc=00000001,algorithm=md5
 Proxy-Authenticate: Digest realm="Ole SIP realm1",

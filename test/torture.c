@@ -93,10 +93,14 @@ main (int argc, char **argv)
         i++;
       marker = fgets (tmp, 500, torture_file);
     }
-
   num_test++;
 
-  msg = (char *) smalloc (10000);       /* msg are under 10000 */
+  msg = (char *) smalloc (50000);       /* msg are under 10000 */
+  if (msg==NULL)
+    {
+      fprintf (stderr, "Error! smalloc failed\n");
+      return -1;
+    }
   tmpmsg = msg;
 
   if (marker == NULL)

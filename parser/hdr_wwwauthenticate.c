@@ -73,8 +73,10 @@ msg_setwww_authenticate (sip_t * sip, char *hvalue)
 int
 quoted_string_set (char *name, char *str, char **result, char **next)
 {
-  *next = NULL;
-  while ((' ' == *str) || (',' == *str))
+  *next = str;
+  if (*result != NULL) return 0; /* already parsed */
+  *next=NULL;
+  while ((' ' == *str) || ('\t' == *str) || (',' == *str))
     if (*str)
       str++;
     else
@@ -90,20 +92,16 @@ quoted_string_set (char *name, char *str, char **result, char **next)
     {
       char *quote1;
       char *quote2;
-
-      {                         /* the oSIP stack can detect improperly some paramater!!    */
-        /* for exemple "noncecount" (found in vovida!) is detected  */
-        /* as "nonce". This get rid of this behavior.               */
-        char *hack = strchr (str, '=');
-
-        while (' ' == *(hack - 1))      /* get rid of extra spaces */
-          hack--;
-        if ((size_t) (hack - str) != strlen (name))
-          {
-            *next = str;
-            return 0;
-          }
-      }
+      char *tmp;
+      char *hack = strchr (str, '=');
+      
+      while (' ' == *(hack - 1))      /* get rid of extra spaces */
+	hack--;
+      if ((size_t) (hack - str) != strlen (name))
+	{
+	  *next = str;
+	  return 0;
+	}
 
       quote1 = quote_find (str);
       if (quote1 == NULL)
@@ -118,20 +116,44 @@ quoted_string_set (char *name, char *str, char **result, char **next)
           /* in this case, we just forget the parameter... this  */
           /* this should prevent from user manipulating empty    */
           /* strings */
-          *next = quote2 + 1;
-          return 0;
+	  tmp = quote2 + 1;       /* next element start here */
+	  for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+	  for (;  *tmp=='\n' ||  *tmp=='\r'  ; tmp++) {} /* skip LWS */
+	  *next = NULL;
+	  if (*tmp=='\0') /* end of header detected */
+	    return 0;
+	  if (*tmp!='\t'&&*tmp!=' ')
+	    /* LWS here ? */
+	    *next = tmp;
+	  else
+	    {    /* it is: skip it... */
+	      for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+	      if (*tmp=='\0') /* end of header detected */
+		return 0;
+	      *next = tmp;
+	    }
+	  return 0;
         }
-      *result = (char *) smalloc (quote2 - quote1 + 2);
+      *result = (char *) smalloc (quote2 - quote1 + 3);
       if (*result == NULL)
         return -1;
       sstrncpy (*result, quote1, quote2 - quote1 + 1);
-      *next = quote2 + 1;       /* next element start here */
-      if (strlen (quote2) <= 6)
-        {
-          *next = NULL;
-          return 0;
-        }
-      *next = quote2 + 1;       /* next element start here */
+      tmp = quote2 + 1;       /* next element start here */
+      for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+      for (;  *tmp=='\n' ||  *tmp=='\r'  ; tmp++) {} /* skip LWS */
+      *next = NULL;
+      if (*tmp=='\0') /* end of header detected */
+	return 0;
+      if (*tmp!='\t'&&*tmp!=' ')
+	/* LWS here ? */
+	*next = tmp;
+      else
+	{    /* it is: skip it... */
+	  for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+	  if (*tmp=='\0') /* end of header detected */
+	    return 0;
+	  *next = tmp;
+	}
   } else
     *next = str;                /* wrong header asked! */
   return 0;
@@ -141,8 +163,11 @@ int
 token_set (char *name, char *str, char **result, char **next)
 {
   char *beg;
+  char *tmp;
 
-  *next = NULL;
+  *next = str;
+  if (*result != NULL) return 0; /* already parsed */
+  *next=NULL;
 
   beg = strchr (str, '=');
   if (beg == NULL)
@@ -176,12 +201,24 @@ token_set (char *name, char *str, char **result, char **next)
         return -1;
       sstrncpy (*result, beg + 1, end - beg - 1);
       sclrspace (*result);
-      if (strlen (end) <= 6)
-        {
-          *next = NULL;
-          return 0;
-        }
-      *next = end + 1;
+
+      /* make sure the element does not contain more parameter */
+      tmp = end + 1;
+      for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+      for (;  *tmp=='\n' ||  *tmp=='\r'  ; tmp++) {} /* skip LWS */
+      *next = NULL;
+      if (*tmp=='\0') /* end of header detected */
+	return 0;
+      if (*tmp!='\t'&&*tmp!=' ')
+	/* LWS here ? */
+	*next = tmp;
+      else
+	{    /* it is: skip it... */
+	  for (;  *tmp==' '  ||  *tmp=='\t'  ; tmp++) {}
+	  if (*tmp=='\0') /* end of header detected */
+	    return 0;
+	  *next = tmp;
+	}
   } else
     *next = str;                /* next element start here */
   return 0;

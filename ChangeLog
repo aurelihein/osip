@@ -1,6 +1,7 @@
 libosip (0.9.2)
 	* add support for the received and rport parameters inside the osip stack.
 	* sdp_negoc.c: fix the video support.
+	* msg_parser.c: use realloc for main buffer of msg_parse().
 	
 libosip (0.9.1)
 	* fix non multi-threaded version. (fifo_size was broken)

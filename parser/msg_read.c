@@ -130,42 +130,84 @@ msg_geturi (sip_t * sip)
 }
 
 int
-strcat_simple_header (char *message, void *ptr_header, char *header_name,
-                      int size_of_header, int (*xxx_2char) (void *, char **),
-                      char **next)
+strcat_simple_header (char **_string, int *malloc_size,
+		      char **_message, void *ptr_header, char *header_name,
+		      int size_of_header, int (*xxx_2char) (void *, char **),
+		      char **next)
 {
-  int i;
+  char *string;
+  char *message;
   char *tmp;
+  int i;
+  
+  string = *_string;
+  message = *_message;
 
   if (ptr_header != NULL)
     {
+      if (*malloc_size<message-string+100+size_of_header)
+	/* take some memory avoid to realloc too much often */
+	{ /* should not happen often */
+	  int size = message-string;
+	  *malloc_size = message-string+size_of_header+100;
+	  string = realloc(string, *malloc_size);
+	  if (string==NULL)
+	    {
+	      *_string = NULL;
+	      *_message = NULL;
+	      return -1;
+	    }
+	  message = string + size;
+	}
       sstrncpy (message, header_name, size_of_header);
       message = message + strlen (message);
       i = xxx_2char (ptr_header, &tmp);
       if (i == -1)
         {
+	  *_string = string;
+	  *_message = message;
           *next = NULL;
           return -1;
         }
+      if (*malloc_size<message-string+strlen(tmp)+100)
+	{
+	  int size = message-string;
+	  *malloc_size = message-string+strlen(tmp)+100;
+	  string = realloc(string, *malloc_size);
+	  if (string==NULL)
+	    {
+	      *_string = NULL;
+	      *_message = NULL;
+	      return -1;
+	    }
+	  message = string + size;
+	}
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
       sstrncpy (message, CRLF, 2);
       message = message + 2;
     }
+  *_string = string;
+  *_message = message;
   *next = message;
   return 0;
 }
 
 int
-strcat_headers_one_per_line (char *message, list_t * headers, char *header,
-                             int size_of_header, int (*xxx_2char) (void *,
-                                                                   char **),
-                             char **next)
+strcat_headers_one_per_line (char **_string, int *malloc_size,
+			     char **_message, list_t * headers,
+			     char *header, int size_of_header,
+			     int (*xxx_2char) (void *, char **), char **next)
 {
+  char *string;
+  char *message;
   char *tmp;
   int pos = 0;
   int i;
+  
+  string = *_string;
+  message = *_message;
 
   while (!list_eol (headers, pos))
     {
@@ -173,14 +215,44 @@ strcat_headers_one_per_line (char *message, list_t * headers, char *header,
 
       elt = (void *) list_get (headers, pos);
 
+      if (*malloc_size<message-string+100+size_of_header)
+	/* take some memory avoid to realloc too much often */
+	{ /* should not happen often */
+	  int size = message-string;
+	  *malloc_size = message-string+size_of_header+100;
+	  string = realloc(string, *malloc_size);
+	  if (string==NULL)
+	    {
+	      *_string = NULL;
+	      *_message = NULL;
+	      return -1;
+	    }
+	  message = string + size;
+	}
       sstrncpy (message, header, size_of_header);
-      message = message + strlen (message);
       i = xxx_2char (elt, &tmp);
       if (i == -1)
         {
+	  *_string = string;
+	  *_message = message;
           *next = NULL;
           return -1;
         }
+      message = message + strlen (message);
+
+      if (*malloc_size<message-string+strlen(tmp)+100)
+	{
+	  int size = message-string;
+	  *malloc_size = message-string+strlen(tmp)+100;
+	  string = realloc(string, *malloc_size);
+	  if (string==NULL)
+	    {
+	      *_string = NULL;
+	      *_message = NULL;
+	      return -1;
+	    }
+	  message = string + size;
+	}
       sstrncpy (message, tmp, strlen (tmp));
       sfree (tmp);
       message = message + strlen (message);
@@ -189,24 +261,44 @@ strcat_headers_one_per_line (char *message, list_t * headers, char *header,
 
       pos++;
     }
+  *_string = string;
+  *_message = message;
   *next = message;
   return 0;
 }
 
 int
-strcat_headers_all_on_one_line (char *message, list_t * headers, char *header,
-                                int size_of_header, int (*xxx_2char) (void *,
-                                                                      char
-                                                                      **),
-                                char **next)
+strcat_headers_all_on_one_line (char **_string, int *malloc_size,
+				char **_message, list_t * headers,
+				char *header, int size_of_header,
+                                int (*xxx_2char) (void *, char **), char **next)
 {
+  char *string;
+  char *message;
   char *tmp;
   int pos = 0;
   int i;
 
+  string = *_string;
+  message = *_message;
+
   pos = 0;
   while (!list_eol (headers, pos))
     {
+      if (*malloc_size<message-string+100+size_of_header)
+	/* take some memory avoid to realloc too much often */
+	{ /* should not happen often */
+	  int size = message-string;
+	  *malloc_size = message-string+size_of_header+100;
+	  string = realloc(string, *malloc_size);
+	  if (string==NULL)
+	    {
+	      *_string = NULL;
+	      *_message = NULL;
+	      return -1;
+	    }
+	  message = string + size;
+	}
       sstrncpy (message, header, size_of_header);
       message = message + strlen (message);
 
@@ -218,9 +310,24 @@ strcat_headers_all_on_one_line (char *message, list_t * headers, char *header,
           i = xxx_2char (elt, &tmp);
           if (i == -1)
             {
+	      *_string = string;
+	      *_message = message;
               *next = NULL;
               return -1;
             }
+	  if (*malloc_size<message-string+strlen(tmp)+100)
+	    {
+	      int size = message-string;
+	      *malloc_size = message-string+strlen(tmp)+100;
+	      string = realloc(string, *malloc_size);
+	      if (string==NULL)
+		{
+		  *_string = NULL;
+		  *_message = NULL;
+		  return -1;
+		}
+	      message = string + size;
+	    }
           sstrncpy (message, tmp, strlen (tmp));
           sfree (tmp);
           message = message + strlen (message);
@@ -234,6 +341,8 @@ strcat_headers_all_on_one_line (char *message, list_t * headers, char *header,
       sstrncpy (message, CRLF, 2);
       message = message + 2;
     }
+  *_string = string;
+  *_message = message;
   *next = message;
   return 0;
 }
@@ -267,7 +376,8 @@ msg_force_update (sip_t * sip)
 int
 msg_2char (sip_t * sip, char **dest)
 {
-  /* ADDED at SIPit day1 */
+  int malloc_size;
+  /* Added at SIPit day1 */
   char *start_of_bodies;
   char *content_length_to_modify = NULL;
 
@@ -276,7 +386,7 @@ msg_2char (sip_t * sip, char **dest)
   char *tmp;
   int pos;
   int i;
-
+  malloc_size = SIP_MESSAGE_MAX_LENGTH;
 
   *dest = NULL;
   if ((sip == NULL) || (sip->strtline == NULL) || (sip->to == NULL)
@@ -337,7 +447,7 @@ msg_2char (sip_t * sip, char **dest)
   sstrncpy (message, CRLF, 2);
   message = message + 2;
 
-  i = strcat_headers_one_per_line (message, sip->vias, "Via: ", 5,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message, sip->vias, "Via: ", 5,
                                    ((int (*)(void *, char **)) &via_2char), &next);
   if (i != 0)
     {
@@ -348,7 +458,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_one_per_line (message, sip->record_routes,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->record_routes,
                                  "Record-Route: ", 14,
                                  ((int (*)(void *, char **))
                                   &record_route_2char), &next);
@@ -360,7 +470,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_one_per_line (message, sip->routes, "Route: ", 7,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message, sip->routes, "Route: ", 7,
                                    ((int (*)(void *, char **)) &route_2char),
                                    &next);
   if (i != 0)
@@ -371,7 +481,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->from, "From: ", 6,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->from, "From: ", 6,
                             ((int (*)(void *, char **)) &from_2char), &next);
   if (i != 0)
     {
@@ -381,7 +492,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->to, "To: ", 4,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->to, "To: ", 4,
                             ((int (*)(void *, char **)) &to_2char), &next);
   if (i != 0)
     {
@@ -391,7 +503,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->call_id, "Call-ID: ", 9,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->call_id, "Call-ID: ", 9,
                             ((int (*)(void *, char **)) &call_id_2char), &next);
   if (i != 0)
     {
@@ -401,7 +514,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->cseq, "CSeq: ", 6,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->cseq, "CSeq: ", 6,
                             ((int (*)(void *, char **)) &cseq_2char), &next);
   if (i != 0)
     {
@@ -411,7 +525,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_one_per_line (message, sip->contacts, "Contact: ", 9,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message, sip->contacts, "Contact: ", 9,
                                    ((int (*)(void *, char **))
                                     &contact_2char), &next);
   if (i != 0)
@@ -422,7 +536,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_one_per_line (message,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message,
                                    sip->authorizations, "Authorization: ", 15,
                                    ((int (*)(void *, char **))
                                     &authorization_2char), &next);
@@ -434,7 +548,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_one_per_line (message, sip->www_authenticates,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message, sip->www_authenticates,
                                    "WWW-Authenticate: ", 18,
                                    ((int (*)(void *, char **))
                                     &www_authenticate_2char), &next);
@@ -446,7 +560,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_one_per_line (message, sip->proxy_authenticates,
+  i = strcat_headers_one_per_line (dest, &malloc_size, &message, sip->proxy_authenticates,
                                    "Proxy-Authenticate: ", 20,
                                    ((int (*)(void *, char **))
                                     &www_authenticate_2char), &next);
@@ -459,7 +573,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_one_per_line (message, sip->proxy_authorizations,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->proxy_authorizations,
                                  "Proxy-Authorization: ", 21,
                                  ((int (*)(void *, char **))
                                   &authorization_2char), &next);
@@ -495,7 +609,7 @@ msg_2char (sip_t * sip, char **dest)
     }
 
   i =
-    strcat_headers_all_on_one_line (message, sip->allows, "Allow: ", 7,
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->allows, "Allow: ", 7,
                                     ((int (*)(void *, char **))
                                      &content_length_2char), &next);
   if (i != 0)
@@ -506,7 +620,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->content_type, "Content-Type: ", 14,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->content_type, "Content-Type: ", 14,
                             ((int (*)(void *, char **)) &content_type_2char),
                             &next);
   if (i != 0)
@@ -517,7 +632,7 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_headers_all_on_one_line (message, sip->content_encodings,
+  i = strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->content_encodings,
                                       "Content-Encoding: ", 18,
                                       ((int (*)(void *, char **))
                                        &content_length_2char), &next);
@@ -529,7 +644,8 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->mime_version, "Mime-Version: ", 14,
+  i = strcat_simple_header (dest, &malloc_size, &message,
+			    sip->mime_version, "Mime-Version: ", 14,
                             ((int (*)(void *, char **))
                              &content_length_2char), &next);
   if (i != 0)
@@ -542,7 +658,7 @@ msg_2char (sip_t * sip, char **dest)
 
 
   i =
-    strcat_headers_one_per_line (message, sip->call_infos, "Call-Info: ", 11,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->call_infos, "Call-Info: ", 11,
                                  ((int (*)(void *, char **))
                                   &call_info_2char), &next);
   if (i != 0)
@@ -554,7 +670,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_one_per_line (message, sip->alert_infos, "Alert-Info: ",
+    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->alert_infos, "Alert-Info: ",
                                  12,
                                  ((int (*)(void *, char **))
                                   &call_info_2char), &next);
@@ -567,7 +683,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_one_per_line (message, sip->error_infos, "Error-Info: ",
+    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->error_infos, "Error-Info: ",
                                  12,
                                  ((int (*)(void *, char **))
                                   &call_info_2char), &next);
@@ -580,7 +696,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_all_on_one_line (message, sip->accepts, "Accept: ", 8,
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->accepts, "Accept: ", 8,
                                     ((int (*)(void *, char **))
                                      &content_type_2char), &next);
   if (i != 0)
@@ -592,7 +708,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_all_on_one_line (message, sip->accept_encodings,
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->accept_encodings,
                                     "Accept-Encoding: ", 17,
                                     ((int (*)(void *, char **))
                                      &accept_encoding_2char), &next);
@@ -605,7 +721,7 @@ msg_2char (sip_t * sip, char **dest)
   message = next;
 
   i =
-    strcat_headers_all_on_one_line (message, sip->accept_languages,
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->accept_languages,
                                     "Accept-Language: ", 17,
                                     ((int (*)(void *, char **))
                                      &accept_encoding_2char), &next);

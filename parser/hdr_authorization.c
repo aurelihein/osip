@@ -43,6 +43,7 @@ authorization_init (authorization_t ** dest)
   (*dest)->opaque = NULL;       /* optionnal */
   (*dest)->message_qop = NULL;  /* optionnal */
   (*dest)->nonce_count = NULL;  /* optionnal */
+  (*dest)->auth_param = NULL;    /* for other headers --NOT IMPLEMENTED-- */
   return 0;
 }
 
@@ -93,7 +94,7 @@ authorization_parse (authorization_t * auth, char *hvalue)
   if (space == NULL)
     return -1;
 
-  if (space - hvalue + 1 < 2)
+  if (space - hvalue  < 1)
     return -1;
   auth->auth_type = (char *) smalloc (space - hvalue + 1);
   sstrncpy (auth->auth_type, hvalue, space - hvalue);
@@ -114,7 +115,7 @@ authorization_parse (authorization_t * auth, char *hvalue)
       if (quoted_string_set ("realm", space, &(auth->realm), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return 0;
       else if (next != space)
         {
           space = next;
@@ -582,73 +583,73 @@ authorization_clone (authorization_t * auth, authorization_t ** dest)
   if (auth->auth_type != NULL)
     {
       au->auth_type = sgetcopy (auth->auth_type);
-      if (au->auth_type)
+      if (au->auth_type==NULL)
         goto ac_error;
     }
   if (auth->username != NULL)
     {
       au->username = sgetcopy (auth->username);
-      if (au->username)
+      if (au->username==NULL)
         goto ac_error;
     }
   if (auth->realm != NULL)
     {
       au->realm = sgetcopy (auth->realm);
-      if (auth->realm)
+      if (auth->realm==NULL)
         goto ac_error;
     }
   if (auth->nonce != NULL)
     {
       au->nonce = sgetcopy (auth->nonce);
-      if (auth->nonce)
+      if (auth->nonce==NULL)
         goto ac_error;
     }
   if (auth->uri != NULL)
     {
       au->uri = sgetcopy (auth->uri);
-      if (au->uri)
+      if (au->uri==NULL)
         goto ac_error;
     }
   if (auth->response != NULL)
     {
       au->response = sgetcopy (auth->response);
-      if (auth->response)
+      if (auth->response==NULL)
         goto ac_error;
     }
   if (auth->digest != NULL)
     {
       au->digest = sgetcopy (auth->digest);
-      if (au->digest)
+      if (au->digest==NULL)
         goto ac_error;
     }
   if (auth->algorithm != NULL)
     {
       au->algorithm = sgetcopy (auth->algorithm);
-      if (auth->algorithm)
+      if (auth->algorithm==NULL)
         goto ac_error;
     }
   if (auth->cnonce != NULL)
     {
       au->cnonce = sgetcopy (auth->cnonce);
-      if (au->cnonce)
+      if (au->cnonce==NULL)
         goto ac_error;
     }
   if (auth->opaque != NULL)
     {
       au->opaque = sgetcopy (auth->opaque);
-      if (auth->opaque)
+      if (auth->opaque==NULL)
         goto ac_error;
     }
   if (auth->message_qop != NULL)
     {
       au->message_qop = sgetcopy (auth->message_qop);
-      if (auth->message_qop)
+      if (auth->message_qop==NULL)
         goto ac_error;
     }
   if (auth->nonce_count != NULL)
     {
       au->nonce_count = sgetcopy (auth->nonce_count);
-      if (auth->nonce_count)
+      if (auth->nonce_count==NULL)
         goto ac_error;
     }
 
