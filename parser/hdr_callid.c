@@ -35,16 +35,16 @@ msg_setcall_id (sip_t * sip, char *hvalue)
   if (sip->call_id != NULL)
     return -1;
   i = call_id_init (&(sip->call_id));
-  if (i != 0)                  /* allocation failed */
+  if (i != 0)			/* allocation failed */
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
   i = call_id_parse (sip->call_id, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      call_id_free(sip->call_id);
-      sfree(sip->call_id);
+      call_id_free (sip->call_id);
+      sfree (sip->call_id);
       sip->call_id = NULL;
       return -1;
     }
@@ -63,7 +63,8 @@ int
 call_id_init (call_id_t ** callid)
 {
   *callid = (call_id_t *) smalloc (sizeof (call_id_t));
-  if (*callid==NULL) return -1;
+  if (*callid == NULL)
+    return -1;
   (*callid)->number = NULL;
   (*callid)->host = NULL;
   return 0;
@@ -97,7 +98,7 @@ call_id_parse (call_id_t * callid, char *hvalue)
   callid->number = NULL;
   callid->host = NULL;
 
-  host = strchr (hvalue, '@');  /* SEARCH FOR '@' */
+  host = strchr (hvalue, '@');	/* SEARCH FOR '@' */
   end = hvalue + strlen (hvalue);
 
   if (host == NULL)
@@ -105,20 +106,22 @@ call_id_parse (call_id_t * callid, char *hvalue)
   else
     {
       if (end - host + 1 < 2)
-        return -1;
-      callid->host = (char *) smalloc (end - host);     /* fixed 1O/04/2002 */
-      if (callid->host==NULL) return -1;
-      sstrncpy (callid->host, host + 1, end - host - 1);        /* fixed 1O/04/2002 */
+	return -1;
+      callid->host = (char *) smalloc (end - host);	/* fixed 1O/04/2002 */
+      if (callid->host == NULL)
+	return -1;
+      sstrncpy (callid->host, host + 1, end - host - 1);	/* fixed 1O/04/2002 */
       sclrspace (callid->host);
     }
   if (host - hvalue + 1 < 2)
     return -1;
   callid->number = (char *) smalloc (host - hvalue + 1);
-  if (callid->number==NULL) return -1;
+  if (callid->number == NULL)
+    return -1;
   sstrncpy (callid->number, hvalue, host - hvalue);
   sclrspace (callid->number);
 
-  return 0;                     /* ok */
+  return 0;			/* ok */
 }
 
 /* returns the call_id as a string.          */
@@ -134,13 +137,17 @@ call_id_2char (call_id_t * callid, char **dest)
   if (callid->host == NULL)
     {
       *dest = (char *) smalloc (strlen (callid->number) + 1);
-      if (*dest==NULL) return -1;
+      if (*dest == NULL)
+	return -1;
       sprintf (*dest, "%s", callid->number);
-  } else
+    }
+  else
     {
       *dest =
-        (char *) smalloc (strlen (callid->number) + strlen (callid->host) + 2);
-      if (*dest==NULL) return -1;
+	(char *) smalloc (strlen (callid->number) + strlen (callid->host) +
+			  2);
+      if (*dest == NULL)
+	return -1;
       sprintf (*dest, "%s@%s", callid->number, callid->host);
     }
   return 0;
@@ -187,7 +194,7 @@ call_id_clone (call_id_t * callid, call_id_t ** dest)
     return -1;
 
   i = call_id_init (&ci);
-  if (i == -1)                  /* allocation failed */
+  if (i == -1)			/* allocation failed */
     return -1;
   ci->number = sgetcopy (callid->number);
   if (callid->host != NULL)

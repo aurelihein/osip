@@ -42,8 +42,8 @@ msg_setaccept (sip_t * sip, char *hvalue)
   i = accept_parse (accept, hvalue);
   if (i != 0)
     {
-      accept_free(accept);
-      sfree(accept);
+      accept_free (accept);
+      sfree (accept);
       return -1;
     }
 
@@ -63,7 +63,7 @@ msg_getaccept (sip_t * sip, int pos, accept_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->accepts) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   accept = (accept_t *) list_get (sip->accepts, pos);
   *dest = accept;
   return pos;

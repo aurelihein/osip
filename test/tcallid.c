@@ -41,13 +41,14 @@ main (int argc, char **argv)
   callids_file = fopen (argv[1], "r");
   if (callids_file == NULL)
     {
-      fprintf (stdout, "Failed to open %s file.\nUsage: tcallid callids.txt\n",
-               argv[1]);
+      fprintf (stdout,
+	       "Failed to open %s file.\nUsage: tcallid callids.txt\n",
+	       argv[1]);
       exit (0);
     }
 
   a_callid = (char *) smalloc (200);
-  res = fgets (a_callid, 200, callids_file);    /* lines are under 200 */
+  res = fgets (a_callid, 200, callids_file);	/* lines are under 200 */
   while (res != NULL)
     {
 
@@ -57,25 +58,26 @@ main (int argc, char **argv)
       strncpy (a_callid + strlen (a_callid) - 1, "\0", 1);
 
       if (0 != strncmp (a_callid, "#", 1))
-        {
-          /* allocate & init callid */
-          call_id_init (&callid);
-          printf ("=================================================\n");
-          printf ("CALLID TO PARSE: |%s|\n", a_callid);
-          errcode = call_id_parse (callid, a_callid);
-          if (errcode != -1)
-            {
-              if (call_id_2char (callid, &dest) != -1)
-                {
-                  printf ("result:        |%s|\n", dest);
-                  sfree (dest);
-                }
-          } else
-            printf ("Bad callid format: %s\n", a_callid);
-          call_id_free (callid), sfree (callid);
-          printf ("=================================================\n");
-        }
-      res = fgets (a_callid, 200, callids_file);        /* lines are under 200 */
+	{
+	  /* allocate & init callid */
+	  call_id_init (&callid);
+	  printf ("=================================================\n");
+	  printf ("CALLID TO PARSE: |%s|\n", a_callid);
+	  errcode = call_id_parse (callid, a_callid);
+	  if (errcode != -1)
+	    {
+	      if (call_id_2char (callid, &dest) != -1)
+		{
+		  printf ("result:        |%s|\n", dest);
+		  sfree (dest);
+		}
+	    }
+	  else
+	    printf ("Bad callid format: %s\n", a_callid);
+	  call_id_free (callid), sfree (callid);
+	  printf ("=================================================\n");
+	}
+      res = fgets (a_callid, 200, callids_file);	/* lines are under 200 */
     }
   sfree (a_callid);
   return 0;

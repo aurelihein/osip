@@ -44,12 +44,12 @@ main (int argc, char **argv)
   if (froms_file == NULL)
     {
       fprintf (stdout, "Failed to open %s file.\nUsage: tfrom froms.txt\n",
-               argv[1]);
+	       argv[1]);
       exit (0);
     }
 
   a_from = (char *) smalloc (200);
-  res = fgets (a_from, 200, froms_file);        /* lines are under 200 */
+  res = fgets (a_from, 200, froms_file);	/* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,25 +59,26 @@ main (int argc, char **argv)
       strncpy (a_from + strlen (a_from) - 1, "\0", 1);
 
       if (0 != strncmp (a_from, "#", 1))
-        {
-          /* allocate & init from */
-          from_init (&from);
-          printf ("=================================================\n");
-          printf ("FROM TO PARSE: |%s|\n", a_from);
-          errcode = from_parse (from, a_from);
-          if (errcode != -1)
-            {
-              if (from_2char (from, &dest) != -1)
-                {
-                  printf ("result:        |%s|\n", dest);
-                  sfree (dest);
-                }
-          } else
-            printf ("Bad from format: %s\n", a_from);
-          from_free (from), sfree (from);
-          printf ("=================================================\n");
-        }
-      res = fgets (a_from, 200, froms_file);    /* lines are under 200 */
+	{
+	  /* allocate & init from */
+	  from_init (&from);
+	  printf ("=================================================\n");
+	  printf ("FROM TO PARSE: |%s|\n", a_from);
+	  errcode = from_parse (from, a_from);
+	  if (errcode != -1)
+	    {
+	      if (from_2char (from, &dest) != -1)
+		{
+		  printf ("result:        |%s|\n", dest);
+		  sfree (dest);
+		}
+	    }
+	  else
+	    printf ("Bad from format: %s\n", a_from);
+	  from_free (from), sfree (from);
+	  printf ("=================================================\n");
+	}
+      res = fgets (a_from, 200, froms_file);	/* lines are under 200 */
     }
   sfree (a_from);
   return 0;

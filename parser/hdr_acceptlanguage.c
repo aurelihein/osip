@@ -37,8 +37,8 @@ msg_setaccept_language (sip_t * sip, char *hvalue)
   i = accept_language_parse (accept_language, hvalue);
   if (i != 0)
     {
-      accept_language_free(accept_language);
-      sfree(accept_language);
+      accept_language_free (accept_language);
+      sfree (accept_language);
       return -1;
     }
 
@@ -56,8 +56,9 @@ msg_getaccept_language (sip_t * sip, int pos, accept_language_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->accept_languages) <= pos)
-    return -1;                  /* does not exist */
-  accept_language = (accept_language_t *) list_get (sip->accept_languages, pos);
+    return -1;			/* does not exist */
+  accept_language =
+    (accept_language_t *) list_get (sip->accept_languages, pos);
   *dest = accept_language;
   return pos;
 }

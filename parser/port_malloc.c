@@ -44,8 +44,8 @@ smalloc (size_t size)
   malloccomptr++;
 
   fprintf (stdout,
-           "INITMALLOC (%i) (%x) =(size,value)| (%i,%i)=(el_freed,difference)\n",
-           size, (char *) value, comptr, malloccomptr);
+	   "INITMALLOC (%i) (%x) =(size,value)| (%i,%i)=(el_freed,difference)\n",
+	   size, (char *) value, comptr, malloccomptr);
   fflush (stdout);
 #endif
   if (value == 0)
@@ -69,7 +69,7 @@ sfree (void *ptr)
   if (ptr != NULL)
     malloccomptr--;
   fprintf (stdout, "FREEMALLOC (%x) comptr: %i existing element %i\n",
-           (char *) ptr, comptr, malloccomptr);
+	   (char *) ptr, comptr, malloccomptr);
   fflush (stdout);
 #endif
 

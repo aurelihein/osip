@@ -132,7 +132,7 @@ extern "C"
 
     /* type of dialog (CALLEE or CALLER) */
     dlg_type_t type;
-    state_t state;              /* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+    state_t state;		/* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
   };
 
 
@@ -158,7 +158,8 @@ extern "C"
  * @param invite The INVITE request containing some informations.
  * @param response The response containing other informations.
  */
-  int dialog_init_as_uas (dialog_t ** dialog, sip_t * invite, sip_t * response);
+  int dialog_init_as_uas (dialog_t ** dialog, sip_t * invite,
+			  sip_t * response);
 /**
  * Free all resource in a dialog_t element.
  * @param dialog The element to free.

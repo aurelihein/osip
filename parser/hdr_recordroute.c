@@ -45,8 +45,8 @@ msg_setrecord_route (sip_t * sip, char *hvalue)
   i = record_route_parse (record_route, hvalue);
   if (i != 0)
     {
-      record_route_free(record_route);
-      sfree(record_route);
+      record_route_free (record_route);
+      sfree (record_route);
       return -1;
     }
 
@@ -67,7 +67,7 @@ msg_getrecord_route (sip_t * sip, int pos, record_route_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->record_routes) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   record_route = (record_route_t *) list_get (sip->record_routes, pos);
   *dest = record_route;
   return pos;
@@ -98,13 +98,17 @@ record_route_2char (record_route_t * record_route, char **dest)
   if (i != 0)
     return -1;
 
-  if (record_route->displayname==NULL)
-    len = strlen(url) +5;
+  if (record_route->displayname == NULL)
+    len = strlen (url) + 5;
   else
-    len = strlen(url) + strlen(record_route->displayname) +5;
+    len = strlen (url) + strlen (record_route->displayname) + 5;
 
   buf = (char *) smalloc (len);
-  if (buf==NULL) { sfree(url); return -1; }
+  if (buf == NULL)
+    {
+      sfree (url);
+      return -1;
+    }
 
   /* route and record-route always use brackets */
   if (record_route->displayname != NULL)
@@ -121,21 +125,22 @@ record_route_2char (record_route_t * record_route, char **dest)
 
     while (!list_eol (record_route->gen_params, pos))
       {
-        u_param = (generic_param_t *) list_get (record_route->gen_params, pos);
+	u_param =
+	  (generic_param_t *) list_get (record_route->gen_params, pos);
 
-	if (u_param->gvalue==NULL)
+	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;
 	else
 	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
-        len = len + plen;
-        buf = (char *) realloc (buf, len);
-        tmp = buf;
-        tmp = tmp + strlen (tmp);
-	if (u_param->gvalue==NULL)
+	len = len + plen;
+	buf = (char *) realloc (buf, len);
+	tmp = buf;
+	tmp = tmp + strlen (tmp);
+	if (u_param->gvalue == NULL)
 	  sprintf (tmp, ";%s", u_param->gname);
 	else
 	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-        pos++;
+	pos++;
       }
   }
   *dest = buf;

@@ -54,8 +54,8 @@ msg_setroute (sip_t * sip, char *hvalue)
   i = route_parse (route, hvalue);
   if (i != 0)
     {
-      route_free(route);
-      sfree(route);
+      route_free (route);
+      sfree (route);
       return -1;
     }
 
@@ -76,7 +76,7 @@ msg_getroute (sip_t * sip, int pos, route_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->routes) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   route = (route_t *) list_get (sip->routes, pos);
   *dest = route;
   return pos;

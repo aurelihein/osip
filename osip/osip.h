@@ -309,7 +309,7 @@ extern "C"
     ICT_TERMINATED,
 
     /* STATES for invite server transaction */
-    IST_PRE_PROCEEDING,         /* this is used to only announce once the INVITE */
+    IST_PRE_PROCEEDING,		/* this is used to only announce once the INVITE */
     IST_PROCEEDING,
     IST_COMPLETED,
     IST_CONFIRMED,
@@ -332,7 +332,7 @@ extern "C"
 #ifndef DOXYGEN
     DIALOG_EARLY,
     DIALOG_CONFIRMED,
-    DIALOG_CLOSE                /* ?? */
+    DIALOG_CLOSE		/* ?? */
 #endif
   }
   state_t;
@@ -357,26 +357,26 @@ extern "C"
   typedef enum type_t
   {
     /* TIMEOUT EVENTS for ICT */
-    TIMEOUT_A,   /**< Timer A */
-    TIMEOUT_B,   /**< Timer B */
-    TIMEOUT_D,   /**< Timer D */
+    TIMEOUT_A,	 /**< Timer A */
+    TIMEOUT_B,	 /**< Timer B */
+    TIMEOUT_D,	 /**< Timer D */
 
     /* TIMEOUT EVENTS for NICT */
-    TIMEOUT_E,   /**< Timer E */
-    TIMEOUT_F,   /**< Timer F */
-    TIMEOUT_K,   /**< Timer K */
+    TIMEOUT_E,	 /**< Timer E */
+    TIMEOUT_F,	 /**< Timer F */
+    TIMEOUT_K,	 /**< Timer K */
 
     /* TIMEOUT EVENTS for IST */
-    TIMEOUT_G,   /**< Timer G */
-    TIMEOUT_H,   /**< Timer H */
-    TIMEOUT_I,   /**< Timer I */
+    TIMEOUT_G,	 /**< Timer G */
+    TIMEOUT_H,	 /**< Timer H */
+    TIMEOUT_I,	 /**< Timer I */
 
     /* TIMEOUT EVENTS for NIST */
-    TIMEOUT_J,   /**< Timer J */
+    TIMEOUT_J,	 /**< Timer J */
 
     /* FOR INCOMING MESSAGE */
     RCV_REQINVITE,    /**< Event is an incoming INVITE request */
-    RCV_REQACK,       /**< Event is an incoming ACK request */
+    RCV_REQACK,	      /**< Event is an incoming ACK request */
     RCV_REQUEST,      /**< Event is an incoming NON-INVITE and NON-ACK request */
     RCV_STATUS_1XX,   /**< Event is an incoming informational response */
     RCV_STATUS_2XX,   /**< Event is an incoming 2XX response */
@@ -384,7 +384,7 @@ extern "C"
 
     /* FOR OUTGOING MESSAGE */
     SND_REQINVITE,    /**< Event is an outgoing INVITE request */
-    SND_REQACK,       /**< Event is an outgoing ACK request */
+    SND_REQACK,	      /**< Event is an outgoing ACK request */
     SND_REQUEST,      /**< Event is an outgoing NON-INVITE and NON-ACK request */
     SND_STATUS_1XX,   /**< Event is an outgoing informational response */
     SND_STATUS_2XX,   /**< Event is an outgoing 2XX response */
@@ -426,21 +426,21 @@ extern "C"
  * You can re-define the default value for T1. (T1 is defined in rfcxxxx)
  * The default value is 500ms.
  */
-#define DEFAULT_T1 500          /* 500 ms */
+#define DEFAULT_T1 500		/* 500 ms */
 #endif
 #ifndef DEFAULT_T2
 /**
  * You can re-define the default value for T2. (T2 is defined in rfcxxxx)
  * The default value is 4000ms.
  */
-#define DEFAULT_T2 4000         /* 4s */
+#define DEFAULT_T2 4000		/* 4s */
 #endif
 #ifndef DEFAULT_T4
 /**
  * You can re-define the default value for T4. (T1 is defined in rfcxxxx)
  * The default value is 5000ms.
  */
-#define DEFAULT_T4 5000         /* 5s */
+#define DEFAULT_T4 5000		/* 5s */
 #endif
 
 
@@ -454,15 +454,15 @@ extern "C"
   {
     /* state machine is implied... */
 
-    int timer_a_length;         /* A=T1, A=2xT1... (unreliable transport only)  */
+    int timer_a_length;		/* A=T1, A=2xT1... (unreliable transport only)  */
     time_t timer_a_start;
-    int timer_b_length;         /* B = 64* T1                                   */
-    time_t timer_b_start;       /* fire when transaction timeouts               */
-    int timer_d_length;         /* D >= 32s for unreliable transport (else = 0) */
-    time_t timer_d_start;       /* should be equal to timer H */
+    int timer_b_length;		/* B = 64* T1                                   */
+    time_t timer_b_start;	/* fire when transaction timeouts               */
+    int timer_d_length;		/* D >= 32s for unreliable transport (else = 0) */
+    time_t timer_d_start;	/* should be equal to timer H */
 
-    char *destination;          /* url used to send requests         */
-    int port;                   /* port of next hop                  */
+    char *destination;		/* url used to send requests         */
+    int port;			/* port of next hop                  */
 
   };
 
@@ -476,15 +476,15 @@ extern "C"
   {
     /* state machine is implied... */
 
-    int timer_e_length;         /* A=T1, A=2xT1... (unreliable transport only)  */
-    time_t timer_e_start;       /*  (else = -1) not active                      */
-    int timer_f_length;         /* B = 64* T1                                   */
-    time_t timer_f_start;       /* fire when transaction timeouts               */
-    int timer_k_length;         /* K = T4 (else = 0)                            */
+    int timer_e_length;		/* A=T1, A=2xT1... (unreliable transport only)  */
+    time_t timer_e_start;	/*  (else = -1) not active                      */
+    int timer_f_length;		/* B = 64* T1                                   */
+    time_t timer_f_start;	/* fire when transaction timeouts               */
+    int timer_k_length;		/* K = T4 (else = 0)                            */
     time_t timer_k_start;
 
-    char *destination;          /* url used to send requests         */
-    int port;                   /* port of next hop                  */
+    char *destination;		/* url used to send requests         */
+    int port;			/* port of next hop                  */
 
   };
 
@@ -497,14 +497,14 @@ extern "C"
   struct ist_t
   {
 
-    int timer_g_length;         /* G=MIN(T1*2,T2) for unreliable transport (else=0) */
-    time_t timer_g_start;       /* else = 0 when reliable transport is used!       */
-    int timer_h_length;         /* H = 64* T1                                      */
-    time_t timer_h_start;       /* fire when if no ACK is received                 */
-    int timer_i_length;         /* I = T4 for unreliable transport (else = 0)      */
-    time_t timer_i_start;       /* absorb all ACK                                  */
+    int timer_g_length;		/* G=MIN(T1*2,T2) for unreliable transport (else=0) */
+    time_t timer_g_start;	/* else = 0 when reliable transport is used!       */
+    int timer_h_length;		/* H = 64* T1                                      */
+    time_t timer_h_start;	/* fire when if no ACK is received                 */
+    int timer_i_length;		/* I = T4 for unreliable transport (else = 0)      */
+    time_t timer_i_start;	/* absorb all ACK                                  */
 
-    int auto_send_100;          /* set to 0 for automatic 100 replies (0 is default) */
+    int auto_send_100;		/* set to 0 for automatic 100 replies (0 is default) */
 
   };
 
@@ -517,7 +517,7 @@ extern "C"
   struct nist_t
   {
 
-    int timer_j_length;         /* J = 64*T1 (else 0) */
+    int timer_j_length;		/* J = 64*T1 (else 0) */
     time_t timer_j_start;
 
   };
@@ -531,31 +531,31 @@ extern "C"
   struct transaction_t
   {
 
-    void *your_instance;        /* add whatever you want here.       */
-    int transactionid;          /* simple id used to identify the tr. */
-    fifo_t *transactionff;      /* events must be added in this fifo */
+    void *your_instance;	/* add whatever you want here.       */
+    int transactionid;		/* simple id used to identify the tr. */
+    fifo_t *transactionff;	/* events must be added in this fifo */
 
-    via_t *topvia;              /* CALL-LEG definition */
-    from_t *from;               /* CALL-LEG definition */
+    via_t *topvia;		/* CALL-LEG definition */
+    from_t *from;		/* CALL-LEG definition */
     to_t *to;
     call_id_t *callid;
     cseq_t *cseq;
 
-    sip_t *orig_request;        /* last request sent                 */
-    sip_t *last_response;       /* last response received            */
-    sip_t *ack;                 /* ack request sent                  */
+    sip_t *orig_request;	/* last request sent                 */
+    sip_t *last_response;	/* last response received            */
+    sip_t *ack;			/* ack request sent                  */
 
-    state_t state;              /* state of transaction              */
+    state_t state;		/* state of transaction              */
 
-    time_t birth_time;          /* birth_date of transaction         */
-    time_t completed_time;      /* end   date of transaction         */
+    time_t birth_time;		/* birth_date of transaction         */
+    time_t completed_time;	/* end   date of transaction         */
 
     /* RESPONSE are received on this socket */
     int in_socket;
     /* REQUESTS are sent on this socket */
     int out_socket;
 
-    void *config;               /* transaction is managed by config  */
+    void *config;		/* transaction is managed by config  */
 
     context_type_t ctx_type;
     ict_t *ict_context;
@@ -576,7 +576,7 @@ extern "C"
   struct osip_t
   {
 
-    void *application_context;  /* a pointer for your personnal usage */
+    void *application_context;	/* a pointer for your personnal usage */
 
     /* list of transactions for ict, ist, nict, nist */
     list_t *ict_transactions;
@@ -724,7 +724,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ict_need_timer_a_event (ict_t * ict, state_t state,
-                                      int transactionid);
+				      int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_B event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -733,7 +733,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ict_need_timer_b_event (ict_t * ict, state_t state,
-                                      int transactionid);
+				      int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_D event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -742,7 +742,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ict_need_timer_d_event (ict_t * ict, state_t state,
-                                      int transactionid);
+				      int transactionid);
 
 /**
  * Allocate an nict_t element. (for outgoing NON-INVITE transaction)
@@ -782,7 +782,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *nict_need_timer_e_event (nict_t * nict, state_t state,
-                                       int transactionid);
+				       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_F event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -791,7 +791,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *nict_need_timer_f_event (nict_t * nict, state_t state,
-                                       int transactionid);
+				       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_K event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -800,7 +800,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *nict_need_timer_k_event (nict_t * nict, state_t state,
-                                       int transactionid);
+				       int transactionid);
 
 /**
  * Allocate an ist_t element. (for incoming INVITE transaction)
@@ -825,7 +825,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ist_need_timer_g_event (ist_t * ist, state_t state,
-                                      int transactionid);
+				      int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_H event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -834,7 +834,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ist_need_timer_h_event (ist_t * ist, state_t state,
-                                      int transactionid);
+				      int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_I event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -843,7 +843,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *ist_need_timer_i_event (ist_t * ist, state_t state,
-                                      int transactionid);
+				      int transactionid);
 
 /**
  * Allocate an nist_t element. (for incoming NON-INVITE transaction)
@@ -869,7 +869,7 @@ extern "C"
  * @param transactionid The transaction id.
  */
   sipevent_t *nist_need_timer_j_event (nist_t * nist, state_t state,
-                                       int transactionid);
+				       int transactionid);
 
 /**
  * Allocate an transaction_t element.
@@ -879,7 +879,7 @@ extern "C"
  * @param request The SIP request that initiate the transaction.
  */
   int transaction_init (transaction_t ** transaction, context_type_t ctx_type,
-                        osip_t * osip, sip_t * request);
+			osip_t * osip, sip_t * request);
 /**
  * Free all resource in a transaction_t element.
  * @param transaction The element to free.
@@ -921,7 +921,8 @@ extern "C"
  * @param transaction The element to work on.
  * @param instance The address of your context.
  */
-  int transaction_set_your_instance (transaction_t * transaction, void *instance);
+  int transaction_set_your_instance (transaction_t * transaction,
+				     void *instance);
 /**
  * Get a pointer to your personal context associated with this transaction.
  * @param transaction The element to work on.
@@ -957,7 +958,8 @@ extern "C"
  * @param transaction The element to work on.
  * @param call_id The Call-Id header.
  */
-  int transaction_set_call_id (transaction_t * transaction, call_id_t * call_id);
+  int transaction_set_call_id (transaction_t * transaction,
+			       call_id_t * call_id);
 /**
  * Set the cseq value associated to this transaction.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -971,7 +973,8 @@ extern "C"
  * @param transaction The element to work on.
  * @param request The initial request.
  */
-  int transaction_set_orig_request (transaction_t * transaction, sip_t * request);
+  int transaction_set_orig_request (transaction_t * transaction,
+				    sip_t * request);
 /**
  * Set the last RESPONSE associated to this transaction.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -979,7 +982,7 @@ extern "C"
  * @param last_response The last RESPONSE.
  */
   int transaction_set_last_response (transaction_t * transaction,
-                                     sip_t * last_response);
+				     sip_t * last_response);
 /**
  * Set the ACK message associated to this transaction.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -1023,7 +1026,7 @@ extern "C"
  * @param resp The SIP response received.
  */
   int transaction_matching_response_to_xict_17_1_3 (transaction_t * tr,
-                                                    sip_t * resp);
+						    sip_t * resp);
 /**
  * Check if the request match a client transaction.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -1031,7 +1034,7 @@ extern "C"
  * @param request The SIP request received.
  */
   int transaction_matching_request_to_xist_17_2_3 (transaction_t * tr,
-                                                   sip_t * request);
+						   sip_t * request);
 /**
  * Check if the tags in the From headers match.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -1077,7 +1080,7 @@ extern "C"
  */
   int cseq_match (cseq_t * cseq1, cseq_t * cseq2);
 
-#endif                          /* endif DOXYGEN */
+#endif				/* endif DOXYGEN */
 
 /**
  * Initialise the global oSIP stack elements.
@@ -1278,7 +1281,8 @@ extern "C"
  * @param transactions The list of transactions to work on.
  * @param evt The element representing the SIP MESSAGE.
  */
-  transaction_t *osip_transaction_find (list_t * transactions, sipevent_t * evt);
+  transaction_t *osip_transaction_find (list_t * transactions,
+					sipevent_t * evt);
 
 /*
   BUG!!!
@@ -1297,7 +1301,7 @@ extern "C"
 #endif
 
   transaction_t *__osip_find_transaction (osip_t * osip, sipevent_t * evt,
-                                          int consume);
+					  int consume);
 
 /**
  * Search for a transaction that match this event (MUST be a MESSAGE event)
@@ -1352,29 +1356,30 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_send_message (osip_t * cf,
-                                int (*cb) (transaction_t *, sip_t *, char *, int,
-                                           int));
+				int (*cb) (transaction_t *, sip_t *, char *,
+					   int, int));
 /* callbacks for ict */
 /**
  * Register the callback called when the transaction is deleted.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
-  void osip_setcb_ict_kill_transaction (osip_t * cf, void (*cb) (transaction_t *));
+  void osip_setcb_ict_kill_transaction (osip_t * cf,
+					void (*cb) (transaction_t *));
 /**
  * Register the callback called when an INVITE is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_invite_sent (osip_t * cf,
-                                   void (*cb) (transaction_t *, sip_t *));
+				   void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an INVITE is retransmitted.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_invite_sent2 (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an ACK is sent.
  * NOTE: This method is only called if the final response was not a 2xx
@@ -1382,7 +1387,7 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_ack_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an ACK is retransmitted.
  * NOTE: This method is only called if the final response was not a 2xx
@@ -1390,21 +1395,21 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_ack_sent2 (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 1xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_1xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_2xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is received again.
  * NOTE: obsolete... THIS IS NEVER CALLED! as the transaction is destroyed
@@ -1413,49 +1418,51 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_2xx_received2 (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 3xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_3xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 4xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_4xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 5xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_5xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 6xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_6xx_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a retransmission of a final response is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_3456xx_received2 (osip_t * cf,
-                                        void (*cb) (transaction_t *, sip_t *));
+					void (*cb) (transaction_t *,
+						    sip_t *));
 /**
  * Register the callback called when a transport error happens.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ict_transport_error (osip_t * cf,
-                                       void (*cb) (transaction_t *, int error));
+				       void (*cb) (transaction_t *,
+						   int error));
 
 /* callbacks for ist */
 /**
@@ -1463,21 +1470,23 @@ extern "C"
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
-  void osip_setcb_ist_kill_transaction (osip_t * cf, void (*cb) (transaction_t *));
+  void osip_setcb_ist_kill_transaction (osip_t * cf,
+					void (*cb) (transaction_t *));
 /**
  * Register the callback called when an INVITE is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_invite_received (osip_t * cf,
-                                       void (*cb) (transaction_t *, sip_t *));
+				       void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an INVITE is received again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_invite_received2 (osip_t * cf,
-                                        void (*cb) (transaction_t *, sip_t *));
+					void (*cb) (transaction_t *,
+						    sip_t *));
 /**
  * Register the callback called when an ACK is received.
  * NOTE: This method is only called if the final response was not a 2xx
@@ -1485,7 +1494,7 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_ack_received (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an ACK is received again.
  * NOTE: This method is only called if the final response was not a 2xx
@@ -1493,28 +1502,28 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_ack_received2 (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 1xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_1xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 1xx SIP message is sent again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_1xx_sent2 (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_2xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is sent again.
  * NOTE: This method is never called because the transaction is destroyed
@@ -1523,49 +1532,50 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_2xx_sent2 (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 3xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_3xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 4xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_4xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 5xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_5xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 6xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_6xx_sent (osip_t * cf,
-                                void (*cb) (transaction_t *, sip_t *));
+				void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a final response (not 200) is sent again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_3456xx_sent2 (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a transport error happens.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_ist_transport_error (osip_t * cf,
-                                       void (*cb) (transaction_t *, int error));
+				       void (*cb) (transaction_t *,
+						   int error));
 
 
 /* callbacks for nict */
@@ -1575,56 +1585,56 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_kill_transaction (osip_t * cf,
-                                         void (*cb) (transaction_t *));
+					 void (*cb) (transaction_t *));
 /**
  * Register the callback called when an REGISTER is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_register_sent (osip_t * cf,
-                                      void (*cb) (transaction_t *, sip_t *));
+				      void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an BYE is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_bye_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an OPTIONS is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_options_sent (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an INFO is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_info_sent (osip_t * cf,
-                                  void (*cb) (transaction_t *, sip_t *));
+				  void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an CANCEL is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_cancel_sent (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an NOTIFY is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_notify_sent (osip_t * cf,
-                                    void (*cb) (transaction_t *, sip_t *));
+				    void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an SUBSCRIBE is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_subscribe_sent (osip_t * cf,
-                                       void (*cb) (transaction_t *, sip_t *));
+				       void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an UNKNOWN REQUEST is sent.
  * NOTE: All SIP request that do not have specific callback
@@ -1633,77 +1643,79 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_unknown_sent (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an REQUEST is sent again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_request_sent2 (osip_t * cf,
-                                      void (*cb) (transaction_t *, sip_t *));
+				      void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 1xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_1xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_2xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is received again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_2xx_received2 (osip_t * cf,
-                                      void (*cb) (transaction_t *, sip_t *));
+				      void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 3xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_3xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 4xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_4xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 5xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_5xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 6xx SIP message is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_6xx_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a final response (not 200) is received again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_3456xx_received2 (osip_t * cf,
-                                         void (*cb) (transaction_t *, sip_t *));
+					 void (*cb) (transaction_t *,
+						     sip_t *));
 /**
  * Register the callback called when a transport error happens.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nict_transport_error (osip_t * cf,
-                                        void (*cb) (transaction_t *, int error));
+					void (*cb) (transaction_t *,
+						    int error));
 
   /* callbacks for nist */
 /**
@@ -1712,56 +1724,61 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_kill_transaction (osip_t * cf,
-                                         void (*cb) (transaction_t *));
+					 void (*cb) (transaction_t *));
 /**
  * Register the callback called when an REGISTER is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_register_received (osip_t * cf,
-                                          void (*cb) (transaction_t *, sip_t *));
+					  void (*cb) (transaction_t *,
+						      sip_t *));
 /**
  * Register the callback called when an BYE is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_bye_received (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an OPTIONS is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_options_received (osip_t * cf,
-                                         void (*cb) (transaction_t *, sip_t *));
+					 void (*cb) (transaction_t *,
+						     sip_t *));
 /**
  * Register the callback called when an INFO is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_info_received (osip_t * cf,
-                                      void (*cb) (transaction_t *, sip_t *));
+				      void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when an CANCEL is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_cancel_received (osip_t * cf,
-                                        void (*cb) (transaction_t *, sip_t *));
+					void (*cb) (transaction_t *,
+						    sip_t *));
 /**
  * Register the callback called when an NOTIFY is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_notify_received (osip_t * cf,
-                                        void (*cb) (transaction_t *, sip_t *));
+					void (*cb) (transaction_t *,
+						    sip_t *));
 /**
  * Register the callback called when an SUBSCRIBE is received.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_subscribe_received (osip_t * cf,
-                                           void (*cb) (transaction_t *, sip_t *));
+					   void (*cb) (transaction_t *,
+						       sip_t *));
 /**
  * Register the callback called when an unknown REQUEST is received.
  * NOTE: When the message does not have a specific callback, this
@@ -1770,7 +1787,8 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_unknown_received (osip_t * cf,
-                                         void (*cb) (transaction_t *, sip_t *));
+					 void (*cb) (transaction_t *,
+						     sip_t *));
   /* ... TO BE ADDED: All known and used method extensions */
 /**
  * Register the callback called when a REQUEST is received again.
@@ -1778,70 +1796,72 @@ extern "C"
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_request_received2 (osip_t * cf,
-                                          void (*cb) (transaction_t *, sip_t *));
+					  void (*cb) (transaction_t *,
+						      sip_t *));
 /**
  * Register the callback called when a 1xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_1xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_2xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 2xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_2xx_sent2 (osip_t * cf,
-                                  void (*cb) (transaction_t *, sip_t *));
+				  void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 3xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_3xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 4xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_4xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 5xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_5xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a 6xx SIP message is sent.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_6xx_sent (osip_t * cf,
-                                 void (*cb) (transaction_t *, sip_t *));
+				 void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a final response is sent again.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_3456xx_sent2 (osip_t * cf,
-                                     void (*cb) (transaction_t *, sip_t *));
+				     void (*cb) (transaction_t *, sip_t *));
 /**
  * Register the callback called when a transport error happens.
  * @param cf The osip element attached to the transaction.
  * @param cb The method we want to register.
  */
   void osip_setcb_nist_transport_error (osip_t * cf,
-                                        void (*cb) (transaction_t *, int error));
+					void (*cb) (transaction_t *,
+						    int error));
 
 
 /* FOR INCOMING TRANSACTION */

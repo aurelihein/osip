@@ -41,8 +41,8 @@ int
 main (int argc, char **argv)
 {
   int i;
-  int verbose = 0;              /* 1: verbose, 0 (or nothing: not verbose) */
-  int clone = 0;                /* 1: verbose, 0 (or nothing: not verbose) */
+  int verbose = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
+  int clone = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
   char *marker;
   FILE *torture_file;
   char *tmp;
@@ -53,21 +53,21 @@ main (int argc, char **argv)
   if (argc > 3)
     {
       if (0 == strncmp (argv[3], "-v", 2))
-        verbose = 1;
+	verbose = 1;
       else if (0 == strncmp (argv[3], "-c", 2))
-        clone = 1;
+	clone = 1;
       else
-        usage ();
+	usage ();
     }
 
   if (argc > 4)
     {
       if (0 == strncmp (argv[4], "-v", 2))
-        verbose = 1;
+	verbose = 1;
       else if (0 == strncmp (argv[4], "-c", 2))
-        clone = 1;
+	clone = 1;
       else
-        usage ();
+	usage ();
     }
 
   if (argc < 3)
@@ -86,23 +86,24 @@ main (int argc, char **argv)
 
   i = 0;
   tmp = (char *) smalloc (500);
-  marker = fgets (tmp, 500, torture_file);      /* lines are under 500 */
+  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
   while (marker != NULL && i < atoi (argv[2]))
     {
       if (0 == strncmp (tmp, "|", 1))
-        i++;
+	i++;
       marker = fgets (tmp, 500, torture_file);
     }
 
   num_test++;
 
-  msg = (char *) smalloc (10000);       /* msg are under 10000 */
+  msg = (char *) smalloc (10000);	/* msg are under 10000 */
   tmpmsg = msg;
 
   if (marker == NULL)
     {
-      fprintf (stderr, "Error! The message's number you specified does not exist");
-      exit (1);                 /* end of file detected! */
+      fprintf (stderr,
+	       "Error! The message's number you specified does not exist");
+      exit (1);			/* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -119,16 +120,18 @@ main (int argc, char **argv)
       fprintf (stdout, "%s", msg);
 
       if (0 == test_message (msg, verbose, clone))
-        fprintf (stdout, "test %s : ============================ OK\n", argv[2]);
+	fprintf (stdout, "test %s : ============================ OK\n",
+		 argv[2]);
       else
-        fprintf (stdout, "test %s : ============================ FAILED\n",
-                 argv[2]);
-  } else
+	fprintf (stdout, "test %s : ============================ FAILED\n",
+		 argv[2]);
+    }
+  else
     {
       if (0 == test_message (msg, verbose, clone))
-        fprintf (stdout, "test %s : OK\n", argv[2]);
+	fprintf (stdout, "test %s : OK\n", argv[2]);
       else
-        fprintf (stdout, "test %s : FAILED\n", argv[2]);
+	fprintf (stdout, "test %s : FAILED\n", argv[2]);
     }
 
   sfree (msg);
@@ -150,99 +153,104 @@ test_message (char *msg, int verbose, int clone)
     int j = 1;
 
     fprintf (stdout,
-             "Trying %i sequentials calls to msg_init(), msg_parse() and msg_free()\n",
-             j);
+	     "Trying %i sequentials calls to msg_init(), msg_parse() and msg_free()\n",
+	     j);
     while (j != 0)
       {
-        j--;
-        msg_init (&sip);
-        if (msg_parse (sip, msg) != 0)
-          {
-            fprintf (stdout, "ERROR: failed while parsing!\n");
-            msg_free (sip);     /* try to free msg, even if it failed! */
-            sfree (sip);
-            return -1;
-          }
-        msg_free (sip);         /* try to free msg, even if it failed! */
-        sfree (sip);
+	j--;
+	msg_init (&sip);
+	if (msg_parse (sip, msg) != 0)
+	  {
+	    fprintf (stdout, "ERROR: failed while parsing!\n");
+	    msg_free (sip);	/* try to free msg, even if it failed! */
+	    sfree (sip);
+	    return -1;
+	  }
+	msg_free (sip);		/* try to free msg, even if it failed! */
+	sfree (sip);
       }
 
     msg_init (&sip);
     if (msg_parse (sip, msg) != 0)
       {
-        fprintf (stdout, "ERROR: failed while parsing!\n");
-        msg_free (sip);         /* try to free msg, even if it failed! */
-        /* this seems dangerous..... */
-        return -1;
-    } else
+	fprintf (stdout, "ERROR: failed while parsing!\n");
+	msg_free (sip);		/* try to free msg, even if it failed! */
+	/* this seems dangerous..... */
+	return -1;
+      }
+    else
       {
-        int i;
+	int i;
 
-        i = msg_2char (sip, &result);
-        if (i == -1)
-          {
-            fprintf (stdout, "ERROR: failed while printing message!\n");
-            msg_free (sip);
-            sfree (sip);
-            return -1;
-        } else
-          {
-            if (verbose)
-              fprintf (stdout, "%s", result);
-            if (clone)
-              {
-                /* create a clone of message */
-                /* int j = 10000; */
-                int j = 1;
+	i = msg_2char (sip, &result);
+	if (i == -1)
+	  {
+	    fprintf (stdout, "ERROR: failed while printing message!\n");
+	    msg_free (sip);
+	    sfree (sip);
+	    return -1;
+	  }
+	else
+	  {
+	    if (verbose)
+	      fprintf (stdout, "%s", result);
+	    if (clone)
+	      {
+		/* create a clone of message */
+		/* int j = 10000; */
+		int j = 1;
 
-                fprintf (stdout,
-                         "Trying %i sequentials calls to msg_clone() and msg_free()\n",
-                         j);
-                while (j != 0)
-                  {
-                    sip_t *copy;
+		fprintf (stdout,
+			 "Trying %i sequentials calls to msg_clone() and msg_free()\n",
+			 j);
+		while (j != 0)
+		  {
+		    sip_t *copy;
 
-                    j--;
-                    i = msg_clone (sip, &copy);
-                    if (i != 0)
-                      {
-                        fprintf (stdout,
-                                 "ERROR: failed while creating copy of message!\n");
-                    } else
-                      {
-                        char *tmp;
+		    j--;
+		    i = msg_clone (sip, &copy);
+		    if (i != 0)
+		      {
+			fprintf (stdout,
+				 "ERROR: failed while creating copy of message!\n");
+		      }
+		    else
+		      {
+			char *tmp;
 
-                        msg_force_update (copy);
-                        i = msg_2char (copy, &tmp);
-                        if (i != 0)
-                          {
-                            fprintf (stdout,
-                                     "ERROR: failed while printing message!\n");
-                        } else
-                          {
-                            if (0 == strcmp (result, tmp))
-                              {
-                                if (verbose)
-                                  printf
-                                    ("The msg_clone method works perfectly\n");
-                            } else
-                              printf
-                                ("ERROR: The msg_clone method DOES NOT works\n");
-                            if (verbose)
-                              printf ("Here is the copy: \n%s\n", tmp);
+			msg_force_update (copy);
+			i = msg_2char (copy, &tmp);
+			if (i != 0)
+			  {
+			    fprintf (stdout,
+				     "ERROR: failed while printing message!\n");
+			  }
+			else
+			  {
+			    if (0 == strcmp (result, tmp))
+			      {
+				if (verbose)
+				  printf
+				    ("The msg_clone method works perfectly\n");
+			      }
+			    else
+			      printf
+				("ERROR: The msg_clone method DOES NOT works\n");
+			    if (verbose)
+			      printf ("Here is the copy: \n%s\n", tmp);
 
-                            sfree (tmp);
-                          }
-                        msg_free (copy);
-                        sfree (copy);
-                      }
-                  }
-                fprintf (stdout, "sequentials calls: done\n");
-              }
-            sfree (result);
-          }
-        msg_free (sip);
-        sfree (sip);
+			    sfree (tmp);
+			  }
+			msg_free (copy);
+			sfree (copy);
+		      }
+		  }
+		fprintf (stdout, "sequentials calls: done\n");
+	      }
+	    sfree (result);
+	  }
+	msg_free (sip);
+	sfree (sip);
       }
   }
   return 0;

@@ -56,7 +56,7 @@ parser_init ()
   pconfig[4].setheader = (&msg_setallow);
   pconfig[5].hname = AUTHORIZATION;
   pconfig[5].setheader = (&msg_setauthorization);
-  pconfig[6].hname = CONTENT_TYPE_SHORT;        /* "l" */
+  pconfig[6].hname = CONTENT_TYPE_SHORT;	/* "l" */
   pconfig[6].setheader = (&msg_setcontent_type);
   pconfig[7].hname = CALL_ID;
   pconfig[7].setheader = (&msg_setcall_id);
@@ -72,19 +72,19 @@ parser_init ()
   pconfig[12].setheader = (&msg_setcontent_type);
   pconfig[13].hname = CSEQ;
   pconfig[13].setheader = (&msg_setcseq);
-  pconfig[14].hname = CONTENT_ENCODING_SHORT;   /* "e" */
+  pconfig[14].hname = CONTENT_ENCODING_SHORT;	/* "e" */
   pconfig[14].setheader = (&msg_setcontent_encoding);
   pconfig[15].hname = ERROR_INFO;
   pconfig[15].setheader = (&msg_seterror_info);
-  pconfig[16].hname = FROM_SHORT;       /* "f" */
+  pconfig[16].hname = FROM_SHORT;	/* "f" */
   pconfig[16].setheader = (&msg_setfrom);
   pconfig[17].hname = FROM;
   pconfig[17].setheader = (&msg_setfrom);
-  pconfig[18].hname = CALL_ID_SHORT;    /* "i" */
+  pconfig[18].hname = CALL_ID_SHORT;	/* "i" */
   pconfig[18].setheader = (&msg_setcall_id);
-  pconfig[19].hname = CONTENT_LENGTH_SHORT;     /* "l" */
+  pconfig[19].hname = CONTENT_LENGTH_SHORT;	/* "l" */
   pconfig[19].setheader = (&msg_setcontent_length);
-  pconfig[20].hname = CONTACT_SHORT;    /* "m" */
+  pconfig[20].hname = CONTACT_SHORT;	/* "m" */
   pconfig[20].setheader = (&msg_setcontact);
   pconfig[21].hname = MIME_VERSION;
   pconfig[21].setheader = (&msg_setmime_version);
@@ -127,49 +127,50 @@ parser_isknownheader (char *hname)
   while (1)
     {
       if (i < 0 || i > NUMBER_OF_HEADERS - 1)
-        return -1;
+	return -1;
 
       if ((length == strlen (pconfig[i].hname))
-          && strncmp ((const char *) hname,
-                      (const char *) pconfig[i].hname, length) == 0)
-        return i;
+	  && strncmp ((const char *) hname,
+		      (const char *) pconfig[i].hname, length) == 0)
+	return i;
 
       if (iinf == isup)
-        return -1;              /* not found */
+	return -1;		/* not found */
       if (iinf == isup - 1)
-        {
-          if ((i < NUMBER_OF_HEADERS - 1)
-              && (length == strlen (pconfig[i + 1].hname))
-              && strncmp ((const char *) hname,
-                          (const char *) pconfig[i + 1].hname, length) == 0)
-            return i + 1;
-          else
-            return -1;
-          if ((i > 0) && (length == strlen (pconfig[i - 1].hname))
-              && strncmp ((const char *) hname,
-                          (const char *) pconfig[i - 1].hname, length) == 0)
-            return i - 1;
-          else
-            return -1;
-        }
+	{
+	  if ((i < NUMBER_OF_HEADERS - 1)
+	      && (length == strlen (pconfig[i + 1].hname))
+	      && strncmp ((const char *) hname,
+			  (const char *) pconfig[i + 1].hname, length) == 0)
+	    return i + 1;
+	  else
+	    return -1;
+	  if ((i > 0) && (length == strlen (pconfig[i - 1].hname))
+	      && strncmp ((const char *) hname,
+			  (const char *) pconfig[i - 1].hname, length) == 0)
+	    return i - 1;
+	  else
+	    return -1;
+	}
       if (0 < strncmp ((const char *) hname,
-                       (const char *) pconfig[i].hname, length))
-        {
-          /* if this is true, search further */
-          iinf = i;
-          if (i == i + (isup - i) / 2)
-            i++;
-          else
-            i = i + (isup - i) / 2;
-      } else
-        {
-          isup = i;
-          if (i == i - (i - iinf) / 2)
-            i--;
-          else
-            i = i - (i - iinf) / 2;
-        }
-    }                           /* end of (while (1)) */
+		       (const char *) pconfig[i].hname, length))
+	{
+	  /* if this is true, search further */
+	  iinf = i;
+	  if (i == i + (isup - i) / 2)
+	    i++;
+	  else
+	    i = i + (isup - i) / 2;
+	}
+      else
+	{
+	  isup = i;
+	  if (i == i - (i - iinf) / 2)
+	    i--;
+	  else
+	    i = i - (i - iinf) / 2;
+	}
+    }				/* end of (while (1)) */
   return -1;
 }
 
@@ -297,18 +298,18 @@ static const parser_config_t pconfig[133] = {
   {"", NULL},
   {AUTHORIZATION, &msg_setauthorization},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-                                                                           NULL},
+									   NULL},
   {RETRY_AFTER, NULL},
   {"", NULL}, {"", NULL},
   {CONTENT_DISPOSITION, NULL},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-                                                                           NULL},
+									   NULL},
   {"", NULL}, {"", NULL},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-                                                                           NULL},
+									   NULL},
   {CONTACT_SHORT, &msg_setcontact},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-                                                                           NULL},
+									   NULL},
   {"", NULL}, {"", NULL},
   {"", NULL},
   {MIME_VERSION, &msg_setmime_version}
@@ -335,13 +336,13 @@ in_word_set (str, len)
       register int key = hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
-        {
-          register const char *s = pconfig[key].hname;
+	{
+	  register const char *s = pconfig[key].hname;
 
-          if (*str == *s && !strcmp (str + 1, s + 1)
-              && (pconfig[key].setheader != NULL))
-            return key;
-        }
+	  if (*str == *s && !strcmp (str + 1, s + 1)
+	      && (pconfig[key].setheader != NULL))
+	    return key;
+	}
     }
   return -1;
 }
@@ -349,7 +350,7 @@ in_word_set (str, len)
 int
 parser_init ()
 {
-  return 0;                     /* do not need initialization when using gpref */
+  return 0;			/* do not need initialization when using gpref */
 }
 
 int

@@ -28,7 +28,8 @@ int
 cseq_init (cseq_t ** cseq)
 {
   *cseq = (cseq_t *) smalloc (sizeof (cseq_t));
-  if (*cseq==NULL) return -1;
+  if (*cseq == NULL)
+    return -1;
   (*cseq)->method = NULL;
   (*cseq)->number = NULL;
   return 0;
@@ -52,10 +53,10 @@ msg_setcseq (sip_t * sip, char *hvalue)
   sip->message_property = 2;
 #endif
   i = cseq_parse (sip->cseq, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      cseq_free(sip->cseq);
-      sfree(sip->cseq);
+      cseq_free (sip->cseq);
+      sfree (sip->cseq);
       sip->cseq = NULL;
       return -1;
     }
@@ -75,7 +76,7 @@ cseq_parse (cseq_t * cseq, char *hvalue)
   cseq->number = NULL;
   cseq->method = NULL;
 
-  method = strchr (hvalue, ' ');        /* SEARCH FOR SPACE */
+  method = strchr (hvalue, ' ');	/* SEARCH FOR SPACE */
   end = hvalue + strlen (hvalue);
 
   if (method == NULL)
@@ -84,17 +85,20 @@ cseq_parse (cseq_t * cseq, char *hvalue)
   if (method - hvalue + 1 < 2)
     return -1;
   cseq->number = (char *) smalloc (method - hvalue + 1);
-  if (cseq->number==NULL) return -1;
+  if (cseq->number == NULL)
+    return -1;
   sstrncpy (cseq->number, hvalue, method - hvalue);
   sclrspace (cseq->number);
 
-  if (end - method + 1 < 2) return -1;
+  if (end - method + 1 < 2)
+    return -1;
   cseq->method = (char *) smalloc (end - method + 1);
-  if (cseq->method==NULL) return -1;
+  if (cseq->method == NULL)
+    return -1;
   sstrncpy (cseq->method, method + 1, end - method);
   sclrspace (cseq->method);
 
-  return 0;                     /* ok */
+  return 0;			/* ok */
 }
 
 /* returns the cseq header.            */
@@ -143,7 +147,8 @@ cseq_2char (cseq_t * cseq, char **dest)
     return -1;
   len = strlen (cseq->method) + strlen (cseq->number) + 2;
   *dest = (char *) smalloc (len);
-  if (*dest==NULL) return -1;
+  if (*dest == NULL)
+    return -1;
   sprintf (*dest, "%s %s", cseq->number, cseq->method);
   return 0;
 }
@@ -174,10 +179,10 @@ cseq_clone (cseq_t * cseq, cseq_t ** dest)
     return -1;
 
   i = cseq_init (&cs);
-  if (i!=0)
+  if (i != 0)
     {
-      cseq_free(cs);
-      sfree(cs);
+      cseq_free (cs);
+      sfree (cs);
       return -1;
     }
   cs->method = sgetcopy (cseq->method);

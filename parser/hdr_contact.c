@@ -38,17 +38,17 @@ msg_setcontact (sip_t * sip, char *hvalue)
   if (i != 0)
     return -1;
   i = contact_parse (contact, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      contact_free(contact);
-      sfree(contact);
+      contact_free (contact);
+      sfree (contact);
       return -1;
     }
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
   list_add (sip->contacts, contact, -1);
-  return 0;                     /* ok */
+  return 0;			/* ok */
 }
 
 /* parses a contact header.                                 */
@@ -58,7 +58,8 @@ msg_setcontact (sip_t * sip, char *hvalue)
 int
 contact_parse (contact_t * contact, char *hvalue)
 {
-  if (contact==NULL) return -1;
+  if (contact == NULL)
+    return -1;
   if (strncmp (hvalue, "*", 1) == 0)
     {
       contact->displayname = sgetcopy (hvalue);
@@ -85,7 +86,7 @@ msg_getcontact (sip_t * sip, int pos, contact_t ** dest)
   if (sip == NULL)
     return -1;
   if (list_size (sip->contacts) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   *dest = (contact_t *) list_get (sip->contacts, pos);
   return pos;
 }
@@ -101,10 +102,10 @@ contact_2char (contact_t * contact, char **dest)
   if (contact->displayname != NULL)
     {
       if (strncmp (contact->displayname, "*", 1) == 0)
-        {
-          *dest = sgetcopy ("*");
-          return 0;
-        }
+	{
+	  *dest = sgetcopy ("*");
+	  return 0;
+	}
     }
   return from_2char ((from_t *) contact, dest);
 }

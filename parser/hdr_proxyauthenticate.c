@@ -38,10 +38,10 @@ msg_setproxy_authenticate (sip_t * sip, char *hvalue)
   if (i != 0)
     return -1;
   i = proxy_authenticate_parse (proxy_authenticate, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      proxy_authenticate_free(proxy_authenticate);
-      sfree(proxy_authenticate);
+      proxy_authenticate_free (proxy_authenticate);
+      sfree (proxy_authenticate);
       return -1;
     }
 #ifdef USE_TMP_BUFFER
@@ -57,16 +57,16 @@ msg_setproxy_authenticate (sip_t * sip, char *hvalue)
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
 int
-msg_getproxy_authenticate (sip_t * sip, int pos, proxy_authenticate_t **dest)
+msg_getproxy_authenticate (sip_t * sip, int pos, proxy_authenticate_t ** dest)
 {
   proxy_authenticate_t *proxy_authenticate;
 
   *dest = NULL;
   if (list_size (sip->proxy_authenticates) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
 
   proxy_authenticate = (proxy_authenticate_t *)
-    list_get(sip->proxy_authenticates, pos);
+    list_get (sip->proxy_authenticates, pos);
 
   *dest = proxy_authenticate;
   return pos;

@@ -31,13 +31,13 @@ msg_seterror_info (sip_t * sip, char *hvalue)
   int i;
 
   i = error_info_init (&error_info);
-  if (i!=0)
+  if (i != 0)
     return -1;
   i = error_info_parse (error_info, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      error_info_free(error_info);
-      sfree(error_info);
+      error_info_free (error_info);
+      sfree (error_info);
       return -1;
     }
 
@@ -55,7 +55,7 @@ msg_geterror_info (sip_t * sip, int pos, error_info_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->error_infos) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   error_info = (error_info_t *) list_get (sip->error_infos, pos);
   *dest = error_info;
   return pos;

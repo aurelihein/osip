@@ -34,10 +34,10 @@ msg_setcall_info (sip_t * sip, char *hvalue)
   if (i != 0)
     return -1;
   i = call_info_parse (call_info, hvalue);
-  if (i != 0)                   /* allocation failed */
+  if (i != 0)			/* allocation failed */
     {
-      call_info_free(call_info);
-      sfree(call_info);
+      call_info_free (call_info);
+      sfree (call_info);
       return -1;
     }
 
@@ -55,7 +55,7 @@ msg_getcall_info (sip_t * sip, int pos, call_info_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->call_infos) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   call_info = (call_info_t *) list_get (sip->call_infos, pos);
   *dest = call_info;
   return pos;
@@ -65,16 +65,18 @@ int
 call_info_init (call_info_t ** call_info)
 {
   *call_info = (call_info_t *) smalloc (sizeof (call_info_t));
-  if (*call_info==NULL) return -1;
+  if (*call_info == NULL)
+    return -1;
 
   (*call_info)->element = NULL;
 
   (*call_info)->gen_params = (list_t *) smalloc (sizeof (list_t));
-  if ((*call_info)->gen_params==NULL) {
-    sfree(*call_info);
-    *call_info = NULL;
-    return -1;
-  }
+  if ((*call_info)->gen_params == NULL)
+    {
+      sfree (*call_info);
+      *call_info = NULL;
+      return -1;
+    }
   list_init ((*call_info)->gen_params);
 
   return 0;
@@ -97,15 +99,18 @@ call_info_parse (call_info_t * call_info, char *hvalue)
 
   if (call_info_params != NULL)
     {
-      if (generic_param_parseall (call_info->gen_params, call_info_params) == -1)
-        return -1;
-  } else
+      if (generic_param_parseall (call_info->gen_params, call_info_params) ==
+	  -1)
+	return -1;
+    }
+  else
     call_info_params = hvalue + strlen (hvalue);
 
   if (call_info_params - hvalue + 1 < 2)
     return -1;
   call_info->element = (char *) smalloc (call_info_params - hvalue + 1);
-  if (call_info->element==NULL) return -1;
+  if (call_info->element == NULL)
+    return -1;
   sstrncpy (call_info->element, hvalue, call_info_params - hvalue);
   sclrspace (call_info->element);
 
@@ -127,9 +132,10 @@ call_info_2char (call_info_t * call_info, char **dest)
   if ((call_info == NULL) || (call_info->element == NULL))
     return -1;
 
-  len = strlen(call_info->element)+2;
+  len = strlen (call_info->element) + 2;
   buf = (char *) smalloc (len);
-  if (buf==NULL) return -1;
+  if (buf == NULL)
+    return -1;
   *dest = buf;
 
   sprintf (buf, "%s", call_info->element);
@@ -140,20 +146,20 @@ call_info_2char (call_info_t * call_info, char **dest)
 
     while (!list_eol (call_info->gen_params, pos))
       {
-        u_param = (generic_param_t *) list_get (call_info->gen_params, pos);
-	if (u_param->gvalue==NULL)
+	u_param = (generic_param_t *) list_get (call_info->gen_params, pos);
+	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;
 	else
 	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
-        len = len + plen;
-        buf = (char *) realloc (buf, len);
-        tmp = buf;
-        tmp = tmp + strlen (tmp);
-	if (u_param->gvalue==NULL)
+	len = len + plen;
+	buf = (char *) realloc (buf, len);
+	tmp = buf;
+	tmp = tmp + strlen (tmp);
+	if (u_param->gvalue == NULL)
 	  sprintf (tmp, ";%s", u_param->gname);
 	else
 	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-        pos++;
+	pos++;
       }
   }
   return 0;
@@ -189,7 +195,7 @@ call_info_clone (call_info_t * ctt, call_info_t ** dest)
     return -1;
 
   i = call_info_init (&ct);
-  if (i != 0)                   /* allocation failed */
+  if (i != 0)			/* allocation failed */
     return -1;
   ct->element = sgetcopy (ctt->element);
 
@@ -200,16 +206,16 @@ call_info_clone (call_info_t * ctt, call_info_t ** dest)
 
     while (!list_eol (ctt->gen_params, pos))
       {
-        u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
-        i = generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          {
-	    call_info_free(ct);
-	    sfree(ct);
+	u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
+	i = generic_param_clone (u_param, &dest_param);
+	if (i != 0)
+	  {
+	    call_info_free (ct);
+	    sfree (ct);
 	    return -1;
 	  }
-        list_add (ct->gen_params, dest_param, -1);
-        pos++;
+	list_add (ct->gen_params, dest_param, -1);
+	pos++;
       }
   }
   *dest = ct;

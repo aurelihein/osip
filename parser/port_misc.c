@@ -98,9 +98,9 @@ sdp_append_string (char *string, int size, char *cur, char *string_to_append)
   if (cur + length - string > size)
     {
       int length2;
-      length2 = cur-string;
+      length2 = cur - string;
       string = realloc (string, size + length + 10);
-      cur = string + length2; /* the initial allocation may have changed! */
+      cur = string + length2;	/* the initial allocation may have changed! */
     }
   sstrncpy (cur, string_to_append, length);
   return cur + strlen (cur);
@@ -120,7 +120,8 @@ susleep (int useconds)
     {
       delay.tv_sec = sec;
       delay.tv_usec = 0;
-  } else
+    }
+  else
     {
       delay.tv_sec = 0;
       delay.tv_usec = useconds;
@@ -152,7 +153,8 @@ sgetcopy_unquoted_string (char *ch)
     {
       sstrncpy (copy, ch + 1, strlen (ch + 1));
       sstrncpy (copy + strlen (copy) - 1, "\0", 1);
-  } else
+    }
+  else
     sstrncpy (copy, ch, strlen (ch));
   return copy;
 }
@@ -170,7 +172,7 @@ stolowercase (char *word)
   for (i = 0; i <= len - 1; i++)
     {
       if ('A' <= word[i] && word[i] <= 'Z')
-        word[i] = word[i] + 32;
+	word[i] = word[i] + 32;
     }
 #endif
   return 0;
@@ -191,11 +193,13 @@ sclrspace (char *word)
   len = strlen (word);
 
   pbeg = word;
-  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg)
+	 || ('\t' == *pbeg))
     pbeg++;
 
   pend = word + len - 1;
-  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend)
+	 || ('\t' == *pend))
     pend--;
 
   if (pend < pbeg)
@@ -229,28 +233,28 @@ sclrspace (char *word)
 int
 set_next_token (char **dest, char *buf, int end_separator, char **next)
 {
-  char *sep;                    /* separator */
+  char *sep;			/* separator */
 
   *next = NULL;
 
   sep = buf;
   while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
-         && (*sep != '\n'))
+	 && (*sep != '\n'))
     sep++;
   if ((*sep == '\r') || (*sep == '\n'))
-    {                           /* we should continue normally only if this is the separator asked! */
+    {				/* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-        return -1;
+	return -1;
     }
   if (*sep == '\0')
-    return -1;                  /* value must not end with this separator! */
+    return -1;			/* value must not end with this separator! */
   if (sep == buf)
-    return -1;                  /* empty value (or several space!) */
+    return -1;			/* empty value (or several space!) */
 
   *dest = smalloc (sep - (buf) + 1);
   sstrncpy (*dest, buf, sep - buf);
 
-  *next = sep + 1;              /* return the position right after the separator */
+  *next = sep + 1;		/* return the position right after the separator */
   return 0;
 }
 
@@ -258,30 +262,30 @@ set_next_token (char **dest, char *buf, int end_separator, char **next)
  */
 int
 set_next_token_better (char **dest, char *buf, int end_separator,
-                       int *forbidden_tab[], int size_tab, char **next)
+		       int *forbidden_tab[], int size_tab, char **next)
 {
-  char *sep;                    /* separator */
+  char *sep;			/* separator */
 
   *next = NULL;
 
   sep = buf;
   while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
-         && (*sep != '\n'))
+	 && (*sep != '\n'))
     sep++;
   if ((*sep == '\r') && (*sep == '\n'))
-    {                           /* we should continue normally only if this is the separator asked! */
+    {				/* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-        return -1;
+	return -1;
     }
   if (*sep == '\0')
-    return -1;                  /* value must not end with this separator! */
+    return -1;			/* value must not end with this separator! */
   if (sep == buf)
-    return -1;                  /* empty value (or several space!) */
+    return -1;			/* empty value (or several space!) */
 
   *dest = smalloc (sep - (buf) + 1);
   sstrncpy (*dest, buf, sep - buf);
 
-  *next = sep + 1;              /* return the position right after the separator */
+  *next = sep + 1;		/* return the position right after the separator */
   return 1;
 }
 
@@ -293,11 +297,11 @@ quote_find (char *qstring)
   char *quote;
 
   quote = strchr (qstring, '"');
-  if (quote == qstring)         /* the first char matches and is not escaped... */
+  if (quote == qstring)		/* the first char matches and is not escaped... */
     return quote;
 
   if (quote == NULL)
-    return NULL;                /* no quote at all... */
+    return NULL;		/* no quote at all... */
 
   /* this is now the nasty cases where '"' is escaped
      '" jonathan ros \\\""'
@@ -312,34 +316,34 @@ quote_find (char *qstring)
 
     while (1)
       {
-        if (0 == strncmp (quote - i, "\\", 1))
-          i++;
-        else
-          {
-            if (i % 2 == 1)     /* the '"' was not escaped */
-              return quote;
+	if (0 == strncmp (quote - i, "\\", 1))
+	  i++;
+	else
+	  {
+	    if (i % 2 == 1)	/* the '"' was not escaped */
+	      return quote;
 
-            /* else continue with the next '"' */
-            quote = strchr (quote + 1, '"');
-            if (quote == NULL)
-              return NULL;
-            i = 1;
-          }
-        if (quote - i == qstring + 1)
-          /* example: "\"john"  */
-          /* example: "\\"jack" */
-          {
-            if (i % 2 == 0)     /* the '"' was not escaped */
-              return quote;
-            else
-              {                 /* else continue with the next '"' */
-                quote = strchr (quote + 1, '"');
-                if (quote == NULL)
-                  return NULL;
-                i = 1;
-              }
+	    /* else continue with the next '"' */
+	    quote = strchr (quote + 1, '"');
+	    if (quote == NULL)
+	      return NULL;
+	    i = 1;
+	  }
+	if (quote - i == qstring + 1)
+	  /* example: "\"john"  */
+	  /* example: "\\"jack" */
+	  {
+	    if (i % 2 == 0)	/* the '"' was not escaped */
+	      return quote;
+	    else
+	      {			/* else continue with the next '"' */
+		quote = strchr (quote + 1, '"');
+		if (quote == NULL)
+		  return NULL;
+		i = 1;
+	      }
 
-          }
+	  }
       }
     return NULL;
   }
@@ -411,9 +415,9 @@ trace_initialize (trace_level_t level, FILE * file)
   while (i < END_TRACE_LEVEL)
     {
       if (i < level)
-        tracing_table[i] = LOG_TRUE;
+	tracing_table[i] = LOG_TRUE;
       else
-        tracing_table[i] = LOG_FALSE;
+	tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
@@ -456,14 +460,14 @@ osip_trace (fi, li, level, f, chfr, va_list)
 #ifdef ENABLE_TRACE
 
        if (logfile == NULL)
-         {                      /* user did not initialize logger.. */
-           return 1;
-         }
+	 {			/* user did not initialize logger.. */
+	   return 1;
+	 }
        if (f == NULL)
-           f = logfile;
+	   f = logfile;
 
        if (tracing_table[level] == LOG_FALSE)
-         return 0;
+	 return 0;
 
        VA_START (ap, chfr);
 
@@ -476,21 +480,21 @@ osip_trace (fi, li, level, f, chfr, va_list)
 #endif
 
        if (level == OSIP_FATAL)
-         fprintf (f, "| FATAL | <%s: %i> ", fi, li);
+	 fprintf (f, "| FATAL | <%s: %i> ", fi, li);
        else if (level == OSIP_BUG)
-         fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
+	 fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
        else if (level == OSIP_ERROR)
-         fprintf (f, "| ERROR | <%s: %i> ", fi, li);
+	 fprintf (f, "| ERROR | <%s: %i> ", fi, li);
        else if (level == OSIP_WARNING)
-         fprintf (f, "|WARNING| <%s: %i> ", fi, li);
+	 fprintf (f, "|WARNING| <%s: %i> ", fi, li);
        else if (level == OSIP_INFO1)
-         fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
+	 fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
        else if (level == OSIP_INFO2)
-         fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
+	 fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
        else if (level == OSIP_INFO3)
-         fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
+	 fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
        else if (level == OSIP_INFO4)
-         fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
+	 fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
 
        vfprintf (f, chfr, ap);
 

@@ -27,7 +27,8 @@ int
 content_length_init (content_length_t ** cl)
 {
   *cl = (content_length_t *) smalloc (sizeof (content_length_t));
-  if (*cl==NULL) return -1;
+  if (*cl == NULL)
+    return -1;
   (*cl)->value = NULL;
   return 0;
 }
@@ -44,16 +45,16 @@ msg_setcontent_length (sip_t * sip, char *hvalue)
   if (sip->contentlength != NULL)
     return -1;
   i = content_length_init (&(sip->contentlength));
-  if (i!=0)
+  if (i != 0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
   i = content_length_parse (sip->contentlength, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      content_encoding_free(sip->contentlength);
-      sfree(sip->contentlength);
+      content_encoding_free (sip->contentlength);
+      sfree (sip->contentlength);
       sip->contentlength = 0;
       return -1;
     }
@@ -67,7 +68,8 @@ content_length_parse (content_length_t * contentlength, char *hvalue)
   if (strlen (hvalue) + 1 < 2)
     return -1;
   contentlength->value = (char *) smalloc (strlen (hvalue) + 1);
-  if (contentlength->value==NULL) return -1;
+  if (contentlength->value == NULL)
+    return -1;
   sstrncpy (contentlength->value, hvalue, strlen (hvalue));
   return 0;
 }
@@ -87,7 +89,8 @@ msg_getcontent_length (sip_t * sip)
 int
 content_length_2char (content_length_t * cl, char **dest)
 {
-  if (cl==NULL) return -1;
+  if (cl == NULL)
+    return -1;
   *dest = sgetcopy (cl->value);
   return 0;
 }
@@ -116,7 +119,7 @@ content_length_clone (content_length_t * ctl, content_length_t ** dest)
      if (ctl->value==NULL) return -1;
    */
   i = content_length_init (&cl);
-  if (i == -1)                  /* allocation failed */
+  if (i == -1)			/* allocation failed */
     return -1;
   if (ctl->value != NULL)
     cl->value = sgetcopy (ctl->value);

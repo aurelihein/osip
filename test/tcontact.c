@@ -42,13 +42,14 @@ main (int argc, char **argv)
   contacts_file = fopen (argv[1], "r");
   if (contacts_file == NULL)
     {
-      fprintf (stdout, "Failed to open %s file.\nUsage: tcontact contacts.txt\n",
-               argv[1]);
+      fprintf (stdout,
+	       "Failed to open %s file.\nUsage: tcontact contacts.txt\n",
+	       argv[1]);
       exit (0);
     }
 
   a_contact = (char *) smalloc (200);
-  res = fgets (a_contact, 200, contacts_file);  /* lines are under 200 */
+  res = fgets (a_contact, 200, contacts_file);	/* lines are under 200 */
   while (res != NULL)
     {
 
@@ -58,25 +59,26 @@ main (int argc, char **argv)
       strncpy (a_contact + strlen (a_contact) - 1, "\0", 1);
 
       if (0 != strncmp (a_contact, "#", 1))
-        {
-          /* allocate & init contact */
-          contact_init (&contact);
-          printf ("=================================================\n");
-          printf ("CONTACT TO PARSE: |%s|\n", a_contact);
-          errcode = contact_parse (contact, a_contact);
-          if (errcode != -1)
-            {
-              if (contact_2char (contact, &dest) != -1)
-                {
-                  printf ("result:           |%s|\n", dest);
-                  sfree (dest);
-                }
-          } else
-            printf ("Bad contact format: %s\n", a_contact);
-          contact_free (contact), sfree (contact);
-          printf ("=================================================\n");
-        }
-      res = fgets (a_contact, 200, contacts_file);      /* lines are under 200 */
+	{
+	  /* allocate & init contact */
+	  contact_init (&contact);
+	  printf ("=================================================\n");
+	  printf ("CONTACT TO PARSE: |%s|\n", a_contact);
+	  errcode = contact_parse (contact, a_contact);
+	  if (errcode != -1)
+	    {
+	      if (contact_2char (contact, &dest) != -1)
+		{
+		  printf ("result:           |%s|\n", dest);
+		  sfree (dest);
+		}
+	    }
+	  else
+	    printf ("Bad contact format: %s\n", a_contact);
+	  contact_free (contact), sfree (contact);
+	  printf ("=================================================\n");
+	}
+      res = fgets (a_contact, 200, contacts_file);	/* lines are under 200 */
     }
   sfree (a_contact);
   return 0;

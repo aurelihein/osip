@@ -34,13 +34,13 @@ msg_setcontent_encoding (sip_t * sip, char *hvalue)
   int i;
 
   i = content_encoding_init (&content_encoding);
-  if (i!=0)
+  if (i != 0)
     return -1;
   i = content_encoding_parse (content_encoding, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      content_encoding_free(content_encoding);
-      sfree(content_encoding);
+      content_encoding_free (content_encoding);
+      sfree (content_encoding);
       return -1;
     }
 
@@ -58,7 +58,7 @@ msg_getcontent_encoding (sip_t * sip, int pos, content_encoding_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->content_encodings) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   ce = (content_encoding_t *) list_get (sip->content_encodings, pos);
   *dest = ce;
   return pos;

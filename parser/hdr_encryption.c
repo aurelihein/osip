@@ -31,13 +31,13 @@ msg_setencryption (sip_t * sip, char *hvalue)
   int i;
 
   i = encryption_init (&encryption);
-  if (i!=0)
+  if (i != 0)
     return -1;
   i = encryption_parse (encryption, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      encryption_free(encryption);
-      sfree(encryption);
+      encryption_free (encryption);
+      sfree (encryption);
       return -1;
     }
 
@@ -55,7 +55,7 @@ msg_getencryption (sip_t * sip, int pos, encryption_t ** dest)
 
   *dest = NULL;
   if (list_size (sip->encryptions) <= pos)
-    return -1;                  /* does not exist */
+    return -1;			/* does not exist */
   encryption = (encryption_t *) list_get (sip->encryptions, pos);
   *dest = encryption;
   return pos;
@@ -73,14 +73,16 @@ encryption_parse (encryption_t * cd, char *hvalue)
   if (cd_params != NULL)
     {
       if (generic_param_parseall (cd->gen_params, cd_params) == -1)
-        return -1;
-  } else
+	return -1;
+    }
+  else
     cd_params = hvalue + strlen (hvalue);
 
   if (cd_params - hvalue + 1 < 2)
     return -1;
   cd->element = (char *) smalloc (cd_params - hvalue + 1);
-  if (cd->element==NULL) return -1;
+  if (cd->element == NULL)
+    return -1;
   sstrncpy (cd->element, hvalue, cd_params - hvalue);
   sclrspace (cd->element);
 

@@ -104,7 +104,8 @@ extern "C"
  * @param name The name of the parameter element to find.
  * @param dest A pointer on the element found.
  */
-  int url_param_getbyname (list_t * url_params, char *name, url_param_t ** dest);
+  int url_param_getbyname (list_t * url_params, char *name,
+			   url_param_t ** dest);
 
 /**
  * Allocate a generic parameter element.
@@ -168,7 +169,7 @@ extern "C"
     list_t *url_headers;
 
     char *string;
-                /** other url schemes are strings. (http, mailto...) */
+		/** other url schemes are strings. (http, mailto...) */
   };
 
 /**
@@ -408,7 +409,8 @@ extern "C"
 
 #ifndef DOXYGEN
 /* internal method */
-  char *next_separator (char *ch, int separator_to_find, int before_separator);
+  char *next_separator (char *ch, int separator_to_find,
+			int before_separator);
 
   char *url_escape_nonascii_and_nondef (const char *string, const char *def);
   char *url_escape_userinfo (const char *string);
@@ -425,4 +427,4 @@ extern "C"
 }
 #endif
 
-#endif                          /*  _URLS_H_ */
+#endif				/*  _URLS_H_ */

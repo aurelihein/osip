@@ -42,10 +42,10 @@ msg_setmime_version (sip_t * sip, char *hvalue)
   sip->message_property = 2;
 #endif
   i = mime_version_parse (sip->mime_version, hvalue);
-  if (i!=0)
+  if (i != 0)
     {
-      mime_version_free(sip->mime_version);
-      sfree(sip->mime_version);
+      mime_version_free (sip->mime_version);
+      sfree (sip->mime_version);
       sip->mime_version = NULL;
       return -1;
     }
