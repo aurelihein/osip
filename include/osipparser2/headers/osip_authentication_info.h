@@ -42,10 +42,10 @@
   struct osip_authentication_info
   {
     char *nextnonce;    /* optional */
-    char *qop_options;	/* optional */
-    char *rspauth;	    /* optional */
-    char *cnonce;		/* optional */
-	char *nonce_count;  /* optional */
+    char *qop_options;  /* optional */
+    char *rspauth;      /* optional */
+    char *cnonce;       /* optional */
+    char *nonce_count;  /* optional */
   };
 
 

@@ -23,6 +23,7 @@
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 /* fills the proxy-authentication_info header of message.               */
 /* INPUT :  char *hvalue | value of header.   */

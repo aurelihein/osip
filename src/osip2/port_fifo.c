@@ -128,17 +128,18 @@ osip_fifo_size (osip_fifo_t * ff)
   return i;
 }
 
-#ifdef OSIP_MT
 
 void *
 osip_fifo_get (osip_fifo_t * ff)
 {
   void *el = NULL;
+#ifdef OSIP_MT
   int i = osip_sem_wait (ff->qisempty);
 
   if (i != 0)
     return NULL;
   osip_mutex_lock (ff->qislocked);
+#endif
 
   if (ff->etat != vide)
     {
@@ -151,7 +152,9 @@ osip_fifo_get (osip_fifo_t * ff)
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "no element in fifo.\n"));
+#ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
+#endif
       return 0;			/* pile vide */
     }
   /* if (ff->nb_elt <= 0) */
@@ -160,11 +163,11 @@ osip_fifo_get (osip_fifo_t * ff)
   else
     ff->etat = ok;
 
+#ifdef OSIP_MT
   osip_mutex_unlock (ff->qislocked);
+#endif
   return el;
 }
-
-#endif
 
 void *
 osip_fifo_tryget (osip_fifo_t * ff)

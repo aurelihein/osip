@@ -148,7 +148,9 @@ $(top_builddir)/src/osipparser2/osip_error_info.o \
 $(top_builddir)/src/osipparser2/osip_allow.o     \
 $(top_builddir)/src/osipparser2/osip_content_encoding.o \
 $(top_builddir)/src/osipparser2/osip_content_disposition.o \
-$(top_builddir)/src/osipparser2/sdp_accessor.o
+$(top_builddir)/src/osipparser2/sdp_accessor.o \
+$(top_builddir)/src/osipparser2/osip_authentication_info.o \
+$(top_builddir)/src/osipparser2/osip_proxy_authentication_info.o
 
 
 
