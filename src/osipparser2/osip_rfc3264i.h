@@ -24,6 +24,8 @@
 #include <osipparser2/sdp_message.h>
 #include <osipparser2/osip_rfc3264.h>
 
+#ifndef DOXYGEN
+
   typedef struct osip_rfc3264 osip_rfc3264_t;
 
   struct osip_rfc3264
@@ -33,5 +35,7 @@
     sdp_media_t *t38_medias[MAX_T38_CODECS];
     sdp_media_t *app_medias[MAX_APP_CODECS];
   };
+
+#endif
 
 #endif

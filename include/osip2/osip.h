@@ -448,16 +448,14 @@ extern "C"
  */
   struct osip_ict
   {
-    /* state machine is implied... */
-    int timer_a_length;		/* A=T1, A=2xT1... (unreliable tr only)  */
-    struct timeval timer_a_start;
-    int timer_b_length;		/* B = 64* T1                            */
-    struct timeval timer_b_start;	/* fire when transaction timeouts        */
-    int timer_d_length;		/* D >= 32s for unreliable tr (or 0)     */
-    struct timeval timer_d_start;	/* should be equal to timer H            */
-    char *destination;		/* url used to send requests         */
-    int port;			/* port of next hop                  */
-
+    int timer_a_length;		  /**@internal A=T1, A=2xT1... (unreliable only) */
+    struct timeval timer_a_start; /**@internal */
+    int timer_b_length;		  /**@internal B = 64* T1 */
+    struct timeval timer_b_start; /**@internal fire when transaction timeouts */
+    int timer_d_length;		  /**@internal D >= 32s for unreliable tr (or 0) */
+    struct timeval timer_d_start; /**@internal should be equal to timer H */
+    char *destination;	          /**@internal url used to send requests */
+    int port;                     /**@internal port of next hop */
   };
 
 /**
@@ -472,16 +470,14 @@ extern "C"
  */
   struct osip_nict
   {
-    /* state machine is implied... */
-
-    int timer_e_length;		/* A=T1, A=2xT1... (unreliable tr. only) */
-    struct timeval timer_e_start;	/*  (else = -1) not active               */
-    int timer_f_length;		/* B = 64* T1                            */
-    struct timeval timer_f_start;	/* fire when transaction timeouts        */
-    int timer_k_length;		/* K = T4 (else = 0)                     */
-    struct timeval timer_k_start;
-    char *destination;		/* url used to send requests         */
-    int port;			/* port of next hop                  */
+    int timer_e_length;		  /**@internal A=T1, A=2xT1... (unreliable only) */
+    struct timeval timer_e_start; /**@internal */
+    int timer_f_length;		  /**@internal B = 64* T1 */
+    struct timeval timer_f_start; /**@internal fire when transaction timeouts */
+    int timer_k_length;		  /**@internal K = T4 (else = 0) */
+    struct timeval timer_k_start; /**@internal */
+    char *destination;		  /**@internal url used to send requests */
+    int port;			  /**@internal port of next hop */
 
   };
 
@@ -497,12 +493,12 @@ extern "C"
  */
   struct osip_ist
   {
-    int timer_g_length;		/* G=MIN(T1*2,T2) for unreliable trans.  */
-    struct timeval timer_g_start;	/* 0 when reliable transport is used!    */
-    int timer_h_length;		/* H = 64* T1                            */
-    struct timeval timer_h_start;	/* fire when if no ACK is received       */
-    int timer_i_length;		/* I = T4 for unreliable transport (or 0) */
-    struct timeval timer_i_start;	/* absorb all ACK                        */
+    int timer_g_length;	     /**@internal G=MIN(T1*2,T2) for unreliable trans. */
+    struct timeval timer_g_start; /**@internal 0 when reliable transport is used */
+    int timer_h_length;		  /**@internal H = 64* T1 */
+    struct timeval timer_h_start; /**@internal fire when if no ACK is received */
+    int timer_i_length;		  /**@internal I = T4 for unreliable (or 0) */
+    struct timeval timer_i_start; /**@internal absorb all ACK */
   };
 
 /**
@@ -517,8 +513,8 @@ extern "C"
  */
   struct osip_nist
   {
-    int timer_j_length;		/* J = 64*T1 (else 0) */
-    struct timeval timer_j_start;
+    int timer_j_length;		   /**@internal J = 64*T1 (else 0) */
+    struct timeval timer_j_start;  /**@internal */
   };
 
 /**
@@ -534,37 +530,35 @@ extern "C"
   struct osip_transaction
   {
 
-    void *your_instance;	/* add whatever you want here.       */
-    int transactionid;		/* simple id used to identify the tr. */
-    osip_fifo_t *transactionff;	/* events must be added in this fifo */
+    void *your_instance;	/**< User Defined Pointer. */
+    int transactionid;		/**< Internal Transaction Identifier. */
+    osip_fifo_t *transactionff;	/**< events must be added in this fifo */
 
-    osip_via_t *topvia;		/* CALL-LEG definition */
-    osip_from_t *from;		/* CALL-LEG definition */
-    osip_to_t *to;
-    osip_call_id_t *callid;
-    osip_cseq_t *cseq;
+    osip_via_t *topvia;		/**< CALL-LEG definition (Top Via) */
+    osip_from_t *from;		/**< CALL-LEG definition (From)    */
+    osip_to_t *to;              /**< CALL-LEG definition (To)      */
+    osip_call_id_t *callid;     /**< CALL-LEG definition (Call-ID) */
+    osip_cseq_t *cseq;          /**< CALL-LEG definition (CSeq)    */
 
-    osip_message_t *orig_request;	/* last request sent                 */
-    osip_message_t *last_response;	/* last response received            */
-    osip_message_t *ack;	/* ack request sent                  */
+    osip_message_t *orig_request;  /**< Initial request            */
+    osip_message_t *last_response; /**< Last response              */
+    osip_message_t *ack;	   /**< ack request sent           */
 
-    state_t state;		/* state of transaction              */
+    state_t state;		/**< Current state of the transaction */
 
-    time_t birth_time;		/* birth_date of transaction         */
-    time_t completed_time;	/* end   date of transaction         */
+    time_t birth_time;		/**< birth date of transaction        */
+    time_t completed_time;	/**< end   date of transaction        */
 
-    /* RESPONSE are received on this socket */
-    int in_socket;
-    /* REQUESTS are sent on this socket */
-    int out_socket;
+    int in_socket;              /**< Optional socket for incoming message */
+    int out_socket;             /**< Optional place for outgoing message */
 
-    void *config;		/* transaction is managed by config  */
+    void *config;		/**@internal transaction is managed by osip_t  */
 
-    osip_fsm_type_t ctx_type;
-    osip_ict_t *ict_context;
-    osip_ist_t *ist_context;
-    osip_nict_t *nict_context;
-    osip_nist_t *nist_context;
+    osip_fsm_type_t ctx_type;   /**< Type of the transaction */
+    osip_ict_t *ict_context;    /**@internal */
+    osip_ist_t *ist_context;    /**@internal */
+    osip_nict_t *nict_context;  /**@internal */
+    osip_nist_t *nist_context;  /**@internal */
   };
 
 
@@ -790,9 +784,9 @@ extern "C"
  */
   struct osip_event
   {
-    type_t type;
-    int transactionid;
-    osip_message_t *sip;
+    type_t type;             /**< Event Type */
+    int transactionid;       /**< identifier of the related osip transaction */
+    osip_message_t *sip;     /**< SIP message (optional) */
   };
 
 
