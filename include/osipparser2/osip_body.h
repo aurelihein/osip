@@ -84,8 +84,7 @@ extern "C"
   int osip_body_to_str (const osip_body_t * body, char **dest);
 
 #ifdef __cplusplus
-extern "C"
-{
+}
 #endif
 
 /** @} */
