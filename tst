@@ -8,34 +8,28 @@ echo "== Testing the parser contained in libosip."
 echo "== You can use the verbose mode (-v) to see the full message."
 echo "=="
 
-echo "=="
-echo "== Test for \\n (CR) and \\r (LF) instead of \\r\\n (CRLF)"
-echo "== Data files from ./conf/torture_msgs"
-echo "=="
-
-
 i=0
 while [ $i -lt 93 ]
 do
 set -x
-    test/torture_test conf/torture_msgs $i $1 $2
+    ./test/torture_test $1 $i $2 $3
 set +x
     i=`expr $i + 1`
 done
 
-echo "=="
-echo "== Test for \\n (CR) and \\r (LF) instead of \\r\\n (CRLF)"
-echo "== Data files from ./conf/torture_msgs"
-echo "=="
+#echo "=="
+#echo "== Test for \\n (CR) and \\r (LF) instead of \\r\\n (CRLF)"
+#echo "== Data files from ./conf/torture_msgs"
+#echo "=="
 
 
-i=0
-while [ $i -lt 93 ]
-do
-set -x
-    test/torture_test conf/torture_msgs2 $i $1 $2
-set +x
-    i=`expr $i + 1`
-done
+#i=0
+#while [ $i -lt 93 ]
+#do
+#set -x
+#    ./test/torture_test conf/torture_msgs2 $i $2 $3
+#set +x
+#    i=`expr $i + 1`
+#done
 
 

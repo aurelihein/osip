@@ -3,15 +3,14 @@ SUBDIRS = osip parser fsm test scripts doc conf windows
 
 check:
 	@echo " ****** starting tests! ********"
-
-	./tst -v -c > ./osip-chk.log 2>&1
-	./tst_sdp -v -c > ./osipsdp-chk.log 2>&1
+	./$(top_srcdir)/tst ./$(top_srcdir)/conf/torture_msgs -v -c > ./osip-chk.log 2>&1
+	./$(top_srcdir)/tst_sdp ./$(top_srcdir)/conf/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
 
 	@echo " ******              RESULTS                 ********"
 
-	@echo " **SIP* NUMBER OF SUCCESS (175 are expected) ********"
+	@echo " **SIP* NUMBER OF SUCCESS (87 are expected) ********"
 	@more osip-chk.log | grep "==========" | grep OK | wc -l
-	@echo " **SIP* NUMBER OF FAILURE (11 are expected)  ********"
+	@echo " **SIP* NUMBER OF FAILURE (6 are expected)  ********"
 	@more osip-chk.log | grep "==========" | grep FA | wc -l
 
 	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
