@@ -793,13 +793,13 @@ osip_free(osip_t *osip)
 
 void osip_set_application_context(osip_t *osip, void *pointer)
 {
-  osip->your_pointer = pointer;
+  osip->application_context = pointer;
 }
 
 void *osip_get_application_context(osip_t *osip)
 {
   if (osip==NULL) return NULL;
-  return osip->your_pointer;
+  return osip->application_context;
 }
 
 int
