@@ -68,6 +68,7 @@
 FILE *logfile = NULL;
 int tracing_table[END_TRACE_LEVEL];
 static int use_syslog = 0;
+static osip_trace_func_t *trace_func = 0;
 
 static unsigned int random_seed_set = 0;
 
@@ -513,6 +514,10 @@ osip_dequote (char *s)
 /**********************************************************/
 #ifndef ENABLE_TRACE
 void
+osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func)
+{
+}
+void
 osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
 {
 }
@@ -583,6 +588,23 @@ osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
     }
 }
 
+void
+osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func)
+{
+  int i = 0;
+  trace_func = func;
+
+  /* enable all lower levels */
+  while (i < END_TRACE_LEVEL)
+    {
+      if (i < level)
+	tracing_table[i] = LOG_TRUE;
+      else
+	tracing_table[i] = LOG_FALSE;
+      i++;
+    }
+}
+
 /* enable a special debugging level! */
 void
 osip_trace_enable_level (osip_trace_level_t level)
@@ -613,17 +635,17 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 #ifdef ENABLE_TRACE
 
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
-  if (logfile == NULL && use_syslog == 0)
+  if (logfile == NULL && use_syslog == 0 && trace_func == NULL)
     {				/* user did not initialize logger.. */
       return 1;
     }
 #endif
 
-  if (f == NULL)
-    f = logfile;
-
   if (tracing_table[level] == LOG_FALSE)
     return 0;
+
+  if (f == NULL && trace_func == NULL)
+    f = logfile;
 
   VA_START (ap, chfr);
 
@@ -654,6 +676,10 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
       vfprintf (f, chfr, ap);
 
       fflush (f);
+    }
+  else if (trace_func) 
+    {
+      trace_func(fi, li, level, chfr, ap);
     }
 #if defined (HAVE_SYSLOG_H)
   else if (use_syslog == 1)

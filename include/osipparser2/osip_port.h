@@ -244,8 +244,12 @@ void osip_free(void *);
   }
   osip_trace_level_t;
 
+
+typedef void osip_trace_func_t(char *fi, int li, osip_trace_level_t level, char *chfr, va_list ap);
+
 /* these are defined in all cases, but are empty when oSIP is compiled
    without trace */
+  void osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func);
   void osip_trace_initialize_syslog (osip_trace_level_t level, char *ident);
   void osip_trace_initialize (osip_trace_level_t level, FILE * file);
   void osip_trace_enable_level (osip_trace_level_t level);
