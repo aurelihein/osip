@@ -1,6 +1,6 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
-  Copyright (C) 2001,2002,2003  Aymeric MOIZARD jack@atosc.org
+  Copyright (C) 2001,2002,2003,2004,2005  Aymeric MOIZARD jack@atosc.org
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -85,9 +85,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *
   const char *space;
   const char *next = NULL;
 
-  space = strchr (hvalue, ' ');	/* SEARCH FOR SPACE */
-  if (space == NULL)
-    return -1;
+  space = hvalue;
 
   for (;;)
     {
@@ -102,7 +100,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *
 	  space = next;
 	  parse_ok++;
 	}
-      if (__osip_quoted_string_set ("rspauth", space, &(ainfo->rspauth), &next))
+      if (__osip_quoted_string_set ("cnonce", space, &(ainfo->cnonce), &next))
 	return -1;
       if (next == NULL)
 	return 0;		/* end of header detected! */
@@ -111,7 +109,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *
 	  space = next;
 	  parse_ok++;
 	}
-      if (__osip_quoted_string_set ("cnonce", space, &(ainfo->cnonce), &next))
+      if (__osip_quoted_string_set ("rspauth", space, &(ainfo->rspauth), &next))
 	return -1;
       if (next == NULL)
 	return 0;		/* end of header detected! */
@@ -286,39 +284,59 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char 
     return -1;
   *dest = tmp;
 
+  if (ainfo->qop_options != NULL)
+    {
+      osip_strncpy (tmp, "qop=", 4);
+      tmp = tmp + 4;
+      osip_strncpy (tmp, ainfo->qop_options, strlen (ainfo->qop_options));
+      tmp = tmp + strlen (tmp);
+    }
   if (ainfo->nextnonce != NULL)
     {
-      osip_strncpy (tmp, " nextnonce=", 11);
-      tmp = tmp + 11;
+      if (tmp!=*dest)
+	{
+	  osip_strncpy (tmp, ", ", 2);
+	  tmp = tmp + 2;
+	}      
+      osip_strncpy (tmp, "nextnonce=", 10);
+      tmp = tmp + 10;
       osip_strncpy (tmp, ainfo->nextnonce, strlen (ainfo->nextnonce));
       tmp = tmp + strlen (tmp);
     }
   if (ainfo->rspauth != NULL)
     {
-      osip_strncpy (tmp, ", rspauth=", 10);
-      tmp = tmp + 10;
+      if (tmp!=*dest)
+	{
+	  osip_strncpy (tmp, ", ", 2);
+	  tmp = tmp + 2;
+	}      
+      osip_strncpy (tmp, "rspauth=", 8);
+      tmp = tmp + 8;
       osip_strncpy (tmp, ainfo->rspauth, strlen (ainfo->rspauth));
       tmp = tmp + strlen (tmp);
     }
   if (ainfo->cnonce != NULL)
     {
-      osip_strncpy (tmp, ", cnonce=", 9);
-      tmp = tmp + 9;
+      if (tmp!=*dest)
+	{
+	  osip_strncpy (tmp, ", ", 2);
+	  tmp = tmp + 2;
+	}      
+      osip_strncpy (tmp, "cnonce=", 7);
+      tmp = tmp + 7;
       osip_strncpy (tmp, ainfo->cnonce, strlen (ainfo->cnonce));
       tmp = tmp + strlen (tmp);
     }
   if (ainfo->nonce_count != NULL)
     {
-      osip_strncpy (tmp, ", nc=", 5);
-      tmp = tmp + 6;
+      if (tmp!=*dest)
+	{
+	  osip_strncpy (tmp, ", ", 2);
+	  tmp = tmp + 2;
+	}      
+      osip_strncpy (tmp, "nc=", 3);
+      tmp = tmp + 3;
       osip_strncpy (tmp, ainfo->nonce_count, strlen (ainfo->nonce_count));
-      tmp = tmp + strlen (tmp);
-    }
-  if (ainfo->qop_options != NULL)
-    {
-      osip_strncpy (tmp, ", qop=", 6);
-      tmp = tmp + 6;
-      osip_strncpy (tmp, ainfo->qop_options, strlen (ainfo->qop_options));
       tmp = tmp + strlen (tmp);
     }
 
