@@ -223,9 +223,7 @@ fifo_free (fifo_t * ff)
 #endif
   /* seems that pthread_mutex_destroy does not free space by itself */
   ssem_destroy (ff->qisempty);
-#ifndef __VXWORKS_OS__
   sfree (ff->qisempty);
-#endif
 #endif
   sfree (ff->queue);
 }

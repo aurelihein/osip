@@ -433,7 +433,7 @@ ssem_destroy (ssem_t * sem)
   if (sem == NULL)
     return 0;
   sm_delete (sem->id);
-  sfree (sem);
+  /* sfree (sem); */
   return (0);
 }
 
