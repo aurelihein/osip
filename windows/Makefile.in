@@ -89,7 +89,7 @@ STRIP = @STRIP@
 VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 
-EXTRA_DIST = README sipfsm.dsp sipfsm.dsw sipparser.dsp sipparser.dsw
+EXTRA_DIST = README osipfsm.dsp osipfsm.dsw osipparser.dsp osipparser.dsw osipparser.def osipfsm.def
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/scripts/mkinstalldirs
 CONFIG_HEADER = ../config.h

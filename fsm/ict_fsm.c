@@ -137,7 +137,10 @@ ict_snd_invite(transaction_t *ict, sipevent_t *evt)
 {
   int i;
   osip_t *osip = (osip_t*)ict->config;
-  
+
+  /* Here we have ict->orig_request == NULL */
+  ict->orig_request = evt->sip;
+
   i = osip->cb_send_message(ict, evt->sip, ict->ict_context->destination,
 			    ict->ict_context->port, ict->out_socket);
 

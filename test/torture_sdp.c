@@ -337,6 +337,7 @@ test_accessor_get_api(sdp_t *sdp) {
     i++;
   } while (tmp!=NULL);
 
+  k=0;
   tmp = sdp_c_nettype_get(sdp,-1,k);
   tmp2 = sdp_c_addrtype_get(sdp,-1,k);
   tmp3 = sdp_c_addr_get(sdp,-1,k);

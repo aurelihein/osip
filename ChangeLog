@@ -1,4 +1,9 @@
 libosip (0.8.8)
+	* windows: The windows contributions was wrong. Thread were killed
+	  instead of joined. I changed that...
+	* transaction.c/ict.c/ist.c/nict.c/nist.c: Avoid a race conditions
+	  when a retransmission might be added before the initial message
+	  is added in the fifo. (very unlikely to happen...)
 	* urls.c: built-in support of escaped sequences in sip-uri!
 	* vxworks minor patches.
 	* nict.c and ict.c: fix a bug with the setting of the port.

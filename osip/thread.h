@@ -73,10 +73,16 @@ typedef struct _sthread_t {
 #endif
 
 #ifdef WIN32
+#ifdef OLD_THREAD_INTERFACE
 typedef struct {
     unsigned long h;
-    unsigned int ID;
 } sthread_t;
+#else
+typedef struct {
+    HANDLE h;
+	unsigned long id;
+} sthread_t;
+#endif
 #endif
 
 #if !defined(WIN32) && defined(__PSOS__)

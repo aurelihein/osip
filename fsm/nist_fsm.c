@@ -133,6 +133,9 @@ nist_rcv_request(transaction_t *nist, sipevent_t *evt)
 
   if (nist->state==NIST_PRE_TRYING) /* announce new REQUEST */
     {
+ 	  /* Here we have ist->orig_request == NULL */
+      nist->orig_request = evt->sip;
+
       if (MSG_IS_REGISTER(evt->sip))
 	{
 	    osip->cb_nist_register_received(nist, nist->orig_request);

@@ -174,7 +174,12 @@ ist_rcv_invite(transaction_t *ist, sipevent_t *evt)
   osip_t *osip = (osip_t*)ist->config;
 
   if (ist->state==IST_PRE_PROCEEDING) /* announce new INVITE */
-    osip->cb_ist_invite_received(ist, evt->sip);
+  {
+	  /* Here we have ist->orig_request == NULL */
+      ist->orig_request = evt->sip;
+
+	  osip->cb_ist_invite_received(ist, evt->sip);
+  }
   else /* IST_PROCEEDING or IST_COMPLETED */
     {
       /* delete retransmission */

@@ -1,4 +1,4 @@
-EXTRA_DIST = README sipfsm.dsp sipfsm.dsw sipparser.dsp \
-sipparser.dsw
+EXTRA_DIST = README osipfsm.dsp osipfsm.dsw osipparser.dsp \
+osipparser.dsw osipparser.def osipfsm.def
 
 

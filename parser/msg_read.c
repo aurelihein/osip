@@ -247,7 +247,7 @@ msg_2char(sip_t *sip, char **dest)
 {
   /* ADDED at SIPit day1 */
   char *start_of_bodies;
-  char *content_length_to_modify;
+  char *content_length_to_modify = NULL;
 
   char *message;
   char *next;
@@ -569,6 +569,8 @@ msg_2char(sip_t *sip, char **dest)
 	     message = message + 2;
 	     strncpy(message,"\0",1); */
 	}
+
+      if (content_length_to_modify==NULL) return -1;
 
       /* we NOW have the length of bodies: */
       {

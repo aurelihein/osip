@@ -33,6 +33,8 @@
 #include <selectLib.h>
 #elif !defined(WIN32)
 #include <sys/time.h>
+#elif defined(WIN32)
+#include <windows.h>
 #endif
 
 #if defined (HAVE_UNISTD_H)
@@ -415,6 +417,10 @@ trace(fi,li,level,f,chfr,va_list)
   /* vxworks can't have a local file */
   f = stdout;
 #endif
+#ifdef WIN32
+f = stdout;
+#endif
+
   if (level==OSIP_FATAL)
     fprintf(f, "| FATAL | <%s: %i> ", fi, li);
   else if (level==OSIP_BUG)

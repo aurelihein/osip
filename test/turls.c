@@ -28,6 +28,8 @@
 #include <osip/port.h>
 #include <osip/urls.h>
 
+int url_test_accessor_api(url_t *url);
+
 
 int
 main(int argc, char **argv)
@@ -95,10 +97,7 @@ url_test_accessor_api(url_t *url)
       return 0;
     }
   if (url->username!=NULL)
-    {
-      char *tmp;
       fprintf(stdout,"%s|",url->username);
-    }
   
   if ((url->password!=NULL)&&(url->username!=NULL))
     fprintf(stdout,":%s|",url->password);

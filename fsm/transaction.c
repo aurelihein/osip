@@ -73,7 +73,9 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   if (i!=0) goto ti_error_4;
   transaction_set_cseq(*transaction, request->cseq);
   if (i!=0) goto ti_error_5;
-  (*transaction)->orig_request = request;
+  /* RACE conditions can happen for server transactions */
+  /* (*transaction)->orig_request = request; */
+  (*transaction)->orig_request = NULL;
 
   (*transaction)->config = osip;
 
