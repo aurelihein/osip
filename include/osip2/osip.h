@@ -36,10 +36,6 @@
 #include <osipparser2/osip_parser.h>
 #include <osip2/osip_fifo.h>
 
-#ifdef DOXYGEN
-#include <osip2/doc.h>
-#endif
-
 /**
  * @file osip.h
  * @brief oSIP fsm Routines

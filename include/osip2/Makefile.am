@@ -1,5 +1,5 @@
 
-EXTRA_DIST = internal.h doc.h
+EXTRA_DIST = internal.h doxygen.dox.in
 
 osip2_includedir=$(includedir)/osip2
 

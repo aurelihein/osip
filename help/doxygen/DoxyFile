@@ -57,12 +57,12 @@ INPUT                  = src/osip2 \
 			 include/osip2 \
 			 include/osipparser2
 FILE_PATTERNS          = *.h \
-                         *.c
+                         *.c *.dox
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
-EXAMPLE_PATH           = 
+EXAMPLE_PATH           = .
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
 IMAGE_PATH             = 

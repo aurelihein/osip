@@ -1,89 +1,58 @@
-Project    : "The GNU oSIP library" is an implementation of SIP - rfc3261. 
-Last update: 2.0.9
-Email      : jack@atosc.org
-License    : LGPL (http://www.gnu.org)
-Home Page  : http://www.fsf.org/software/osip/osip.html
-Download   : ftp://ftp.gnu.org/gnu/osip
+       Description:
+       ===========
+
+ The GNU oSIP library is an implementation of SIP - rfc3261.
+
+ Email      : jack@atosc.org
+ License    : LGPL (http://www.gnu.org)
+ Home Page  : http://www.fsf.org/software/osip/osip.html
+ Download   : ftp://ftp.gnu.org/gnu/osip
 
 "The GNU oSIP library" is part of the "GNU project".
-You  can  check www.fsf.org for more information about
+You can check www.fsf.org for more information about
 being part of the "GNU project".
 
-This is "the GNU oSIP library". It has been designed
-to provide the Internet Community a  simple  way  to
-support the  Session  Initiation  Protocol.  SIP  is
-described in  the  RFC3261  which  is  available  at
-http://www.ietf.org/rfc/rfc3261.txt.
+For information, look at:
+   INSTALL
+   HISTORY
+   FEATURES
 
+       Links:
+       =====
 
-FEATURES: (version 2.0.9)
----------
+Latest version:       ftp://ftp.gnu.org/gnu/osip
+Home page:            http://www.fsf.org/software/osip/osip.html
+Online Documentation: http://www.gnu.org/software/osip/
 
-The oSIP library consists of 2 parts:
-
-PARSER:
-  *  SIP URL parser.
-  *  SIP message parser. (and accessor API)
-  *  SDP message parser. (and accessor API)
-  *  MIME support for message with multiple attachments.
-
-TRANSACTION LAYER:
-  *  2 states machines for "client transaction" (INVITE and other).
-  *  2 states machines for "server transaction"
-  *  user controls the application with events.
-  *  events managed by the oSIP stack are announced through callbacks.
-  *  A SDP framework for quick negotiation. (for UAC/UAS only)
-  *  dialog handling facility. (for UAC/UAS only)
-  *  timers management framework.
-
-EXTRA:
-  *  Porting osip is easy. You probably only have to modify
-	./src/osipparser2/osip_port.c
-	./src/osip2/port_fifo.c
-	./src/osip2/port_sema.c
-	./src/osip2/port_thread.c
-	./include/osipparser2/osip_port.h
-     Please redistribute your ports to jack@atosc.org.
-
-  *  oSIP is not tight to any design! You can use the library
-     either in a multi-threaded environment or not, use your
-     own interruption's mechanism for timer, or use your own
-     transport protocol.
-
-Documentation:
---------------
-
-Yet available:
-  *  The help directory contains some help for specific platforms.
-  *  Documentation link at http://www.gnu.org/software/osip/
-
-Installation procedure:
------------------------
+       Supported Platforms:
+       ===================
 
 The library is known to compile on various platform:
   *  GNU/Linux
+  *  MacOSX (Darwin)
   *  OpenBsd 3.1/3.2  // (FreeBSD&NetBSD should also work)
   *  Windows NT/95/2000 (VC++6.0 or cygwin)
   *  Solaris
   *  HP-Unix.
   *  VxWorks.
   *  Some embedded systems with linux.
+  *  WinCE (report to be possible)
 
 For more informations about compilation, please look in
 the ./help directory.
 
-Tests programs:
----------------
+       Test Programs:
+       =============
 
 The library contains some built-in test for the parser. To quickly test
 the parser, type: (Note that some tests MUST fail!)
 
   $> make check
 
-Watch out the ./src/test/README file for more informations.
+Watch out the ./src/test/CHECK file for more informations.
 
-Contact information:
---------------------
+       Contact Informations:
+       ====================
 
 For more information on the SIP stack, or any contributions,
 you can contact the author at <jack@atosc.org>.
@@ -92,9 +61,4 @@ A Mailing list is available for support: <osip@atosc.org>.
 You can subscribe by writing to: <osip-request@atosc.org>
 with a subject set to "subscribe".
 
-Latest version is available at:
-ftp://ftp.gnu.org/gnu/osip
-
-Home page is located at:
-http://www.fsf.org/software/osip/osip.html
 
