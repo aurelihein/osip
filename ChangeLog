@@ -1,3 +1,8 @@
+libosip (0.8.7)
+	* "make check" is available and improve results ouput.
+	* delete warnings for OpenBSD compilation. The port to pth is still
+	  an issue for me.
+
 libosip (0.8.6)
 	* documentation started with Doxygen.
 

@@ -25,6 +25,12 @@
 
 int test_message(char *msg, int verbose, int clone);
 
+void usage()
+{
+  fprintf(stderr,"Usage: ./torture_test torture_file number [-v] [-c]\n");
+  exit(1);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -41,20 +47,26 @@ main(int argc, char **argv)
   if (argc>3)
   {
     if (0==strncmp(argv[3],"-v",2)) verbose=1;
-    if (0==strncmp(argv[3],"-c",2)) clone=1;
+    else if (0==strncmp(argv[3],"-c",2)) clone=1;
+    else usage();
   }
 
   if (argc>4)
   {
     if (0==strncmp(argv[4],"-v",2)) verbose=1;
-    if (0==strncmp(argv[4],"-c",2)) clone=1;
+    else if (0==strncmp(argv[4],"-c",2)) clone=1;
+    else usage();
+  }
+
+  if (argc<3)
+  {
+    usage();
   }
 
   torture_file = fopen(argv[1],"r");
   if (torture_file==NULL)
     {
-    fprintf(stderr,"Failed to open \"torture_msgs\" file.\nUsage: %s torture_file [-v]\n", argv[0]);
-    exit(1);
+      usage();
     }
 
   /* initialize parser */
@@ -121,8 +133,9 @@ test_message(char *msg, int verbose, int clone)
   {
     char *result;
 
-    int j=10000;
-    fprintf(stdout, "Trying 10000 sequentials calls to msg_init(), msg_parse() and msg_free()\n");
+    /* int j=10000; */
+    int j=1;
+    fprintf(stdout, "Trying %i sequentials calls to msg_init(), msg_parse() and msg_free()\n", j);
     while (j!=0)
       {
 	j--;
@@ -132,7 +145,6 @@ test_message(char *msg, int verbose, int clone)
 	    fprintf(stdout,"ERROR: failed while parsing!\n");
 	    msg_free(sip);  /* try to free msg, even if it failed! */
 	    sfree(sip);
-	    /* this seems dangerous..... */
 	    return -1;
 	  }
 	msg_free(sip);  /* try to free msg, even if it failed! */
@@ -173,8 +185,9 @@ test_message(char *msg, int verbose, int clone)
 	  if (clone)
 	    {
 	      /* create a clone of message */
-	      int j = 10000;
-	      fprintf(stdout, "Trying 10000 sequentials calls to msg_clone() and msg_free()\n");
+	      /* int j = 10000; */
+	      int j = 1;
+	      fprintf(stdout, "Trying j sequentials calls to msg_clone() and msg_free()\n", j);
 	      while (j!=0)
 		{
 		  sip_t *copy;

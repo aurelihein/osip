@@ -50,6 +50,10 @@
 #  include <string.h>
 #endif /* !HAVE_CONFIG_H */
 
+#if defined (HAVE_SYS_TYPES_H)
+#  include <sys/types.h>
+#endif
+
 #if STDC_HEADERS
 #    include <stdlib.h>
 #endif /* !STDC_HEADERS */
@@ -62,6 +66,10 @@
 #    include <varargs.h>
 #    define VA_START(a, f) va_start(a)
 #  endif
+#endif
+
+#if defined (HAVE_SYS_TIME_H)
+#  include <sys/time.h>
 #endif
 
 #endif /* end of !__VXWORKS_OS__ */
