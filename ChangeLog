@@ -1,3 +1,7 @@
+libosip2 (2.0.8)
+	* fix bug in parser (windows)
+	* fix lookup of generic_paramter and uri_parameter.
+	
 libosip2 (2.0.7)
 	* Fix a parser bug for uncomplete request line.
 	* Update timer facility for windows.
