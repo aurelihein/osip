@@ -22,7 +22,7 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
-#ifndef USE_GPREF
+#ifndef USE_GPERF
 
 static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
 
@@ -175,7 +175,7 @@ __osip_message_is_known_header (const char *hname)
   return -1;
 }
 
-#else /* USE_GPREF */
+#else /* USE_GPERF */
 /* C code produced by gperf version 2.7.2 */
 /* Command-line: gperf sip.gperf  */
 
@@ -351,7 +351,7 @@ in_word_set (str, len)
 int
 parser_init ()
 {
-  return 0;			/* do not need initialization when using gpref */
+  return 0;			/* do not need initialization when using gperf */
 }
 
 int
