@@ -85,10 +85,14 @@ extern "C"
  * Allocate and Initialise a condition variable
  */
   struct osip_cond *osip_cond_init ();
+/*
+ * Destroy a condition variable
+ * @param cond The condition variable to destroy.
+ */
+  struct osip_cond *osip_cond_init ();
 /**
  * Signal the condition variable.
  * @param cond The condition variable to signal.
- * @param mut The external mutex 
  */
   int osip_cond_signal (struct osip_cond * cond);
 
