@@ -1,5 +1,5 @@
 Project    : "The GNU oSIP library" is an implementation of SIP - rfc3261. 
-Last update: 2.0.0
+Last update: 2.0.9
 Email      : jack@atosc.org
 License    : LGPL (http://www.gnu.org)
 Home Page  : http://www.fsf.org/software/osip/osip.html
@@ -16,7 +16,7 @@ described in  the  RFC3261  which  is  available  at
 http://www.ietf.org/rfc/rfc3261.txt.
 
 
-FEATURES: (version 2.0.0)
+FEATURES: (version 2.0.9)
 ---------
 
 The oSIP library consists of 2 parts:

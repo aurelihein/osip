@@ -1,4 +1,8 @@
 libosip2 (2.0.9)
+	* fix detection of CRLFCRLF in osip_util_replace_all_lws.
+	* fix expires header with comma.
+	* fix a few memory leak in parser.
+	* improvements for the new sdp negociator.
 	* fix trace mode.
 	
 libosip2 (2.0.8)

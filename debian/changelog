@@ -1,8 +1,8 @@
-libosip2 (2.0.8-1) unstable; urgency=low
-  * Fix lookup of generic/uri parameter (use case-insensitive comparison)
-  * Initial release of the new SDP negociator. (old one will be removed)
-  * fix bug in parser (windows)
-  * fix lookup of generic_paramter and uri_parameter.
-  * fix memory leak in condition variable (windows).
+libosip2 (2.0.9-1) unstable; urgency=low
+  * fix detection of CRLFCRLF in osip_util_replace_all_lws.
+  * fix expires header with comma.
+  * fix a few memory leak in parser.
+  * improvements for the new sdp negociator.
+  * fix trace mode.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Mon, 01 jun 2004 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 12 jul 2004 13:04:32 +0100
