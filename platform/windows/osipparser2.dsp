@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER2_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "SYSTEM_LOGGER_ENABLED" /D "OSIPPARSER2_EXPORTS" /D "AC_BUG" /D "ENABLE_TRACE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIP_MT" /D "USE_TMP_BUFFER" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /I "..\..\src\osipparser2" /D "NDEBUG" /D "SYSTEM_LOGGER_ENABLED" /D "OSIPPARSER2_EXPORTS" /D "AC_BUG" /D "ENABLE_TRACE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIP_MT" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER2_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /D "SYSTEM_LOGGER_ENABLED" /D "OSIPPARSER2_EXPORTS" /D "_DEBUG" /D "ENABLE_DEBUG" /D "AC_BUG" /D "ENABLE_TRACE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIP_MT" /D "USE_TMP_BUFFER" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /I "..\..\src\osipparser2" /D "_DEBUG" /D "ENABLE_DEBUG" /D "SYSTEM_LOGGER_ENABLED" /D "OSIPPARSER2_EXPORTS" /D "AC_BUG" /D "ENABLE_TRACE" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIP_MT" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
@@ -208,6 +208,10 @@ SOURCE=..\..\src\osipparser2\osip_record_route.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osipparser2\osip_rfc3264.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osipparser2\osip_route.c
 # End Source File
 # Begin Source File
@@ -233,10 +237,6 @@ SOURCE=.\osipparser2.def
 # Begin Source File
 
 SOURCE=..\..\src\osipparser2\sdp_accessor.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osipparser2\osip_rfc3264.c
 # End Source File
 # Begin Source File
 
@@ -364,6 +364,10 @@ SOURCE=..\..\include\osipparser2\headers\osip_record_route.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osipparser2\osip_rfc3264.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osipparser2\headers\osip_route.h
 # End Source File
 # Begin Source File
@@ -385,10 +389,6 @@ SOURCE=..\..\include\osipparser2\headers\osip_www_authenticate.h
 # Begin Source File
 
 SOURCE=..\..\src\osipparser2\parser.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\include\osipparser2\osip_rfc3264.h
 # End Source File
 # Begin Source File
 
