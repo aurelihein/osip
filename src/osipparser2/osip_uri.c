@@ -546,9 +546,9 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 
   len = strlen (scheme) + 1 + strlen (url->host) + 5;
   if (url->username != NULL)
-    len = len + strlen (url->username) + 10;	/* count escaped char */
+    len = len + (strlen (url->username) * 3) + 1;    /* count escaped char */
   if (url->password != NULL)
-    len = len + strlen (url->password) + 10;
+    len = len + (strlen (url->password) * 3) + 1;
   if (url->port != NULL)
     len = len + strlen (url->port) + 3;
 
