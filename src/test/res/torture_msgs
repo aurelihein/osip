@@ -171,7 +171,7 @@ Call-Info: <http://wwww.example2.com/alice/photo2.jpg> ;purpose=icon2
 Call-Info: <http://wwww.example2.com/alice/photo2.jpg> ;purpose=icon2,     <http://www.example2.com/alice/> ;purpose=info2
 Accept-Language: da, en-gb;q=0.8, en;q=0.7
 Accept-Encoding: da, en-gb;sqdsqd=0.343555;q=0.8 ;q=0.8 ;q=0.8 ;q=0.8;q=0.8;q=0.8, en;q=0.7
-Subject: SIP will be discussed, too
+Subject: \E282AC SIP will be discussed, too
 Accept: multipart/mixed; boundary=++,application/sdp
 Accept: text/plain; q=0.5, text/html,
  text/x-dvi; q=0.8, text/x-c

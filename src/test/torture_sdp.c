@@ -378,13 +378,20 @@ test_accessor_get_api (sdp_message_t * sdp)
   int i;
   int k;
 
-  printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
-  printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
-  printf (" |%s|", sdp_message_o_sess_id_get (sdp));
-  printf (" |%s|", sdp_message_o_sess_version_get (sdp));
-  printf (" |%s|", sdp_message_o_nettype_get (sdp));
-  printf (" |%s|", sdp_message_o_addrtype_get (sdp));
-  printf (" |%s|\n", sdp_message_o_addr_get (sdp));
+  if (sdp_message_v_version_get (sdp))
+    printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
+  if (sdp_message_o_username_get (sdp))
+    printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
+  if (sdp_message_o_sess_id_get (sdp))
+    printf (" |%s|", sdp_message_o_sess_id_get (sdp));
+  if (sdp_message_o_sess_version_get (sdp)!=NULL)
+    printf (" |%s|", sdp_message_o_sess_version_get (sdp));
+  if (sdp_message_o_nettype_get (sdp))
+    printf (" |%s|", sdp_message_o_nettype_get (sdp));
+  if (sdp_message_o_addrtype_get (sdp))
+    printf (" |%s|", sdp_message_o_addrtype_get (sdp));
+  if (sdp_message_o_addr_get (sdp))
+    printf (" |%s|\n", sdp_message_o_addr_get (sdp));
   if (sdp_message_s_name_get (sdp))
     printf ("s_name:         |%s|\n", sdp_message_s_name_get (sdp));
   if (sdp_message_i_info_get (sdp, -1))
@@ -417,17 +424,24 @@ test_accessor_get_api (sdp_message_t * sdp)
   tmp3 = sdp_message_c_addr_get (sdp, -1, k);
   tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, -1, k);
   tmp5 = sdp_message_c_addr_multicast_int_get (sdp, -1, k);
-  if (tmp != NULL)
+  if (tmp != NULL && tmp4!=NULL && tmp5!=NULL)
     printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
 	    tmp, tmp2, tmp3, tmp4, tmp5);
-
+  else if (tmp != NULL && tmp4!=NULL)
+    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+	    tmp, tmp2, tmp3, tmp4, "(null)");
+  else if (tmp != NULL && tmp5!=NULL)
+    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+	    tmp, tmp2, tmp3, "(null)", tmp5);
   k = 0;
   do
     {
       tmp = sdp_message_b_bwtype_get (sdp, -1, k);
       tmp2 = sdp_message_b_bandwidth_get (sdp, -1, k);
-      if (tmp != NULL)
+      if (tmp != NULL && tmp2 != NULL)
 	printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+      else if (tmp != NULL)
+	printf ("b_bandwidth:    |%s|:|%s|\n", tmp, "(null)");
       k++;
     }
   while (tmp != NULL);
@@ -437,8 +451,10 @@ test_accessor_get_api (sdp_message_t * sdp)
     {
       tmp = sdp_message_t_start_time_get (sdp, k);
       tmp2 = sdp_message_t_stop_time_get (sdp, k);
-      if (tmp != NULL)
+      if (tmp != NULL && tmp2 != NULL)
 	printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
+      else if (tmp != NULL)
+	printf ("t_descr_time:   |%s| |%s|\n", tmp, "(null)");
       i = 0;
       do
 	{
@@ -459,16 +475,20 @@ test_accessor_get_api (sdp_message_t * sdp)
 
   tmp = sdp_message_k_keytype_get (sdp, -1);
   tmp2 = sdp_message_k_keydata_get (sdp, -1);
-  if (tmp != NULL)
+  if (tmp != NULL && tmp2 != NULL)
     printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
+  else if (tmp != NULL)
+    printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
 
   k = 0;
   do
     {
       tmp = sdp_message_a_att_field_get (sdp, -1, k);
       tmp2 = sdp_message_a_att_value_get (sdp, -1, k);
-      if (tmp != NULL)
+      if (tmp != NULL && tmp2 != NULL)
 	printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
+      if (tmp != NULL)
+	printf ("a_attribute:    |%s|:|%s|\n", tmp, "(null)");
       k++;
     }
   while (tmp != NULL);
@@ -482,7 +502,21 @@ test_accessor_get_api (sdp_message_t * sdp)
       tmp3 = sdp_message_m_number_of_port_get (sdp, i);
       tmp4 = sdp_message_m_proto_get (sdp, i);
       if (tmp != NULL)
-	printf ("m_media:        |%s| |%s| |%s| |%s|", tmp, tmp2, tmp3, tmp4);
+	printf ("m_media:        |%s|", tmp);
+      else
+	printf ("m_media:        |%s|", "(null)");
+      if (tmp2 != NULL)
+	printf (" |%s|", tmp2);
+      else
+	printf (" |%s|", "(null)");
+      if (tmp3 != NULL)
+	printf (" |%s|", tmp3);
+      else
+	printf (" |%s|", "(null)");
+      if (tmp4 != NULL)
+	printf (" |%s|", tmp4);
+      else
+	printf (" |%s|", "(null)");
       k = 0;
       do
 	{
@@ -504,6 +538,27 @@ test_accessor_get_api (sdp_message_t * sdp)
 	  if (tmp != NULL)
 	    printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
 		    tmp, tmp2, tmp3, tmp4, tmp5);
+	  else
+	    printf ("c_connection:   |%s|", "(null)");
+	  if (tmp2 != NULL)
+	    printf (" |%s|", tmp2);
+	  else
+	    printf (" |%s|", "(null)");
+	  if (tmp3 != NULL)
+	    printf (" |%s|", tmp3);
+	  else
+	    printf (" |%s|", "(null)");
+	  if (tmp4 != NULL)
+	    printf (" |%s|", tmp4);
+	  else
+	    printf (" |%s|", "(null)");
+	  if (tmp5 != NULL)
+	    printf (" |%s|", tmp5);
+	  else
+	    printf (" |%s|", "(null)");
+	  printf ("\n");
+
+	  if (tmp != NULL)
 	  k++;
 	}
       while (tmp != NULL);
@@ -514,7 +569,15 @@ test_accessor_get_api (sdp_message_t * sdp)
 	  tmp = sdp_message_b_bwtype_get (sdp, i, k);
 	  tmp2 = sdp_message_b_bandwidth_get (sdp, i, k);
 	  if (tmp != NULL)
-	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+	    printf ("b_bandwidth:    |%s|", tmp);
+	  else
+	    printf ("b_bandwidth:    |%s|", "(null)");
+	  if (tmp2 != NULL)
+	    printf (":|%s|\n", tmp2);
+	  else
+	    printf (":|%s|", "(null)");
+	  printf ("\n");
+	  
 	  k++;
 	}
       while (tmp != NULL);
@@ -523,7 +586,14 @@ test_accessor_get_api (sdp_message_t * sdp)
       tmp = sdp_message_k_keytype_get (sdp, i);
       tmp2 = sdp_message_k_keydata_get (sdp, i);
       if (tmp != NULL)
-	printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
+	printf ("k_key:          |%s|", tmp);
+      else
+	printf ("k_key:          |%s|", "(null)");
+      if (tmp2 != NULL)
+	printf (":|%s|", tmp2);
+      else
+	printf (":|%s|", "(null)");
+      printf ("\n");
 
       k = 0;
       do
@@ -531,7 +601,15 @@ test_accessor_get_api (sdp_message_t * sdp)
 	  tmp = sdp_message_a_att_field_get (sdp, i, k);
 	  tmp2 = sdp_message_a_att_value_get (sdp, i, k);
 	  if (tmp != NULL)
-	    printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
+	    printf ("a_attribute:    |%s|", tmp);
+	  else
+	    printf ("a_attribute:    |%s|", "(null)");
+	  if (tmp2 != NULL)
+	    printf (":|%s|", tmp2);
+	  else
+	    printf (":|%s|", "(null)");
+	  printf ("\n");
+
 	  k++;
 	}
       while (tmp != NULL);
