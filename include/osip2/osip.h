@@ -649,7 +649,6 @@ extern "C"
   int osip_transaction_get_destination (osip_transaction_t * transaction,
 					char **ip, int *port);
 
-#ifndef DOXYGEN
 
 /**
  * Set the socket for incoming message.
@@ -668,24 +667,6 @@ extern "C"
   int osip_transaction_set_out_socket (osip_transaction_t * transaction,
 				       int sock);
 
-
-#if 0
-
-
-/**
- * Check if the first 2 parameters match the other ones.
- * NOTE: THIS IS AN INTERNAL METHOD ONLY
- * @param to1 The initial to header.
- * @param from1 The initial from header.
- * @param to2 The new to header.
- * @param from2 The new from header.
- */
-  int callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2,
-		     osip_from_t * from2);
-
-#endif
-
-#endif				/* endif DOXYGEN */
 
 
 /** 

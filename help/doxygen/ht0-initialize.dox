@@ -17,6 +17,19 @@ prior to any use of libosip2.
 	  return -1;
 </PRE>
 
+On windows, you should write
+
+<PRE>
+	#include <winsock2.h>
+	#include <osip2/osip.h>
+
+	int i;
+	osip_t *osip;
+	i=osip_init(&osip);
+	if (i!=0)
+	  return -1;
+</PRE>
+
 In case you want to use the state machines (transaction management),
 the second step will be to set a few callbacks which will inform
 you of any change in the state of a SIP transaction.

@@ -586,7 +586,7 @@ extern "C"
  * @param sdp The element to work on.
  * @param pos_media The line number.
  * @param att_field The value to remove.
- * @param att_field The index of attribute to remove.
+ * @param pos_attr The index of attribute to remove.
  */
   int sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media, 
 					    char *att_field, int pos_attr);
