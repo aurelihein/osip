@@ -36,7 +36,7 @@
  * of the whole SIP syntax. In other words, the parser is 'tolerant'
  * and will not detect a lot of error cases. As an example, no error
  * will be detected while trying to parse the following request-uri:
- * <BR><pre><code>INVITE sip:jack@atosc.org:abcd SIP/2.0</pre></code>
+ * <BR><pre><code>INVITE sip:jack@atosc.org:abcd SIP/2.0</code></pre>
  * <BR>This code shows that even if your SIP message is parsed
  * correctly by oSIP, it may still be not compliant. This could be
  * used by attackers to make your application crash or whatever.

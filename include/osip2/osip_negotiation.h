@@ -73,7 +73,7 @@
  *  osip_negotiation_set_fcn_accept_video_codec(&application_accept_video_codec);
  *  osip_negotiation_set_fcn_accept_other_codec(&application_accept_other_codec);
  *  osip_negotiation_set_fcn_get_audio_port(&application_get_audio_port);
- * </pre></code>
+ * </code></pre>
  * <BR>When you need to create an answer, the following code will create
  * the SDP packet:
  * <pre><code>
@@ -104,7 +104,7 @@
  *    osip_free(context);
  *    return 0;
  *  }
- * </pre></code>
+ * </code></pre>
  * <BR>Notice the presence of osip_negotiation_ctx_set_mycontext() which can add
  * a store the address of your own context (probably related to your call).
  * This is very useful if you need to know inside the callback which call

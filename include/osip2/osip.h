@@ -701,15 +701,15 @@ extern "C"
   struct ixt_t
   {
     /* any ACK received that match this context will set counter to -1 */
-    struct osip_dialog *dialog;
-    osip_message_t *msg2xx;	/* copy of string to retransmit */
-    osip_message_t *ack;	/* useless for ist */
-    time_t start;
-    int interval;		/* between each retransmission, in ms */
-    char *dest;
-    int port;
-    int sock;
-    int counter;		/* start at 7 */
+    struct osip_dialog *dialog; /**< related dialog */
+    osip_message_t *msg2xx;     /**< buffer to retransmit */
+    osip_message_t *ack;        /**< ack message if needed */
+    time_t start;               /**< Time of first retransmission */
+    int interval;               /**< delay between retransmission, in ms */
+    char *dest;                 /**< destination host */
+    int port;                   /**< destination port */
+    int sock;                   /**< socket to use */
+    int counter;		/**< start at 7 */
   };
 
 #endif
@@ -730,24 +730,22 @@ extern "C"
   struct osip
   {
 
-    void *application_context;	/* a pointer for your personnal usage */
+    void *application_context;	/**< User defined Pointer */
 
     /* list of transactions for ict, ist, nict, nist */
-    osip_list_t *osip_ict_transactions;
-    osip_list_t *osip_ist_transactions;
-    osip_list_t *osip_nict_transactions;
-    osip_list_t *osip_nist_transactions;
+    osip_list_t *osip_ict_transactions;  /**< list of ict transactions */
+    osip_list_t *osip_ist_transactions;  /**< list of ist transactions */
+    osip_list_t *osip_nict_transactions; /**< list of nict transactions */
+    osip_list_t *osip_nist_transactions; /**< list of nist transactions */
 
-    osip_list_t *ixt_retransmissions;	/* for retransmission of 2xx & ACK for INVITE */
+    osip_list_t *ixt_retransmissions;	 /**< list of ixt elements */
 
-    osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];
-    osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT];
-    osip_transport_error_cb_t
-      tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];
+    osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];        /**@internal */
+    osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT]; /**@internal */
+    osip_transport_error_cb_t tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];  /**@internal */
 
-    /* callbacks for sending messages */
     int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *,
-			    int, int);
+			    int, int);  /**@internal */
   };
 
 /**
