@@ -1,17 +1,17 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
   Copyright (C) 2001,2002,2003  Aymeric MOIZARD jack@atosc.org
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -40,14 +40,14 @@ extern "C"
 #endif
 
 /**
- * Structure to hold support for codecs. 
+ * Structure to hold support for codecs.
  * @defvar osip_rfc3264
  */
   struct osip_rfc3264;
 
 #define MAX_AUDIO_CODECS   100
 #define MAX_VIDEO_CODECS   100
-#define MAX_T38_CODECS       1
+#define MAX_T38_CODECS       2
 #define MAX_APP_CODECS     100
 
 /**
@@ -102,6 +102,20 @@ extern "C"
  * @param pos The index of the media element to remove.
  */
   int osip_rfc3264_del_audio_media (struct osip_rfc3264 *config, int pos);
+
+/**
+ * Add a media (for T.38) in the configuration.
+ * @param config The element to work on.
+ * @param pos The index of the media element to add.
+ */
+  int osip_rfc3264_add_t38_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos);
+
+/**
+ * Remove a media (for T.38) in the configuration.
+ * @param config The element to work on.
+ * @param pos The index of the media element to remove.
+ */
+  int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos);
 
 /**
  * Add a media (for video) in the configuration.
@@ -271,5 +285,3 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
 #endif
 
 #endif
-
-

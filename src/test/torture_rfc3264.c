@@ -202,6 +202,8 @@ int main(int argc, char **argv)
     char str_local_sdp[8192];
     sdp_message_t *local_sdp;
     int mline;
+    char *tmp = NULL;
+
     remote_sdp = get_test_remote_message(atoi(argv[2]), torture_file, verbose);
     if (!remote_sdp)
       {
@@ -324,7 +326,6 @@ int main(int argc, char **argv)
 	mline++;
       }
 
-    char *tmp = NULL;
     if (verbose)
       fprintf(stdout, "Result in answer:\n");
     sdp_message_to_str(local_sdp, &tmp);

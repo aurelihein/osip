@@ -1,17 +1,17 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
   Copyright (C) 2001,2002,2003  Aymeric MOIZARD jack@atosc.org
-  
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-  
+
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-  
+
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,7 +49,7 @@ void osip_rfc3264_free (struct osip_rfc3264 *config)
   osip_rfc3264_t *cnf = (osip_rfc3264_t*) config;
   int i;
   if (config==NULL) return;
-  
+
   for (i=0;i<MAX_AUDIO_CODECS; i++)
     {
       if (cnf->audio_medias[i]!=NULL)
@@ -213,6 +213,43 @@ int osip_rfc3264_del_video_media (struct osip_rfc3264 *config, int pos)
   return 0;
 }
 
+/**
+ * Add a media (for t38) in the configuration.
+ * @param config The element to work on.
+ * @param pos The index of the media element to add.
+ */
+int osip_rfc3264_add_t38_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos)
+{
+  osip_rfc3264_t *cnf = (osip_rfc3264_t*) config;
+  if (config==NULL) return -1;
+  if (pos>=MAX_T38_CODECS) return -1;
+
+  if (pos==-1)
+    {
+      for (pos=0;pos<MAX_T38_CODECS && cnf->t38_medias[pos]!=NULL; pos++)
+	{ }
+    }
+  if (pos>=MAX_T38_CODECS) return -1; /* no space left */
+
+  cnf->t38_medias[pos] = med;
+  return 0;
+}
+
+
+/**
+ * Remove a media in the configuration.
+ * @param config The element to work on.
+ * @param pos The index of the media element to remove.
+ */
+int osip_rfc3264_del_t38_media (struct osip_rfc3264 *config, int pos)
+{
+  osip_rfc3264_t *cnf = (osip_rfc3264_t*) config;
+  if (config==NULL) return -1;
+  if (pos>=MAX_T38_CODECS) return -1;
+  sdp_media_free(cnf->t38_medias[pos]);
+  cnf->t38_medias[pos] = NULL;
+  return 0;
+}
 
 /**
  * Search for support of a special codec.
@@ -253,7 +290,7 @@ int osip_rfc3264_del_video_media (struct osip_rfc3264 *config, int pos)
 	    {
 	      sdp_attribute_t *attr =
 		(sdp_attribute_t *) osip_list_get (med->a_attributes, pos);
-	      
+
 	      if (0==osip_strcasecmp("rtpmap", attr->a_att_field)
 		  &&  attr->a_att_value!=NULL)
 		{
@@ -312,7 +349,7 @@ int osip_rfc3264_del_video_media (struct osip_rfc3264 *config, int pos)
 	    {
 	      sdp_attribute_t *attr =
 		(sdp_attribute_t *) osip_list_get (med->a_attributes, pos);
-	      
+
 	      if (0==osip_strcasecmp("rtpmap", attr->a_att_field)
 		  &&  attr->a_att_value!=NULL)
 		{
@@ -401,7 +438,7 @@ int osip_rfc3264_match(struct osip_rfc3264 *config,
 	      osip_rfc3264_match_video(config, remote_sdp, remote_med, video_tab);
 	    }
 	  else if (remote_med->m_media!=NULL
-		   && 0 == osip_strcasecmp (remote_med->m_media, "t38"))
+		   && 0 == osip_strcasecmp (remote_med->m_media, "image"))
 	    {
 	      osip_rfc3264_match_t38(config, remote_sdp, remote_med, t38_tab);
 	    }
@@ -416,7 +453,7 @@ int osip_rfc3264_match(struct osip_rfc3264 *config,
       remote_med=NULL;
       pos++;
       pos_media--;
-    }  
+    }
 
   return -1;
 }
@@ -474,7 +511,7 @@ int osip_rfc3264_match_audio(struct osip_rfc3264 *config,
 	  audio_tab[num] = local_med;
 	  num++;
 	}
-	  
+
       /* search for support of this codec in local media list */
       pos++;
     }
@@ -537,7 +574,7 @@ int osip_rfc3264_match_video(struct osip_rfc3264 *config,
 	  video_tab[num] = local_med;
 	  num++;
 	}
-	  
+
       /* search for support of this codec in local media list */
       pos++;
     }
@@ -603,15 +640,22 @@ int osip_rfc3264_prepare_answer(struct osip_rfc3264 *config,
   int pos, pos2;
   if (config==NULL) return -1;
   if (remote_sdp==NULL) return -1;
-  
+
   if (osip_list_size(remote_sdp->t_descrs)>0)
 
+#if (defined WIN32 || defined _WIN32_WCE)   
+  _snprintf(local_sdp, 4096,
+	   "v=0\r\n\
+o=userX 20000001 20000001 IN IP4 TOREPLACE\r\n\
+s=-\r\n\
+c=IN IP4 TOREPLACE\r\n");
+#else
   snprintf(local_sdp, 4096,
 	   "v=0\r\n\
 o=userX 20000001 20000001 IN IP4 TOREPLACE\r\n\
 s=-\r\n\
 c=IN IP4 TOREPLACE\r\n");
-
+#endif
   /* Fill t= (and r=) fields */
   pos=0;
   while (!osip_list_eol(remote_sdp->t_descrs, pos))
@@ -620,10 +664,19 @@ c=IN IP4 TOREPLACE\r\n");
       sdp_time_descr_t *td;
       td = (sdp_time_descr_t *) osip_list_get(remote_sdp->t_descrs, pos);
       if (td->t_start_time!=NULL && td->t_stop_time!=NULL)
-	  snprintf(tmp, 100, "t=%s %s\r\n", td->t_start_time, td->t_stop_time);
+#if (defined WIN32 || defined _WIN32_WCE)   
+	  _snprintf(tmp, 100, "t=%s %s\r\n", td->t_start_time, td->t_stop_time);
+#else
+      snprintf(tmp, 100, "t=%s %s\r\n", td->t_start_time, td->t_stop_time);
+#endif
       else
+#if (defined WIN32 || defined _WIN32_WCE)        
+	_snprintf(tmp, 100, "t=0 0\r\n");
+#else
 	snprintf(tmp, 100, "t=0 0\r\n");
-      if (strlen(local_sdp)+strlen(tmp)+1<length)
+#endif
+      if ((int)(strlen(local_sdp)+strlen(tmp)+1)<length)
+
 	{
 	  strcat(local_sdp, tmp);
 
@@ -631,8 +684,8 @@ c=IN IP4 TOREPLACE\r\n");
 	  while (!osip_list_eol (td->r_repeats, pos2))
 	    {
 	      char *str = (char *) osip_list_get (td->r_repeats, pos2);
-	      
-	      if (strlen(local_sdp)+strlen(str)+5+1<length)
+
+	      if ((int)(strlen(local_sdp)+strlen(str)+5+1)<length)
 	      {
 		strcat(local_sdp, "r=");
 		strcat(local_sdp, str);
@@ -656,10 +709,13 @@ c=IN IP4 TOREPLACE\r\n");
       char tmp[200];
       char tmp2[200];
       char inactive='X';
-
       sdp_media_t *med;
 
+#if (defined WIN32 || defined _WIN32_WCE)   
+      _snprintf(tmp2, 199, "\r\n");
+#else
       snprintf(tmp2, 199, "\r\n");
+#endif
       med = (sdp_media_t *) osip_list_get(remote_sdp->m_medias, pos);
 
       /* search for the rtpmap associated to the payload */
@@ -671,12 +727,20 @@ c=IN IP4 TOREPLACE\r\n");
 	    {
 	      if (0==osip_strncasecmp(attr->a_att_field, "sendonly", 8))
 		{
-		  snprintf(tmp2, 199, "\r\na=recvonly\r\n");
+#if (defined WIN32 || defined _WIN32_WCE)   
+		  _snprintf(tmp2, 199, "\r\na=recvonly\r\n");
+#else
+          snprintf(tmp2, 199, "\r\na=recvonly\r\n");
+#endif
 		  break;
 		}
 	      else if (0==osip_strncasecmp(attr->a_att_field, "recvonly", 8))
 		{
-		  snprintf(tmp2, 199, "\r\na=sendonly\r\n");
+#if (defined WIN32 || defined _WIN32_WCE) 
+		  _snprintf(tmp2, 199, "\r\na=sendonly\r\n");
+#else
+          snprintf(tmp2, 199, "\r\na=sendonly\r\n");
+#endif
 		  break;
 		}
 	      else if (0==osip_strncasecmp(attr->a_att_field, "sendrecv", 8))
@@ -685,7 +749,11 @@ c=IN IP4 TOREPLACE\r\n");
 		}
 	      else if (0==osip_strncasecmp(attr->a_att_field, "inactive", 8))
 		{
-		  snprintf(tmp2, 199, "\r\na=inactive\r\n");
+#if (defined WIN32 || defined _WIN32_WCE) 
+		  _snprintf(tmp2, 199, "\r\na=inactive\r\n");
+#else
+          snprintf(tmp2, 199, "\r\na=inactive\r\n");
+#endif
 		  inactive='0';
 		  break;
 		}
@@ -694,17 +762,25 @@ c=IN IP4 TOREPLACE\r\n");
 	}
 
       if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
-	snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
+#if (defined WIN32 || defined _WIN32_WCE) 
+	_snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
+#else
+    snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
+#endif
       else if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
-	snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+#if (defined WIN32 || defined _WIN32_WCE) 
+	_snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+#else
+    snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
+#endif
       else
 	return -1;
 
-      if (strlen(local_sdp)+strlen(tmp)+1<length)
+      if ((int)(strlen(local_sdp)+strlen(tmp)+1)<length)
 	strcat(local_sdp, tmp);
       else return -1;
 
-      if (strlen(local_sdp)+strlen(tmp2)+1<length)
+      if ((int)(strlen(local_sdp)+strlen(tmp2)+1)<length)
 	strcat(local_sdp, tmp2);
       else return -1;
 
@@ -758,7 +834,7 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
     {
       sdp_attribute_t *attr =
 	(sdp_attribute_t *) osip_list_get (med->a_attributes, pos);
-      
+
       if (0==osip_strcasecmp("rtpmap", attr->a_att_field)
 	  &&  attr->a_att_value!=NULL)
 	{
@@ -768,20 +844,20 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
 	  /* fill the m= line */
 	  tmp = (char*) osip_list_get(med->m_payloads, 0);
 	  if (tmp!=NULL)
-	    osip_list_add(local_med->m_payloads, strdup(tmp), -1);
+	    osip_list_add(local_med->m_payloads, osip_strdup(tmp), -1);
 	  else
 	    return -1;
 
 	  sdp_attribute_init(&mattr);
-	  mattr->a_att_field = strdup(attr->a_att_field);
-	  mattr->a_att_value = strdup(attr->a_att_value);
+	  mattr->a_att_field = osip_strdup(attr->a_att_field);
+	  mattr->a_att_value = osip_strdup(attr->a_att_value);
 
 	  /* fill the a= line */
 	  osip_list_add (local_med->a_attributes, mattr, -1);
 	  return 0;
 	}
     }
-  
+
   return -1; /* no rtpmap found? It is mandatory in audio and video media */
 }
 
