@@ -131,3 +131,5 @@ EXPORTS
      osip_start_ack_retransmissions @131
      osip_stop_200ok_retransmissions @132
      osip_stop_retransmissions_from_dialog @133
+     osip_gettimeofday @134
+
