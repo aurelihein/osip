@@ -1,3 +1,12 @@
+libosip (0.9.2-1) unstable; urgency=low
+  * support for the received and rport.
+  * sdp_negoc.c: fix the video support.
+  * hdr_authorization.c: improve end of header detection.
+  * hdr_callinfo.c: fix a bug when realloc happen here.
+  * hdr_from.c: accept empty parameter preceeded by '='.
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 11 Dec 2002 13:04:32 +0100
+
 libosip (0.9.1-1) unstable; urgency=low
   * system logger for WIN32.
   * fix a very few interoperability issues.
