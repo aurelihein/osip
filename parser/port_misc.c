@@ -520,27 +520,27 @@ osip_trace (fi, li, level, f, chfr, va_list)
 #ifdef SYSTEM_LOGGER_ENABLED
        else
 	 {
-           char buffer[512];                                                    
-           int in = 0;                                                          
-           if (level == OSIP_FATAL)                                             
-             in = sprintf (buffer, "| FATAL | <%s: %i> ", fi, li);              
-           else if (level == OSIP_BUG)                                          
-             in = sprintf (buffer, "|  BUG  | <%s: %i> ", fi, li);              
-           else if (level == OSIP_ERROR)                                        
-             in = sprintf (buffer, "| ERROR | <%s: %i> ", fi, li);              
-           else if (level == OSIP_WARNING)                                      
-             in = sprintf (buffer, "|WARNING| <%s: %i> ", fi, li);              
-           else if (level == OSIP_INFO1)                                        
-             in = sprintf (buffer, "| INFO1 | <%s: %i> ", fi, li);              
-           else if (level == OSIP_INFO2)                                        
-             in = sprintf (buffer, "| INFO2 | <%s: %i> ", fi, li);              
-           else if (level == OSIP_INFO3)                                        
-             in = sprintf (buffer, "| INFO3 | <%s: %i> ", fi, li);              
-           else if (level == OSIP_INFO4)                                        
-             in = sprintf (buffer, "| INFO4 | <%s: %i> ", fi, li);              
-
-	   vsprintf(buffer+in, chfr, ap);                                       
-           OutputDebugString(buffer);                                           
+           char buffer[512];
+           int in = 0;
+           if (level == OSIP_FATAL)
+             in = _snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+           else if (level == OSIP_BUG)
+             in = _snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+           else if (level == OSIP_ERROR)
+             in = _snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+           else if (level == OSIP_WARNING)
+             in = _snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+           else if (level == OSIP_INFO1)
+             in = _snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+           else if (level == OSIP_INFO2)
+             in = _snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+           else if (level == OSIP_INFO3)
+             in = _snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+           else if (level == OSIP_INFO4)
+             in = _snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+	   
+	   _vsnprintf(buffer+in, 511-in, chfr, ap);
+	   OutputDebugString(buffer);
 	 }
 #endif
 	   
