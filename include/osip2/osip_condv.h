@@ -47,7 +47,7 @@ extern "C"
 {
 #endif
 
-#if defined(__PSOS__) || defined(__VXWORKS_OS__)
+#if defined(__PSOS__)
 
 /* TODO */
 

@@ -217,7 +217,7 @@ osip_sem_trywait (struct osip_sem *_sem)
 struct osip_mutex *
 osip_mutex_init ()
 {
-  return (struct osip_mutex *) semMCreate (0);
+  return (struct osip_mutex *) semMCreate (SEM_Q_FIFO|SEM_DELETE_SAFE);
 }
 
 void

@@ -230,7 +230,119 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
 #endif
 /* use VxWorks implementation */
 #ifdef __VXWORKS_OS__
-   /*TODO*/
+
+struct osip_cond *
+osip_cond_init ()
+{
+  osip_cond_t *cond = (osip_cond_t *) osip_malloc (sizeof (osip_cond_t));
+  if ( (cond->sem = osip_sem_init (0))!=NULL)
+  {
+   return (struct osip_cond *) (cond);
+  }
+  osip_free (cond);
+
+  return NULL;
+}
+
+int
+osip_cond_destroy (struct osip_cond *_cond)
+{
+  if (_cond->sem == NULL)
+    return 0;
+
+  osip_sem_destroy (_cond->sem);
+  osip_free (_cond);
+  return (0);
+}
+
+int
+osip_cond_signal (struct osip_cond *_cond)
+{
+  return osip_sem_post (_cond->sem);
+}
+
++static int _cond_wait(struct osip_cond *_cond, struct osip_mutex *_mut, int
+ticks)
+{
+ int ret;
+   if (osip_mutex_unlock (_mut)!=0)
+   {
+    return -1;
+   }
+
+  ret =  semTake( ((osip_sem_t *) _cond->sem)->semId, ticks);
+   if (ret != OK)
+   {
+  switch (errno)
+    {
+       case S_objLib_OBJ_ID_ERROR:
+       /* fall through */
+    case S_objLib_OBJ_UNAVAILABLE:
+     /* fall through */
+#if 0
+       case S_intLib_NOT_ISR_CALLABLE:
+#endif
+        ret = -1;
+        break;
+       case S_objLib_OBJ_TIMEOUT:
+        ret = 1;
+        break;
+       default:  /* vxworks has bugs */
+         ret = 1;
+         break;
+    }
+   }
+
+    if (osip_mutex_lock (_mut))
+    {
+     ret = -1;
+    }
+   return ret;
+}
+
+int
+osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
+{
+ return _cond_wait(_cond, _mut, WAIT_FOREVER);
+}
+
+int
+osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
+       const struct timespec *abstime)
+{
+  int rate = sysClkRateGet();
+  struct timespec now;
+  long sec, nsec;
+  int ticks;
+  SEM_ID sem;
+  if (_cond==NULL)
+   return -1;
+
+  sem = ((osip_sem_t *) _cond->sem)->semId;
+
+  if (sem == NULL)
+    return -1;
+
+  if (abstime == NULL)
+    return -1;
+  clock_gettime(CLOCK_REALTIME, &now);
+
+  sec  = abstime->tv_sec - now.tv_sec;
+  nsec = abstime->tv_nsec - now.tv_nsec;
+
+  while ( (sec > 0) && (nsec < 0))
+  {
+    --sec;
+    nsec += 1000000000;
+  }
+  if (nsec < 0)
+    return 1; /*ETIMEDOUT; */
+  ticks = (sec * rate) + ( nsec / 1000 * rate / 1000000);
+
+  return _cond_wait(_cond, _mut, ticks);
+}
+
+
 #endif
 #endif
 #endif
