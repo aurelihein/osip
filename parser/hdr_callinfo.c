@@ -30,10 +30,10 @@ msg_setcall_info(sip_t *sip, char *hvalue)
   call_info_t *call_info;
   int i;
   i = call_info_init(&call_info);
-  if (i==-1)
+  if (i!=0)
     return -1;
   i = call_info_parse(call_info, hvalue);
-  if (i==-1) /* allocation failed */
+  if (i!=0) /* allocation failed */
       return -1;
 
 #ifdef USE_TMP_BUFFER
@@ -63,7 +63,7 @@ call_info_init(call_info_t **call_info)
   (*call_info)->gen_params = (list_t *) smalloc(sizeof(list_t));
   list_init((*call_info)->gen_params);
   
-  return 1;
+  return 0;
 }
 
 int

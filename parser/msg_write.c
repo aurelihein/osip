@@ -385,3 +385,357 @@ msg_free(sip_t *sip)
 #endif
 }
 
+int
+body_clone(body_t *body, body_t **dest)
+{
+  int pos;
+  int i;
+  body_t *copy;
+  if (body==NULL) return -1;
+
+  i = body_init(&copy);
+  if (i!=0) return -1;
+
+  copy->body = sgetcopy(body->body);
+
+  if (body->content_type!=NULL)
+    {
+      i = content_type_clone (body->content_type, &(copy->content_type));
+      if (i!=0)
+	goto bc_error1;
+    }
+
+  {
+    header_t *header;
+    header_t *header2;
+    pos = 0;
+    while (!list_eol(body->headers,pos))
+      {
+	header = (header_t *)list_get(body->headers,pos);
+	i = header_clone(header, &header2);
+	if (i!=0)
+	  goto bc_error1;
+	list_add(copy->headers, header2, -1); /* insert as last element */
+	pos++;
+      }
+  }
+
+  *dest = copy;
+  return 0;
+ bc_error1:
+  body_free(copy);
+  sfree(copy);
+  return -1;
+}
+
+int
+msg_clone(sip_t *sip, sip_t **dest)
+{
+  sip_t *copy;
+  int pos = 0;
+  int i;
+  if (sip==NULL) return -1;
+  *dest = NULL;
+
+  i = msg_init(&copy);
+  if (i!=0) return -1;
+  
+  copy->strtline->sipmethod    = sgetcopy(sip->strtline->sipmethod);
+  copy->strtline->sipversion   = sgetcopy(sip->strtline->sipversion);
+  copy->strtline->statuscode   = sgetcopy(sip->strtline->statuscode);
+  copy->strtline->reasonphrase = sgetcopy(sip->strtline->reasonphrase);
+  if (sip->strtline->rquri!=NULL)
+    {
+      i = url_clone(sip->strtline->rquri, &(copy->strtline->rquri));
+      if (i!=0)
+	goto mc_error1;
+    }
+
+  {
+    accept_t *accept;
+    accept_t *accept2;
+    pos = 0;
+    while (!list_eol(sip->accepts,pos))
+      {
+	accept = (accept_t *)list_get(sip->accepts,pos);
+	i = accept_clone(accept, &accept2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->accepts, accept2, -1); /* insert as last element */
+	pos++;
+      }
+  }
+  {
+    accept_encoding_t *accept_encoding;
+    accept_encoding_t *accept_encoding2;
+    pos = 0;
+    while (!list_eol(sip->accept_encodings,pos))
+      {
+	accept_encoding = (accept_encoding_t *)list_get(sip->accept_encodings,pos);
+	i = accept_encoding_clone(accept_encoding, &accept_encoding2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->accept_encodings, accept_encoding2, -1);
+	pos++;
+      }
+  }
+  {
+    accept_language_t *accept_language;
+    accept_language_t *accept_language2;
+    pos = 0;
+    while (!list_eol(sip->accept_languages,pos))
+      {
+	accept_language = (accept_language_t *)list_get(sip->accept_languages,pos);
+	i = accept_language_clone(accept_language, &accept_language2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->accept_languages, accept_language2, -1);
+	pos++;
+      }
+  }
+  {
+    alert_info_t *alert_info;
+    alert_info_t *alert_info2;
+    pos = 0;
+    while (!list_eol(sip->alert_infos,pos))
+      {
+	alert_info = (alert_info_t *)list_get(sip->alert_infos,pos);
+	i = alert_info_clone(alert_info, &alert_info2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->alert_infos, alert_info2, -1);
+	pos++;
+      }
+  }
+  {
+    allow_t *allow;
+    allow_t *allow2;
+    pos = 0;
+    while (!list_eol(sip->allows,pos))
+      {
+	allow = (allow_t *)list_get(sip->allows,pos);
+	i = allow_clone(allow, &allow2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->allows, allow2, -1);
+	pos++;
+      }
+  }
+  if (sip->authorization!=NULL)
+    {
+      i = authorization_clone (sip->authorization, &(copy->authorization));
+      if (i!=0)
+	goto mc_error1;
+    }
+  if (sip->call_id!=NULL)
+    {
+      i = call_id_clone(sip->call_id, &(copy->call_id));
+      if (i!=0)
+	goto mc_error1;
+    }
+  {
+    call_info_t *call_info;
+    call_info_t *call_info2;
+    pos = 0;
+    while (!list_eol(sip->call_infos,pos))
+      {
+	call_info = (call_info_t *)list_get(sip->call_infos,pos);
+	i = call_info_clone(call_info, &call_info2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->call_infos, call_info2, -1);
+	pos++;
+      }
+  }
+  {
+    contact_t *contact;
+    contact_t *contact2;
+    pos = 0;
+    while (!list_eol(sip->contacts,pos))
+      {
+	contact = (contact_t *)list_get(sip->contacts,pos);
+	i = contact_clone(contact, &contact2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->contacts, contact2, -1);
+	pos++;
+      }
+  }
+  {
+    content_encoding_t *content_encoding;
+    content_encoding_t *content_encoding2;
+    pos = 0;
+    while (!list_eol(sip->content_encodings,pos))
+      {
+	content_encoding = (content_encoding_t *)list_get(sip->content_encodings,pos);
+	i = content_encoding_clone(content_encoding, &content_encoding2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->content_encodings, content_encoding2, -1);
+	pos++;
+      }
+  }
+  if (sip->contentlength!=NULL)
+    {
+      i = content_length_clone (sip->contentlength, &(copy->contentlength));
+      if (i!=0)
+	goto mc_error1;
+    }
+  if (sip->content_type!=NULL)
+    {
+      i = content_type_clone (sip->content_type, &(copy->content_type));
+      if (i!=0)
+	goto mc_error1;
+    }
+  if (sip->cseq!=NULL)
+    {
+      i = cseq_clone (sip->cseq, &(copy->cseq));
+      if (i!=0)
+	goto mc_error1;
+    }
+  {
+    error_info_t *error_info;
+    error_info_t *error_info2;
+    pos = 0;
+    while (!list_eol(sip->error_infos,pos))
+      {
+	error_info = (error_info_t *)list_get(sip->error_infos,pos);
+	i = error_info_clone(error_info, &error_info2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->error_infos, error_info2, -1);
+	pos++;
+      }
+  }
+  if (sip->from!=NULL)
+    {
+      i = from_clone (sip->from, &(copy->from));
+      if (i!=0)
+	goto mc_error1;
+    }
+  if (sip->mime_version!=NULL)
+    {
+      i = mime_version_clone (sip->mime_version, &(copy->mime_version));
+      if (i!=0)
+	goto mc_error1;
+    }
+  if (sip->proxy_authenticate!=NULL)
+    {
+      i = proxy_authenticate_clone (sip->proxy_authenticate,
+				    &(copy->proxy_authenticate));
+      if (i!=0)
+	goto mc_error1;
+    }
+  {
+    proxy_authorization_t *proxy_authorization;
+    proxy_authorization_t *proxy_authorization2;
+    pos = 0;
+    while (!list_eol(sip->proxy_authorizations,pos))
+      {
+	proxy_authorization = (proxy_authorization_t *)list_get(sip->proxy_authorizations,pos);
+	i = proxy_authorization_clone(proxy_authorization, &proxy_authorization2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->proxy_authorizations, proxy_authorization2, -1);
+	pos++;
+      }
+  }
+  {
+    record_route_t *record_route;
+    record_route_t *record_route2;
+    pos = 0;
+    while (!list_eol(sip->record_routes,pos))
+      {
+	record_route = (record_route_t *)list_get(sip->record_routes,pos);
+	i = record_route_clone(record_route, &record_route2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->record_routes, record_route2, -1);
+	pos++;
+      }
+  }
+  {
+    route_t *route;
+    route_t *route2;
+    pos = 0;
+    while (!list_eol(sip->routes,pos))
+      {
+	route = (route_t *)list_get(sip->routes,pos);
+	i = route_clone(route, &route2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->routes, route2, -1);
+	pos++;
+      }
+  }
+  if (sip->to!=NULL)
+    {
+      i = to_clone(sip->to, &(copy->to));
+      if (i!=0)
+	goto mc_error1;
+    }
+  {
+    via_t *via;
+    via_t *via2;
+    pos = 0;
+    while (!list_eol(sip->vias,pos))
+      {
+	via = (via_t *)list_get(sip->vias,pos);
+	i = via_clone(via, &via2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->vias, via2, -1);
+	pos++;
+      }
+  }
+  if (sip->www_authenticate!=NULL)
+    {
+      www_authenticate_clone (sip->www_authenticate, &(copy->www_authenticate));
+      if (i!=0)
+	goto mc_error1;
+    }
+
+  {
+    header_t *header;
+    header_t *header2;
+    pos = 0;
+    while (!list_eol(sip->headers,pos))
+      {
+	header = (header_t *)list_get(sip->headers,pos);
+	i = header_clone(header, &header2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->headers, header2, -1);
+	pos++;
+      }
+  }
+
+  {
+    body_t *body;
+    body_t *body2;
+    pos = 0;
+    while (!list_eol(sip->bodies,pos))
+      {
+	body = (body_t *)list_get(sip->bodies,pos);
+	i = body_clone(body, &body2);
+	if (i!=0)
+	  goto mc_error1;
+	list_add(copy->bodies, body2, -1);
+	pos++;
+      }
+  }
+
+#ifdef USE_TMP_BUFFER
+  copy->message = sgetcopy(sip->message);
+  copy->message_property = sip->message_property;
+#endif
+
+  *dest = copy;
+  return 0;
+ mc_error1:
+  msg_free(copy);
+  sfree(copy);
+  return -1;
+
+}
+

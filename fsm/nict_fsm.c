@@ -30,6 +30,20 @@ nict_get_fsm()
   return nict_fsm;
 }
 
+void nict_unload_fsm()
+{
+  transition_t *transition;
+  statemachine_t *statemachine = nict_get_fsm();
+  while (!list_eol(statemachine->transitions,0))
+    {
+      transition = (transition_t *)list_get(statemachine->transitions,0);
+      list_remove(statemachine->transitions,0);
+      sfree(transition);
+    }
+  sfree(statemachine->transitions);
+  sfree(statemachine);
+}
+
 void
 nict_load_fsm()
 {

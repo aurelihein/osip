@@ -361,9 +361,10 @@ int cseq_match(cseq_t *cseq1,cseq_t *cseq2);
 
 /* start the oSIP stack */
 int  osip_global_init();
-
+void osip_global_free();
 /* create a context for a SIP Agent */
 int  osip_init(osip_t **osip);
+void osip_free(osip_t *osip);
 int  osip_ict_lock(osip_t *osip);
 int  osip_ict_unlock(osip_t *osip);
 int  osip_ist_lock(osip_t *osip);
@@ -391,10 +392,11 @@ void  osip_timers_ict_execute(osip_t *osip);
 void  osip_timers_ist_execute(osip_t *osip);
 void  osip_timers_nict_execute(osip_t *osip);
 void  osip_timers_nist_execute(osip_t *osip);
-/* TODO: void osip_free(osip_t *osip); */
+
+/* obsolete in 0.8.4: see comments in fsm/osip.c */
+/* transaction_t *osip_distribute_event(osip_t *osip,sipevent_t* sipevent); */
 
 /* obsolete: use osip_find_transaction + osip_create_transaction */
-transaction_t *osip_distribute_event(osip_t *osip,sipevent_t* sipevent);
 transaction_t *osip_transaction_find(list_t *transactions, sipevent_t *se);
 
 transaction_t *osip_find_transaction(osip_t *osip, sipevent_t *se);

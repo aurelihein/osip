@@ -30,6 +30,21 @@ ist_get_fsm()
   return ist_fsm;
 }
 
+void ist_unload_fsm()
+{
+  transition_t *transition;
+  statemachine_t *statemachine = ist_get_fsm();
+  while (!list_eol(statemachine->transitions,0))
+    {
+      transition = (transition_t *)list_get(statemachine->transitions,0);
+      list_remove(statemachine->transitions,0);
+      sfree(transition);
+    }
+  sfree(statemachine->transitions);
+  sfree(statemachine);
+}
+
+
 void
 ist_load_fsm()
 {

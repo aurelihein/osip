@@ -54,6 +54,24 @@ osip_global_init()
   return 0;
 }
 
+void
+osip_global_free()
+{
+  ict_unload_fsm();
+  ist_unload_fsm();
+  nict_unload_fsm();
+  nist_unload_fsm();
+
+  smutex_destroy(ict_fastmutex);
+  sfree(ict_fastmutex);
+  smutex_destroy(ist_fastmutex);
+  sfree(ist_fastmutex);
+  smutex_destroy(nict_fastmutex);
+  sfree(nict_fastmutex);
+  smutex_destroy(nist_fastmutex);
+  sfree(nist_fastmutex);
+}
+
 int
 osip_ict_lock(osip_t *osip)
 {
@@ -290,6 +308,30 @@ osip_remove_nist(osip_t *osip, transaction_t *nist)
   return -1;
 }
 
+#if 0
+/* this method is made obsolete because it contains bugs and is also
+   too much limited.
+   any call to this method should be replace this way:
+
+   //osip_distribute(osip, evt);
+   transaction_t *transaction = osip_find_transaction(osip, evt);
+
+   if (transaction==NULL) // in case it's a new request
+     {
+        if (evt is an ACK)
+            evt could be an ACK for INVITE (not handled by oSIP)
+        else if ( evt is a 200 for INVITE)
+           evt could be a retransmission of a 200 for INVITE (not handled by oSIP)
+        else if (evt is a new request)  == not a ACK and not a response
+	  {
+           transaction = osip_create_transaction(osip, evt);
+           if (transaction==NULL)
+             printf("failed to create a transaction\");
+          }
+    }
+*/
+
+
 /* finds the transaction context and add the sipevent in its fifo. */
 /* USED ONLY BY THE TRANSPORT LAYER.                               */
 /* INPUT : osip_t *osip | osip. contains the list of tr. context*/
@@ -400,37 +442,28 @@ osip_distribute_event(osip_t *osip,sipevent_t* evt)
       return NULL;
     }
 }
+#endif
 
 transaction_t *
 osip_find_transaction(osip_t *osip,sipevent_t* evt)
 {
   transaction_t *transaction = NULL;
-
+  list_t *transactions;
+  smutex_t *mut;
   if (EVT_IS_INCOMINGMSG(evt))
     {
-      /* event is for ict */
       if (MSG_IS_REQUEST(evt->sip))
 	{
 	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
-#ifdef OSIP_MT
-	      smutex_lock(ist_fastmutex);
-#endif
-	      transaction = osip_transaction_find(osip->ist_transactions, evt);
-#ifdef OSIP_MT
-	      smutex_unlock(ist_fastmutex);
-#endif
+	      transactions = osip->ist_transactions;
+	      mut = ist_fastmutex;
 	    }
 	  else 
 	    {
-#ifdef OSIP_MT
-	      smutex_lock(nist_fastmutex);
-#endif
-	      transaction = osip_transaction_find(osip->nist_transactions, evt);
-#ifdef OSIP_MT
-	      smutex_unlock(nist_fastmutex);
-#endif
+	      transactions = osip->nist_transactions;
+	      mut = nist_fastmutex;
 	    }
 	}
       else
@@ -438,48 +471,58 @@ osip_find_transaction(osip_t *osip,sipevent_t* evt)
 	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
 	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
 	    {
-#ifdef OSIP_MT
-	      smutex_lock(ict_fastmutex);
-#endif
-	      transaction = osip_transaction_find(osip->ict_transactions, evt);
-#ifdef OSIP_MT
-	      smutex_unlock(ict_fastmutex);
-#endif
+	      transactions = osip->ict_transactions;
+	      mut = ict_fastmutex;
 	    }
 	  else 
 	    {
-#ifdef OSIP_MT
-	      smutex_lock(nict_fastmutex);
-#endif
-	      transaction = osip_transaction_find(osip->nict_transactions, evt);
-#ifdef OSIP_MT
-	      smutex_unlock(nict_fastmutex);
-#endif
+	      transactions = osip->nict_transactions;
+	      mut = nict_fastmutex;
 	    }
 	}
-      if (transaction!=NULL)
-	return transaction;
-
-      if (EVT_IS_RCV_STATUS_1XX(evt)
-	  ||EVT_IS_RCV_STATUS_2XX(evt)
-	  ||EVT_IS_RCV_STATUS_3456XX(evt)
-	  ||EVT_IS_RCV_ACK(evt))
-	{
-	  /* EXCEPT FOR 2XX (or late answers?) THAT MUST BE GIVEN TO THE CORE LAYER!!! */
-	  
-	  /* TODO */
-	  
-	  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL2,NULL,"WARNING: transaction does not yet exist... %x callid:%s\n",evt,evt->sip->call_id->number));
-	  return NULL;
-	}
-      /* new request! */
-      return NULL;
     }
-  else 
+  else if (EVT_IS_OUTGOINGMSG(evt))
     {
-      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL2,stdout,"BUG: wrong event type %x\n",evt));
-      return NULL;
+      if (MSG_IS_RESPONSE(evt->sip))
+	{
+	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
+	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
+	    {
+	      transactions = osip->ist_transactions;
+	      mut = ist_fastmutex;
+	    }
+	  else 
+	    {
+	      transactions = osip->nist_transactions;
+	      mut = nist_fastmutex;
+	    }
+	}
+      else
+	{
+	  if (0==strcmp(evt->sip->cseq->method,"INVITE")
+	      ||0==strcmp(evt->sip->cseq->method,"ACK"))
+	    {
+	      transactions = osip->ict_transactions;
+	      mut = ict_fastmutex;
+	    }
+	  else 
+	    {
+	      transactions = osip->nict_transactions;
+	      mut = nict_fastmutex;
+	    }
+	}
     }
+  if (transactions==NULL) return NULL; /* not a message??? */
+
+#ifdef OSIP_MT
+  smutex_lock(mut);
+#endif
+  transaction = osip_transaction_find(transactions, evt);
+#ifdef OSIP_MT
+  smutex_unlock(mut);
+#endif
+
+  return transaction; /* can be NULL */
 }
 
 transaction_t *
@@ -501,17 +544,12 @@ osip_create_transaction(osip_t *osip, sipevent_t *evt)
 		       evt->sip);
   if (i==-1)
     {
-      msg_free(evt->sip);
-      sfree(evt->sip);
-      sfree(evt); /* transaction thread will not delete it */
       return NULL;
     }
   evt->transactionid = transaction->transactionid;
-  
-  evt->transactionid = transaction->transactionid;
-  fifo_add(transaction->transactionff,evt);
   return transaction;
 }
+
 
 transaction_t *
 osip_transaction_find(list_t *transactions, sipevent_t *evt)
@@ -536,6 +574,7 @@ osip_transaction_find(list_t *transactions, sipevent_t *evt)
 	      ((0==strncmp(transaction->cseq->method,"INVITE",6))
 	       &&0==strncmp(evt->sip->cseq->method,"ACK",3)))
 	    {
+	      evt->transactionid = transaction->transactionid;
 	      return transaction;
 	    }
         }
@@ -631,6 +670,15 @@ osip_init(osip_t **osip)
   list_init((*osip)->nist_transactions);
 
   return 0;
+}
+
+void
+osip_free(osip_t *osip)
+{
+  sfree(osip->ict_transactions);
+  sfree(osip->ist_transactions);
+  sfree(osip->nict_transactions);
+  sfree(osip->nist_transactions);
 }
 
 int

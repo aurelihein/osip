@@ -225,7 +225,7 @@ set_next_token(char **dest, char *buf, int end_separator, char **next)
   sstrncpy(*dest,buf,sep-buf);
  
   *next = sep+1;  /* return the position right after the separator */
-  return 1;
+  return 0;
 }
 
 /*  not yet done!!! :-)

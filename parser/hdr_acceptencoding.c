@@ -34,10 +34,10 @@ msg_setaccept_encoding(sip_t *sip, char *hvalue)
   accept_encoding_t *accept_encoding;
   int i;
   i = accept_encoding_init(&accept_encoding);
-  if (i==-1)
+  if (i!=0)
     return -1;
   i = accept_encoding_parse(accept_encoding, hvalue);
-  if (i==-1) /* allocation failed */
+  if (i!=0) /* allocation failed */
       return -1;
 
 #ifdef USE_TMP_BUFFER
@@ -67,7 +67,7 @@ accept_encoding_init(accept_encoding_t **accept_encoding)
   (*accept_encoding)->gen_params = (list_t *) smalloc(sizeof(list_t));
   list_init((*accept_encoding)->gen_params);
   
-  return 1;
+  return 0;
 }
 
 int

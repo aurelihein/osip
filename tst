@@ -16,7 +16,7 @@ echo "=="
 i=0
 while [ $i -lt 93 ]
 do
-    test/torture_test conf/torture_msgs $i "$1"
+    test/torture_test conf/torture_msgs $i "$1" "$2"
     i=`expr $i + 1`
 done
 
@@ -29,7 +29,7 @@ echo "=="
 i=0
 while [ $i -lt 93 ]
 do
-    test/torture_test conf/torture_msgs2 $i "$1"
+    test/torture_test conf/torture_msgs2 $i "$1" "$2"
     i=`expr $i + 1`
 done
 

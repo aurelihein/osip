@@ -41,6 +41,11 @@ void ist_load_fsm();
 void nict_load_fsm();
 void nist_load_fsm();
 
+void ict_unload_fsm();
+void ist_unload_fsm();
+void nict_unload_fsm();
+void nist_unload_fsm();
+
 /* load state machine structure for (UAC || UAS) for (INVITE || REQUEST) */
 statemachine_t* ict_get_fsm();
 statemachine_t* ist_get_fsm();

@@ -287,40 +287,40 @@ sdp_parse_o(sdp_t *sdp, char *buf, char **next)
 
   /* useranme can contain any char (ascii) except "space" and CRLF */
   i = set_next_token(&(sdp->o_username),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
 
   /* sess_id contains only numeric characters */
   i = set_next_token(&(sdp->o_sess_id),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
   
   /* sess_id contains only numeric characters */
   i = set_next_token(&(sdp->o_sess_version),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
   
   /* nettype is "IN" but will surely be extented!!! assume it's some alpha-char */
   i = set_next_token(&(sdp->o_nettype),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
   
   /* addrtype  is "IP4" or "IP6" but will surely be extented!!! */
   i = set_next_token(&(sdp->o_addrtype),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
   
   /* addr  is "IP4" or "IP6" but will surely be extented!!! */
   i = set_next_token(&(sdp->o_addr),tmp,'\r',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     { /* could it be "\n" only??? rfc says to accept CR or LF instead of CRLF */
       i = set_next_token(&(sdp->o_addr),tmp,'\n',&tmp_next);
-        if (i!=OK)
+        if (i!=0)
 	  return -1;
     }
 
@@ -570,13 +570,13 @@ sdp_parse_c(sdp_t *sdp, char *buf, char **next)
 
   /* nettype is "IN" and will be extended */
   i = set_next_token(&(c_header->c_nettype),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
 
   /* nettype is "IP4" or "IP6" and will be extended */
   i = set_next_token(&(c_header->c_addrtype),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
   
@@ -590,20 +590,20 @@ sdp_parse_c(sdp_t *sdp, char *buf, char **next)
     if (slash!=NULL&&slash<crlf) /* it's a multicast address! */
       {
 	i = set_next_token(&(c_header->c_addr),tmp,'/',&tmp_next);
-	if (i!=OK)
+	if (i!=0)
 	  return -1;
 	tmp = tmp_next;
 	slash = strchr(slash+1,'/');
 	if (slash!=NULL&&slash<crlf) /* optionnal integer is there! */
 	  {
 	    i = set_next_token(&(c_header->c_addr_multicast_ttl),tmp,'/',&tmp_next);
-	    if (i!=OK) return -1;
+	    if (i!=0) return -1;
 	    tmp = tmp_next;
 	    i = set_next_token(&(c_header->c_addr_multicast_int),tmp,'\r',&tmp_next);
-	    if (i!=OK) 
+	    if (i!=0) 
 	      {
 		i = set_next_token(&(c_header->c_addr_multicast_int),tmp,'\n',&tmp_next);
-		if (i!=OK)
+		if (i!=0)
 		  {
 		    sdp_connection_free(c_header);
 		    sfree(c_header);
@@ -614,10 +614,10 @@ sdp_parse_c(sdp_t *sdp, char *buf, char **next)
 	else
 	  {
 	    i = set_next_token(&(c_header->c_addr_multicast_ttl),tmp,'\r',&tmp_next);
-	    if (i!=OK)
+	    if (i!=0)
 	      {
 		i = set_next_token(&(c_header->c_addr_multicast_ttl),tmp,'\n',&tmp_next);
-		if (i!=OK)
+		if (i!=0)
 		  {
 		    sdp_connection_free(c_header);
 		    sfree(c_header);
@@ -630,10 +630,10 @@ sdp_parse_c(sdp_t *sdp, char *buf, char **next)
       {
 	/* in this case, we have a unicast address */
 	i = set_next_token(&(c_header->c_addr),tmp,'\r',&tmp_next);
-	if (i!=OK)
+	if (i!=0)
 	  {
 	    i = set_next_token(&(c_header->c_addr),tmp,'\n',&tmp_next);
-	    if (i!=OK)
+	    if (i!=0)
 	      {
 		sdp_connection_free(c_header);
 		sfree(c_header);
@@ -697,15 +697,15 @@ sdp_parse_b(sdp_t *sdp, char *buf, char **next)
 
   /* bwtype is alpha-numeric */
   i = set_next_token(&(b_header->b_bwtype),tmp,':',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     return -1;
   tmp = tmp_next;
 
   i = set_next_token(&(b_header->b_bandwidth),tmp,'\r',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     {
       i = set_next_token(&(b_header->b_bandwidth),tmp,'\n',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_bandwidth_free(b_header);
 	  sfree(b_header);
@@ -767,7 +767,7 @@ sdp_parse_t(sdp_t *sdp, char *buf, char **next)
   if (i!=0) return ERR_ERROR;
 
   i = set_next_token(&(t_header->t_start_time),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     {
       sdp_time_descr_free(t_header);
       sfree(t_header);
@@ -776,10 +776,10 @@ sdp_parse_t(sdp_t *sdp, char *buf, char **next)
   tmp = tmp_next;
 
   i = set_next_token(&(t_header->t_stop_time),tmp,'\r',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     {
       i = set_next_token(&(t_header->t_stop_time),tmp,'\n',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_time_descr_free(t_header);
 	  sfree(t_header);
@@ -922,7 +922,7 @@ sdp_parse_k(sdp_t *sdp, char *buf, char **next)
     {
       /* att-field is alpha-numeric */
       i = set_next_token(&(k_header->k_keytype),tmp,':',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_key_free(k_header);
 	  sfree(k_header);
@@ -931,10 +931,10 @@ sdp_parse_k(sdp_t *sdp, char *buf, char **next)
       tmp = tmp_next;
       
       i = set_next_token(&(k_header->k_keydata),tmp,'\r',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  i = set_next_token(&(k_header->k_keydata),tmp,'\n',&tmp_next);
-	  if (i!=OK)
+	  if (i!=0)
 	    {
 	      sdp_key_free(k_header);
 	      sfree(k_header);
@@ -945,10 +945,10 @@ sdp_parse_k(sdp_t *sdp, char *buf, char **next)
   else
     {
       i = set_next_token(&(k_header->k_keytype),tmp,'\r',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  i = set_next_token(&(k_header->k_keytype),tmp,'\n',&tmp_next);
-	  if (i!=OK)
+	  if (i!=0)
 	    {
 	      sdp_key_free(k_header);
 	      sfree(k_header);
@@ -1019,7 +1019,7 @@ sdp_parse_a(sdp_t *sdp, char *buf, char **next)
     {
       /* att-field is alpha-numeric */
       i = set_next_token(&(a_attribute->a_att_field),tmp,':',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_attribute_free(a_attribute);
 	  sfree(a_attribute);
@@ -1028,10 +1028,10 @@ sdp_parse_a(sdp_t *sdp, char *buf, char **next)
       tmp = tmp_next;
       
       i = set_next_token(&(a_attribute->a_att_value),tmp,'\r',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  i = set_next_token(&(a_attribute->a_att_value),tmp,'\n',&tmp_next);
-	  if (i!=OK)
+	  if (i!=0)
 	    {
 	      sdp_attribute_free(a_attribute);
 	      sfree(a_attribute);
@@ -1042,10 +1042,10 @@ sdp_parse_a(sdp_t *sdp, char *buf, char **next)
   else
     {
       i = set_next_token(&(a_attribute->a_att_field),tmp,'\r',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  i = set_next_token(&(a_attribute->a_att_field),tmp,'\n',&tmp_next);
-	  if (i!=OK)
+	  if (i!=0)
 	    {
 	      sdp_attribute_free(a_attribute);
 	      sfree(a_attribute);
@@ -1113,7 +1113,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
 
   /* media is "audio" "video" "application" "data" or other... */
   i = set_next_token(&(m_header->m_media),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     {
       sdp_media_free(m_header);
       sfree(m_header);
@@ -1132,7 +1132,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
   if ((slash!=NULL)&&(slash<space))
     { /* a number of port is specified! */
       i = set_next_token(&(m_header->m_port),tmp,'/',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_media_free(m_header);
 	  sfree(m_header);
@@ -1141,7 +1141,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
       tmp = tmp_next;
 
       i = set_next_token(&(m_header->m_number_of_port),tmp,' ',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_media_free(m_header);
 	  sfree(m_header);
@@ -1152,7 +1152,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
   else
     {
      i = set_next_token(&(m_header->m_port),tmp,' ',&tmp_next);
-      if (i!=OK)
+      if (i!=0)
 	{
 	  sdp_media_free(m_header);
 	  sfree(m_header);
@@ -1162,7 +1162,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
     }
 
   i = set_next_token(&(m_header->m_proto),tmp,' ',&tmp_next);
-  if (i!=OK)
+  if (i!=0)
     {
       sdp_media_free(m_header);
       sfree(m_header);
@@ -1180,7 +1180,7 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
     while (more_space_before_crlf==0)
       {
 	i = set_next_token(&str,tmp,' ',&tmp_next);
-	if (i!=OK)
+	if (i!=0)
 	    {
 	      sdp_media_free(m_header);
 	      sfree(m_header);
@@ -1195,10 +1195,10 @@ sdp_parse_m(sdp_t *sdp, char *buf, char **next)
 	else more_space_before_crlf=0;
       }
     i = set_next_token(&str,tmp,'\r',&tmp_next);
-    if (i!=OK)
+    if (i!=0)
       {
 	i = set_next_token(&str,tmp,'\n',&tmp_next);
-	  if (i!=OK)
+	  if (i!=0)
 	    {
 	      sdp_media_free(m_header);
 	      sfree(m_header);

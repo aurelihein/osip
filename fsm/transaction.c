@@ -26,7 +26,7 @@ int
 transaction_init(transaction_t **transaction, context_type_t ctx_type,
 		 osip_t *osip, sip_t *request)
 {
-  static int transactionid = 0;
+  static int transactionid = 1;
 
   int i;
   time_t now;

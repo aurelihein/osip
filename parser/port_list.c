@@ -25,7 +25,7 @@
 
 int list_init(list_t *li) {
   li->nb_elt=0;
-  return 1;  /* ok */
+  return 0;  /* ok */
 }
 
 void

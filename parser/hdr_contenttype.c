@@ -29,13 +29,15 @@ int
 content_type_init(content_type_t **content_type)
 { 
   *content_type = (content_type_t *)smalloc(sizeof(content_type_t));
+  if (*content_type==NULL) return -1;
+
   (*content_type)->type    = NULL;
   (*content_type)->subtype = NULL;
 
   (*content_type)->gen_params = (list_t *) smalloc(sizeof(list_t));
   list_init((*content_type)->gen_params);
   
-  return 1;
+  return 0;
 }
 
 /* adds the content_type header to message.              */
@@ -47,7 +49,7 @@ msg_setcontent_type(sip_t *sip, char *hvalue)
 {
   int i;
   i = content_type_init(&(sip->content_type));
-  if (i==-1)
+  if (i!=0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

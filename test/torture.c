@@ -23,14 +23,14 @@
 #include <osip/smsg.h>
 #include <osip/port.h>
 
-int test_message(char *msg, int verbose);
-
+int test_message(char *msg, int verbose, int clone);
 
 int
 main(int argc, char **argv)
 {
   int i;
-  int verbose = 0; /* 0: verbose, 1 (or nothing: not verbose) */
+  int verbose = 0; /* 1: verbose, 0 (or nothing: not verbose) */
+  int clone   = 0; /* 1: verbose, 0 (or nothing: not verbose) */
   char *marker;
   FILE *torture_file;
   char *tmp;
@@ -38,10 +38,16 @@ main(int argc, char **argv)
   char *tmpmsg;
   static int num_test = 0;
   
-
   if (argc>3)
   {
     if (0==strncmp(argv[3],"-v",2)) verbose=1;
+    if (0==strncmp(argv[3],"-c",2)) clone=1;
+  }
+
+  if (argc>4)
+  {
+    if (0==strncmp(argv[4],"-v",2)) verbose=1;
+    if (0==strncmp(argv[4],"-c",2)) clone=1;
   }
 
   torture_file = fopen(argv[1],"r");
@@ -88,14 +94,14 @@ main(int argc, char **argv)
 	fprintf(stdout,"test %s : ============================ \n",argv[2]);
 	fprintf(stdout,"%s",msg);
 	
-	if (0==test_message(msg, verbose))
+	if (0==test_message(msg, verbose, clone))
 	  fprintf(stdout,"test %s : ============================ OK\n",argv[2]);
 	else
 	  fprintf(stdout,"test %s : ============================ FAILED\n",argv[2]);
       }
     else
       {
-	if (0==test_message(msg, verbose))
+	if (0==test_message(msg, verbose, clone))
 	  fprintf(stdout,"test %s : OK\n",argv[2]);
 	else
 	  fprintf(stdout,"test %s : FAILED\n",argv[2]);
@@ -108,7 +114,7 @@ main(int argc, char **argv)
 }
 
 int
-test_message(char *msg, int verbose)
+test_message(char *msg, int verbose, int clone)
 {
   sip_t *sip;
   
@@ -131,11 +137,45 @@ test_message(char *msg, int verbose)
 	  {
 	  fprintf(stdout,"ERROR: failed while printing message!\n");
 	  msg_free(sip);
+	  sfree(sip);
 	  return -1;
 	  }
 	else {
 	  if (verbose)
 	    fprintf(stdout,"%s",result);
+	  if (clone)
+	    {
+	      /* create a clone of message */
+	      sip_t *copy;
+	      i = msg_clone(sip, &copy);
+	      if (i!=0)
+		{
+		  fprintf(stdout,"ERROR: failed while creating copy of message!\n");
+		}
+	      else
+		{
+		  char *tmp;
+		  msg_force_update(copy);
+		  i = msg_2char(copy, &tmp);
+		  if (i!=0)
+		    {
+		      fprintf(stdout,"ERROR: failed while printing message!\n");
+		    }
+		  else
+		    {
+		      if (0==strcmp(result, tmp))
+			printf("The msg_clone method works perfectly\n");
+		      else
+			printf("ERROR: The msg_clone method DOES NOT works\n");
+		      if (verbose)
+			printf("Here is the copy: \n%s\n", tmp);
+		      
+		      sfree(tmp);
+		    }
+		  msg_free(copy);
+		  sfree(copy);
+		}
+	    }
 	  sfree(result);
 	}
 	msg_free(sip);

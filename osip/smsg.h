@@ -35,6 +35,7 @@ int      msg_init(sip_t **sip);
 void     msg_free(sip_t *sip);
 int      msg_parse(sip_t *dest , char *message);
 int      msg_2char(sip_t *sip, char **dest);
+int      msg_clone(sip_t *sip, sip_t **dest);
 #ifdef USE_TMP_BUFFER
 /* in the case where USE_TMP_BUFFER is defined, the parser
 has the ability to only call msg_2char() once and keep a
@@ -232,7 +233,7 @@ void    accept_encoding_setelement(accept_encoding_t *ae, char *element);
 #define allow_parse(C, S)  content_length_parse(C, S)
 #define allow_2char(C, D)  content_length_2char(C, D)
 #define allow_free(C)      content_length_free(C)
-#define allow_clone(C)     content_length_clone(C)
+#define allow_clone(C, D)  content_length_clone(C, D)
 
 int     authorization_init(authorization_t **dest);
 int     authorization_parse(authorization_t *wwwa, char *hvalue);
@@ -312,7 +313,7 @@ int     content_disposition_parse(content_disposition_t *cd, char *hvalue);
 #define content_encoding_parse(C, S)  content_length_parse(C, S)
 #define content_encoding_2char(C, D)  content_length_2char(C, D)
 #define content_encoding_free(C)      content_length_free(C)
-#define content_encoding_clone(C)     content_length_clone(C)
+#define content_encoding_clone(C, D)  content_length_clone(C, D)
 
 int     content_length_init (content_length_t **cl);
 void    content_length_free (content_length_t *content_length);
@@ -371,7 +372,7 @@ int     from_compare(from_t *from1, from_t *from2);
 #define mime_version_parse(C, S)  content_length_parse(C, S)
 #define mime_version_2char(C, D)  content_length_2char(C, D)
 #define mime_version_free(C)      content_length_free(C)
-#define mime_version_clone(C)     content_length_clone(C)
+#define mime_version_clone(C, D)  content_length_clone(C, D)
 
 #define proxy_authenticate_init(W)     www_authenticate_init(W) 
 #define proxy_authenticate_parse(W, H) www_authenticate_parse(W, H)
