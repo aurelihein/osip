@@ -64,11 +64,11 @@ ict_load_fsm()
   transition->method = (void(*)(void *,void *))&ict_snd_invite;
   list_add(ict_fsm->transitions,transition,-1);
   /*
-  transition         = (transition_t *) smalloc(sizeof(transition_t));
-  transition->state  = ICT_CALLING;
-  transition->type   = SND_REQINVITE;
-  transition->method = (void(*)(void *,void *))&ict_snd_invite;
-  list_add(ict_fsm->transitions,transition,-1);
+    transition         = (transition_t *) smalloc(sizeof(transition_t));
+    transition->state  = ICT_CALLING;
+    transition->type   = SND_REQINVITE;
+    transition->method = (void(*)(void *,void *))&ict_snd_invite;
+    list_add(ict_fsm->transitions,transition,-1);
   */
   transition         = (transition_t *) smalloc(sizeof(transition_t));
   transition->state  = ICT_CALLING;
@@ -319,22 +319,26 @@ ict_rcv_3456xx(transaction_t *ict, sipevent_t *evt)
       sip_t *ack = ict_create_ack(ict, evt->sip);
       ict->ack = ack;
 
-      msg_getroute(ack, 0, &route);
-      if (route!=NULL)
+      /* reset ict->ict_context->destination only if
+	 it is not yet set. */
+      if (ict->ict_context->destination==NULL)
 	{
-	  int port = 5060;
-	  if (route->url->port!=NULL)
-	    port = satoi(route->url->port);
-	  ict_set_destination(ict->ict_context, sgetcopy(route->url->host), port);
+	  msg_getroute(ack, 0, &route);
+	  if (route!=NULL)
+	    {
+	      int port = 5060;
+	      if (route->url->port!=NULL)
+		port = satoi(route->url->port);
+	      ict_set_destination(ict->ict_context, sgetcopy(route->url->host), port);
+	    }
+	  else
+	    {
+	      int port = 5060;
+	      if (ack->strtline->rquri->port!=NULL)
+		port = satoi(ack->strtline->rquri->port);
+	      ict_set_destination(ict->ict_context, sgetcopy(ack->strtline->rquri->host), port);
+	    }
 	}
-      else
-	{
-	  int port = 5060;
-	  if (ack->strtline->rquri->port!=NULL)
-	    port = satoi(ack->strtline->rquri->port);
-	  ict_set_destination(ict->ict_context, sgetcopy(ack->strtline->rquri->host), port);
-	}
-      
       i = osip->cb_send_message(ict, ack, ict->ict_context->destination,
 				ict->ict_context->port, ict->out_socket);
       if (i!=0)
