@@ -15,7 +15,8 @@ osip_call_id.c              osip_message_parse.c                              \
 osip_contact.c              osip_message_to_str.c      osip_port.c            \
 osip_content_disposition.c  osip_mime_version.c        sdp_message.c          \
 osip_content_length.c       osip_parser_cfg.c          sdp_accessor.c         \
-osip_content_type.c         osip_proxy_authenticate.c  osip_rfc3264.c
+osip_content_type.c         osip_proxy_authenticate.c  osip_rfc3264.c         \
+osip_authentication_info.c  osip_proxy_authentication_info.c
 
 libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
  $(PARSER_LIB) $(EXTRA_LIB)
@@ -23,5 +24,4 @@ libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
 
 INCLUDES = -I$(top_srcdir)/include
 AM_CFLAGS = $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
-
 

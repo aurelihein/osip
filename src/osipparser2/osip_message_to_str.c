@@ -783,6 +783,33 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
     }
   message = next;
 
+  i =
+    strcat_headers_one_per_line (dest, &malloc_size, &message,
+				 sip->authentication_infos,
+				 "Authentication-Info: ", 21,
+				 ((int (*)(void *, char **))
+				  &osip_authentication_info_to_str), &next);
+  if (i != 0)
+    {
+      osip_free (*dest);
+      *dest = NULL;
+      return -1;
+    }
+  message = next;
+
+  i =
+    strcat_headers_one_per_line (dest, &malloc_size, &message,
+				 sip->proxy_authentication_infos,
+				 "Proxy-Authentication-Info: ", 27,
+				 ((int (*)(void *, char **))
+				  &osip_authentication_info_to_str), &next);
+  if (i != 0)
+    {
+      osip_free (*dest);
+      *dest = NULL;
+      return -1;
+    }
+  message = next;
 
 
   /* we have to create the body before adding the contentlength */

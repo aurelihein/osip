@@ -65,6 +65,7 @@
 #include <pthread.h>
 #endif
 
+
 FILE *logfile = NULL;
 int tracing_table[END_TRACE_LEVEL];
 static int use_syslog = 0;
@@ -213,6 +214,7 @@ osip_usleep (int useconds)
 #endif
 }
 
+#undef osip_strdup
 
 char *
 osip_strdup (const char *ch)
@@ -782,6 +784,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 
 #ifdef WIN32
 
+#undef osip_malloc
 void *osip_malloc(size_t size)
 {
   void *ptr = malloc(size);
@@ -790,11 +793,13 @@ void *osip_malloc(size_t size)
   return ptr;
 }
 
+#undef osip_realloc
 void *osip_realloc(void *ptr, size_t size)
 {
   return realloc(ptr, size);
 }
 
+#undef osip_free
 void osip_free(void *ptr)
 {
   if (ptr==NULL) return;
