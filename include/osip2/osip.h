@@ -239,7 +239,7 @@
  * osip_transaction_add_event(transaction, sipevent);
  * // at this point, the event will be handled by oSIP. (The memory resource will
  * // also be handled by oSIP). Note that no action is taken there. 
- * </pre></code>
+ * </code></pre>
  * <P>Adding new events in the fsm is made with similar code.
  * <P>
  * <H2>Step 3: Consuming events.</H2>
@@ -262,7 +262,7 @@
  *       if (osip_transaction_execute(transaction,se)<1)  // deletion asked
  * 	  osip_thread_exit();
  *   }
- * </pre></code>
+ * </code></pre>
  * <P>
  * <H2>Step 4: How the stack will announce the events</H2>
  * Looking at the case of a usual outgoing REGISTER transaction, this behaviour
@@ -654,6 +654,7 @@ extern "C"
 
 /**
  * Enumeration for callback type used when a transport error is detected.
+ * @enum osip_transport_error_callback_type_t
  */
   typedef enum osip_transport_error_callback_type
   {
@@ -665,9 +666,21 @@ extern "C"
     OSIP_TRANSPORT_ERROR_CALLBACK_COUNT   /**< END OF ENUM */
   } osip_transport_error_callback_type_t;
 
+/**
+ * Callback definition for message announcements.
+ * @var osip_message_cb_t
+ */
   typedef void (*osip_message_cb_t) (int type, osip_transaction_t *,
 				     osip_message_t *);
+/**
+ * Callback definition for end of transaction announcements.
+ * @var osip_kill_transaction_cb_t
+ */
   typedef void (*osip_kill_transaction_cb_t) (int type, osip_transaction_t *);
+/**
+ * Callback definition for transport error announcements.
+ * @var osip_transport_error_cb_t
+ */
   typedef void (*osip_transport_error_cb_t) (int type, osip_transaction_t *,
 					     int error);
 
