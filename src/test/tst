@@ -15,7 +15,7 @@ i=0
 while [ $i -lt 89 ]
 do
 set +x
-   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip$i 0 $1
+   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test $1/sip$i 0 $2
    ./torture_test $1/sip$i 0 $2
 
    code=$?
