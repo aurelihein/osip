@@ -530,9 +530,10 @@ msg_headers_parse (sip_t * sip, char *start_of_header, char **body)
       start_of_header = end_of_header;
     }
 
-  OSIP_TRACE (osip_trace
+/* Unreachable code
+ OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, OSIP_BUG, NULL,
-	       "This code cannot be reached\n"));
+	       "This code cannot be reached\n")); */
   return -1;
 }
 
@@ -664,7 +665,8 @@ msg_body_parse (sip_t * sip, char *start_of_buf, char **next_body)
       /* continue on the next body */
       start_of_body = end_of_body;
     }
-  sfree (sep_boundary);
+  /* Unreachable code */
+  /* sfree (sep_boundary); */
   return -1;
 }
 
