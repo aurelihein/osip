@@ -665,7 +665,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	return -1;	/* message does not end with CRLFCRLF, CRCR or LFLF */
       
       /* update length (without CRLFCRLF */
-      length = length-(start_of_buf-start_of_body);
+      length = length-(start_of_body-start_of_buf); // fixed 24 08 2004
       if (length<=2)
 	return -1;
       
