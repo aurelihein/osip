@@ -21,6 +21,10 @@ VERSION=$OSIP_VERSION
 PACKAGE=libosip2
 
 AC_MSG_RESULT([Configuring ${PACKAGE} ${VERSION}])
+OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
+AC_MSG_RESULT([Building Package on ${OS}])
+
+
 
 dnl *********************************************************************
 dnl Initialize automake stuff
@@ -45,12 +49,12 @@ AC_PROG_LIBTOOL
 dnl declare --enable-* args and collect ac_help strings
 
 AC_ARG_ENABLE(debug,
-[  --disable-debug         turn off debugging.],
-disable_debug=$enableval,disable_debug="yes")
+[  --enable-debug          turn on debugging.],
+enable_debug=$enableval,enable_debug="yes")
 
 AC_ARG_ENABLE(trace,
-[  --disable-trace         turn off trace.],
-disable_trace=$enableval,disable_trace="yes")
+[  --enable-trace          turn on trace.],
+enable_trace=$enableval,enable_trace="yes")
 
 AC_ARG_ENABLE(mpatrol,
 [  --enable-mpatrol        turn on memory leak detection with patrol.],
@@ -58,17 +62,17 @@ enable_mpatrol=$enableval,enable_mpatrol="no")
 
 dnl build with multithreaded support (need semaphore).
 AC_ARG_ENABLE(mt,
-[  --disable-mt            compile oSIP without multi-thread support.],
+[  --enable-mt             compile oSIP without multi-thread support.],
 enable_mt=$enableval,enable_mt="yes")
 
 dnl md5 support.
 AC_ARG_ENABLE(md5,
-[  --disable-md5           compile oSIP without MD5 support.],
+[  --enable-md5            compile oSIP with MD5 support.],
 enable_md5=$enableval,enable_md5="yes")
 
 dnl buffer save mode support.
 AC_ARG_ENABLE(buffermode,
-[  --disable-buffermode    compile oSIP without buffer save mode support.],
+[  --enable-buffermode     compile oSIP without buffer save mode support.],
 enable_buffermode=$enableval,enable_buffermode="yes")
 
 dnl support for linux-thread or posix thread (pthread.h)
@@ -125,14 +129,23 @@ else
   AC_CHECK_HEADERS(sys/sem.h)
 fi
 
-if test "$host_os" = "hpux11.00" -o "$host_os" = "hpux11.11" ;then              
-        echo "We are on HPUX"                                                   
-elif test "$host_os" = "osf4.0g" ;then
-        echo "We are on OSF"
-else
-        echo "We are on $host_os"
-        SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -Wall -pedantic"
-fi                                                                              
+case $OS in
+  linux)
+     SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -pedantic"
+     ;;
+  hpux)
+     ;;
+  aix)
+     ;;
+  osf)
+     ;;
+  sunos)
+     ;;
+  darwin*)
+     ;;
+  *)
+     ;;
+esac
 
 if test "x$enable_md5" = "xno"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DNO_MD5_SUPPORT"
@@ -142,11 +155,11 @@ if test "x$enable_buffermode" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DUSE_TMP_BUFFER"
 fi
 
-if test "x$disable_debug" = "xyes"; then
+if test "x$enable_debug" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DENABLE_DEBUG -g"
 fi
 
-if test "x$disable_trace" = "xyes"; then
+if test "x$enable_trace" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DENABLE_TRACE"
 fi
 
@@ -159,6 +172,105 @@ dnl Checks for libraries. (those one are needed for sun)
 AC_CHECK_LIB(posix4,sem_open,[FSM_LIB="$FSM_LIB -lposix4 -mt"])
 AC_CHECK_LIB(nsl,nis_add,[FSM_LIB="$FSM_LIB -lnsl"])
 AC_CHECK_LIB(socket,sendto,[FSM_LIB="$FSM_LIB -lsocket"])
+
+AC_CACHE_CHECK([whether -Wall works], Wall_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wall"
+  AC_TRY_COMPILE(, , Wall_flag=yes, Wall_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wall_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wall"
+fi
+
+AC_CACHE_CHECK([whether -Wcast-align works], Wcast_align_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wcast-align"
+  AC_TRY_COMPILE(, , Wcast_align_flag=yes, Wcast_align_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wcast_align_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wcast-align"
+fi
+
+AC_CACHE_CHECK([whether -Wchar-subscripts works], Wchar_subscripts_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wchar-subscripts"
+  AC_TRY_COMPILE(, , Wchar_subscripts_flag=yes, Wchar_subscripts_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wchar_subscripts_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wchar-subscripts"
+fi
+
+AC_CACHE_CHECK([whether -Wformat works], Wformat_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wformat"
+  AC_TRY_COMPILE(, , Wformat_flag=yes, Wformat_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wformat_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wformat"
+fi
+
+AC_CACHE_CHECK([whether -Winline works], Winline_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Winline"
+  AC_TRY_COMPILE(, , Winline_flag=yes, Winline_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Winline_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Winline"
+fi
+
+AC_CACHE_CHECK([whether -Wmissing-declarations works], Wmissing_declarations_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wmissing-declarations"
+  AC_TRY_COMPILE(, , Wmissing_declarations_flag=yes, Wmissing_declarations_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wmissing_declarations_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wmissing-declarations"
+fi
+
+AC_CACHE_CHECK([whether -Wmissing-prototypes works], Wmissing_prototypes_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wmissing-prototypes"
+  AC_TRY_COMPILE(, , Wmissing_prototypes_flag=yes, Wmissing_prototypes_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wmissing_prototypes_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wmissing-prototypes"
+fi
+
+AC_CACHE_CHECK([whether -Wnested-externs works], Wnested_externs_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wnested-externs"
+  AC_TRY_COMPILE(, , Wnested_externs_flag=yes, Wnested_externs_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wnested_externs_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wnested-externs"
+fi
+
+AC_CACHE_CHECK([whether -Wpointer-arith works], Wpointer_arith_flag, [
+  saved_CPPFLAGS=$CPPFLAGS
+  CPPFLAGS="-Wpointer-arith"
+  AC_TRY_COMPILE(, , Wpointer_arith_flag=yes, Wpointer_arith_flag=no)
+  CPPFLAGS=$saved_CPPFLAGS
+])
+
+if test "x$Wpointer_arith_flag" = xyes; then
+  CPPFLAGS="$CPPFLAGS -Wpointer-arith"
+fi
 
 SIP_CFLAGS="$SIP_CFLAGS $CFLAGS"
 
