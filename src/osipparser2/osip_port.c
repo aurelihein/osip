@@ -106,16 +106,15 @@ osip_fallback_random_number ()
       ticks = lCount.LowPart + lCount.HighPart;
 #elif defined(_WIN32_WCE)
       ticks = GetTickCount();
-#elif defined(__VXWORKS_OS__)
-      extern ULONG tickGet(void);
-      ticks = tickGet();
 #else
       struct timeval tv;
       int fd;
       gettimeofday (&tv, NULL);
       ticks = tv.tv_sec + tv.tv_usec;
       fd=open("/dev/random",O_RDONLY);
-      if (fd != -1)
+      if (fd <= 0)
+	fd=open("/dev/urandom",O_RDONLY);
+      if (fd > 0)
 	{
           unsigned int r;
           if (read(fd, &r, sizeof(r))==sizeof(r))
