@@ -1,3 +1,9 @@
+libosip2 (2.1.0)
+	* remove useless prototypes.
+	* fix memory access in parser.
+	* API slightly broken to enable support for binary data.
+	* improvements of the sip message test suite.
+
 libosip2 (2.0.9)
 	* fix detection of CRLFCRLF in osip_util_replace_all_lws.
 	* fix expires header with comma.
