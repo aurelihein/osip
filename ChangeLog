@@ -1,5 +1,7 @@
 libosip (0.8.9)
 	* smsg.h: fix max_forward to max_forwards.
+	* osip/osip.h: you can now attach an application pointer to osip_t
+	* osip/dialog.h: fix prototype for hp-ux compiler.
 	
 libosip (0.8.8)
 	* windows: The windows contributions was wrong. Thread were killed
