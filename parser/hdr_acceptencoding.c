@@ -154,7 +154,7 @@ accept_encoding_2char (accept_encoding_t * accept_encoding, char **dest)
         pos++;
       }
   }
-  (*dest) = buf;
+  *dest = buf;
   return 0;
 }
 

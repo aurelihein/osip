@@ -523,12 +523,20 @@ generic_param_parseall (list_t * gen_params, char *params)
           pvalue = NULL;
       } else
         {
-          if (comma - equal < 2)
-            return -1;
-          pvalue = (char *) smalloc (comma - equal);
-          if (pvalue == NULL)
-            return -1;
-          sstrncpy (pvalue, equal + 1, comma - equal - 1);
+	  char *tmp;
+	  /* check for NULL param with an '=' character */
+	  tmp = equal+1;
+	  for (; *tmp=='\t'||*tmp==' '; tmp++)
+	    { }
+	  pvalue=NULL;
+	  if (*tmp!=','&&*tmp!='\0')
+	    {
+	      if (comma - equal < 2)
+		return -1;
+	      pvalue = (char *) smalloc (comma - equal);
+	      if (pvalue == NULL) return -1;
+	      sstrncpy (pvalue, equal + 1, comma - equal - 1);
+	    }
         }
 
       if (equal - params < 2)
@@ -560,12 +568,20 @@ generic_param_parseall (list_t * gen_params, char *params)
       pvalue = NULL;
   } else
     {
-      if (comma - equal < 2)
-        return -1;
-      pvalue = (char *) smalloc (comma - equal);
-      if (pvalue == NULL)
-        return -1;
-      sstrncpy (pvalue, equal + 1, comma - equal - 1);
+      char *tmp;
+      /* check for NULL param with an '=' character */
+      tmp = equal+1;
+      for (; *tmp=='\t'||*tmp==' '; tmp++)
+	{ }
+      pvalue=NULL;
+      if (*tmp!=','&&*tmp!='\0')
+	{
+	  if (comma - equal < 2)
+	    return -1;
+	  pvalue = (char *) smalloc (comma - equal);
+	  if (pvalue == NULL) return -1;
+	  sstrncpy (pvalue, equal + 1, comma - equal - 1);
+	}
     }
 
   if (equal - params < 2)

@@ -159,6 +159,7 @@ call_info_2char (call_info_t * call_info, char **dest)
         pos++;
       }
   }
+  *dest = buf;
   return 0;
 }
 
