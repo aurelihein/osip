@@ -1,5 +1,6 @@
 libosip (0.9.6)
 	* fix the state when a retransmission of INVITE is received.
+	* Minor changes in #define definitions just for clarity.
 	
 libosip (0.9.5)
 	* fix a memory leak for retransmissions in msg_2char. 

@@ -2536,253 +2536,253 @@ extern "C"
 
 /**
  * Allocate and Add a new Date header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setdate(header,value)            msg_setheader((sip_t *)header,(char *)"date",value)
+#define msg_setdate(sipmsg,value)            msg_setheader((sip_t *)sipmsg,(char *)"date",value)
 /**
  * Find a Date header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getdate(header,pos,dest)          msg_header_getbyname(( sip_t *)header,"date",pos,(header_t **)dest)
+#define msg_getdate(sipmsg,pos,dest)          msg_header_getbyname(( sip_t *)sipmsg,"date",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Encryption header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setencryption(header,value)      msg_setheader((sip_t *)header,(char *)"encryption",value)
+#define msg_setencryption(sipmsg,value)      msg_setheader((sip_t *)sipmsg,(char *)"encryption",value)
 /**
  * Find an Encryption header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getencryption(header,pos,dest)    msg_header_getbyname(( sip_t *)header,"encryption",pos,(header_t **)dest)
+#define msg_getencryption(sipmsg,pos,dest)    msg_header_getbyname(( sip_t *)sipmsg,"encryption",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Organization header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setorganization(header,value)    msg_setheader((sip_t *)header,(char *)"organization",value)
+#define msg_setorganization(sipmsg,value)    msg_setheader((sip_t *)sipmsg,(char *)"organization",value)
 /**
  * Find an Organization header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getorganization(header,pos,dest)  msg_header_getbyname(( sip_t *)header,"organization",pos,(header_t **)dest)
+#define msg_getorganization(sipmsg,pos,dest)  msg_header_getbyname(( sip_t *)sipmsg,"organization",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Require header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setrequire(header,value)         msg_setheader((sip_t *)header,(char *)"require",value)
+#define msg_setrequire(sipmsg,value)         msg_setheader((sip_t *)sipmsg,(char *)"require",value)
 /**
  * Find a Require header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getrequire(header,pos,dest)       msg_header_getbyname(( sip_t *)header,"require",pos,(header_t **)dest)
+#define msg_getrequire(sipmsg,pos,dest)       msg_header_getbyname(( sip_t *)sipmsg,"require",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Supported header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setsupported(header,value)       msg_setheader((sip_t *)header,(char *)"supported",value)
+#define msg_setsupported(sipmsg,value)       msg_setheader((sip_t *)sipmsg,(char *)"supported",value)
 /**
  * Find a Supported header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getsupported(header,pos,dest)     msg_header_getbyname(( sip_t *)header,"supported",pos,(header_t **)dest)
+#define msg_getsupported(sipmsg,pos,dest)     msg_header_getbyname(( sip_t *)sipmsg,"supported",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Timestamp header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_settimestamp(header,value)       msg_setheader((sip_t *)header,(char *)"timestamp",value)
+#define msg_settimestamp(sipmsg,value)       msg_setheader((sip_t *)sipmsg,(char *)"timestamp",value)
 /**
  * Find a Timestamp header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_gettimestamp(header,pos,dest)     msg_header_getbyname(( sip_t *)header,"timestamp",pos,(header_t **)dest)
+#define msg_gettimestamp(sipmsg,pos,dest)     msg_header_getbyname(( sip_t *)sipmsg,"timestamp",pos,(header_t **)dest)
 /**
  * Allocate and Add a new User-Agent header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setuser_agent(header,value)      msg_setheader((sip_t *)header,(char *)"user-agent",value)
+#define msg_setuser_agent(sipmsg,value)      msg_setheader((sip_t *)sipmsg,(char *)"user-agent",value)
 /**
  * Find a User-Agent header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getuser_agent(header,pos,dest)    msg_header_getbyname(( sip_t *)header,"user-agent",pos,(header_t **)dest)
+#define msg_getuser_agent(sipmsg,pos,dest)    msg_header_getbyname(( sip_t *)sipmsg,"user-agent",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Content-Language header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setcontent_language(header,value) msg_setheader((sip_t *)header,(char *)"content-language",value)
+#define msg_setcontent_language(sipmsg,value) msg_setheader((sip_t *)sipmsg,(char *)"content-language",value)
 /**
  * Find a Content-Language header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getcontent_language(header,pos,dest) msg_header_getbyname(( sip_t *)header,"content-language",pos,(header_t **)dest)
+#define msg_getcontent_language(sipmsg,pos,dest) msg_header_getbyname(( sip_t *)sipmsg,"content-language",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Expires header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setexpires(header,value)         msg_setheader((sip_t *)header,(char *)"expires",value)
+#define msg_setexpires(sipmsg,value)         msg_setheader((sip_t *)sipmsg,(char *)"expires",value)
 /**
  * Find a Expires header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getexpires(header,pos,dest)       msg_header_getbyname(( sip_t *)header,"expires",pos,(header_t **)dest)
+#define msg_getexpires(sipmsg,pos,dest)       msg_header_getbyname(( sip_t *)sipmsg,"expires",pos,(header_t **)dest)
 /**
  * Allocate and Add a new In-Reply-To header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setin_reply_to(header,value)     msg_setheader((sip_t *)header,(char *)"in-reply-to",value)
+#define msg_setin_reply_to(sipmsg,value)     msg_setheader((sip_t *)sipmsg,(char *)"in-reply-to",value)
 /**
  * Find a In-Reply-To header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getin_reply_to(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"in-reply-to",pos,(header_t **)dest)
+#define msg_getin_reply_to(sipmsg,pos,dest)   msg_header_getbyname(( sip_t *)sipmsg,"in-reply-to",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Max-Forward header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setmax_forward(header,value)     msg_setheader((sip_t *)header,(char *)"max-forwards",value)
-#define msg_setmax_forwards(header,value)     msg_setheader((sip_t *)header,(char *)"max-forwards",value)
+#define msg_setmax_forward(sipmsg,value)     msg_setheader((sip_t *)sipmsg,(char *)"max-forwards",value)
+#define msg_setmax_forwards(sipmsg,value)     msg_setheader((sip_t *)sipmsg,(char *)"max-forwards",value)
 /**
  * Find a Max-Forward header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getmax_forward(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"max-forwards",pos,(header_t **)dest)
-#define msg_getmax_forwards(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"max-forwards",pos,(header_t **)dest)
+#define msg_getmax_forward(sipmsg,pos,dest)   msg_header_getbyname(( sip_t *)sipmsg,"max-forwards",pos,(header_t **)dest)
+#define msg_getmax_forwards(sipmsg,pos,dest)   msg_header_getbyname(( sip_t *)sipmsg,"max-forwards",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Priority header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setpriority(header,value)        msg_setheader((sip_t *)header,(char *)"priority",value)
+#define msg_setpriority(sipmsg,value)        msg_setheader((sip_t *)sipmsg,(char *)"priority",value)
 /**
  * Find a Priority header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getpriority(header,pos,dest)      msg_header_getbyname(( sip_t *)header,"priority",pos,(header_t **)dest)
+#define msg_getpriority(sipmsg,pos,dest)      msg_header_getbyname(( sip_t *)sipmsg,"priority",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Proxy-Require header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setproxy_require(header,value)   msg_setheader((sip_t *)header,(char *)"proxy-require",value)
+#define msg_setproxy_require(sipmsg,value)   msg_setheader((sip_t *)sipmsg,(char *)"proxy-require",value)
 /**
  * Find a Proxy-Require header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getproxy_require(header,pos,dest) msg_header_getbyname(( sip_t *)header,"proxy-require",pos,(header_t **)dest)
+#define msg_getproxy_require(sipmsg,pos,dest) msg_header_getbyname(( sip_t *)sipmsg,"proxy-require",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Response-Key header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setresponse_key(header,value)    msg_setheader((sip_t *)header,(char *)"response-key",value)
+#define msg_setresponse_key(sipmsg,value)    msg_setheader((sip_t *)sipmsg,(char *)"response-key",value)
 /**
  * Find a Response-Key header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getresponse_key(header,pos,dest)  msg_header_getbyname(( sip_t *)header,"response-key",pos,(header_t **)dest)
+#define msg_getresponse_key(sipmsg,pos,dest)  msg_header_getbyname(( sip_t *)sipmsg,"response-key",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Subject header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setsubject(header,value)         msg_setheader((sip_t *)header,(char *)"subject",value)
+#define msg_setsubject(sipmsg,value)         msg_setheader((sip_t *)sipmsg,(char *)"subject",value)
 /**
  * Find a Subject header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getsubject(header,pos,dest)       msg_header_getbyname(( sip_t *)header,"subject",pos,(header_t **)dest)
+#define msg_getsubject(sipmsg,pos,dest)       msg_header_getbyname(( sip_t *)sipmsg,"subject",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Retry-After header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setretry_after(header,value)     msg_setheader((sip_t *)header,(char *)"retry-after",value)
+#define msg_setretry_after(sipmsg,value)     msg_setheader((sip_t *)sipmsg,(char *)"retry-after",value)
 /**
  * Find a Retry-After header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getretry_after(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"retry-after",pos,(header_t **)dest)
+#define msg_getretry_after(sipmsg,pos,dest)   msg_header_getbyname(( sip_t *)sipmsg,"retry-after",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Server header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setserver(header,value)          msg_setheader((sip_t *)header,(char *)"server",value)
+#define msg_setserver(sipmsg,value)          msg_setheader((sip_t *)sipmsg,(char *)"server",value)
 /**
  * Find a Server header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getserver(header,pos,dest)        msg_header_getbyname(( sip_t *)header,"server",pos,(header_t **)dest)
+#define msg_getserver(sipmsg,pos,dest)        msg_header_getbyname(( sip_t *)sipmsg,"server",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Unsupported header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setunsupported(header,value)     msg_setheader((sip_t *)header,(char *)"unsupported",value)
+#define msg_setunsupported(sipmsg,value)     msg_setheader((sip_t *)sipmsg,(char *)"unsupported",value)
 /**
  * Find a Unsupported header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getunsupported(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"unsupported",pos,(header_t **)dest)
+#define msg_getunsupported(sipmsg,pos,dest)   msg_header_getbyname(( sip_t *)sipmsg,"unsupported",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Warning header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setwarning(header,value)         msg_setheader((sip_t *)header,(char *)"warning",value)
+#define msg_setwarning(sipmsg,value)         msg_setheader((sip_t *)sipmsg,(char *)"warning",value)
 /**
  * Find a Warning header.
- * @param header The element to work on.
+ * @param sipmsg The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getwarning(header,pos,dest)       msg_header_getbyname(( sip_t *)header,"warning",pos,(header_t **)dest)
+#define msg_getwarning(sipmsg,pos,dest)       msg_header_getbyname(( sip_t *)sipmsg,"warning",pos,(header_t **)dest)
 
 /** @} */
 
