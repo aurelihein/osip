@@ -99,7 +99,6 @@ sthread_t * sthread_create (int stacksize, sthread_t * thread,
 					 &(thread->id));
   if (thread->h == 0)
     {
-      fprintf (stdout, "Error while creating a new thread\n");
       return NULL;
     }
   return thread;
@@ -114,10 +113,12 @@ sthread_join (sthread_t * thread)
     return -1;
   i = WaitForSingleObject (thread->h, INFINITE);
   if (i == WAIT_OBJECT_0)
-    fprintf (stdout, "thread joined!\n");
+    {
+      /* fprintf (stdout, "thread joined!\n"); */
+    }
   else
     {
-      fprintf (stdout, "ERROR!! thread joined ERROR!!\n");
+      /* fprintf (stdout, "ERROR!! thread joined ERROR!!\n"); */
       return -1;
     }
   CloseHandle (thread->h);

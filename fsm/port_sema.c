@@ -50,17 +50,9 @@ smutex_destroy (smutex_t * mut)
 int
 smutex_lock (smutex_t * mut)
 {
-  int i;
-
   if (mut == NULL)
     return -1;
-  i = pthread_mutex_lock (mut);
-  if (i != 0)
-    {
-      fprintf (stdout, "ERROR while locking !!%i\n", i);
-      return i;
-    }
-  return 0;
+  return pthread_mutex_lock (mut);
 }
 
 int
@@ -312,8 +304,6 @@ smutex_lock (smutex_t * mut)
     return -1;
   if ((err = WaitForSingleObject (mut->h, INFINITE)) == WAIT_OBJECT_0)
     return (0);
-  if (err == WAIT_TIMEOUT)
-    return (EBUSY);
   return (EBUSY);
 }
 
