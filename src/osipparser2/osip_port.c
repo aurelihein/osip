@@ -258,7 +258,7 @@ osip_strcasecmp (const char *s1, const char *s2)
 }
 
 int
-osip_strncasecmp (const char *s1, const char *s2, unsigned int len)
+osip_strncasecmp (const char *s1, const char *s2, size_t len)
 {
 #if (!defined WIN32 && !defined _WIN32_WCE)
   return strncasecmp (s1, s2, len);

@@ -159,7 +159,7 @@ typedef sem_t osip_sem_t;
 #endif
 
 
-#if defined(HAVE_SEMAPHORE_H)
+#if defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)
 #include <semaphore.h>
 #ifdef __sun__
 #undef getdate
@@ -170,9 +170,8 @@ typedef sem_t osip_sem_t;
  * @defvar osip_sem_t
  */
 typedef sem_t osip_sem_t;
-#endif
 
-#if !defined(HAVE_SEMAPHORE_H) && defined(HAVE_SYS_SEM_H)
+#elif defined(HAVE_SYS_SEM_H)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>

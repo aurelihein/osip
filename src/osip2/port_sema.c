@@ -73,7 +73,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
 #error NO thread implementation found
 #endif
 
-#if defined (HAVE_SEMAPHORE_H)
+#if defined (HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)
 
 /* Counting Semaphore is initialized to value */
 struct osip_sem *
@@ -81,7 +81,7 @@ osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
-  if (sem_init (sem, 0, value) == 0)
+  if (sem_init (sem, 0, value) != SEM_FAILED)
     return (struct osip_sem *) sem;
   osip_free (sem);
   return NULL;
@@ -124,9 +124,8 @@ osip_sem_trywait (struct osip_sem *_sem)
     return -1;
   return sem_trywait (sem);
 }
-#endif
 
-#if defined (HAVE_SYS_SEM_H) && !defined (HAVE_SEMAPHORE_H)
+#elif defined (HAVE_SYS_SEM_H)
 /* support for semctl, semop, semget */
 
 #define SEM_PERM 0600
@@ -134,6 +133,7 @@ osip_sem_trywait (struct osip_sem *_sem)
 struct osip_sem *
 osip_sem_init (unsigned int value)
 {
+  union semun val;
   int i;
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
@@ -144,7 +144,8 @@ osip_sem_init (unsigned int value)
       osip_free (sem);
       return NULL;
     }
-  i = semctl (sem->semid, 0, SETVAL, value);
+  val.val = (int) value;
+  i = semctl (sem->semid, 0, SETVAL, val);
   if (i != 0)
     {
       perror ("semctl error");
@@ -157,10 +158,12 @@ osip_sem_init (unsigned int value)
 int
 osip_sem_destroy (struct osip_sem *_sem)
 {
+  union semun val;
   osip_sem_t *sem = (osip_sem_t *) _sem;
   if (sem == NULL)
     return 0;
-  semctl (sem->semid, 0, IPC_RMID);
+  val.val = 0;
+  semctl (sem->semid, 0, IPC_RMID, val);
   osip_free (sem);
   return 0;
 }
