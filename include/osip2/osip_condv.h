@@ -17,8 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __OSIP_PORT_H__
-#define __OSIP_PORT_H__
+#ifndef __OSIP_CONDV_H__
+#define __OSIP_CONDV_H__
 
 #include <stdio.h>
 
@@ -89,7 +89,7 @@ extern "C"
  * Destroy a condition variable
  * @param cond The condition variable to destroy.
  */
-  struct osip_cond *osip_cond_destroy ();
+  int osip_cond_destroy (struct osip_cond * _cond);
 /**
  * Signal the condition variable.
  * @param cond The condition variable to signal.

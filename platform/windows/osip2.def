@@ -124,3 +124,9 @@ EXPORTS
      osip_transaction_set_out_socket     @120
      osip_transaction_set_your_instance     @121
      __osip_negotiation_sdp_build_offer     @122
+	 osip_dialog_init_as_uac_with_remote_request @123
+	 osip_cond_destroy    @124
+	 osip_cond_init    @125
+	 osip_cond_signal    @126
+	 osip_cond_timedwait    @127
+	 osip_clock_gettime    @128
