@@ -89,7 +89,7 @@ extern "C"
  * Destroy a condition variable
  * @param cond The condition variable to destroy.
  */
-  struct osip_cond *osip_cond_init ();
+  struct osip_cond *osip_cond_destroy ();
 /**
  * Signal the condition variable.
  * @param cond The condition variable to signal.
