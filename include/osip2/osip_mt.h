@@ -98,7 +98,7 @@ extern "C"
 
 /**
  * Structure for referencing a semaphore element.
- * @defvar struct osip_sem_t
+ * @defvar struct osip_sem
  */
   struct osip_sem;
 
@@ -150,7 +150,7 @@ extern "C"
 
 /**
  * Structure for referencing a semaphore element.
- * @defvar struct osip_mutex_t
+ * @defvar struct osip_mutex
  */
   struct osip_mutex;
 

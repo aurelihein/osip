@@ -211,14 +211,14 @@ osip_sem_trywait (struct osip_sem * _sem)
 
 /* use VxWorks implementation */
 #ifdef __VXWORKS_OS__
-struct osip_mutex_t *
+struct osip_mutex *
 osip_mutex_init ()
 {
   return (struct sosip_mutex_t *)semMCreate (0);
 }
 
 void
-osip_mutex_destroy (struct osip_mutex_t * _mut)
+osip_mutex_destroy (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
@@ -227,7 +227,7 @@ osip_mutex_destroy (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_lock (struct osip_mutex_t * _mut)
+osip_mutex_lock (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) mut;
   if (mut == NULL)
@@ -236,7 +236,7 @@ osip_mutex_lock (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_unlock (struct osip_mutex_t * _mut)
+osip_mutex_unlock (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
@@ -302,19 +302,19 @@ osip_sem_trywait (struct osip_sem * _sem)
 #if defined (WIN32) || defined (_WIN32_WCE)
 
 #include <limits.h>
-struct osip_mutex_t *
+struct osip_mutex *
 osip_mutex_init ()
 {
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
 
   if ((mut->h = CreateMutex (NULL, FALSE, NULL)) != NULL)
-    return (struct osip_mutex_t *)(mut);
+    return (struct osip_mutex *)(mut);
   osip_free (mut);
   return (NULL);
 }
 
 void
-osip_mutex_destroy (struct osip_mutex_t * _mut)
+osip_mutex_destroy (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
@@ -324,7 +324,7 @@ osip_mutex_destroy (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_lock (struct osip_mutex_t * _mut)
+osip_mutex_lock (struct osip_mutex * _mut)
 {
   DWORD err;
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
@@ -337,7 +337,7 @@ osip_mutex_lock (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_unlock (struct osip_mutex_t * _mut)
+osip_mutex_unlock (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
@@ -352,7 +352,7 @@ osip_sem_init (unsigned int value)
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
   if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
-    return (struct osip_mutex_t *)(sem);
+    return (struct osip_mutex *)(sem);
   osip_free (sem);
   return (NULL);
 }
@@ -408,19 +408,19 @@ osip_sem_trywait (struct osip_sem * _sem)
 #endif
 
 #ifdef __PSOS__
-struct osip_mutex_t *
+struct osip_mutex *
 osip_mutex_init ()
 {
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
 
   if (sm_create ("mut", 1, 0, &mut->id) == 0)
-    return (struct osip_mutex_t *)(mut);
+    return (struct osip_mutex *)(mut);
   osip_free (mut);
   return (NULL);
 }
 
 void
-osip_mutex_destroy (struct osip_mutex_t * _mut)
+osip_mutex_destroy (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut)
@@ -431,7 +431,7 @@ osip_mutex_destroy (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_lock (struct osip_mutex_t * _mut)
+osip_mutex_lock (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut)
@@ -443,7 +443,7 @@ osip_mutex_lock (struct osip_mutex_t * _mut)
 }
 
 int
-osip_mutex_unlock (struct osip_mutex_t * _mut)
+osip_mutex_unlock (struct osip_mutex * _mut)
 {
   osip_mutex_t * mut = (osip_mutex_t *) _mut;
   if (mut)
@@ -460,7 +460,7 @@ osip_sem_init (unsigned int value)
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
 
   if (sm_create ("sem", value, 0, &sem->id) == 0)
-    return (struct osip_mutex_t *)(sem);
+    return (struct osip_mutex *)(sem);
   osip_free (sem);
   return (NULL);
 }
