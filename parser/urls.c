@@ -16,7 +16,6 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 #include <osip/port.h>
 #include <osip/smsg.h>
 #include <stdlib.h>
@@ -1016,3 +1015,33 @@ url_unescape (char *string)
     }
   string[index] = 0;            /* terminate it */
 }
+
+/* 
+   Robin Nayathodan <roooot@softhome.net> 
+   N.K Electronics INDIA
+
+   RFC3261 16.5 
+ */
+
+int url_2char_canonical(url_t *url, char **dest)
+{
+  int result;
+  char *tmp;
+  char *buf;
+  *dest = NULL;
+  result = url_2char(url, dest);
+  if (result == 0) {
+    /*
+      tmp = strchr(*dest, ";");
+      if (tmp !=NULL) {
+      buf=strndup(*dest, tmp-(*dest));
+      sfree(*dest);
+      *dest=buf;
+      }
+      */
+    url_unescape(*dest);
+  }
+  return result;
+}
+
+

@@ -66,7 +66,17 @@ listofchar_free (list_t * li)
 int
 list_size (list_t * li)
 {
-  return li->nb_elt;
+  /* 
+     Robin Nayathodan <roooot@softhome.net> 
+     N.K Electronics INDIA
+     
+     NULL Checks  
+  */
+  
+  if (li != NULL)
+    return li->nb_elt;
+  else
+    return -1;
 }
 
 int
@@ -209,3 +219,37 @@ list_remove (list_t * li, int pos)
   }
   return li->nb_elt;
 }
+
+
+/*  
+   Robin Nayathodan <roooot@softhome.net> 
+   N.K Electronics INDIA
+    
+   To Modify the element in the List
+ 
+ */
+/*
+
+int 
+list_set(list_t * li, void *el, int pos)
+{
+  node_t *ntmp;
+  int i = 0;
+
+  if (pos < 0 || pos >= li->nb_elt)
+    // element does not exist
+    return 0;
+
+
+  ntmp = li->node;              //exist because nb_elt>0
+
+  while (pos > i)
+    {
+      i++;
+      ntmp = (node_t *) ntmp->next;
+    }
+  ntmp->element = el;
+  return li->nb_elt;
+}
+*/
+

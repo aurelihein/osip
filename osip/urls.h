@@ -213,7 +213,14 @@ extern "C"
  * @param dest The resulting new allocated element.
  */
   int url_clone (url_t * url, url_t ** dest);
-
+/**
+* Get a canonical string representation of a url element.
+* as defined in 10.3-5
+* @param url The element to work on.
+* @param dest The resulting new allocated buffer.
+*/
+  int url_2char_canonical (url_t * url, char **dest);
+ 
 /**
  * Set the scheme of a url element.
  * @param url The element to work on.

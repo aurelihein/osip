@@ -784,6 +784,14 @@ msg_getreason (int replycode)
         return sgetcopy ("Unsupported Uri Scheme");
       if (replycode == 420)
         return sgetcopy ("Bad Extension");
+      /* 
+	 Robin Nayathodan <roooot@softhome.net> 
+	 N.K Electronics INDIA
+	 
+	 RFC 3261 10.3.7 
+       */
+      if (replycode == 423)
+        return sgetcopy ("Interval Too Short");
       if (replycode == 480)
         return sgetcopy ("Temporarily not available");
       if (replycode == 481)

@@ -77,4 +77,12 @@ sfree (void *ptr)
 
   if (ptr != NULL)
     free (ptr);
+/* 
+   Robin Nayathodan <roooot@softhome.net> 
+   N.K Electronics INDIA
+
+   Most People Check This Condition 
+ */  
+  ptr=NULL;
+
 }
