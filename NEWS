@@ -1,3 +1,9 @@
+Apr 2003    : 2.0.0
+	oSIP is becoming oSIP2. In fact, this new version is very close
+	to the previous one but the API has been completely renamed in
+	order to be more consistent. Source and include files have also
+	been renamed to be more consistent and make oSIP more readable.
+
 Jul 2002    : 0.8.8
 	I have never tested the windows version myself. In fact, previous
 	version	was broken du to a wrong contribution. This is now fixed

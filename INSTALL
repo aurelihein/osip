@@ -1,10 +1,12 @@
 
+A specific README located in the "./help" directory exists
+for each supported platforms. This is the definitive place
+to find informations about specific platforms.
+
 Note that osip is developped on a i386 linux and other architecture
 might be broken. Reports if one appears broken.
 
-
-Install process for UNIX. (latest tested 0.8.8)
-_________________________
+Common Install process for UNIX.
 
   $> tar -xvzf libosip-x.x.x.tar.gz
   $> mkdir bld-linux
@@ -29,47 +31,9 @@ flags: "-UOSIP_MT"
 configure --disable-debug          ==> disable debug.
 flags: "-UENABLE_DEBUG"
 
-configure --disable-trace           ==> disable the trace in the logfile.
+configure --disable-trace          ==> disable the trace in the logfile.
 flags: "-UENABLE_TRACE"
-
-configure --enable_mleak           ==> enable the memory leak detection.
-flags: "-DENABLE_MLEAK"
-
-configure --enable-pth             ==> use GNU pth library. (never tested yet!)
-flags: "-DTHREAD_PTH -UTHREAD_PTHREAD"
 
 configure --prefix=/your/local     ==> install in '$prefix' (default is /usr/local)
 
 
-Install process for Windows. (latest tested 0.8.8)
-____________________________
-
-For Windows, see README file in the ./windows directory.
-Workspace files for VC++ are provided.
-
-Install process for Cris architecture. (latest tested 0.8.7)
-______________________________________
-
-mkdir bld-osip
-cd bld-osip
-CC="gcc_cris -mlinux -isystem  /ldata/axis/cris-source/axis/devboard_lx/os/linux/include -I/ldata/axis/cris-source/axis/devboard_lx/apps/osip" CPP=
-"gcc_cris -E -mlinux -isystem  /ldata/axis/cris-source/axis/devboard_lx/os/linux/include" LD="ld-cris -mcrisaout" AR="ar-cris" RANLIB="ranlib-cris"
- NM="nm-cris" ../osip/configure --prefix=/ldata/axis/cris-source/axis/devboard_lx/target/cris-axis-linux-gnu/usr/local 
-make
-
-see www.axis.com for more info on the ETRAX 100LX module.
-
-Install process for VxWorks. (latest tested 0.8.8)
-____________________________
-
-From a tornado user:
-
-   I built them in tornado GUI, and just test them in the simulate.
-   1. Create a bootable vxworks image project.
-   2. Add all files in the new project.
-   3. Include the networks componets.
-   4. Add the  compiler parameter as follows:
-        -D__VXWORKS_OS__ -DTHREAD_PTHREAD -D_REENTRANT -DOSIP_MT
-        -DHAVE_SIGNAL_H -DENABLE_DEBUG -DENABLE_TRACE -DSHOW_MESSAGE
-
-and play! 
