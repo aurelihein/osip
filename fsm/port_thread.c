@@ -24,7 +24,11 @@
 #include <osip/port.h>
 #include <osip/thread.h>
 
-#ifdef WIN32
+#if defined _WIN32_WCE
+#include <winbase.h>
+#define _beginthreadex	CreateThread
+#define	_endthreadex	ExitThread
+#elif defined WIN32
 #include <process.h>
 #endif
 
@@ -84,58 +88,58 @@ sthread_exit ()
 #endif
 
 #ifdef WIN32
-sthread_t * sthread_create (int stacksize, sthread_t * thread,
-			     void *(*func) (void *), void *arg) 
+sthread_t * sthread_create (int stacksize, sthread_t * thread,
+			     void *(*func) (void *), void *arg)
 {
-  if (thread == NULL)
-    thread = (sthread_t *) smalloc (sizeof (sthread_t));
-  thread->h = (HANDLE) _beginthreadex (NULL, /* default security attr */ 
+  if (thread == NULL)
+    thread = (sthread_t *) smalloc (sizeof (sthread_t));
+  thread->h = (HANDLE) _beginthreadex (NULL, /* default security attr */ 
 					 0, /* use default one */ 
-					 (void *) func, arg, 0,
-					 &(thread->id));
-  if (thread->h == 0)
-    
+					 (void *) func, arg, 0,
+					 &(thread->id));
+  if (thread->h == 0)
     {
-      fprintf (stdout, "Error while creating a new thread\n");
-      return NULL;
-    }
-  return thread;
-}
-int
-sthread_join (sthread_t * thread) 
-{
-  int i;
+      fprintf (stdout, "Error while creating a new thread\n");
+      return NULL;
+    }
+  return thread;
+}
 
-  if (thread == NULL)
+int
+sthread_join (sthread_t * thread)
+{
+  int i;
+
+  if (thread == NULL)
     return -1;
-  i = WaitForSingleObject (thread->h, INFINITE);
-  if (i == WAIT_OBJECT_0)
-    fprintf (stdout, "thread joined!\n");
-  
+  i = WaitForSingleObject (thread->h, INFINITE);
+  if (i == WAIT_OBJECT_0)
+    fprintf (stdout, "thread joined!\n");
   else
-    
     {
-      fprintf (stdout, "ERROR!! thread joined ERROR!!\n");
-      return -1;
-    }
-  CloseHandle (thread->h);
-  return (0);
-}
-void
-sthread_exit () 
-{
-  
-    /* ExitThread(0); */ 
-    _endthreadex (0);
-}
-int 
-sthread_setpriority (sthread_t * thread, int priority) 
-{
-  return 0;
-}
+      fprintf (stdout, "ERROR!! thread joined ERROR!!\n");
+      return -1;
+    }
+  CloseHandle (thread->h);
+  return (0);
+}
 
-
-#endif /*  */
+void
+sthread_exit ()
+{
+    /* ExitThread(0); */
+    _endthreadex (0);
+}
+
+int
+sthread_setpriority (sthread_t * thread, int priority)
+{
+  return 0;
+}
+
+
+#endif
+
 #ifndef __VXWORKS_OS__
 #ifdef __PSOS__
   sthread_t *

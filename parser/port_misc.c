@@ -31,7 +31,7 @@
 
 #if defined(__VXWORKS_OS__)
 #include <selectLib.h>
-#elif !defined(WIN32)
+#elif (!defined(WIN32) && !defined(_WIN32_WCE))
 #include <sys/time.h>
 #elif defined(WIN32)
 #include <windows.h>
@@ -464,7 +464,7 @@ is_trace_level_activate (trace_level_t level)
 #endif
 
 int
-#if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__) || defined(WIN32)
+#if defined(HAVE_STDARG_H) || defined(__VXWORKS_OS__) || defined(WIN32) || defined(_WIN32_WCE)
 osip_trace (char *fi, int li, trace_level_t level, FILE * f, char *chfr, ...)
 #else
 osip_trace (fi, li, level, f, chfr, va_list)

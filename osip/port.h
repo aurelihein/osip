@@ -27,12 +27,25 @@
 #include <osip/list.h>
 
 #ifdef WIN32
+
 #define STDC_HEADERS 1
 #define HAVE_CTYPE_H 1
 #define HAVE_STRING_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_TIME_H 1
 #define HAVE_STDARG_H 1
+
+#elif defined _WIN32_WCE
+
+#define STDC_HEADERS 1
+#define HAVE_CTYPE_H 1
+#define HAVE_STRING_H 1
+#define HAVE_TIME_H 1
+#define HAVE_STDARG_H 1
+
+#define strnicmp	_strnicmp
+#define stricmp		_stricmp
+
 #endif
 
 #ifdef __VXWORKS_OS__
@@ -82,6 +95,10 @@
 #endif
 
 #endif /* end of !__VXWORKS_OS__ */
+
+#ifdef _WIN32_WCE
+#define VA_START(a, f)  va_start(a, f)
+#endif
 
 #ifdef WIN32
 #define VA_START(a, f)  va_start(a, f)
