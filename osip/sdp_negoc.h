@@ -518,6 +518,8 @@ extern "C"
 
   int sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 		       char *video_port);
+  int __sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
+			 char *video_port, char *audio_codec, char *video_codec);
 
   /* for non "on-hold sdp" in outgoing invite */
   int sdp_put_on_hold (sdp_t * sdp);

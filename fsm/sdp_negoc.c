@@ -992,6 +992,119 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
   return 0;
 }
 
+/* build the SDP packet with only one audio codec and one video codec.
+ * - Usefull if you don't want to restrict proposal to one codec only -
+ * - Limitation, only one codec will be proposed
+ */
+int
+__sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
+		   char *video_port, char *audio_codec, char *video_codec)
+{
+  int i;
+  int media_line = 0;
+
+  i = sdp_init (sdp);
+  if (i != 0)
+    return -1;
+
+  sdp_v_version_set (*sdp, sgetcopy ("0"));
+
+  /* those fields MUST be set */
+  sdp_o_origin_set (*sdp,
+		    sgetcopy (config->o_username),
+		    sgetcopy (config->o_session_id),
+		    sgetcopy (config->o_session_version),
+		    sgetcopy (config->o_nettype),
+		    sgetcopy (config->o_addrtype), sgetcopy (config->o_addr));
+  sdp_s_name_set (*sdp, sgetcopy ("A call"));
+  if (config->fcn_set_info != NULL)
+    config->fcn_set_info (con, *sdp);
+  if (config->fcn_set_uri != NULL)
+    config->fcn_set_uri (con, *sdp);
+  if (config->fcn_set_emails != NULL)
+    config->fcn_set_emails (con, *sdp);
+  if (config->fcn_set_phones != NULL)
+    config->fcn_set_phones (con, *sdp);
+  if (config->c_nettype != NULL)
+    sdp_c_connection_add (*sdp, -1,
+			  sgetcopy (config->c_nettype),
+			  sgetcopy (config->c_addrtype),
+			  sgetcopy (config->c_addr),
+			  sgetcopy (config->c_addr_multicast_ttl),
+			  sgetcopy (config->c_addr_multicast_int));
+
+  {				/* offer-answer draft says we must copy the "t=" line */
+    int now = time (NULL);
+    char *tmp = smalloc (15);
+    char *tmp2 = smalloc (15);
+
+    sprintf (tmp, "%i", now);
+    sprintf (tmp2, "%i", now + 3600);
+
+    i = sdp_t_time_descr_add (*sdp, tmp, tmp2);
+    if (i != 0)
+      return -1;
+  }
+  if (config->fcn_set_attributes != NULL)
+    config->fcn_set_attributes (con, *sdp, -1);
+
+
+  /* add all audio codec */
+  if (audio_codec!=NULL)
+    {
+      if (!list_eol (config->audio_codec, 0))
+	{
+	  int pos = 0;
+	  payload_t *my = (payload_t *) list_get (config->audio_codec, pos);
+	  if (0==strcmp(audio_codec, my->payload))
+	    {	  
+	      /* all media MUST have the same PROTO, PORT. */
+	      sdp_m_media_add (*sdp, sgetcopy ("audio"), sgetcopy (audio_port),
+			       my->number_of_port, sgetcopy (my->proto));
+	      
+	      while (!list_eol (config->audio_codec, pos))
+		{
+		  my = (payload_t *) list_get (config->audio_codec, pos);
+		  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
+		  if (my->a_rtpmap != NULL)
+		    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
+					 sgetcopy (my->a_rtpmap));
+		  pos++;
+		}
+	      media_line++;
+	    }
+	}
+    }
+
+  /* add all video codec */
+  if (video_codec!=NULL)
+    {
+      if (!list_eol (config->video_codec, 0))
+	{
+	  int pos = 0;
+	  payload_t *my = (payload_t *) list_get (config->video_codec, pos);
+	  if (0==strcmp(video_codec, my->payload))
+	    {
+	      /* all media MUST have the same PROTO, PORT. */
+	      sdp_m_media_add (*sdp, sgetcopy ("video"), sgetcopy (video_port),
+			       my->number_of_port, sgetcopy (my->proto));
+	      
+	      while (!list_eol (config->video_codec, pos))
+		{
+		  my = (payload_t *) list_get (config->video_codec, pos);
+		  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
+		  if (my->a_rtpmap != NULL)
+		    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
+					 sgetcopy (my->a_rtpmap));
+		  pos++;
+		}
+	      media_line++;
+	    }
+	}
+    }
+  return 0;
+}
+
 
 int
 sdp_put_on_hold (sdp_t * sdp)
