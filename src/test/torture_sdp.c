@@ -164,8 +164,9 @@ main (int argc, char **argv)
   /* ALL CODEC MUST SHARE THE SAME "C=" line and proto as the media 
      will appear on the same "m" line... */
   osip_negotiation_add_support_for_audio_codec (osip_negotiation, 
-					       osip_strdup ("0"),
-					  NULL,
+						osip_strdup ("0"),
+						osip_strdup ("2"),
+						/* NULL, */
 					  osip_strdup ("RTP/AVP"),
 					  NULL, NULL, NULL,
 					  NULL, NULL,

@@ -973,7 +973,7 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 
       /* all media MUST have the same PROTO, PORT. */
       sdp_message_m_media_add (*sdp, osip_strdup ("audio"), osip_strdup (audio_port),
-		       my->number_of_port, osip_strdup (my->proto));
+			       osip_strdup (my->number_of_port), osip_strdup (my->proto));
 
       while (!osip_list_eol (config->audio_codec, pos))
 	{
@@ -995,7 +995,7 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 
       /* all media MUST have the same PROTO, PORT. */
       sdp_message_m_media_add (*sdp, osip_strdup ("video"), osip_strdup (video_port),
-		       my->number_of_port, osip_strdup (my->proto));
+			       osip_strdup (my->number_of_port), osip_strdup (my->proto));
 
       while (!osip_list_eol (config->video_codec, pos))
 	{
@@ -1085,7 +1085,7 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 		{	  
 		  /* all media MUST have the same PROTO, PORT. */
 		  sdp_message_m_media_add (*sdp, osip_strdup ("audio"), osip_strdup (audio_port),
-				   my->number_of_port, osip_strdup (my->proto));
+					   osip_strdup (my->number_of_port), osip_strdup (my->proto));
 		  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
 		  if (my->a_rtpmap != NULL)
 		    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
@@ -1113,7 +1113,7 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 		{
 		  /* all media MUST have the same PROTO, PORT. */
 		  sdp_message_m_media_add (*sdp, osip_strdup ("video"), osip_strdup (video_port),
-				   my->number_of_port, osip_strdup (my->proto));
+					   osip_strdup (my->number_of_port), osip_strdup (my->proto));
 		  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
 		  if (my->a_rtpmap != NULL)
 		    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
