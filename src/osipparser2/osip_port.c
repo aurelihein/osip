@@ -728,13 +728,17 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 
 void *osip_malloc(size_t size)
 {
-	return malloc(size);
+  void *ptr = malloc(size);
+  if(ptr!=NULL)
+    memset(ptr,0,size);
+  return ptr;
 }
 
 void osip_free(void *ptr)
 {
-	if (ptr==NULL) return;
-	free(ptr);
+  if (ptr==NULL) return;
+  free(ptr);
 }
 
 #endif
+
