@@ -1,4 +1,5 @@
 libosip2 (2.2.0)
+	* remove #ifdef OSIP_RETRANSMIT_2XX to always compile it.
 	* initialize remote_contact_uri when dialog is built with notify.
 	* allow very short attachements.
 	* new macros allocators.
