@@ -156,14 +156,12 @@ ict_timeout_a_event(transaction_t *ict, sipevent_t *evt)
 			    ict->ict_context->port, ict->out_socket);
   if (i!=0)
     {
-      printf("retransmission error for trid %i\n", ict->transactionid);
       osip->cb_ict_transport_error(ict, i);
       transaction_set_state(ict, ICT_TERMINATED);
       osip->cb_ict_kill_transaction(ict);
       /* TODO: MUST BE DELETED NOW */
       return;
     }
-  printf("retransmission for trid %i\n", ict->transactionid);
   if (osip->cb_ict_invite_sent2!=NULL)
     osip->cb_ict_invite_sent2(ict, ict->orig_request);
 }

@@ -50,7 +50,7 @@ dialog_update_route_set_as_uas(dialog_t *dialog, sip_t *invite)
   else
     {
       dialog->remote_contact_uri = NULL;
-      printf("WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n");
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n"));
     }
   return 0;
 }
@@ -87,7 +87,7 @@ dialog_update_route_set_as_uac(dialog_t *dialog, sip_t *response)
     }
   else
     {
-      printf("WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n");
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n"));
     }
   return 0;
 }
@@ -100,7 +100,7 @@ dialog_update_tag_as_uac(dialog_t *dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      printf("WARNING: Remote UA seems to be compliant with rfc2543 only!\n");
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
       dialog->remote_tag = NULL;
     }
   else
@@ -240,7 +240,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
   i = to_get_tag(response->to,&tag);
   if (i!=0)
     {
-      printf("WARNING: Remote UA seems to be compliant with rfc2543 only!\n");
+      TRACE(trace(__FILE__,__LINE__,TRACELEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
       (*dialog)->remote_tag = NULL;
     }
   else
@@ -282,7 +282,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
     else
       {
 	(*dialog)->remote_contact_uri = NULL;
-	printf("WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n");
+	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only! (no contact in response)\n"));
       }
   }
   (*dialog)->secure = -1; /* non secure */
@@ -304,7 +304,7 @@ dialog_init_as_uac(dialog_t **dialog, sip_t *response)
  diau_error_1:
   sfree((*dialog)->call_id);
  diau_error_0:
-  printf("ERROR: Establishment of dialog failed!\n");
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL0,NULL,"ERROR: Establishment of dialog failed!\n"));
   sfree(*dialog);
   return -1;
 }
@@ -336,7 +336,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
   i = from_get_tag(response->from,&tag);
   if (i!=0)
     {
-      printf("WARNING: Remote UA seems to be compliant with rfc2543 only!\n");
+      TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only!\n"));
       (*dialog)->remote_tag = NULL;
     }
   else
@@ -378,7 +378,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
     else
       {
 	(*dialog)->remote_contact_uri = NULL;
-	printf("WARNING: Remote UA seems to be compliant with rfc2543 only (No contact in response)!\n");
+	TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL1,NULL,"WARNING: Remote UA seems to be compliant with rfc2543 only! (no contact in response)\n"));
       }
   }
   (*dialog)->secure = -1; /* non secure */
@@ -400,7 +400,7 @@ dialog_init_as_uas(dialog_t **dialog, sip_t *invite, sip_t *response)
  diau_error_1:
   sfree((*dialog)->call_id);
  diau_error_0:
-  printf("ERROR: Establishment of dialog failed!\n");
+  TRACE(trace(__FILE__,__LINE__,TRACE_LEVEL0,NULL,"ERROR: Establishment of dialog failed!\n"));
   sfree(*dialog);
   return -1;
 }

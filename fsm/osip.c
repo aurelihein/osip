@@ -558,7 +558,6 @@ osip_timers_ict_execute(osip_t *osip)
     {
       sipevent_t *evt;
       tr = (transaction_t *)list_get(osip->ict_transactions, pos);
-      printf("timers_ict activation tr->state = %i\n", tr->state);
 
       evt = ict_need_timer_b_event(tr->ict_context, tr->state, tr->transactionid);
       if (evt!=NULL)
@@ -596,7 +595,6 @@ osip_timers_ist_execute(osip_t *osip)
     {
       sipevent_t *evt;
       tr = (transaction_t *)list_get(osip->ist_transactions, pos);
-      printf("timers_ist activation\n");
 
       evt = ist_need_timer_i_event(tr->ist_context, tr->state, tr->transactionid);
       if (evt!=NULL)
@@ -635,7 +633,6 @@ osip_timers_nict_execute(osip_t *osip)
     {
       sipevent_t *evt;
       tr = (transaction_t *)list_get(osip->nict_transactions, pos);
-      printf("timers_nict activation\n");
 
       evt = nict_need_timer_k_event(tr->nict_context, tr->state, tr->transactionid);
       if (evt!=NULL)
@@ -674,7 +671,6 @@ osip_timers_nist_execute(osip_t *osip)
     {
       sipevent_t *evt;
       tr = (transaction_t *)list_get(osip->nist_transactions, pos);
-      printf("timers_nist activation\n");
 
       evt = nist_need_timer_j_event(tr->nist_context, tr->state, tr->transactionid);
       if (evt!=NULL)
