@@ -1056,22 +1056,23 @@ __sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 	{
 	  int pos = 0;
 	  payload_t *my = (payload_t *) list_get (config->audio_codec, pos);
-	  if (0==strcmp(audio_codec, my->payload))
-	    {	  
-	      /* all media MUST have the same PROTO, PORT. */
-	      sdp_m_media_add (*sdp, sgetcopy ("audio"), sgetcopy (audio_port),
-			       my->number_of_port, sgetcopy (my->proto));
 	      
-	      while (!list_eol (config->audio_codec, pos))
-		{
-		  my = (payload_t *) list_get (config->audio_codec, pos);
+	  while (!list_eol (config->audio_codec, pos))
+	    {
+	      my = (payload_t *) list_get (config->audio_codec, pos);
+	      if (0==strcmp(audio_codec, my->payload))
+		{	  
+		  /* all media MUST have the same PROTO, PORT. */
+		  sdp_m_media_add (*sdp, sgetcopy ("audio"), sgetcopy (audio_port),
+				   my->number_of_port, sgetcopy (my->proto));
 		  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
 		  if (my->a_rtpmap != NULL)
 		    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
 					 sgetcopy (my->a_rtpmap));
-		  pos++;
+		  media_line++;
+		  break;
 		}
-	      media_line++;
+	      pos++;
 	    }
 	}
     }
@@ -1083,22 +1084,23 @@ __sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 	{
 	  int pos = 0;
 	  payload_t *my = (payload_t *) list_get (config->video_codec, pos);
-	  if (0==strcmp(video_codec, my->payload))
-	    {
-	      /* all media MUST have the same PROTO, PORT. */
-	      sdp_m_media_add (*sdp, sgetcopy ("video"), sgetcopy (video_port),
-			       my->number_of_port, sgetcopy (my->proto));
 	      
-	      while (!list_eol (config->video_codec, pos))
+	  while (!list_eol (config->video_codec, pos))
+	    {
+	      my = (payload_t *) list_get (config->video_codec, pos);
+	      if (0==strcmp(video_codec, my->payload))
 		{
-		  my = (payload_t *) list_get (config->video_codec, pos);
+		  /* all media MUST have the same PROTO, PORT. */
+		  sdp_m_media_add (*sdp, sgetcopy ("video"), sgetcopy (video_port),
+				   my->number_of_port, sgetcopy (my->proto));
 		  sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
 		  if (my->a_rtpmap != NULL)
 		    sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),
 					 sgetcopy (my->a_rtpmap));
-		  pos++;
+		  media_line++;
+		  break;
 		}
-	      media_line++;
+	      pos++;
 	    }
 	}
     }
