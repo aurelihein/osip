@@ -84,7 +84,7 @@ fifo_insert (fifo_t * ff, void *el)
   if (ff->etat != plein)
     {
       /* ff->nb_elt++; */
-      list_add (ff->queue, el, 0);     /* insert at end of queue */
+      list_add (ff->queue, el, 0);      /* insert at end of queue */
   } else
     {
       fprintf (stdout, "<port_fifo.c> (fifo_t:%x) WARNING STACK IS OVERLOADED\n",

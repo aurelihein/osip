@@ -400,7 +400,7 @@ ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
      }
      else
      fifo_insert(ict->transactionff, sipevt);
-  */
+   */
 
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
   ict->ict_context->timer_d_start = time (NULL);

@@ -200,10 +200,10 @@ sclrspace (char *word)
   pend = word + len - 1;
   while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
     pend--;
-  
+
   if (pend < pbeg)
     {
-      *word='\0';
+      *word = '\0';
       return 0;
     }
 

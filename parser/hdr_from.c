@@ -176,7 +176,7 @@ from_parse (from_t * from, char *hvalue)
             {
               from->displayname = (char *) smalloc (second - first + 2);
               sstrncpy (from->displayname, first, second - first + 1);
-/* sclrspace(from->displayname); *//*should we do that? */
+              /* sclrspace(from->displayname); *//*should we do that? */
 
               /* special case: "<sip:joe@big.org>" <sip:joe@really.big.com> */
             }                   /* else displayname is empty? */

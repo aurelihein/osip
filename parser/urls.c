@@ -131,31 +131,31 @@ url_parse (url_t * url, char *buf)
   sstrncpy (url->scheme, buf, tmp - buf);
 
 #ifndef WIN32
- if (strlen (url->scheme) < 3 ||
-     (0 != strncasecmp (url->scheme, "sip", 3)
-      && 0 != strncasecmp (url->scheme, "sips", 4)))
-   {                           /* Is not a sipurl ! */
-     int i = strlen (tmp + 1);
-     
-     if (i < 2)
-       return -1;
+  if (strlen (url->scheme) < 3 ||
+      (0 != strncasecmp (url->scheme, "sip", 3)
+       && 0 != strncasecmp (url->scheme, "sips", 4)))
+    {                           /* Is not a sipurl ! */
+      int i = strlen (tmp + 1);
+
+      if (i < 2)
+        return -1;
       url->string = (char *) smalloc (i + 1);
       sstrncpy (url->string, tmp + 1, i);
       return 0;
-   }
+    }
 #else
- if (strlen (url->scheme) < 3 ||
-     (0 != strnicmp (url->scheme, "sip", 3)
-      && 0 != strnicmp (url->scheme, "sips", 4)))
-   {                           /* Is not a sipurl ! */
-     int i = strlen (tmp + 1);
-     
-     if (i < 2)
-       return -1;
-     url->string = (char *) smalloc (i + 1);
-     sstrncpy (url->string, tmp + 1, i);
-     return 0;
-   }
+  if (strlen (url->scheme) < 3 ||
+      (0 != strnicmp (url->scheme, "sip", 3)
+       && 0 != strnicmp (url->scheme, "sips", 4)))
+    {                           /* Is not a sipurl ! */
+      int i = strlen (tmp + 1);
+
+      if (i < 2)
+        return -1;
+      url->string = (char *) smalloc (i + 1);
+      sstrncpy (url->string, tmp + 1, i);
+      return 0;
+    }
 #endif
 
   /*  law number 1:

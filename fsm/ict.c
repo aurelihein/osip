@@ -139,7 +139,7 @@ ict_need_timer_a_event (ict_t * ict, state_t state, int transactionid)
       /* may need timer A */
       if (ict->timer_a_start == -1)
         return NULL;
-      if ((now - ict->timer_a_start-1) * 1000 > ict->timer_a_length)
+      if ((now - ict->timer_a_start - 1) * 1000 > ict->timer_a_length)
         {
           return osip_new_event (TIMEOUT_A, transactionid);
         }

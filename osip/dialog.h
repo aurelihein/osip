@@ -118,7 +118,7 @@ extern "C"
  */
   struct dialog_t
   {
-/*  char *dialog_id; ***implied*** *//* call-id:local_tag:remote-tag */
+    /*  char *dialog_id; ***implied*** *//* call-id:local_tag:remote-tag */
     char *call_id;
     char *local_tag;
     char *remote_tag;

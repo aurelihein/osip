@@ -236,7 +236,7 @@ dialog_init_as_uac (dialog_t ** dialog, sip_t * response)
   int pos;
   generic_param_t *tag;
 
-  *dialog=NULL;
+  *dialog = NULL;
   i = to_get_tag (response->to, &tag);
   if (i != 0)
     {
@@ -343,7 +343,7 @@ diau_error_0:
               (__FILE__, __LINE__, OSIP_ERROR, NULL,
                "Could not establish dialog!\n"));
   sfree (*dialog);
-  *dialog=NULL;
+  *dialog = NULL;
   return -1;
 }
 
@@ -452,7 +452,7 @@ diau_error_0:
               (__FILE__, __LINE__, OSIP_ERROR, NULL,
                "Could not establish dialog!\n"));
   sfree (*dialog);
-  *dialog=NULL;
+  *dialog = NULL;
   return -1;
 }
 

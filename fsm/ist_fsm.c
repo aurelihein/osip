@@ -188,8 +188,7 @@ ist_rcv_invite (transaction_t * ist, sipevent_t * evt)
       ist->orig_request = evt->sip;
 
       osip->cb_ist_invite_received (ist, evt->sip);
-    }
-  else                        /* IST_PROCEEDING or IST_COMPLETED */
+  } else                        /* IST_PROCEEDING or IST_COMPLETED */
     {
       /* delete retransmission */
       msg_free (evt->sip);
