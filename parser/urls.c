@@ -152,8 +152,8 @@ url_parse (url_t * url, char *buf)
     }
 #else
   if (strlen (url->scheme) < 3 ||
-      (0 != strnicmp (url->scheme, "sip", 3)
-       && 0 != strnicmp (url->scheme, "sips", 4)))
+      (0 != _strnicmp (url->scheme, "sip", 3)
+       && 0 != _strnicmp (url->scheme, "sips", 4)))
     {				/* Is not a sipurl ! */
       int i = strlen (tmp + 1);
 

@@ -88,7 +88,7 @@ quoted_string_set (char *name, char *str, char **result, char **next)
 #if (!defined WIN32 && !defined _WIN32_WCE)
   if (strncasecmp (name, str, strlen (name)) == 0)
 #else
-  if (strnicmp (name, str, strlen (name)) == 0)
+  if (_strnicmp (name, str, strlen (name)) == 0)
 #endif
     {
       char *quote1;
@@ -200,7 +200,7 @@ token_set (char *name, char *str, char **result, char **next)
 #if (!defined WIN32 && !defined _WIN32_WCE)
   if (strncasecmp (name, str, strlen (name)) == 0)
 #else
-  if (strnicmp (name, str, strlen (name)) == 0)
+  if (_strnicmp (name, str, strlen (name)) == 0)
 #endif
     {
       char *end;
