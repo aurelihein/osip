@@ -119,6 +119,7 @@ osip_transaction_init (osip_transaction_t ** transaction,
   int i;
   time_t now;
 
+  *transaction=NULL;
   if (request==NULL)  return -1;
   if (request->call_id==NULL)  return -1;
   if (request->call_id->number==NULL)  return -1;
@@ -230,6 +231,7 @@ ti_error_2:
   osip_via_free ((*transaction)->topvia);
 ti_error_1:
   osip_free (*transaction);
+  *transaction=NULL;
   return -1;
 }
 
