@@ -749,7 +749,9 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	}
 
       /* this is the real beginning of body */
-      start_of_body = start_of_body + strlen (sep_boundary) + 2;
+      start_of_body = start_of_body + strlen (sep_boundary) + 1;
+      if ('\n' == start_of_body[0] || '\r' == start_of_body[0])
+	start_of_body++;
 
       tmp = osip_malloc (end_of_body - start_of_body + 2);
       if (tmp == NULL)
