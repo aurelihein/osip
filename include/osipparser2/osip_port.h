@@ -252,6 +252,7 @@ typedef void osip_trace_func_t(char *fi, int li, osip_trace_level_t level, char 
   void osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func);
   void osip_trace_initialize_syslog (osip_trace_level_t level, char *ident);
   void osip_trace_initialize (osip_trace_level_t level, FILE * file);
+  void osip_trace_enable_until_level (osip_trace_level_t level);
   void osip_trace_enable_level (osip_trace_level_t level);
   void osip_trace_disable_level (osip_trace_level_t level);
   int osip_is_trace_level_activate (osip_trace_level_t level);
