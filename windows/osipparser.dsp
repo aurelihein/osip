@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Output_Dir ".libs"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "SYSTEM_LOGGER_ENABLED" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /YX /FD /c
 # ADD CPP /nologo /MT /W4 /GX /O2 /I "../osip" /I "..\\" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /D "OSIP_MT" /D "USE_TMP_BUFFER" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Output_Dir ".libs"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "SYSTEM_LOGGER_ENABLED" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /YX /FD /GZ /c
 # ADD CPP /nologo /MTd /W4 /Gm /GX /ZI /Od /I "..\\" /D "_DEBUG" /D "ENABLE_TRACE" /D "ENABLE_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "OSIPPARSER_EXPORTS" /D "OSIP_MT" /D "USE_TMP_BUFFER" /FR /YX /FD /GZ /c
 # SUBTRACT CPP /WX
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
