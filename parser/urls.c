@@ -128,9 +128,9 @@ url_parse(url_t *url, char *buf)
   url->scheme = (char *) smalloc(tmp-buf+1);
   sstrncpy(url->scheme, buf, tmp-buf);
 
-  if (strlen(url->scheme)<3
-      ||0==strncmp(url->scheme, "sip:", 4)
-      ||0==strncmp(url->scheme, "sips:", 5))
+  if (strlen(url->scheme)<3 || 
+      (0!=strncmp(url->scheme, "sip", 3)
+      &&0!=strncmp(url->scheme, "sips", 4)))
     { /* Is not a sipurl ! */
       int i = strlen(tmp+1);
       if (i<2)  return -1;
