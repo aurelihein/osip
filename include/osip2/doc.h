@@ -21,7 +21,7 @@
 #ifndef _DOC_H_
 #define _DOC_H_
 
-/** @mainpage My Personal Index Page
+/** @mainpage The GNU oSIP stack Documentation
  *
  * @section intro_sec Introduction
  *
