@@ -119,6 +119,10 @@ osip_transaction_init (osip_transaction_t ** transaction,
   int i;
   time_t now;
 
+  if (request==NULL)  return -1;
+  if (request->call_id==NULL)  return -1;
+  if (request->call_id->number==NULL)  return -1;
+
   OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
 	       "allocating transaction ressource %i %s\n", transactionid,
@@ -130,19 +134,8 @@ osip_transaction_init (osip_transaction_t ** transaction,
     return -1;
 
   now = time (NULL);
-#ifndef DISABLE_MEMSET
+
   memset (*transaction, 0, sizeof (osip_transaction_t));
-#else
-
-  (*transaction)->your_instance = NULL;
-  (*transaction)->last_response = NULL;
-  (*transaction)->ack = NULL;
-  (*transaction)->completed_time = 0;
-
-  (*transaction)->in_socket = 0;
-  (*transaction)->out_socket = 0;
-
-#endif
 
   (*transaction)->birth_time = now;
   (*transaction)->transactionid = transactionid;
@@ -282,7 +275,9 @@ osip_transaction_free2 (osip_transaction_t * transaction)
 
   if (transaction == NULL)
     return -1;
-  if (transaction->orig_request != NULL)
+  if (transaction->orig_request != NULL
+      &&transaction->orig_request->call_id!=NULL
+      &&transaction->orig_request->call_id->number!=NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_INFO2, NULL,

@@ -39,11 +39,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
   if (*nict == NULL)
     return -1;
   now = time (NULL);
-#ifndef DISABLE_MEMSET
   memset (*nict, 0, sizeof (osip_nict_t));
-#else
-  (*ict)->destination = NULL;
-#endif
   /* for REQUEST retransmissions */
   {
     osip_via_t *via;

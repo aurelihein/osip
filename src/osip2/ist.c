@@ -34,10 +34,7 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
   *ist = (osip_ist_t *) osip_malloc (sizeof (osip_ist_t));
   if (*ist == NULL)
     return -1;
-
-#ifndef DISABLE_MEMSET
   memset (*ist, 0, sizeof (osip_ist_t));
-#endif
   /* for INVITE retransmissions */
   {
     osip_via_t *via;

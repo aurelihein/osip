@@ -39,11 +39,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
     return -1;
 
   now = time (NULL);
-#ifndef DISABLE_MEMSET
   memset (*ict, 0, sizeof (osip_ict_t));
-#else
-  (*ict)->destination = NULL;
-#endif
   /* for INVITE retransmissions */
   {
     osip_via_t *via;
