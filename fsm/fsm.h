@@ -23,8 +23,6 @@
 #include <osip/smsg.h>
 #include <osip/osip.h>
 
-int  osip_init_timers(osip_t *osip);
-
 int call_id_match(call_id_t *callid1,call_id_t *callid2);
 int callleg_match(to_t *to1,from_t *from1,to_t *to2,from_t *from2);
 int cseq_match(cseq_t *cseq1,cseq_t *cseq2);
@@ -38,17 +36,17 @@ int            udp_send_request(sip_t *request, url_t *proxy);
 /* send a response on UDP.                       */
 int            udp_send_response(sip_t *response);
 
-int fsm_load_uac4inv();
-int fsm_load_uac4req();
-int fsm_load_uas4inv();
-int fsm_load_uas4req();
+void ict_load_fsm();
+void ist_load_fsm();
+void nict_load_fsm();
+void nist_load_fsm();
 
 /* load state machine structure for (UAC || UAS) for (INVITE || REQUEST) */
-statemachine_t* fsm_getfsm_uas4inv();
-statemachine_t* fsm_getfsm_uas4req();
+statemachine_t* ict_get_fsm();
+statemachine_t* ist_get_fsm();
 
-statemachine_t* fsm_getfsm_uac4inv();
-statemachine_t* fsm_getfsm_uac4req();
+statemachine_t* nict_get_fsm();
+statemachine_t* nist_get_fsm();
 
 typedef struct _transition_t {
   state_t   state;
@@ -66,89 +64,53 @@ int  fsm_callmethod(type_t type,state_t state,
 /* state machine.                                         */
 
 /************************/
-/* FSM  ---- > UAC4INV  */
+/* FSM  ---- > ICT      */
 /************************/
 
-/* Called when STATE=INITIAL and EVENT=SND_REQINVITE */
-void            uac_i_sendinvite(sipevent_t *sipevent
-			   ,transaction_t *transaction);
-/* Called when STATE=CALLING and EVENT=TIMEOUT */
-void            uac_i_retransmitinvite(sipevent_t *sipevent
-			   ,transaction_t *transaction);
-/* Called when STATE=COMPLETED and EVENT=RCV_STATUS_2XX||RCV_STATUS_3456XX */
-void            uac_i_retransmitack(sipevent_t *sipevent
-			   ,transaction_t *transaction);
-/* Called when STATE=FAILURE||SUCCESS and EVENT=SND_REQACK */
-void            uac_i_sendack(sipevent_t *sipevent,
-			    transaction_t *transaction);
+void ict_snd_invite(transaction_t *ict, sipevent_t *evt);
+void ict_timeout_a_event(transaction_t *ict, sipevent_t *evt);
+void ict_timeout_b_event(transaction_t *ict, sipevent_t *evt);
+void ict_timeout_d_event(transaction_t *ict, sipevent_t *evt);
+void ict_rcv_1xx(transaction_t *ict, sipevent_t *evt);
+void ict_rcv_2xx(transaction_t *ict, sipevent_t *evt);
+sip_t *ict_create_ack(transaction_t *ict, sip_t *response);
+void ict_rcv_3456xx(transaction_t *ict, sipevent_t *evt);
+void ict_retransmit_ack(transaction_t *ict, sipevent_t *evt);
 
 /************************/
-/* FSM  ---- > UAC4REQ  */
+/* FSM  ---- > IST      */
 /************************/
 
-/* Called when STATE=INITIAL and EVENT=SND_REQINVITE */
-void            uac_r_sendrequest(sipevent_t *sipevent
-			   ,transaction_t *transaction);
-/* Called when STATE=CALLING and EVENT=TIMEOUT */
-void            uac_r_retransmitrequest(sipevent_t *sipevent
-			   ,transaction_t *transaction);
+sip_t *ist_create_resp_100(transaction_t *ist, sip_t *request);
+void ist_rcv_invite(transaction_t *ist, sipevent_t *evt);
+void ist_timeout_g_event(transaction_t *ist, sipevent_t *evt);
+void ist_timeout_h_event(transaction_t *ist, sipevent_t *evt);
+void ist_timeout_i_event(transaction_t *ist, sipevent_t *evt);
+void ist_snd_1xx(transaction_t *ist, sipevent_t *evt);
+void ist_snd_2xx(transaction_t *ist, sipevent_t *evt);
+void ist_snd_3456xx(transaction_t *ist, sipevent_t *evt);
+void ist_rcv_ack(transaction_t *ist, sipevent_t *evt);
 
-/*********************************/
-/* FSM  ---- > UAC4 INV AND REQ  */
-/*********************************/
+/***********************/
+/* FSM  ---- > NICT    */
+/***********************/
 
-/* Called when STATE=CALLING and EVENT=RCV_STATUS_1XX */
-void             uac_rcv1XX(sipevent_t *sipevent
-			    ,transaction_t *transaction);
-/* Called when STATE=CALLING||PROCEEDING and EVENT=RCV_STATUS_23456XX */
-void             uac_rcv23456XX(sipevent_t *sipevent
-				 ,transaction_t *transaction);
-
-/* common state machine methods for all request */
-void             ua_sendrequest      (sipevent_t *sipevent
-				    ,transaction_t *transaction);
-void             ua_retransmitrequest(sipevent_t *sipevent
-				    ,transaction_t *transaction);
-void             ua_rcvresponse      (sipevent_t *sipevent
-				    ,transaction_t *transaction);
+void nict_snd_request(transaction_t *nict, sipevent_t *evt);
+void nict_timeout_e_event(transaction_t *nict, sipevent_t *evt);
+void nict_timeout_f_event(transaction_t *nict, sipevent_t *evt);
+void nict_timeout_k_event(transaction_t *nict, sipevent_t *evt);
+void nict_rcv_1xx(transaction_t *nict, sipevent_t *evt);
+void nict_rcv_23456xx(transaction_t *nict, sipevent_t *evt);
+/* void nict_rcv_23456xx2(transaction_t *nict, sipevent_t *evt); */
 
 /************************/
-/* FSM  ---- > UAS4INV  */
+/* FSM  ---- > NIST     */
 /************************/
 
-void            uas_rcvrequest(sipevent_t *sipevent
-				,transaction_t *transaction);
-void            uas_i_rcvretransmitrequest(sipevent_t *sipevent
-					      ,transaction_t *transaction);
-void            uas_i_retransmitresponse(sipevent_t *sipevent
-					 ,transaction_t *transaction);
-void            uas_i_rcvack(sipevent_t *sipevent
-				,transaction_t *transaction);
-
-/************************/
-/* FSM  ---- > UAS4REQ  */
-/************************/
-
-void            uas_rcvrequest(sipevent_t *sipevent
-				,transaction_t *transaction);
-void            uas_r_rcvretransmitrequest(sipevent_t *sipevent
-					      ,transaction_t *transaction);
-void            uas_r_send23456XX(sipevent_t *sipevent
-					,transaction_t *transaction);
-void            uas_r_retransmitresponse(sipevent_t *sipevent
-					 ,transaction_t *transaction);
-
-/*********************************/
-/* FSM  ---- > UAS4 INV AND REQ  */
-/*********************************/
-
-/* common state machine methods for all request */
-void            ua_retransmitresponse(sipevent_t *sipevent
-				      ,transaction_t *transaction);
-void            uas_send1XX(sipevent_t *sipevent
-			   ,transaction_t *transaction);
-int             uas_send23456XX(sipevent_t *sipevent
-			      ,transaction_t *transaction);
+void nist_rcv_request(transaction_t *nist, sipevent_t *evt);
+void nist_snd_1xx(transaction_t *nist, sipevent_t *evt);
+void nist_snd_23456xx(transaction_t *nist, sipevent_t *evt);
+void nist_timeout_j_event(transaction_t *nist, sipevent_t *evt);
 
 
 #endif

@@ -21,11 +21,11 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <osip/port.h>
+
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
 #endif
-
-#include <osip/port.h>
 
 #include <time.h>
 #ifndef __VXWORKS_OS__
@@ -74,6 +74,29 @@ sstrncpy(char *dest,const char *src,int length)
   memcpy(dest,src,length);
   dest[length]='\0';
   return dest;
+}
+
+/* append string_to_append to string at position cur
+   size is the current allocated size of the element
+*/
+/* in fact, I don't know how to use realloc! so this
+   method does not work... Also, the changed size
+   is not returned!!!
+   THIS METHOD MUST BE CHANGED!
+*/
+char *
+sdp_append_string(char *string, int size, char *cur, char *string_to_append)
+{
+  int length = strlen(string_to_append);
+  if (cur+length-string>size)
+    {
+      string = realloc(string,size+length+10);
+      /* string may be another pointer?? does it contains
+	 the previous element?? */
+      /* can we use cur??? after such a call?? */
+    }
+  sstrncpy(cur,string_to_append,length);
+  return cur+strlen(cur);
 }
 
 void
@@ -163,6 +186,68 @@ int sclrspace(char *word)
     memmove(word,pbeg,pend-pbeg+2);
 
   return 0;
+}
+
+/* set_next_token:
+   dest is the place where the value will be allocated
+   buf is the string where the value is searched
+   end_separator is the character that MUST be found at the end of the value
+   next is the final location of the separator + 1
+
+   the element MUST be found before any "\r" "\n" "\0" and
+   end_separator
+
+   return -1 on error
+   return 1 on success
+*/
+int
+set_next_token(char **dest, char *buf, int end_separator, char **next)
+{
+  char *sep; /* separator */
+  *next=NULL;
+
+  sep = buf;
+  while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
+    sep++;
+  if ((*sep=='\r')&&(*sep=='\n'))
+    { /* we should continue normally only if this is the separator asked! */
+      if (*sep!=end_separator) return -1;
+    }
+  if (*sep=='\0') return -1; /* value must not end with this separator! */
+  if (sep==buf) return -1;  /* empty value (or several space!) */
+
+  *dest = smalloc(sep-(buf)+1);
+  sstrncpy(*dest,buf,sep-buf);
+ 
+  *next = sep+1;  /* return the position right after the separator */
+  return 1;
+}
+
+/*  not yet done!!! :-)
+ */
+int
+set_next_token_better(char **dest, char *buf, int end_separator,
+		      int *forbidden_tab[], int size_tab,
+		      char **next)
+{
+  char *sep; /* separator */
+  *next=NULL;
+
+  sep = buf;
+  while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
+    sep++;
+  if ((*sep=='\r')&&(*sep=='\n'))
+    { /* we should continue normally only if this is the separator asked! */
+      if (*sep!=end_separator) return -1;
+    }
+  if (*sep=='\0') return -1; /* value must not end with this separator! */
+  if (sep==buf) return -1;  /* empty value (or several space!) */
+
+  *dest = smalloc(sep-(buf)+1);
+  sstrncpy(*dest,buf,sep-buf);
+ 
+  *next = sep+1;  /* return the position right after the separator */
+  return 1;
 }
 
 /* in quoted-string, many characters can be escaped...   */

@@ -58,7 +58,7 @@ fsm_callmethod(type_t type,state_t state,statemachine_t *statemachine,
       /* No transition found for this event */
       return -1; /* error */
     }
-  transition->method(sipevent,transaction); 
+  transition->method(transaction,sipevent); 
   return 0; /* ok */
 }
 

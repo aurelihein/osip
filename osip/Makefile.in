@@ -64,7 +64,6 @@ CC = @CC@
 CPP = @CPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
-EXAMPLE_LIB = @EXAMPLE_LIB@
 EXEEXT = @EXEEXT@
 EXTRA_LIB = @EXTRA_LIB@
 FSM_LIB = @FSM_LIB@
@@ -80,7 +79,6 @@ PACKAGE = @PACKAGE@
 PARSER_LIB = @PARSER_LIB@
 RANLIB = @RANLIB@
 SIP_CFLAGS = @SIP_CFLAGS@
-SIP_EXAMPLE_FLAGS = @SIP_EXAMPLE_FLAGS@
 SIP_EXTRA_FLAGS = @SIP_EXTRA_FLAGS@
 SIP_FLAGS = @SIP_FLAGS@
 SIP_FSM_FLAGS = @SIP_FSM_FLAGS@
@@ -91,7 +89,7 @@ ac_aux_dir = @ac_aux_dir@
 
 osip_includedir = $(includedir)/osip
 
-osip_include_HEADERS = const.h  port.h  sdp.h sdp_negoc.h smsg.h thread.h smsgtypes.h  osip.h  ua.h  urls.h timers.h list.h fifo.h sema.h md5.h global.h
+osip_include_HEADERS = const.h  port.h  sdp.h sdp_negoc.h smsg.h thread.h smsgtypes.h  osip.h    urls.h list.h fifo.h sema.h md5.h        dialog.h  global.h 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/scripts/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -108,9 +106,9 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps osip/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu osip/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -164,6 +162,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = osip
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu osip/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

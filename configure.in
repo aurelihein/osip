@@ -7,10 +7,10 @@ dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=0
 OSIP_MINOR_VERSION=8
-OSIP_MICRO_VERSION=0
+OSIP_MICRO_VERSION=1
 
 dnl Library extension
-OSIP_RELEASE=0.8.0
+OSIP_RELEASE=0.8.1
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
@@ -92,10 +92,6 @@ AC_ARG_ENABLE(mleak,
 [  --enable-mleak            turn on memory leak detection.],
 enable_mleak=$enableval,enable_mleak="no")
 
-AC_ARG_ENABLE(cbext,
-[  --enable-cbext            use an extended set of callbacks.],
-enable_cbext=$enableval,enable_cbext="no")
-
 
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
@@ -104,14 +100,10 @@ if test "x$enable_mt" = "xyes"; then
   if test "x$enable_pth" = "xyes"; then
     SIP_FSM_FLAGS="$SIP_FSM_FLAGS `pth-config --cflags` -DTHREAD_PTH"
     FSM_LIB="$FSM_LIB `pth-config --ldflags` `pth-config --libs`"
-    SIP_EXAMPLE_FLAGS="$SIP_EXAMPLE_FLAGS `pth-config --cflags` -DTHREAD_PTH"
-    EXAMPLE_LIB="$EXAMPLE_LIB `pth-config --ldflags` `pth-config --libs`"
   else
     if test "x$enable_pthread" = "xyes"; then
       SIP_FSM_FLAGS="$SIP_FSM_FLAGS -DTHREAD_PTHREAD"
       FSM_LIB="$FSM_LIB -lpthread"
-      SIP_EXAMPLE_FLAGS="$SIP_EXAMPLE_FLAGS -DTHREAD_PTHREAD"
-      EXAMPLE_LIB="$EXAMPLE_LIB -lpthread"
     fi
   fi
 fi
@@ -138,16 +130,11 @@ if test "x$enable_mleak" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DENABLE_LEAKD"
 fi
 
-if test "x$enable_cbext" = "xyes"; then
-  SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DEXTENDED_CALLBACKS"
-fi
 
 dnl Checks for libraries.
 AC_CHECK_LIB(posix4,sem_open,[FSM_LIB="$FSM_LIB -lposix4 -mt"])
 AC_CHECK_LIB(nsl,nis_add,[FSM_LIB="$FSM_LIB -lnsl"])
 AC_CHECK_LIB(socket,sendto,[FSM_LIB="$FSM_LIB -lsocket"])
-AC_CHECK_LIB(gen,basename,[EXAMPLE_LIB="$EXAMPLE_LIB -lgen"])
-AC_CHECK_LIB(gen,tolower,[EXAMPLE_LIB="$EXAMPLE_LIB"])
 
 AC_SUBST(SIP_CFLAGS)
 AC_SUBST(SIP_FLAGS)
@@ -155,12 +142,10 @@ AC_SUBST(SIP_FLAGS)
 AC_SUBST(SIP_EXTRA_FLAGS)
 AC_SUBST(SIP_PARSER_FLAGS)
 AC_SUBST(SIP_FSM_FLAGS)
-AC_SUBST(SIP_EXAMPLE_FLAGS)
 
 AC_SUBST(EXTRA_LIB)
 AC_SUBST(PARSER_LIB)
 AC_SUBST(FSM_LIB)
-AC_SUBST(EXAMPLE_LIB)
 
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
@@ -179,5 +164,5 @@ AC_CHECK_HEADERS(varargs.h)
 AC_CHECK_HEADERS(fcntl.h sys/time.h assert.h signal.h sys/signal.h malloc.h) 
 
 
-AC_OUTPUT(Makefile parser/Makefile fsm/Makefile example/Makefile example_mt/Makefile test/Makefile osip/Makefile scripts/Makefile doc/Makefile conf/Makefile windows/Makefile)
+AC_OUTPUT(Makefile parser/Makefile fsm/Makefile test/Makefile osip/Makefile scripts/Makefile doc/Makefile conf/Makefile windows/Makefile)
 

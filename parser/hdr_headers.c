@@ -97,6 +97,7 @@ msg_header_getbyname(sip_t *sip, char *hname, int pos, header_t **dest)
 	  sfree(tmp2);
 	  return i;
 	}
+      sfree(tmp2);
       i++;
     }
   return -1; /* not found */

@@ -1,3 +1,17 @@
+libosip (0.8.1) testing ;urgency=high
+	* new finite state machines for TRANSACTION LAYER compliant with
+	  the rfc2543bis-09.txt. This is a total rewrite. Those new
+	  fsm should be usable either by proxies and endpoints. The
+	  difference is in the UAC_UAC_core and Proxy_core. (Stateless
+	  proxy don't need any state machines!)
+	* some bug fixes and one memory leak in the parser.
+	* COMPATIBILITY WITH PREVIOUS RELEASE IS NOT KEPT!
+	* test in ./example and ./example_mt are deprecated and removed.
+	
+libosip (0.8.0) testing ;urgency=high
+	* new SDP parser
+	* new SDP automtic negociation facility (for User Agent)
+	
 libosip (0.7.9) testing ;urgency=low
         * hdr_authorization.c/hdr_wwwauthenticate.c:
           Interoperability issue with Vovida.

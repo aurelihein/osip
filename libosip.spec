@@ -1,6 +1,6 @@
 Summary: "libosip" - An  implementation of SIP - rfc2543.
 Name: libosip
-Version: 0.8.0
+Version: 0.8.1
 Release: 1
 Group: Development/Libraries
 URL: http://www.atosc.org
@@ -21,7 +21,7 @@ http://www.ietf.org/rfc/rfc2543.txt.
 rm -rf $RPM_BUILD_ROOT
 
 %setup
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-debug
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-debug --disable-trace
 
 %build
 uname -a|grep SMP && make -j 2 || make

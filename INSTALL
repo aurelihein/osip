@@ -1,7 +1,3 @@
 see README file for installation.
 
-
-if you are running other OS than GNU/linux,
-compilation process should require you to 
-work on all Makefiles to provide the right
-flags and libraries.
+For Windows, see README file in the ./windows directory.

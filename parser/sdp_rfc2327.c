@@ -29,17 +29,6 @@
 #define OK           1 /* well formed header */
 
 
-char *
-sdp_append_string(char *string, int size, char *cur, char *string_to_append)
-{
-  int length = strlen(string_to_append);
-  if (cur+length-string>size)
-    realloc(string,size+length+10);
-  
-  sstrncpy(cur,string_to_append,length);
-  return cur+strlen(cur);
-}
-
 int
 sdp_bandwidth_init(sdp_bandwidth_t **b)
 {
@@ -265,35 +254,6 @@ sdp_parse_v(sdp_t *sdp, char *buf, char **next)
   return OK;
 }
 
-
-/* set_next_token:
-   dest is the place where the value will be allocated
-   buf is the string where the value is searched
-   end_separator is the character that MUST be found at the end of the value
-   next is the final location of the separator + 1
-*/
-int
-set_next_token(char **dest, char *buf, int end_separator, char **next)
-{
-  char *sep; /* separator */
-  *next=NULL;
-
-  sep = buf;
-  while ((*sep!=end_separator)&&(*sep!='\0')&&(*sep!='\r')&&(*sep!='\n'))
-    sep++;
-  if ((*sep=='\r')&&(*sep=='\n'))
-    { /* we should continue normally only if this is the separator asked! */
-      if (*sep!=end_separator) return ERR_ERROR;
-    }
-  if (*sep=='\0') return ERR_ERROR; /* value must not end with this separator! */
-  if (sep==buf) return ERR_ERROR;  /* empty value (or several space!) */
-
-  *dest = smalloc(sep-(buf)+1);
-  sstrncpy(*dest,buf,sep-buf);
- 
-  *next = sep+1;  /* return the position right after the separator */
-  return OK;
-}
 
 int
 sdp_parse_o(sdp_t *sdp, char *buf, char **next)
@@ -1356,7 +1316,7 @@ sdp_parse(sdp_t *sdp, const char *buf)
     i = sdp_parse_t(sdp,ptr,&next_buf);
     if (i==-1) /* header is bad */
       return -1;
-    else if (i==0)
+    else if (i==ERR_DISCARD)
       return -1; /* t is mandatory */
     ptr = next_buf;
 
@@ -1398,7 +1358,7 @@ sdp_parse(sdp_t *sdp, const char *buf)
 	  i = sdp_parse_t(sdp,ptr,&next_buf);
 	  if (i==-1) /* header is bad */
 	    return -1;
-	  else if (i==0)
+	  else if (i==ERR_DISCARD)
 	    more_t_header=0;
 	  else
 	    more_t_header=1; /* no more "t" headers */
@@ -1843,7 +1803,6 @@ sdp_2char(sdp_t *sdp, char **dest)
 void
 sdp_free(sdp_t *sdp)
 {
-  int i=0;
   if (sdp==NULL) return;
   sfree(sdp->v_version);
   sfree(sdp->o_username);
@@ -1882,83 +1841,3 @@ sdp_free(sdp_t *sdp)
   sfree(sdp->m_medias);
 }
 
-/*
-int
-mediad_replyto(mediad_t *remote_mediad,mediad_t *dest)
-{
-  mediad_init(dest);
-
-  if (0==strncmp(remote_mediad->m,"audio",5))
-    {
-      dest->m = sdp_initm("audio","23456","RTP/AVP","0 1");
-    }
-  if (0==strncmp(remote_mediad->m,"video",5))
-    {
-      dest->m = sdp_initm("video","32556","RTP/AVP","32");
-    }
-  if (0==strncmp(remote_mediad->m,"application",11))
-    {
-      dest->m = sdp_initm("application","32556","udp","wb");
-      list_add(dest->as , sdp_inita_withvalue("orient:","portrait") , -1);
-    }
-  return 0;
-}
-
-int
-sdp_replyto(sdp_t *sdp_remote,sdp_t *dest,
-	    char *username,char *networktype,
-	    char *addr_type,char *localip)
-{
-  static int sessid = 0;
-  sessid++;
-
-
-  sdp_init(dest);
-
-  dest->v = sdp_initv("0");
-  {
-    char *sess;
-    sess = (char *)smalloc(10);
-    sprintf(sess,"%i",sessid);
-    dest->o = sdp_inito(username,
-			sess,
-			sess,
-			networktype,
-			addr_type,
-			localip);
-    sfree(sess);
-  }
-
-  dest->s = sdp_inits(sdp_remote->s);
-  {
-    timed_t *timed;
-    timed = (timed_t *)smalloc(sizeof(timed_t));
-    timed_init(timed);
-    timed->t = sdp_initt("0","0");
-    list_add(dest->timeds,timed,-1);
-  }
-  dest->c = sdp_initc("IN","IP4",localip);
-
-  {
-    mediad_t *mediad;
-    mediad_t *remote_mediad;
-    int pos = 0;
-    while (!list_eol(sdp_remote->mediads,pos))
-      {
-	int i;
-	remote_mediad = (mediad_t *)list_get(sdp_remote->mediads,pos);
-
-	mediad = (mediad_t *)smalloc(sizeof(mediad_t));
-	i = mediad_replyto(remote_mediad,mediad);
-	if (0>i)
-	  {
-	    return i;
-	  }
-	list_add(dest->mediads,mediad,-1);
-	pos++;
-      }
-  }
-
-  return 0;
-}
-*/

@@ -1,15 +1,17 @@
 
-EXTRA_DIST = makefile.vxw fsm.h
+EXTRA_DIST = fsm.h
 
-lib_LTLIBRARIES = libosipfsm.la
+lib_LTLIBRARIES = libfsmtl.la
 
-libosipfsm_la_SOURCES =  \
-fsm_misc.c     fsm_uac4inv.c  fsm_uac4req.c   fsm_uas4inv.c \
-fsm_uas4req.c  trn_manager.c  trn_timers.c    port_thread.c \
-port_sema.c    port_fifo.c    evt_server.c    osip.c        \
-sdp_negoc.c
+libfsmtl_la_SOURCES =  \
+ict_fsm.c      ist_fsm.c      nict_fsm.c     nist_fsm.c \
+ict.c          ist.c          nict.c         nist.c     \
+fsm_misc.c     osip.c         transaction.c  sipevent.c \
+dialog.c       sdp_negoc.c    port_sema.c    port_fifo.c \
+port_thread.c
 
-libosipfsm_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
+
+libfsmtl_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
 -release $(OSIP_RELEASE)  @FSM_LIB@  @EXTRA_LIB@
 
 

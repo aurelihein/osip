@@ -1,5 +1,5 @@
 
-EXTRA_DIST = makefile.vxw msg.h
+EXTRA_DIST = msg.h
 
 lib_LTLIBRARIES = libosipparser.la
 

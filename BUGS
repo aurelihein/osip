@@ -1,54 +1,27 @@
 
-FIXED: rel0.6.0 27/07/2001
-BUG9 : rel0.6.0 26/07/2001
-	The parameters values in generic-params (in url, to, from...)
-	says that the param-value is optionnal.
-	   for example in <sip:jack@atosc.org;town=paris;man>
-	   here: 'man' won't be undeerstood...
-
-FIXED: rel0.6.0 27/07/2001
-BUG8 : rel0.6.0 26/07/2001
-	the boundary can be found in the content-type
-	header: read it and use it.
-
-FIXED: rel0.?.? ??/??/2001
-BUG7 : rel0.6.0 26/07/2001
-	multiple fields separated by a comma are not
-	supported.
-
-FIXED: rel0.5.4 ??/??/2001
-BUG6 : rel0.5.3 ??/??/2001
-	in fsm_uac4inv: in uac_i_retransmitack(...)
-	  * if (MSG_IS_ACK(transaction->lastrequest))
-	MUST BE REPLACED BY:
-	  * if (!MSG_IS_ACK(transaction->lastrequest))
-
-FIXED: rel0.5.4 ??/??/2001
-BUG5 : rel0.5.3 ??/??/2001
-	in fsm_uac4inv:
-	  *  return type of ua_rcvresponse is err_t instead of void!
-
-FIXED: rel0.6.0 25/07/2001 (no comment...)
-BUG4 :          04/06/2001 
-	There is a memory leak issue with
-	last message from conf/torture_test..
-
-FIXED: rel0.6.0 25/07/2001 (new via, url,....)
-BUG3 :          04/06/2001 
- 	Via is not full compliant.
-	URL is not full compliant.
-	well, parser is not yet full compliant.
-
 FIXED:
-BUG2 :          04/06/2001 fix so many things.
-	remove test with atoi().
-	mem leak in app.c and example_agentlogic.c
+BUG2 :          06022002   0.8.1
+  With the new fsm, some messages must be handled without giving
+  them to the state machines. This is the case when receiving more
+  than one 2xx responses. In the case where a 2xx has been received,
+  the rfc says that it's up to the "transaction user" to deal with
+  the message without the use of the transaction layer. This is needed
+  because behavior is different in this case for UA and proxy. (and the
+  state machines are usable by both UA and proxy since 0.8.1!)
 
-FIXED:
-BUG1 :                     compilation issue 
-automake/autoconf is still a new world for me.
-The CVS on atosc sends me files with a 
-local time in advance with my system date.
-make and configure script are lost.
+  By now, instead of refusing the 2xx messages, and leave it to the
+  "transaction user" layer, the fsm will discard the event without
+  telling the upper layer. This behavior will be fixed to leave
+  the choice of deleting the message up to the user.
+
+  An other important modification in the latest draft of SIP (which
+  has result in a modification of the fsm library) is the handling of
+  ACK. For any response superior to 299, the ACK is completely
+  handled by the fsm. You don't have to build it and send it as it's
+  automated. (both proxy and UA handles those ACK following the same
+  procedures in the latest draft of SIP! That's why...). Nevertheless,
+  you'll have handle 2XX (for INVITE) in the "transaction user" alone:
+  Proxy will forward the 2xx and UA will sends special ACK within the
+  dialog.
 
 

@@ -1,31 +1,6 @@
-1) Open and build Common/comm/sip/stack/example/ua.dsw with Visual 
-   Studio C++ 6.0
+1) Open and build sipparser.dsw and sipfsm.dsw in the ./libosip-0.X.X/windows/
+   directory with Visual Studio C++ 6.0.
 
-2) Edit Common/comm/sip/stack/conf/siprc to use your IP address (just like
-   Unix build): i.e. -
-   localip=x.x.x.x
-   contact=<sip:me@x.x.x.x>
-   from=<sip:me@x.x.x.x>;tag=12gtr38erf7-1dfw
+2) Tests applications has no makefiles. Waiting for someone to contribute!
 
-3) Click on the ua project and open it's debug project settings 
-   (Project | Settings | Debug) menus and set "Program arguments" to whatever
-   you want - i.e. "-m 0 -f ../conf/siprc -d 2  -t "<sip:me@x.x.x.x>". 
-   Remember to leave out the application name (./example/ua). 
-   NOTE - these arguments can't be saved in the workspace (.dsw) file as far
-   as I know. 
-
-4) Run the application (ua.exe) on PC using the debug menu 
-   (Build | Start Debug | Go) or run menu (Build | Execute ua.exe). You should
-   see the standard menu in a new console window:
-
-This is a facility to test the oSIP library!
-<app.c> You will not use a proxy in this configuration
-L1 -1001710705- <c:\documents and settings\rflott\desktop\projects\common\comm\s
-ip\stack\example\udp_listen.c: 53> New UDP listener on port 5060
-keystrokes:
-0 1 2 3 4 5: enable trace levels   d: disable trace
-c: new static return code wanted
-i: start an INVITE transaction    t: start N INVITE trans
-r: start a REGISTER transaction   b: start a BYE trans
-osip command> 
  

@@ -38,11 +38,10 @@ int  smutex_lock(smutex_t *mut) {
   i = pthread_mutex_lock(mut);
   if (i!=0)
     {
-      fprintf(stdout, "ERROR while locking !!%i",i);
-      if (i==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!");
-      if (i==EDEADLK) fprintf(stdout, "ERROR while locking EDEADLK!!");
-      if (i==EBUSY) fprintf(stdout, "ERROR while locking EBUSY!!");
-      if (i==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!");
+      fprintf(stdout, "ERROR while locking !!%i\n",i);
+      if (i==EDEADLK) fprintf(stdout, "ERROR while locking EDEADLK!!\n");
+      if (i==EBUSY) fprintf(stdout, "ERROR while locking EBUSY!!\n");
+      if (i==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!\n");
       return i;
     }
   return 0;
@@ -75,11 +74,10 @@ int  smutex_lock(smutex_t *mut) {
   i = pth_rwlock_acquire(mut,PTH_RWLOCK_RW,FALSE,NULL);
   if (i==0)
     {
-      fprintf(stdout, "ERROR while locking !!%i",errno);
-      if (errno==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!");
-      if (errno==EDEADLK) fprintf(stdout, "ERROR while locking EDEADLK!!");
-      if (errno==EBUSY) fprintf(stdout, "ERROR while locking EBUSY!!");
-      if (errno==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!");
+      fprintf(stdout, "ERROR while locking !!%i\n",errno);
+      if (errno==EDEADLK) fprintf(stdout, "ERROR while locking EDEADLK!!\n");
+      if (errno==EBUSY) fprintf(stdout, "ERROR while locking EBUSY!!\n");
+      if (errno==EINVAL) fprintf(stdout, "ERROR while locking EINVAL!!\n");
       return errno;
     }
   return 0;

@@ -267,10 +267,11 @@ msg_2char(sip_t *sip, char **dest)
   static int number_of_call_avoided;
   number_of_call++;
 #endif
-  if (1==msg_get_property(sip)) { /* message is yet available in "message" */
+  if (1==msg_get_property(sip)) { /* message is already available in "message" */
 #ifdef ENABLE_DEBUG
     number_of_call_avoided++;
 #endif
+
     *dest = sgetcopy(sip->message); /* is we just return the pointer, people will
 				       get issues while upgrading the library. This
 				       is because they are used to call free(*dest)

@@ -1,5 +1,5 @@
 
-EXTRA_DIST = makefile.vxw
+EXTRA_DIST = 
 
 noinst_PROGRAMS = torture_test torture_sdp_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
 INCLUDES = -I$(top_srcdir)
@@ -103,7 +103,7 @@ $(top_builddir)/parser/hdr_to.o        $(top_builddir)/parser/hdr_via.o  \
 $(top_builddir)/parser/hdr_cseq.o      $(top_builddir)/parser/msg_cparser.o   \
 $(top_builddir)/parser/msg_parser.o    $(top_builddir)/parser/msg_read.o   \
 $(top_builddir)/parser/msg_write.o     $(top_builddir)/parser/urls.o    \
-$(top_builddir)/parser/sdp_rfc2327.o   $(top_builddir)/example/example_rcfile.o \
+$(top_builddir)/parser/sdp_rfc2327.o   \
 $(top_builddir)/parser/hdr_contenttype.o $(top_builddir)/parser/hdr_route.o \
 $(top_builddir)/parser/hdr_mimeversion.o $(top_builddir)/parser/hdr_recordroute.o \
 $(top_builddir)/parser/hdr_wwwauthenticate.o $(top_builddir)/parser/hdr_authorization.o \

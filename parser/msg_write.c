@@ -43,6 +43,7 @@ msg_startline_init(startline_t **strtline)
 static void
 msg_startline_free(startline_t *strtline)
 {
+  if (strtline==NULL) return;
   sfree(strtline->sipmethod);
   sfree(strtline->sipversion);
   if (strtline->rquri!=NULL)
@@ -61,10 +62,13 @@ msg_init(sip_t **sip) {
   static int comptr = 0;
   comptr++;
   freesipcptr++;
-  trace(__FILE__,__LINE__,TRACE_LEVEL0,stdout,"<msg_write.c> msg_init() = %i malloc-free = %i\n",comptr, freesipcptr);
-  fflush(stdout); 
 #endif
   *sip = (sip_t *) smalloc(sizeof(sip_t));
+#ifdef MEMORY_LEAKS
+  trace(__FILE__,__LINE__,TRACE_LEVEL0,stdout,"<msg_write.c> msg_init() = %i, malloc-free = %i, address = %x\n",comptr, freesipcptr, *sip);
+  fflush(stdout); 
+#endif
+
   msg_startline_init(&((*sip)->strtline));
   (*sip)->accepts = (list_t *)smalloc(sizeof(list_t));
   list_init((*sip)->accepts);
@@ -149,10 +153,12 @@ msg_free(sip_t *sip)
   int pos = 0;
 #ifdef MEMORY_LEAKS
   static int comptr = 0;
+  if (sip==NULL) return;
   comptr--;
   freesipcptr--;
-  trace(__FILE__,__LINE__,TRACE_LEVEL0,stdout,"<msg_write.c> msg_free() = %i malloc-free = %i\n",comptr, freesipcptr);
+  trace(__FILE__,__LINE__,TRACE_LEVEL0,stdout,"<msg_write.c> msg_free() = %i, malloc-free = %i, address = %x\n",comptr, freesipcptr, sip);
 #endif
+  if (sip==NULL) return;
   msg_startline_free(sip->strtline);
   sfree(sip->strtline);
   
