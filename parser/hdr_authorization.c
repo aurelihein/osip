@@ -183,7 +183,7 @@ authorization_parse (authorization_t * auth, char *hvalue)
           space = next;
           parse_ok++;
         }
-      if (quoted_string_set ("qop", space, &(auth->message_qop), &next))
+      if (token_set ("qop", space, &(auth->message_qop), &next))
         return -1;
       if (next == NULL)
         return 0;               /* end of header detected! */
