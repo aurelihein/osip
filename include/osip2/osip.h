@@ -829,7 +829,7 @@ extern "C"
  * @param buf The SIP message as a string.
  * @param length The length of the buffer to parse.
  */
-  osip_event_t *osip_parse (char *buf, size_t length);
+  osip_event_t *osip_parse (const char *buf, size_t length);
 
 
 #ifdef OSIP_RETRANSMIT_2XX

@@ -26,7 +26,7 @@
 /* INPUT : char *buf | message as a string.            */
 /* return NULL  if message cannot be parsed            */
 osip_event_t *
-osip_parse (char *buf, size_t length)
+osip_parse (const char *buf, size_t length)
 {
   osip_event_t *se = __osip_event_new (UNKNOWN_EVT, 0);
   int i;
