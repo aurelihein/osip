@@ -769,7 +769,7 @@ c=IN IP4 TOREPLACE\r\n");
 	snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
 #endif
 	}
-      else if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
+      else if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port!=NULL)
 	{
 #if (defined WIN32 || defined _WIN32_WCE) 
 	  _snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
