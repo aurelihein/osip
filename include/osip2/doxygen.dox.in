@@ -1,0 +1,73 @@
+/**
+ * @mainpage
+ * Project Website: http://www.fsf.org/software/osip
+ *
+ * @verbinclude README
+ *
+ * @verbinclude HISTORY
+ *
+ * @verbinclude FEATURES
+ *
+ */
+
+/** 
+ * @defgroup libosip2 The GNU oSIP stack
+ * @brief libosip2 Version @OSIP_VERSION@
+ *
+ * libosip2 implements the Session Initiation Protocol (SIP -rfc3261-)
+ * @see http://www.fsf.org/software/osip
+ *
+ */
+
+/**
+ * @defgroup osip2_parser The parser modules
+ * @brief Parser API in libosipparser2-@VERSION@.
+ *
+ * XXX
+ */
+
+/**
+ * @defgroup osip2_sdp The SDP modules
+ * @brief SDP API and negotiator.
+ *
+ * XXX
+ */
+
+/**
+ * @defgroup osip2_port The OS port modules
+ * @brief Thread/Semaphore/Mutex API in libosip2-@VERSION@.
+ *
+ * XXX
+ */
+
+/**
+ * @defgroup osip2_fsm State Machines
+ * @brief libosip2 APIs for transaction management
+ *
+ * XXX
+ */
+
+/** 
+ * @page osip2_readme README 
+ * @verbinclude README
+ */
+
+/** 
+ * @page osip2_install INSTALL 
+ * @verbinclude INSTALL
+ */
+
+/** 
+ * @page osip2_features FEATURES 
+ * @verbinclude FEATURES
+ */
+
+/** 
+ * @page osip2_license COPYING 
+ * @verbinclude COPYING
+ */
+
+/**
+ * @page osip2_faq FAQ
+ * @htmlinclude FAQ.html
+ */
