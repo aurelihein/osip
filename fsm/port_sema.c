@@ -25,7 +25,7 @@
 #include <osip/port.h>
 #include <osip/sema.h>
 
-#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__POS__)
+#if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(_WIN32_WCE) && !defined(__PSOS__)
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 
 smutex_t *
