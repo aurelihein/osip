@@ -775,8 +775,8 @@ c=IN IP4 TOREPLACE\r\n");
 	  _snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
 #else
 	  snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
-	}
 #endif
+	}
       else
 	return -1;
 
