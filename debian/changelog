@@ -1,9 +1,9 @@
-libosip (0.9.6-1) unstable; urgency=low
+libosip (0.9.7-1) unstable; urgency=low
 
-  * fix transaction_init for request without mandatory headers.
-  * refuse to create transactions with cseq and method that differs.
-  * check minimum authorized length for method name of request.
-  * fix the state when a retransmission of INVITE is received.
-  * Minor changes in #define definitions just for clarity.
+	* fix a bug in hdr_wwwauthenticate.c.
+	* patch for debian packaging and version management.
+	* extra free removed for pSOS (smutex_destroy/ssem_destroy)
+	* fix crash when osip can't build ACK for 3456xx to INVITEs.
+	* Extra spaces now appear before content-length digits.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Mon, 10 Mar 2003 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Mon, 06 May 2003 13:04:32 +0100
