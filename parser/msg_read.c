@@ -317,7 +317,7 @@ strcat_headers_all_on_one_line (char **_string, int *malloc_size,
 	      *next = NULL;
 	      return -1;
 	    }
-	  if (*malloc_size < message - string + strlen (tmp) + 100)
+	  if (*malloc_size < message - string + (int)strlen (tmp) + 100)
 	    {
 	      int size = message - string;
 	      *malloc_size = message - string + (int)strlen (tmp) + 100;

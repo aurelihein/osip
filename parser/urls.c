@@ -1013,7 +1013,7 @@ url_unescape (char *string)
 	  /* encoded part */
 	  if (sscanf (ptr + 1, "%02X", &hex))
 	    {
-	      in = (int)hex;
+	      in = (unsigned char)hex;
 	      ptr += 2;
 	      alloc -= 2;
 	    }
