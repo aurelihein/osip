@@ -30,13 +30,10 @@ static struct osip_mutex *nict_fastmutex;
 static struct osip_mutex *nist_fastmutex;
 #endif
 
-#ifdef OSIP_RETRANSMIT_2XX
 
 #include <osip2/osip_dialog.h>
 #ifdef OSIP_MT
 static struct osip_mutex *ixt_fastmutex;
-#endif
-
 #endif
 
 static int __osip_global_init (void);
@@ -62,9 +59,7 @@ __osip_global_init ()
   nict_fastmutex = osip_mutex_init ();
   nist_fastmutex = osip_mutex_init ();
 
-#ifdef OSIP_RETRANSMIT_2XX
   ixt_fastmutex = osip_mutex_init ();
-#endif
 
 #endif
   return 0;
@@ -84,9 +79,7 @@ __osip_global_free ()
   osip_mutex_destroy (nict_fastmutex);
   osip_mutex_destroy (nist_fastmutex);
 
-#ifdef OSIP_RETRANSMIT_2XX
   osip_mutex_destroy (ixt_fastmutex);
-#endif
 #endif
 }
 
@@ -139,8 +132,6 @@ osip_response_get_destination (osip_message_t * response, char **address,
     *address = NULL;
 }
 
-
-#ifdef OSIP_RETRANSMIT_2XX
 
 int
 osip_ixt_lock (osip_t * osip)
@@ -335,8 +326,6 @@ osip_retransmissions_execute (osip_t * osip)
     }
   osip_ixt_unlock (osip);
 }
-
-#endif
 
 int
 osip_ict_lock (osip_t * osip)
@@ -1061,13 +1050,9 @@ osip_init (osip_t ** osip)
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*osip)->osip_nist_transactions);
 
-#ifdef OSIP_RETRANSMIT_2XX
   (*osip)->ixt_retransmissions =
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*osip)->ixt_retransmissions);
-#else
-  (*osip)->ixt_retransmissions = NULL;
-#endif
 
   return 0;
 }
@@ -1080,9 +1065,7 @@ osip_release (osip_t * osip)
   osip_free (osip->osip_nict_transactions);
   osip_free (osip->osip_nist_transactions);
 
-#ifdef OSIP_RETRANSMIT_2XX
   osip_free (osip->ixt_retransmissions);
-#endif
 
   osip_free (osip);
   decrease_ref_count ();
@@ -1360,8 +1343,6 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
   osip_mutex_unlock (nist_fastmutex);
 #endif
 
-#ifdef OSIP_RETRANSMIT_2XX
-  
 #ifdef OSIP_MT
   osip_mutex_lock(ixt_fastmutex);
 #endif
@@ -1379,7 +1360,6 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
  }
 #ifdef OSIP_MT
   osip_mutex_unlock (ixt_fastmutex);
-#endif
 #endif
   
   lower_tv->tv_sec = lower_tv->tv_sec - now.tv_sec;

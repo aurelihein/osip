@@ -438,7 +438,6 @@ extern "C"
 					     int error);
 
 
-#ifdef OSIP_RETRANSMIT_2XX
   struct osip_dialog;
 
 /**
@@ -465,7 +464,6 @@ extern "C"
     int counter;		/**< start at 7 */
   };
 
-#endif
 
 /**
  * Structure for osip handling.
@@ -832,8 +830,10 @@ extern "C"
   osip_event_t *osip_parse (const char *buf, size_t length);
 
 
-#ifdef OSIP_RETRANSMIT_2XX
-
+/**
+ * Send required retransmissions
+ * @param osip The element to work on.
+ */
   void osip_retransmissions_execute (osip_t * osip);
 
 /**
@@ -878,7 +878,6 @@ extern "C"
   void osip_stop_retransmissions_from_dialog (osip_t * osip,
 					      struct osip_dialog *dialog);
 
-#endif
 
 /**
  * Allocate a sipevent (we know this message is an OUTGOING SIP message).
