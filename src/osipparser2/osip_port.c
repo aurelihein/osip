@@ -28,6 +28,16 @@
 
 #include <osipparser2/osip_port.h>
 
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
 #endif
@@ -89,17 +99,37 @@ osip_fallback_random_number ()
 {
   if (!random_seed_set)
     {
-#ifndef WIN32
+      unsigned int ticks;
+#ifdef WIN32
+      LARGE_INTEGER lCount;
+      QueryPerformanceCounter(&lCount);
+      ticks = lCount.LowPart + lCount.HighPart;
+#elif defined(_WIN32_WCE)
+      ticks = GetTickCount();
+#elif defined(__VXWORKS_OS__)
+      extern ULONG tickGet(void);
+      ticks = tickGet();
+#else
       struct timeval tv;
-
+      int fd;
       gettimeofday (&tv, NULL);
-#ifdef HAVE_LRAND48
-      srand48 (tv.tv_usec);
-#else
-      srand (tv.tv_usec);
+      ticks = tv.tv_sec + tv.tv_usec;
+      fd=open("/dev/random",O_RDONLY);
+      if (fd != -1)
+	{
+          unsigned int r;
+          if (read(fd, &r, sizeof(r))==sizeof(r))
+	    {
+	      ticks += r;
+	    }
+	  close(fd);
+	}
 #endif
+
+#ifdef HAVE_LRAND48
+      srand48 (ticks);
 #else
-      srand (time (NULL));
+      srand (ticks);
 #endif
       random_seed_set = 1;
     }
