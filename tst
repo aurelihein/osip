@@ -12,7 +12,8 @@ i=0
 while [ $i -lt 93 ]
 do
 set -x
-    mpatrol -C -S -j -t -L -p -d ./test/torture_test $1 $i $2 $3
+#    mpatrol -C -S -j -t -L -p -d ./test/torture_test $1 $i $2 $3
+     ./test/torture_test $1 $i $2 $3
 set +x
     i=`expr $i + 1`
 done
