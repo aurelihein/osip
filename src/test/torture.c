@@ -164,7 +164,7 @@ test_message (char *msg, int verbose, int clone)
       {
 	j--;
 	osip_message_init (&sip);
-	if (osip_message_parse (sip, msg) != 0)
+	if (osip_message_parse (sip, msg, strlen(msg)) != 0)
 	  {
 	    fprintf (stdout, "ERROR: failed while parsing!\n");
 	    osip_message_free (sip);	/* try to free msg, even if it failed! */
@@ -174,7 +174,7 @@ test_message (char *msg, int verbose, int clone)
       }
 
     osip_message_init (&sip);
-    if (osip_message_parse (sip, msg) != 0)
+    if (osip_message_parse (sip, msg, strlen(msg)) != 0)
       {
 	fprintf (stdout, "ERROR: failed while parsing!\n");
 	osip_message_free (sip);	/* try to free msg, even if it failed! */
@@ -184,8 +184,8 @@ test_message (char *msg, int verbose, int clone)
     else
       {
 	int i;
-
-	i = osip_message_to_str (sip, &result);
+	size_t length;
+	i = osip_message_to_str (sip, &result, &length);
 	if (i == -1)
 	  {
 	    fprintf (stdout, "ERROR: failed while printing message!\n");
@@ -219,9 +219,9 @@ test_message (char *msg, int verbose, int clone)
 		    else
 		      {
 			char *tmp;
-
+			size_t length;
 			osip_message_force_update (copy);
-			i = osip_message_to_str (copy, &tmp);
+			i = osip_message_to_str (copy, &tmp, &length);
 			if (i != 0)
 			  {
 			    fprintf (stdout,

@@ -460,13 +460,13 @@ extern "C"
  * @param sip The element to work on.
  * @param buf The string containing the body.
  */
-  int osip_message_set_body (osip_message_t * sip, const char *buf);
+  int osip_message_set_body (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Set a type for a body. (NOT TESTED! use with care)
  * @param sip The element to work on.
  * @param buf the mime type of body.
  */
-  int osip_message_set_body_mime (osip_message_t * sip, const char *buf);
+  int osip_message_set_body_mime (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Get one body header.
  * @param sip The element to work on.

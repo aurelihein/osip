@@ -22,12 +22,11 @@
 
 #include "fsm.h"
 
-
 /* Create a sipevent according to the SIP message buf. */
 /* INPUT : char *buf | message as a string.            */
 /* return NULL  if message cannot be parsed            */
 osip_event_t *
-osip_parse (char *buf)
+osip_parse (char *buf, size_t length)
 {
   osip_event_t *se = __osip_event_new (UNKNOWN_EVT, 0);
   int i;
@@ -45,7 +44,7 @@ osip_parse (char *buf)
 
 	i = osip_message_init (&(se->sip));
 
-	if (osip_message_parse (se->sip, buf) == -1)
+	if (osip_message_parse (se->sip, buf, length) == -1)
 	  {
 	    fprintf (stdout, "osip_message_parse retrun -1\n");
 	    osip_message_free (se->sip);
@@ -67,7 +66,7 @@ osip_parse (char *buf)
 #endif
   /* parse message and set up an event */
   i = osip_message_init (&(se->sip));
-  if (osip_message_parse (se->sip, buf) == -1)
+  if (osip_message_parse (se->sip, buf, length) == -1)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
@@ -99,6 +98,7 @@ osip_parse (char *buf)
       return se;
     }
 }
+
 
 /* allocates an event from retransmitter.             */
 /* USED ONLY BY THE STACK.                            */

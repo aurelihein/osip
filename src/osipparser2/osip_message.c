@@ -114,6 +114,7 @@ osip_message_init (osip_message_t ** sip)
 
   (*sip)->message_property = 3;
   (*sip)->message = NULL;	/* buffer to avoid calling osip_message_to_str many times (for retransmission) */
+  (*sip)->message_length = 0;
   return 0;			/* ok */
 }
 

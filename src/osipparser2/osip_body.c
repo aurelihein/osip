@@ -38,6 +38,7 @@ osip_body_init (osip_body_t ** body)
     return -1;
   (*body)->body = NULL;
   (*body)->content_type = NULL;
+  (*body)->length = 0;
 
   (*body)->headers = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*body)->headers == NULL)
@@ -50,12 +51,14 @@ osip_body_init (osip_body_t ** body)
   return 0;
 }
 
-/* fill the body of message.                              */
-/* INPUT : char *buf | pointer to the start of body.      */
-/* OUTPUT: osip_message_t *sip | structure to save results.        */
-/* returns -1 on error. */
+/**
+ * Fill the body of message.
+ * @param sip The structure to store results.
+ * @param buf The pointer to the start of body.
+ * @param length The length of body;
+ */
 int
-osip_message_set_body (osip_message_t * sip, const char *buf)
+osip_message_set_body (osip_message_t * sip, const char *buf, size_t length)
 {
   osip_body_t *body;
   int i;
@@ -63,7 +66,7 @@ osip_message_set_body (osip_message_t * sip, const char *buf)
   i = osip_body_init (&body);
   if (i != 0)
     return -1;
-  i = osip_body_parse (body, buf);
+  i = osip_body_parse (body, buf, length);
   if (i != 0)
     {
       osip_body_free (body);
@@ -81,14 +84,17 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
   int i;
   osip_body_t *copy;
 
-  if (body == NULL)
+  if (body == NULL || body->length<=0)
     return -1;
 
   i = osip_body_init (&copy);
   if (i != 0)
     return -1;
 
-  copy->body = osip_strdup (body->body);
+  
+  copy->body = (char*)osip_malloc(body->length+1);
+  copy->length = body->length;
+  memcpy(copy->body,body->body,body->length);
 
   if (body->content_type != NULL)
     {
@@ -192,7 +198,7 @@ osip_body_set_header (osip_body_t * body, const char *hname,
 /* OUTPUT: osip_message_t *sip | structure to save results.        */
 /* returns -1 on error. */
 int
-osip_message_set_body_mime (osip_message_t * sip, const char *buf)
+osip_message_set_body_mime (osip_message_t * sip, const char *buf, size_t length)
 {
   osip_body_t *body;
   int i;
@@ -200,7 +206,7 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf)
   i = osip_body_init (&body);
   if (i != 0)
     return -1;
-  i = osip_body_parse_mime (body, buf);
+  i = osip_body_parse_mime (body, buf, length);
   if (i != 0)
     {
       osip_body_free (body);
@@ -278,10 +284,8 @@ osip_body_parse_header (osip_body_t * body,
 }
 
 int
-osip_body_parse (osip_body_t * body, const char *start_of_body)
+osip_body_parse (osip_body_t * body, const char *start_of_body, size_t length)
 {
-  size_t i;
-
   if (body == NULL)
     return -1;
   if (start_of_body == NULL)
@@ -289,22 +293,16 @@ osip_body_parse (osip_body_t * body, const char *start_of_body)
   if (body->headers == NULL)
     return -1;
 
-  /*  i = __osip_find_next_crlfcrlf(start_of_body, &end_of_body);
-     if (i==-1) return -1; 
-     body->body = (char *)osip_malloc(end_of_body-start_of_body+1);
-     osip_strncpy(body->body, start_of_body, end_of_body-start_of_body);
-   */
-
-  i = strlen (start_of_body);
-  body->body = (char *) osip_malloc (i + 1);
+  body->body = (char *) osip_malloc (length + 1);
   if (body->body == NULL)
     return -1;
-  osip_strncpy (body->body, start_of_body, i);
+  memcpy(body->body,start_of_body,length);
+  body->length = length;
   return 0;
 }
 
 int
-osip_body_parse_mime (osip_body_t * body, const char *start_of_body)
+osip_body_parse_mime (osip_body_t * body, const char *start_of_body, size_t length)
 {
   const char *end_of_osip_body_header;
   const char *start_of_osip_body_header;
@@ -338,15 +336,17 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body)
 	return -1;		/* message does not end with CRLFCRLF, CRCR or LFLF */
     }
 
-  end_of_osip_body_header =
-    end_of_osip_body_header + strlen (end_of_osip_body_header);
+  end_of_osip_body_header = start_of_body + length;
+  if (end_of_osip_body_header-start_of_osip_body_header<=0)
+    return -1;
   body->body =
     (char *) osip_malloc (end_of_osip_body_header -
 			  start_of_osip_body_header + 1);
   if (body->body == NULL)
     return -1;
-  osip_strncpy (body->body, start_of_osip_body_header,
-		end_of_osip_body_header - start_of_osip_body_header);
+  memcpy (body->body, start_of_osip_body_header,
+	  end_of_osip_body_header - start_of_osip_body_header);
+  body->length = end_of_osip_body_header - start_of_osip_body_header;
 
   return 0;
 
@@ -356,7 +356,7 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body)
 /* INPUT : osip_body_t *body | body.  */
 /* returns null on error. */
 int
-osip_body_to_str (const osip_body_t * body, char **dest)
+osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 {
   char *tmp_body;
   char *tmp;
@@ -366,14 +366,17 @@ osip_body_to_str (const osip_body_t * body, char **dest)
   size_t length;
 
   *dest = NULL;
+  *str_length = 0;
   if (body == NULL)
     return -1;
   if (body->body == NULL)
     return -1;
   if (body->headers == NULL)
     return -1;
+  if (body->length <= 0)
+    return -1;
 
-  length = strlen (body->body) + (osip_list_size (body->headers) * 40);
+  length = body->length + (osip_list_size (body->headers) * 40);
   tmp_body = (char *) osip_malloc (length);
   if (tmp_body == NULL)
     return -1;
@@ -440,20 +443,21 @@ osip_body_to_str (const osip_body_t * body, char **dest)
       osip_strncpy (tmp_body, CRLF, 2);
       tmp_body = tmp_body + 2;
     }
-  if (length < tmp_body - ptr + strlen (body->body) + 4)
+  if (length < tmp_body - ptr + body->length + 4)
     {
       size_t len;
 
       len = tmp_body - ptr;
-      length = length + strlen (body->body) + 4;
+      length = length + body->length + 4;
       ptr = realloc (ptr, length);
       tmp_body = ptr + len;
     }
-  osip_strncpy (tmp_body, body->body, strlen (body->body));
-  tmp_body = tmp_body + strlen (body->body);
+  memcpy(tmp_body,body->body,body->length);
+  tmp_body = tmp_body + body->length;
 
   /* end of this body */
-
+  if (str_length!=NULL)
+     *str_length = tmp_body - ptr;
   *dest = ptr;
   return 0;
 

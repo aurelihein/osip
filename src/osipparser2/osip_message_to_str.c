@@ -408,9 +408,10 @@ osip_message_force_update (osip_message_t * sip)
 }
 
 int
-osip_message_to_str (osip_message_t * sip, char **dest)
+osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 {
   size_t malloc_size;
+  size_t total_length = 0;
   /* Added at SIPit day1 */
   char *start_of_bodies;
   char *content_length_to_modify = NULL;
@@ -430,15 +431,14 @@ osip_message_to_str (osip_message_t * sip, char **dest)
     if (1 == osip_message_get__property (sip))
       {				/* message is already available in "message" */
 
-	*dest = osip_strdup (sip->message);	/* is we just return the pointer, people will
-						   get issues while upgrading the library. This
-						   is because they are used to call free(*dest)
-						   right after using the buffer. This may be
-						   changed while moving to another branch
-						   developpement. replacement line will be:
-						   *dest = sip->message; */
+	*dest = osip_malloc(sip->message_length+1);
+	if (*dest==NULL)
+	  return -1;
+	memcpy(*dest, sip->message, sip->message_length);
+	(*dest)[sip->message_length]='\0';
+	if (message_length!=NULL)
+	  *message_length = sip->message_length;
 	return 0;
-
       }
     else
       {
@@ -840,19 +840,26 @@ osip_message_to_str (osip_message_t * sip, char **dest)
   osip_strncpy (message, CRLF, 2);
   message = message + 2;
 
+  start_of_bodies = message;
+  total_length = start_of_bodies - *dest;
+
   if (osip_list_eol (sip->bodies, 0))
     {
       /* same remark as at the beginning of the method */
       sip->message_property = 1;
       sip->message = osip_strdup (*dest);
+      sip->message_length = total_length;
+      if (message_length!=NULL)
+	*message_length = total_length;
+
       return 0;			/* it's all done */
     }
-  start_of_bodies = message;
 
   pos = 0;
   while (!osip_list_eol (sip->bodies, pos))
     {
       osip_body_t *body;
+      size_t body_length;
 
       body = (osip_body_t *) osip_list_get (sip->bodies, pos);
 
@@ -864,7 +871,7 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	  message = message + 2;
 	}
 
-      i = osip_body_to_str (body, &tmp);
+      i = osip_body_to_str (body, &tmp, &body_length);
       if (i != 0)
 	{
 	  osip_free (*dest);
@@ -872,19 +879,23 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 	  return -1;
 	}
 
-      if (malloc_size < message - *dest + 100 + strlen (tmp))
+      if (malloc_size < message - *dest + 100 + body_length)
 	{
 	  size_t size = message - *dest;
-	  malloc_size = message - *dest + strlen (tmp) + 100;
+	  int offset_of_body;
+	  offset_of_body = start_of_bodies - *dest;
+	  malloc_size = message - *dest + body_length + 100;
 	  *dest = realloc (*dest, malloc_size);
 	  if (*dest == NULL)
 	    return -1;
+	  start_of_bodies = *dest + offset_of_body;
 	  message = *dest + size;
 	}
 
-      osip_strncpy (message, tmp, strlen (tmp));
+      memcpy (message, tmp, body_length);
+      message[body_length]='\0';
       osip_free (tmp);
-      message = message + strlen (message);
+      message = message + body_length;
 
       pos++;
     }
@@ -910,16 +921,24 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 
   /* we NOW have the length of bodies: */
   {
-    size_t size = strlen (start_of_bodies);
-    char tmp[15];
-
-    sprintf (tmp, "%i", size);
+    size_t size = message - start_of_bodies;
+    char tmp2[15];
+    total_length += size;
+    sprintf (tmp2, "%i", size);
     /* do not use osip_strncpy here! */
-    strncpy (content_length_to_modify + 5 - strlen (tmp), tmp, strlen (tmp));
+    strncpy (content_length_to_modify + 5 - strlen (tmp2), tmp2, strlen (tmp2));
   }
 
   /* same remark as at the beginning of the method */
   sip->message_property = 1;
-  sip->message = osip_strdup (*dest);
+  sip->message=osip_malloc(total_length+1);
+  if(sip->message!=NULL)
+    {
+      memcpy(sip->message,*dest,total_length);
+      sip->message[total_length]='\0';
+      sip->message_length = total_length;
+      if(message_length!=NULL)
+	*message_length = total_length;
+    }
   return 0;
 }
