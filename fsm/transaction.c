@@ -142,6 +142,23 @@ transaction_init(transaction_t **transaction, context_type_t ctx_type,
   return -1;
 }
 
+/* This method automaticly remove the transaction context from
+   the osip stack. This task is required for proper operation
+   when a transaction goes in the TERMINATED STATE.
+   However the user might want to just take the context out of
+   the SIP stack andf keep it for future use without freeing
+   all ressource.... This way the transaction context can be
+   kept without being used by the oSIP stack.
+
+   new methods that replace this one:
+   osip_remove_ict
+   osip_remove_nict
+   osip_remove_ist
+   osip_remove_nist
+   +
+   transaction_free2();
+
+ */
 int
 transaction_free(transaction_t *transaction)
 {
@@ -182,6 +199,72 @@ transaction_free(transaction_t *transaction)
       TRACE(trace(__FILE__,__LINE__, OSIP_BUG,NULL,
 		  "transaction already removed from list %i!\n",
 		  transaction->transactionid));
+    }
+
+  /* empty the fifo */
+  evt = fifo_tryget(transaction->transactionff);
+  while (evt!=NULL)
+    {
+      msg_free(evt->sip);
+      sfree(evt->sip);
+      sfree(evt);
+      evt = fifo_tryget(transaction->transactionff);
+    }
+  fifo_free(transaction->transactionff);
+  sfree(transaction->transactionff);
+
+  msg_free(transaction->orig_request);
+  sfree(transaction->orig_request);
+  msg_free(transaction->last_response);
+  sfree(transaction->last_response);
+  msg_free(transaction->ack);
+  sfree(transaction->ack);
+
+  via_free(transaction->topvia);
+  sfree(transaction->topvia);
+  from_free(transaction->from);
+  sfree(transaction->from);
+  to_free(transaction->to);
+  sfree(transaction->to);
+  call_id_free(transaction->callid);
+  sfree(transaction->callid);
+  cseq_free(transaction->cseq);
+  sfree(transaction->cseq);
+
+  return 0;
+}
+
+/* same as transaction_free() but assume the transaction is
+   already removed from the list of transaction in the osip stack */
+int
+transaction_free2(transaction_t *transaction)
+{
+  sipevent_t *evt;
+  int i;
+  if (transaction==NULL) return -1;
+  if (transaction->orig_request!=NULL)
+    {
+      TRACE(trace(__FILE__,__LINE__,OSIP_INFO2,NULL,"free transaction ressource %i %s\n",transaction->transactionid, transaction->orig_request->call_id->number));
+    }
+  if (transaction->ctx_type==ICT)
+    {
+      ict_free(transaction->ict_context);
+      sfree(transaction->ict_context);
+    }
+  else if (transaction->ctx_type==IST)
+    {
+      ist_free(transaction->ist_context);
+      sfree(transaction->ist_context);
+    }
+  else if (transaction->ctx_type==NICT)
+    {
+      nict_free(transaction->nict_context);
+      sfree(transaction->nict_context);
+    }
+  else
+    {
+      nist_free(transaction->nist_context);
+      sfree(transaction->nist_context);
     }
 
   /* empty the fifo */
