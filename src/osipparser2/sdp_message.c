@@ -348,10 +348,25 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
   /* o=username sess-id sess-version nettype addrtype addr */
 
   /* useranme can contain any char (ascii) except "space" and CRLF */
+#ifdef FIREFLY_BUG_SUPPORT
+  if (tmp[0]==' ')
+    {
+      sdp->o_username = strdup("firefly");
+      tmp++;
+    }
+  else
+    {
+      i = __osip_set_next_token (&(sdp->o_username), tmp, ' ', &tmp_next);
+      if (i != 0)
+	return -1;
+      tmp = tmp_next;
+    }
+#else
   i = __osip_set_next_token (&(sdp->o_username), tmp, ' ', &tmp_next);
   if (i != 0)
     return -1;
   tmp = tmp_next;
+#endif
 
   /* sess_id contains only numeric characters */
   i = __osip_set_next_token (&(sdp->o_sess_id), tmp, ' ', &tmp_next);
@@ -417,8 +432,20 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
     crlf++;
   if (*crlf == '\0')
     return ERR_ERROR;
+#ifdef FIREFLY_BUG_SUPPORT
+  if (crlf == equal + 1)
+    {
+      sdp->s_name = strdup(" ");
+      if (crlf[1] == '\n')
+	*next = crlf + 2;
+      else
+	*next = crlf + 1;
+      return WF;		/* o=\r ?? bad header */
+    }
+#else
   if (crlf == equal + 1)
     return ERR_ERROR;		/* o=\r ?? bad header */
+#endif
 
   /* s=text */
 
