@@ -42,7 +42,8 @@
 #endif
 
 #if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
-#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+/* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
 #endif
 #endif
@@ -85,7 +86,8 @@ typedef struct {
 #endif
 
 #if !defined(WIN32) && !defined(__VXWORKS_OS__) && !defined(__POS__)
-#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+/* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 /**
  * Structure for referencing a thread
  * @var sthread_t

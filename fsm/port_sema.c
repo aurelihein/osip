@@ -26,7 +26,7 @@
 #include <osip/sema.h>
 
 #if !defined(__VXWORKS_OS__) && !defined(WIN32) && !defined(__POS__)
-#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 
 smutex_t * smutex_init() {
   smutex_t *mut = (smutex_t *)smalloc(sizeof(smutex_t));

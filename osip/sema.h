@@ -77,7 +77,8 @@ typedef sem_t ssem_t;
 #include <synch.h>
 #endif
 
-#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+/* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
 #include <pthread.h>
 /**
  * Structure for referencing a semaphore element.

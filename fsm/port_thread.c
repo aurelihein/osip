@@ -38,7 +38,7 @@
 /* OUTPUT:  pthread_t *thread | thread ID.   */
 /* returns SIP_NULL on error */
 #ifndef __VXWORKS_OS__
-#if defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H)
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H)
 sthread_t *
 sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *arg)
 {
@@ -49,6 +49,8 @@ sthread_create(int stacksize, sthread_t *thread, void *(*func)(void *), void *ar
   i = pthread_create(thread,NULL
 		     ,func
 		     ,(void *)arg);
+
+  /* HAVE TO DEAL WITH THE PTHREAD_CREATE_JOINABLE element */
   if (i!=0)
     {
     DEBUG(fprintf(stdout,"<port_thread.c> Error while creating a new thread %i\n",i));
