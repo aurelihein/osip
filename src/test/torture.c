@@ -41,6 +41,8 @@ usage ()
 int
 main (int argc, char **argv)
 {
+  int success = 1;
+
   int i;
   int verbose = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
   int clone = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
@@ -119,31 +121,25 @@ main (int argc, char **argv)
       marker = fgets (tmp, 500, torture_file);
     }
 
+  success = test_message (msg, verbose, clone);
   if (verbose)
     {
       fprintf (stdout, "test %s : ============================ \n", argv[2]);
       fprintf (stdout, "%s", msg);
 
-      if (0 == test_message (msg, verbose, clone))
+      if (0 == success)
 	fprintf (stdout, "test %s : ============================ OK\n",
 		 argv[2]);
       else
 	fprintf (stdout, "test %s : ============================ FAILED\n",
 		 argv[2]);
     }
-  else
-    {
-      if (0 == test_message (msg, verbose, clone))
-	fprintf (stdout, "test %s : OK\n", argv[2]);
-      else
-	fprintf (stdout, "test %s : FAILED\n", argv[2]);
-    }
 
   osip_free (msg);
   osip_free (tmp);
   fclose (torture_file);
 
-  return 0;
+  return success;
 }
 
 int
@@ -157,9 +153,10 @@ test_message (char *msg, int verbose, int clone)
     /* int j=10000; */
     int j = 1;
 
-    fprintf (stdout,
-	     "Trying %i sequentials calls to osip_message_init(), osip_message_parse() and osip_message_free()\n",
-	     j);
+    if (verbose)
+      fprintf (stdout,
+	       "Trying %i sequentials calls to osip_message_init(), osip_message_parse() and osip_message_free()\n",
+	       j);
     while (j != 0)
       {
 	j--;
@@ -202,8 +199,9 @@ test_message (char *msg, int verbose, int clone)
 		/* int j = 10000; */
 		int j = 1;
 
-		fprintf (stdout,
-			 "Trying %i sequentials calls to osip_message_clone() and osip_message_free()\n",
+		if (verbose)
+		  fprintf (stdout,
+			   "Trying %i sequentials calls to osip_message_clone() and osip_message_free()\n",
 			 j);
 		while (j != 0)
 		  {
@@ -246,7 +244,8 @@ test_message (char *msg, int verbose, int clone)
 			osip_message_free (copy);
 		      }
 		  }
-		fprintf (stdout, "sequentials calls: done\n");
+		if (verbose)
+		  fprintf (stdout, "sequentials calls: done\n");
 	      }
 	    osip_free (result);
 	  }

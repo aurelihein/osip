@@ -3,20 +3,35 @@
 # This is a short-cut to execute tests on the parser.
 # ./conf/torture_msgs{,2} contain various kind of messages.
 
-echo "=="
-echo "== Testing the parser contained in libosip."
-echo "== You can use the verbose mode (-v) to see the full message."
-echo "=="
+#echo "=="
+#echo "== Testing the parser contained in libosip."
+#echo "== You can use the verbose mode (-v) to see the full message."
+#echo "=="
+
+ok=0
+nok=0
 
 i=0
-while [ $i -lt 93 ]
+while [ $i -lt 96 ]
 do
-set -x
-#  mpatrol -C -S -L -j -d --list -p -t --use-debug ./test/torture_test $1 $i $2 $3
-   ./torture_test $1 $i $2 $3
 set +x
-    i=`expr $i + 1`
+#  mpatrol -C -S -L -j -d --list -p -t --use-debug ./test/torture_test $1 $i $2 $3
+   ./torture_test ./res/sip$i 0 $1
+   if [ "$?" -eq 0 ]; then
+       echo "checking sip$i : passed";
+       ok=`expr $ok + 1`;
+   else
+       echo "checking sip" $i": failed";
+       nok=`expr $nok + 1`
+   fi;
+
+   i=`expr $i + 1`
+
 done
+
+echo "number of messages:   $i (XX expected)"
+echo "correct messages  :   $ok (XX expected)"
+echo "malformed messages:   $nok (XX expected)"
 
 #echo "=="
 #echo "== Test for \\n (CR) and \\r (LF) instead of \\r\\n (CRLF)"

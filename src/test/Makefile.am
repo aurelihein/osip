@@ -153,17 +153,14 @@ $(top_builddir)/src/osipparser2/sdp_accessor.o
 
 
 check:
+	@echo " *******************************"
 	@echo " ****** starting tests! ********"
-	./$(top_srcdir)/src/test/tst ./$(top_srcdir)/src/test/res/torture_msgs -v -c > ./osip-chk.log 2>&1
-	./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log2 2>&1
-	./$(top_srcdir)/src/test/tst_rfc3264 ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
+	@echo " *******************************"
+	@./$(top_srcdir)/src/test/tst -c
+	@./$(top_srcdir)/src/test/tst_sdp ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log2 2>&1
+	@./$(top_srcdir)/src/test/tst_rfc3264 ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
 
 	@echo " ******              RESULTS                 ********"
-
-	@echo " **SIP* NUMBER OF SUCCESS (87 are expected) ********"
-	@grep "==========" osip-chk.log | grep OK | wc -l
-	@echo " **SIP* NUMBER OF FAILURE (6 are expected)  ********"
-	@grep "==========" osip-chk.log | grep FA | wc -l
 
 	@echo " **SDP* NUMBER OF SUCCESS (15 are expected)  ********"
 	@grep "==========" osipsdp-chk.log2 | grep OK | wc -l
