@@ -474,16 +474,13 @@ www_authenticate_2char (www_authenticate_t * wwwa, char **dest)
     {
       sstrncpy (tmp, " realm=", 7);
       tmp = tmp + 7;
-      /* !! realm-value must be a quoted string !! */
       sstrncpy (tmp, wwwa->realm, strlen (wwwa->realm));
       tmp = tmp + strlen (tmp);
     }
-
   if (wwwa->domain != NULL)
     {
       sstrncpy (tmp, ", domain=", 9);
       tmp = tmp + 9;
-      /* !! domain-value must be a list of URI in a quoted string !! */
       sstrncpy (tmp, wwwa->domain, strlen (wwwa->domain));
       tmp = tmp + strlen (tmp);
     }
@@ -491,7 +488,6 @@ www_authenticate_2char (www_authenticate_t * wwwa, char **dest)
     {
       sstrncpy (tmp, ", nonce=", 8);
       tmp = tmp + 8;
-      /* !! nonce-value must be a quoted string !! */
       sstrncpy (tmp, wwwa->nonce, strlen (wwwa->nonce));
       tmp = tmp + strlen (tmp);
     }
