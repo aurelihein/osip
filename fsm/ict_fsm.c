@@ -312,6 +312,7 @@ ica_error:
 void
 ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
 {
+  /*  sipevent_t *sipevt; */
   route_t *route;
   int i;
   osip_t *osip = (osip_t *) ict->config;
@@ -373,23 +374,34 @@ ict_rcv_3456xx (transaction_t * ict, sipevent_t * evt)
       else
         osip->cb_ict_6xx_received (ict, evt->sip);
     }
-  /* this is handled in ict_retransmit_ack
-     else {
-     if (osip->cb_ict_3456xx_received2!=NULL)
-     osip->cb_ict_3456xx_received2(ict, evt->sip);
 
-     i = osip->cb_send_message(ict, ict->ack, ict->ict_context->destination,
-     ict->ict_context->port, ict->out_socket);
-     if (i!=0)
+  /* TEST ME:
+     sipevt = fifo_tryget(ict->transactionff);
+     if (sipevt==NULL)
+     {}
+     else if (sipevt->sip==NULL)
+     fifo_insert(ict->transactionff, sipevt);
+     else if (MSG_IS_RESPONSE(sipevt->sip))
      {
-     osip->cb_ict_transport_error(ict, i);
-     transaction_set_state(ict, ICT_TERMINATED);
-     osip->cb_ict_kill_transaction(ict);
-     return;
+     if (0==strcmp(sipevt->sip->strtline->statuscode, evt->sip->strtline->statuscode))
+     {
+     OSIP_TRACE (osip_trace
+     (__FILE__, __LINE__, OSIP_WARNING, NULL,
+     "discard this clone of late response... callid:%s\n",
+     evt->sip->call_id->number));
+     msg_free(sipevt->sip);
+     sfree(sipevt->sip);
+     sfree(sipevt);
      }
      else
-     osip->cb_ict_ack_sent2(ict, ict->ack);
-     } */
+     {
+     fifo_insert(ict->transactionff, sipevt);
+     }
+     }
+     else
+     fifo_insert(ict->transactionff, sipevt);
+  */
+
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
   ict->ict_context->timer_d_start = time (NULL);
   transaction_set_state (ict, ICT_COMPLETED);

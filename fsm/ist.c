@@ -118,8 +118,10 @@ ist_need_timer_g_event (ist_t * ist, state_t state, int transactionid)
     {
       if (ist->timer_g_start == -1)
         return NULL;
-      if ((now - ist->timer_g_start) * 1000 > ist->timer_g_length)
-        return osip_new_event (TIMEOUT_G, transactionid);
+      if ((now - ist->timer_g_start-1) * 1000 > ist->timer_g_length)
+        {
+	  return osip_new_event (TIMEOUT_G, transactionid);
+	}
     }
   return NULL;
 }
@@ -136,8 +138,10 @@ ist_need_timer_h_event (ist_t * ist, state_t state, int transactionid)
       /* may need timer H */
       if (ist->timer_h_start == -1)
         return NULL;
-      if ((now - ist->timer_h_start) * 1000 > ist->timer_h_length)
-        return osip_new_event (TIMEOUT_H, transactionid);
+      if ((now - ist->timer_h_start-1) * 1000 > ist->timer_h_length)
+        {
+	  return osip_new_event (TIMEOUT_H, transactionid);
+	}
     }
   return NULL;
 }

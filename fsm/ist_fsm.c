@@ -188,7 +188,8 @@ ist_rcv_invite (transaction_t * ist, sipevent_t * evt)
       ist->orig_request = evt->sip;
 
       osip->cb_ist_invite_received (ist, evt->sip);
-  } else                        /* IST_PROCEEDING or IST_COMPLETED */
+    }
+  else                        /* IST_PROCEEDING or IST_COMPLETED */
     {
       /* delete retransmission */
       msg_free (evt->sip);
@@ -228,41 +229,8 @@ ist_rcv_invite (transaction_t * ist, sipevent_t * evt)
                 osip->cb_ist_3456xx_sent2 (ist, ist->last_response);
             }
         }
-      /* we are already in the proper state */
-      return;
     }
-  /* This is not to be used by the TRANSACTION LAYER??
-     if (ist->auto_send_100==0)
-     {
-     sip_t *resp_100;
-     resp_100 = create_resp_100(ist, evt->sip);
-     if (resp_100!=NULL)
-     {
-     via_t *via;
-     ist->last_response=resp_100;
-     via = (via_t*)list_get(resp_100->vias, 0);
-     {
-     int port;
-     if (via->port==NULL) port=5060;
-     else port = atoi(via->port);
-     i = osip->cb_send_message(ist, resp_100, via->host,
-     port, ist->out_socket);
-     }
-     if (i!=0)
-     {
-     osip->cb_ist_transport_error(ist, i);
-     transaction_set_state(ist, IST_TERMINATED);
-     osip->cb_ist_kill_transaction(ist);
-     return;
-     }
-     }
-     else {
-     transaction_set_state(ist, IST_TERMINATED);
-     osip->cb_ist_kill_transaction(ist);
-     return;
-     }
-     }
-   */
+
   /* we come here only if it was the first INVITE received */
   transaction_set_state (ist, IST_PROCEEDING);
 }

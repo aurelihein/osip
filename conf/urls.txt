@@ -1,3 +1,4 @@
+sip:kubi6@[3ffe:3:2120:]:2
 sip:alice@example.org;lr
 sip:example.org;lr
 # unknown schemes

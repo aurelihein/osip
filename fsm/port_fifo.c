@@ -73,6 +73,40 @@ fifo_add (fifo_t * ff, void *el)
   return 0;
 }
 
+
+int
+fifo_insert (fifo_t * ff, void *el)
+{
+#ifdef OSIP_MT
+  smutex_lock (ff->qislocked);
+#endif
+
+  if (ff->etat != plein)
+    {
+      /* ff->nb_elt++; */
+      list_add (ff->queue, el, 0);     /* insert at end of queue */
+  } else
+    {
+      fprintf (stdout, "<port_fifo.c> (fifo_t:%x) WARNING STACK IS OVERLOADED\n",
+               (int) ff);
+#ifdef OSIP_MT
+      smutex_unlock (ff->qislocked);
+#endif
+      return -1;                /* stack is full */
+    }
+  /* if (ff->nb_elt >= MAX_LEN) */
+  if (list_size (ff->queue) >= MAX_LEN)
+    ff->etat = plein;
+  else
+    ff->etat = ok;
+
+#ifdef OSIP_MT
+  ssem_post (ff->qisempty);
+  smutex_unlock (ff->qislocked);
+#endif
+  return 0;
+}
+
 #ifdef OSIP_MT
 
 void *

@@ -440,7 +440,7 @@ extern "C"
  * You can re-define the default value for T4. (T1 is defined in rfcxxxx)
  * The default value is 5000ms.
  */
-#define DEFAULT_T4 5000         /* 4s */
+#define DEFAULT_T4 5000         /* 5s */
 #endif
 
 

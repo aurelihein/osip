@@ -6,11 +6,11 @@ AC_INIT(osip/osip.h)
 dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=0
-OSIP_MINOR_VERSION=8
-OSIP_MICRO_VERSION=9
+OSIP_MINOR_VERSION=9
+OSIP_MICRO_VERSION=0
 
 dnl Library extension
-OSIP_RELEASE=0.8.9
+OSIP_RELEASE=0.9.0
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 

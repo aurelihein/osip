@@ -26,7 +26,7 @@
 
 #define ERR_ERROR   -1          /* bad header */
 #define ERR_DISCARD  0          /* wrong header */
-#define OK           1          /* well formed header */
+#define WF           1          /* well formed header */
 
 
 int
@@ -274,7 +274,7 @@ sdp_parse_v (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 
@@ -354,7 +354,7 @@ sdp_parse_o (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -395,7 +395,7 @@ sdp_parse_s (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -452,7 +452,7 @@ sdp_parse_i (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -491,7 +491,7 @@ sdp_parse_u (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -533,7 +533,7 @@ sdp_parse_e (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -575,7 +575,7 @@ sdp_parse_p (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -717,7 +717,7 @@ sdp_parse_c (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -793,7 +793,7 @@ sdp_parse_b (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -861,7 +861,7 @@ sdp_parse_t (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 
@@ -911,7 +911,7 @@ sdp_parse_r (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -952,7 +952,7 @@ sdp_parse_z (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -1052,7 +1052,7 @@ sdp_parse_k (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -1153,7 +1153,7 @@ sdp_parse_a (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 int
@@ -1306,7 +1306,7 @@ sdp_parse_m (sdp_t * sdp, char *buf, char **next)
     *next = crlf + 2;
   else
     *next = crlf + 1;
-  return OK;
+  return WF;
 }
 
 

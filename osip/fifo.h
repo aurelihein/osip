@@ -83,6 +83,12 @@ extern "C"
  */
   void fifo_free (fifo_t * ff);
 /**
+ * Insert an element in a fifo (at the beginning).
+ * @param ff The element to work on.
+ * @param element The pointer on the element to insert.
+ */
+  int fifo_insert (fifo_t * ff, void *el);
+/**
  * Add an element in a fifo.
  * @param ff The element to work on.
  * @param element The pointer on the element to add.
