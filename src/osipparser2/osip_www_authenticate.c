@@ -38,6 +38,7 @@ osip_www_authenticate_init (osip_www_authenticate_t ** dest)
   (*dest)->stale = NULL;	/* optionnal */
   (*dest)->algorithm = NULL;	/* optionnal */
   (*dest)->qop_options = NULL;	/* optionnal (contains a list of qop-value) */
+  (*dest)->auth_param = NULL;
   return 0;
 }
 
