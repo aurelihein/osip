@@ -156,7 +156,7 @@ sdp_message_i_info_get (sdp_message_t * sdp, int pos_media)
   med = osip_list_get (sdp->m_medias, pos_media);
   if (med == NULL)
     return NULL;
-  return sdp->i_info;
+  return med->i_info;
 }
 
 int
@@ -186,7 +186,7 @@ sdp_message_e_email_add (sdp_message_t * sdp, char *email)
 }
 
 char *
-sdp_e_email_get (sdp_message_t * sdp, int pos)
+sdp_message_e_email_get (sdp_message_t * sdp, int pos)
 {
   if (sdp == NULL)
     return NULL;

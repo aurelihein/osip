@@ -359,7 +359,8 @@ extern "C"
  * @param sdp The element to work on.
  * @param pos the index of the email line.
  */
-  char *sdp_e_email_get (sdp_message_t * sdp, int pos);
+  #define sdp_e_email_get sdp_message_e_email_get
+  char *sdp_message_e_email_get (sdp_message_t * sdp, int pos);
 /**
  * Set the version in a SDP packet.
  * @param sdp The element to work on.

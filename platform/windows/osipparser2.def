@@ -286,7 +286,7 @@ EXPORTS
      sdp_bandwidth_init        @285	
      sdp_connection_free        @286	
      sdp_connection_init        @287	
-     sdp_e_email_get        @288	
+     sdp_message_e_email_get        @288	
      sdp_key_free        @289	
      sdp_key_init        @290	
      sdp_media_free        @291	
