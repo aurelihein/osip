@@ -790,6 +790,18 @@ osip_free(osip_t *osip)
   sfree(osip->nist_transactions);
 }
 
+
+void osip_set_application_context(osip_t *osip, void *pointer)
+{
+  osip->your_pointer = pointer;
+}
+
+void *osip_get_application_context(osip_t *osip)
+{
+  if (osip==NULL) return NULL;
+  return osip->your_pointer;
+}
+
 int
 osip_ict_execute(osip_t *osip)
 {

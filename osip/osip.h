@@ -562,6 +562,8 @@ typedef struct osip_t osip_t;
 
 struct osip_t {
 
+  void *application_context;   /* a pointer for your personnal usage */
+
   /* list of transactions for ict, ist, nict, nist */
   list_t *ict_transactions;
   list_t *ist_transactions;
@@ -1059,7 +1061,25 @@ int  osip_init(osip_t **osip);
  * Free all resource in a osip_t element.
  * @param osip The element to free.
  */
+/**
+ * Free all resource in a osip_t element.
+ * @param osip The element to free.
+ */
 void osip_free(osip_t *osip);
+
+/**
+ * Set a pointer in a osip_t element.
+ * This help to find your application layer in callbacks.
+ * @param osip The element to free.
+ */
+void osip_set_application_context(osip_t *osip, void *pointer);
+
+/**
+ * Get a pointer in a osip_t element.
+ * This help to find your application layer in callbacks.
+ * @param osip The element to free.
+ */
+void *osip_get_application_context(osip_t *osip);
 
 #ifndef DOXYGEN
 
