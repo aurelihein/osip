@@ -11,7 +11,7 @@ EXPORTS
      osip_accept_encoding_set_element       @7	
      osip_accept_encoding_to_str       @8	
      osip_atoi       @9	
-     osip_authorization_clone  10	
+     osip_authorization_clone  @10	
      osip_authorization_free      @11	
      osip_authorization_get_algorithm      @12	
      osip_authorization_get_auth_type      @13	
