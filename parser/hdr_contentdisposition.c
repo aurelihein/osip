@@ -31,11 +31,15 @@ msg_setcontent_disposition (sip_t * sip, char *hvalue)
   int i;
 
   i = content_disposition_init (&content_disposition);
-  if (i == -1)
+  if (i!=0)
     return -1;
   i = content_disposition_parse (content_disposition, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i!=0)
+    {
+      content_disposition_free(content_disposition);
+      sfree(content_disposition);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
@@ -77,6 +81,7 @@ content_disposition_parse (content_disposition_t * cd, char *hvalue)
   if (cd_params - hvalue + 1 < 2)
     return -1;
   cd->element = (char *) smalloc (cd_params - hvalue + 1);
+  if (cd->element==NULL) return -1;
   sstrncpy (cd->element, hvalue, cd_params - hvalue);
   sclrspace (cd->element);
 

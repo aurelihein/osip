@@ -35,11 +35,15 @@ msg_setcontact (sip_t * sip, char *hvalue)
   contact_t *contact;
 
   i = contact_init (&contact);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = contact_parse (contact, hvalue);
-  if (i == -1)
-    return -1;
+  if (i!=0)
+    {
+      contact_free(contact);
+      sfree(contact);
+      return -1;
+    }
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
@@ -54,6 +58,7 @@ msg_setcontact (sip_t * sip, char *hvalue)
 int
 contact_parse (contact_t * contact, char *hvalue)
 {
+  if (contact==NULL) return -1;
   if (strncmp (hvalue, "*", 1) == 0)
     {
       contact->displayname = sgetcopy (hvalue);

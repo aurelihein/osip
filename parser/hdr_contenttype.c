@@ -36,6 +36,12 @@ content_type_init (content_type_t ** content_type)
   (*content_type)->subtype = NULL;
 
   (*content_type)->gen_params = (list_t *) smalloc (sizeof (list_t));
+  if ((*content_type)->gen_params == NULL)
+    {
+      sfree((*content_type)->gen_params);
+      *content_type = NULL;
+      return -1;
+    }
   list_init ((*content_type)->gen_params);
 
   return 0;
@@ -58,7 +64,14 @@ msg_setcontent_type (sip_t * sip, char *hvalue)
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return content_type_parse (sip->content_type, hvalue);
+ i = content_type_parse (sip->content_type, hvalue);
+ if (i!=0)
+   {
+     content_type_free(sip->content_type);
+     sfree(sip->content_type);
+     sip->content_type=NULL;
+   }
+ return 0;
 }
 
 
@@ -110,18 +123,20 @@ content_type_parse (content_type_t * content_type, char *hvalue)
   if (subtype - hvalue + 1 < 2)
     return -1;
   content_type->type = (char *) smalloc (subtype - hvalue + 1);
+  if (content_type->type==NULL)
+    return -1;
   sstrncpy (content_type->type, hvalue, subtype - hvalue);
   sclrspace (content_type->type);
 
   if (content_type_params - subtype < 2)
     return -1;
   content_type->subtype = (char *) smalloc (content_type_params - subtype);
+  if (content_type->subtype==NULL) return -1;
   sstrncpy (content_type->subtype, subtype + 1, content_type_params - subtype - 1);
   sclrspace (content_type->subtype);
 
   return 0;
 }
-
 
 
 /* returns the content_type header as a string.  */
@@ -137,7 +152,7 @@ content_type_2char (content_type_t * content_type, char **dest)
   *dest = NULL;
   if ((content_type == NULL) || (content_type->type == NULL)
       || (content_type->subtype == NULL))
-    return -1;
+   return -1;
 
   /* try to guess a long enough length */
   len = strlen (content_type->type) + strlen (content_type->subtype) + 4        /* for '/', ' ', ';' and '\0' */
@@ -161,8 +176,8 @@ content_type_2char (content_type_t * content_type, char **dest)
     while (!list_eol (content_type->gen_params, pos))
       {
         int tmp_len;
-
         u_param = (generic_param_t *) list_get (content_type->gen_params, pos);
+	if (u_param->gvalue==NULL) { sfree(buf); return -1; }
         tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
           + strlen (u_param->gvalue);
         if (len < tmp_len)
@@ -228,8 +243,12 @@ content_type_clone (content_type_t * ctt, content_type_t ** dest)
       {
         u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
         i = generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          return -1;
+	if (i!=0)
+	  {
+	    content_type_free(ct);
+	    sfree(ct);
+	    return -1;
+	  }
         list_add (ct->gen_params, dest_param, -1);
         pos++;
       }

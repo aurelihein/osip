@@ -31,11 +31,15 @@ msg_setallow (sip_t * sip, char *hvalue)
   int i;
 
   i = allow_init (&allow);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = allow_parse (allow, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)
+    {
+      allow_free(allow);
+      sfree(allow);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

@@ -420,9 +420,10 @@ msg_2char (sip_t * sip, char **dest)
     }
   message = next;
 
-  i = strcat_simple_header (message, sip->authorization, "Authorization: ", 15,
-                            ((int (*)(void *, char **)) &authorization_2char),
-                            &next);
+  i = strcat_headers_one_per_line (message,
+				   sip->authorizations, "Authorization: ", 15,
+				   ((int (*)(void *, char **))&authorization_2char),
+				   &next);
   if (i != 0)
     {
       sfree (*dest);
@@ -686,7 +687,7 @@ msg_2char (sip_t * sip, char **dest)
         }
 
       i = body_2char (body, &tmp);
-      if (i == -1)
+      if (i != 0)
         {
           sfree (*dest);
           *dest = NULL;

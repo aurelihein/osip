@@ -29,6 +29,7 @@ int
 authorization_init (authorization_t ** dest)
 {
   *dest = (authorization_t *) smalloc (sizeof (authorization_t));
+  if (*dest==NULL) return -1;
   (*dest)->auth_type = NULL;
   (*dest)->username = NULL;
   (*dest)->realm = NULL;
@@ -51,20 +52,29 @@ authorization_init (authorization_t ** dest)
 int
 msg_setauthorization (sip_t * sip, char *hvalue)
 {
+  authorization_t *authorization;
   int i;
+  if (sip==NULL||sip->authorizations == NULL)
+    return -1;
+  i = authorization_init (&authorization);
+  if (i != 0)
+    return -1;
+  i = authorization_parse (authorization, hvalue);
+  if (i != 0)
+    {
+      authorization_free(authorization);
+      sfree(authorization);
+      return -1;
+    }
 
-  if (sip->authorization != NULL)
-    return -1;
-  i = authorization_init (&(sip->authorization));
-  if (i == -1)
-    return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return authorization_parse (sip->authorization, hvalue);
+  list_add (sip->authorizations, authorization, -1);
+  return 0;
 }
 
-/* fills the www-authenticate strucuture.                      */
+/* fills the www-authenticate structure.           */
 /* INPUT : char *hvalue | value of header.         */
 /* OUTPUT: sip_t *sip | structure to save results. */
 /* returns -1 on error. */
@@ -227,13 +237,20 @@ authorization_parse (authorization_t * auth, char *hvalue)
   return 0;                     /* ok */
 }
 
-/* returns the authorization header.            */
+/* returns the authorization header.   */
 /* INPUT : sip_t *sip | sip message.   */
 /* returns null on error. */
-authorization_t *
-msg_getauthorization (sip_t * sip)
+int
+msg_getauthorization (sip_t * sip, int pos, authorization_t **dest)
 {
-  return sip->authorization;
+  authorization_t *authorization;
+
+  *dest = NULL;
+  if (list_size (sip->authorizations) <= pos)
+    return -1;                  /* does not exist */
+  authorization = (authorization_t *) list_get (sip->authorizations, pos);
+  *dest = authorization;
+  return pos;
 }
 
 char *
@@ -422,6 +439,7 @@ authorization_2char (authorization_t * auth, char **dest)
     len = len + strlen (auth->message_qop) + 6;
 
   tmp = (char *) smalloc (len);
+  if (tmp==NULL) return -1;
   *dest = tmp;
 
   sstrncpy (tmp, auth->auth_type, strlen (auth->auth_type));
@@ -560,30 +578,71 @@ authorization_clone (authorization_t * auth, authorization_t ** dest)
   if (i == -1)                  /* allocation failed */
     return -1;
   if (auth->auth_type != NULL)
-    au->auth_type = sgetcopy (auth->auth_type);
+    {
+      au->auth_type = sgetcopy (auth->auth_type);
+      if (au->auth_type) goto ac_error;
+    }
   if (auth->username != NULL)
-    au->username = sgetcopy (auth->username);
+    {
+      au->username = sgetcopy (auth->username);
+      if (au->username) goto ac_error;
+    }
   if (auth->realm != NULL)
-    au->realm = sgetcopy (auth->realm);
+    {
+      au->realm = sgetcopy (auth->realm);
+      if (auth->realm) goto ac_error;
+    }
   if (auth->nonce != NULL)
-    au->nonce = sgetcopy (auth->nonce);
+    {
+      au->nonce = sgetcopy (auth->nonce);
+      if (auth->nonce) goto ac_error;
+    }
   if (auth->uri != NULL)
-    au->uri = sgetcopy (auth->uri);
+    {
+      au->uri = sgetcopy (auth->uri);
+      if (au->uri) goto ac_error;
+    }
   if (auth->response != NULL)
-    au->response = sgetcopy (auth->response);
+    {
+      au->response = sgetcopy (auth->response);
+      if (auth->response) goto ac_error;
+    }
   if (auth->digest != NULL)
-    au->digest = sgetcopy (auth->digest);
+    {
+      au->digest = sgetcopy (auth->digest);
+      if (au->digest) goto ac_error;
+    }
   if (auth->algorithm != NULL)
-    au->algorithm = sgetcopy (auth->algorithm);
+    {
+      au->algorithm = sgetcopy (auth->algorithm);
+      if (auth->algorithm) goto ac_error;
+    }
   if (auth->cnonce != NULL)
-    au->cnonce = sgetcopy (auth->cnonce);
+    {
+      au->cnonce = sgetcopy (auth->cnonce);
+      if (au->cnonce) goto ac_error;
+    }
   if (auth->opaque != NULL)
-    au->opaque = sgetcopy (auth->opaque);
+    {
+      au->opaque = sgetcopy (auth->opaque);
+      if (auth->opaque) goto ac_error;
+    }
   if (auth->message_qop != NULL)
-    au->message_qop = sgetcopy (auth->message_qop);
+    {
+      au->message_qop = sgetcopy (auth->message_qop);
+      if (auth->message_qop) goto ac_error;
+    }
   if (auth->nonce_count != NULL)
-    au->nonce_count = sgetcopy (auth->nonce_count);
+    {
+      au->nonce_count = sgetcopy (auth->nonce_count);
+      if (auth->nonce_count) goto ac_error;
+    }
 
   *dest = au;
   return 0;
+  
+ ac_error:
+  authorization_free(au);
+  sfree(au);
+  return -1;
 }

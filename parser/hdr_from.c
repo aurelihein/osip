@@ -50,7 +50,15 @@ msg_setfrom (sip_t * sip, char *hvalue)
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return from_parse (sip->from, hvalue);
+  i = from_parse (sip->from, hvalue);
+  if (i!=0)
+    {
+      from_free(sip->from);
+      sfree(sip->from);
+      sip->from = NULL;
+      return -1;
+    }
+  return 0;
 }
 
 
@@ -67,10 +75,16 @@ int
 from_init (from_t ** from)
 {
   *from = (from_t *) smalloc (sizeof (from_t));
+  if (*from==NULL) return -1;
   (*from)->displayname = NULL;
   (*from)->url = NULL;
 
   (*from)->gen_params = (list_t *) smalloc (sizeof (list_t));
+  if ((*from)->gen_params==NULL)
+    {
+      sfree(*from);
+      *from = NULL;
+    }
   list_init ((*from)->gen_params);
 
   return 0;
@@ -153,6 +167,7 @@ from_parse (from_t * from, char *hvalue)
           if (url - hvalue + 1 < 2)
             return -1;
           from->displayname = (char *) smalloc (url - hvalue + 1);
+	  if (from->displayname==NULL) return -1;
           sstrncpy (from->displayname, hvalue, url - hvalue);
           sclrspace (from->displayname);
         }
@@ -175,6 +190,7 @@ from_parse (from_t * from, char *hvalue)
           if (second - first + 2 >= 2)
             {
               from->displayname = (char *) smalloc (second - first + 2);
+	      if (from->displayname==NULL) return -1;
               sstrncpy (from->displayname, first, second - first + 1);
               /* sclrspace(from->displayname); *//*should we do that? */
 
@@ -225,6 +241,7 @@ from_parse (from_t * from, char *hvalue)
       return -1;
     url_init (&(from->url));
     tmp = (char *) smalloc (url_end - url + 2);
+    if (tmp==NULL) return -1;
     sstrncpy (tmp, url, url_end - url + 1);
     if (url_parse (from->url, tmp) == -1)
       {
@@ -245,21 +262,24 @@ from_2char (from_t * from, char **dest)
 {
   char *url;
   char *buf;
+  int i;
+  int len;
 
   *dest = NULL;
   if ((from == NULL) || (from->url == NULL))
     return -1;
 
-  buf = (char *) smalloc (200);
-  *dest = buf;
+  i = url_2char (from->url, &url);
+  if (i != 0)
+    return -1;
 
-  if (url_2char (from->url, &url) == -1)
-    {
-      sfree (buf);
-      *dest = NULL;
-      return -1;
-    }
+  if (from->displayname==NULL)
+    len = strlen(url) +5;
+  else
+    len = strlen(url) + strlen(from->displayname) +5;
 
+  buf = (char *) smalloc (len);
+  if (buf==NULL) return -1;
 
   if (from->displayname != NULL)
     sprintf (buf, "%s <%s>", from->displayname, url);
@@ -270,23 +290,32 @@ from_2char (from_t * from, char **dest)
     sprintf (buf, "<%s>", url);
   sfree (url);
 
-
-  buf = buf + strlen (buf);
   {
     int pos = 0;
     generic_param_t *u_param;
+    int plen;
+    char *tmp;
 
     while (!list_eol (from->gen_params, pos))
       {
         u_param = (generic_param_t *) list_get (from->gen_params, pos);
-        if (u_param->gvalue != NULL)
-          sprintf (buf, ";%s=%s", u_param->gname, u_param->gvalue);
-        else
-          sprintf (buf, ";%s", u_param->gname);
-        buf = buf + strlen (buf);
+
+	if (u_param->gvalue==NULL)
+	  plen = strlen (u_param->gname) + 2;
+	else
+	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
+        len = len + plen;
+        buf = (char *) realloc (buf, len);
+        tmp = buf;
+        tmp = tmp + strlen (tmp);
+	if (u_param->gvalue==NULL)
+	  sprintf (tmp, ";%s", u_param->gname);
+	else
+	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
         pos++;
       }
   }
+  *dest = buf;
   return 0;
 }
 
@@ -349,8 +378,12 @@ from_clone (from_t * from, from_t ** dest)
   if (from->url != NULL)
     {
       i = url_clone (from->url, &(fr->url));
-      if (i != 0)
-        return -1;
+      if (i!=0)
+	{
+	  from_free(fr);
+	  sfree(fr);
+	  return -1;
+	}
     }
 
   {
@@ -362,8 +395,12 @@ from_clone (from_t * from, from_t ** dest)
       {
         u_param = (generic_param_t *) list_get (from->gen_params, pos);
         i = generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          return -1;
+	if (i!=0)
+	  {
+	    from_free(fr);
+	    sfree(fr);
+	    return -1;
+	  }
         list_add (fr->gen_params, dest_param, -1);
         pos++;
       }
@@ -480,6 +517,7 @@ generic_param_parseall (list_t * gen_params, char *params)
           if (comma - equal < 2)
             return -1;
           pvalue = (char *) smalloc (comma - equal);
+	  if (pvalue==NULL) return -1;
           sstrncpy (pvalue, equal + 1, comma - equal - 1);
         }
 
@@ -489,6 +527,7 @@ generic_param_parseall (list_t * gen_params, char *params)
           return -1;
         }
       pname = (char *) smalloc (equal - params);
+      if (pname==NULL) { sfree(pvalue); return -1; }
       sstrncpy (pname, params + 1, equal - params - 1);
 
       generic_param_add (gen_params, pname, pvalue);
@@ -510,6 +549,7 @@ generic_param_parseall (list_t * gen_params, char *params)
       if (comma - equal < 2)
         return -1;
       pvalue = (char *) smalloc (comma - equal);
+      if (pvalue==NULL) return -1;
       sstrncpy (pvalue, equal + 1, comma - equal - 1);
     }
 
@@ -519,6 +559,7 @@ generic_param_parseall (list_t * gen_params, char *params)
       return -1;
     }
   pname = (char *) smalloc (equal - params);
+  if (pname==NULL) return -1;
   sstrncpy (pname, params + 1, equal - params - 1);
 
   generic_param_add (gen_params, pname, pvalue);

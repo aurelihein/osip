@@ -35,7 +35,6 @@ AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AC_SUBST(ac_aux_dir)
 
 AC_CANONICAL_HOST                                                               
-AC_CANONICAL_BUILD                                                              
 
 dnl Checks for programs.
 
@@ -192,17 +191,21 @@ AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
 
 dnl Checks for header files.
+
+dnl This is to be removed for autoconf2.50
 AC_HEADER_STDC
-AC_CHECK_HEADERS(ctype.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(strings.h)
-AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(unistd.h)
+AC_CHECK_HEADERS(sys/types.h)
+dnl !This is to be removed for autoconf2.50
+
+AC_CHECK_HEADERS(ctype.h)
+AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(varargs.h)
 AC_CHECK_HEADERS(fcntl.h)
-AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(time.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_HEADERS(sys/select.h)

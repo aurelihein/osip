@@ -31,11 +31,15 @@ msg_seterror_info (sip_t * sip, char *hvalue)
   int i;
 
   i = error_info_init (&error_info);
-  if (i == -1)
+  if (i!=0)
     return -1;
   i = error_info_parse (error_info, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i!=0)
+    {
+      error_info_free(error_info);
+      sfree(error_info);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

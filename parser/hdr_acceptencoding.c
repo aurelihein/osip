@@ -38,8 +38,12 @@ msg_setaccept_encoding (sip_t * sip, char *hvalue)
   if (i != 0)
     return -1;
   i = accept_encoding_parse (accept_encoding, hvalue);
-  if (i != 0)                   /* allocation failed */
-    return -1;
+  if (i != 0)
+    {
+      accept_encoding_free(accept_encoding);
+      sfree(accept_encoding);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
@@ -65,9 +69,15 @@ int
 accept_encoding_init (accept_encoding_t ** accept_encoding)
 {
   *accept_encoding = (accept_encoding_t *) smalloc (sizeof (accept_encoding_t));
+  if (*accept_encoding==NULL) return -1;
   (*accept_encoding)->element = NULL;
 
   (*accept_encoding)->gen_params = (list_t *) smalloc (sizeof (list_t));
+  if ((*accept_encoding)->gen_params==NULL) {
+    sfree(*accept_encoding);
+    *accept_encoding=NULL;
+    return -1;
+  }
   list_init ((*accept_encoding)->gen_params);
 
   return 0;
@@ -92,6 +102,8 @@ accept_encoding_parse (accept_encoding_t * accept_encoding, char *hvalue)
     return -1;
   accept_encoding->element =
     (char *) smalloc (accept_encoding_params - hvalue + 1);
+  if (accept_encoding->element==NULL)
+    return -1;
   sstrncpy (accept_encoding->element, hvalue, accept_encoding_params - hvalue);
   sclrspace (accept_encoding->element);
 
@@ -112,13 +124,12 @@ accept_encoding_2char (accept_encoding_t * accept_encoding, char **dest)
   if ((accept_encoding == NULL) || (accept_encoding->element == NULL))
     return -1;
 
-  len = strlen (accept_encoding->element) + 1;
+  len = strlen (accept_encoding->element) + 2;
   buf = (char *) smalloc (len);
   if (buf == NULL)
     return -1;
-  tmp = buf;
 
-  sprintf (tmp, "%s", accept_encoding->element);
+  sprintf (buf, "%s", accept_encoding->element);
   {
     int pos = 0;
     int plen;
@@ -127,51 +138,24 @@ accept_encoding_2char (accept_encoding_t * accept_encoding, char **dest)
     while (!list_eol (accept_encoding->gen_params, pos))
       {
         u_param = (generic_param_t *) list_get (accept_encoding->gen_params, pos);
-        plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 2;
+	if (u_param->gvalue==NULL)
+	  plen = strlen (u_param->gname) + 2;
+	else
+	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
         len = len + plen;
         buf = (char *) realloc (buf, len);
         tmp = buf;
         tmp = tmp + strlen (tmp);
-        sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+	if (u_param->gvalue==NULL)
+	  sprintf (tmp, ";%s", u_param->gname);
+	else
+	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
         pos++;
       }
   }
   (*dest) = buf;
   return 0;
 }
-
-#if 0
-int
-accept_encoding_2char (accept_encoding_t * accept_encoding, char **dest)
-{
-  char *buf;
-
-  *dest = NULL;
-  if ((accept_encoding == NULL) || (accept_encoding->element == NULL))
-    return -1;
-
-  buf = (char *) smalloc (200);
-  *dest = buf;
-
-  sprintf (buf, "%s", accept_encoding->element);
-
-  buf = buf + strlen (buf);
-  {
-    int pos = 0;
-    generic_param_t *u_param;
-
-    while (!list_eol (accept_encoding->gen_params, pos))
-      {
-        u_param = (generic_param_t *) list_get (accept_encoding->gen_params, pos);
-        sprintf (buf, ";%s=%s", u_param->gname, u_param->gvalue);
-        buf = buf + strlen (buf);
-        pos++;
-      }
-  }
-  return 0;
-}
-#endif
-
 
 /* deallocates a accept_encoding_t structure.  */
 /* INPUT : accept_encoding_t *accept_encoding | accept_encoding. */
@@ -205,7 +189,12 @@ accept_encoding_clone (accept_encoding_t * ctt, accept_encoding_t ** dest)
   if (i != 0)                   /* allocation failed */
     return -1;
   ct->element = sgetcopy (ctt->element);
-
+  if (ctt->element!=NULL && ct->element==NULL)
+    {
+      accept_encoding_free(ct);
+      sfree(ct);
+      return -1;
+    }
   {
     int pos = 0;
     generic_param_t *u_param;
@@ -216,7 +205,11 @@ accept_encoding_clone (accept_encoding_t * ctt, accept_encoding_t ** dest)
         u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
         i = generic_param_clone (u_param, &dest_param);
         if (i != 0)
-          return -1;
+          {
+	    accept_encoding_free(ct);
+	    sfree(ct);
+	    return -1;
+	  }
         list_add (ct->gen_params, dest_param, -1);
         pos++;
       }

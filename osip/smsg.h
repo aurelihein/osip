@@ -253,16 +253,18 @@ extern "C"
  */
   int msg_getallow (sip_t * sip, int pos, allow_t ** dest);
 /**
- * Set the Authorisation header.
+ * Set the Authorization header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
   int msg_setauthorization (sip_t * sip, char *hvalue);
 /**
- * Get one Authorisation header.
+ * Get one Authorization header.
  * @param sip The element to work on.
+ * @param pos The index of the element to get.
+ * @param dest A pointer on the header found.
  */
-  authorization_t *msg_getauthorization (sip_t * sip);
+  int msg_getauthorization (sip_t * sip, int pos, authorization_t **dest);
 /**
  * Set the Call-id header.
  * @param sip The element to work on.

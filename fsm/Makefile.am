@@ -12,10 +12,10 @@ port_thread.c
 
 
 libfsmtl_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
--release $(OSIP_RELEASE)  @FSM_LIB@  @EXTRA_LIB@ @PTHREAD_LIBS@
+-release $(OSIP_RELEASE) $(FSM_LIB) $(EXTRA_LIB)
 
 
 INCLUDES = -I$(top_srcdir)
-CFLAGS = -Wall @PTHREAD_CFLAGS@ @SIP_CFLAGS@ @SIP_FSM_FLAGS@ @SIP_EXTRA_FLAGS@
+CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_FSM_FLAGS) $(SIP_EXTRA_FLAGS)
 
 

@@ -31,11 +31,15 @@ msg_setencryption (sip_t * sip, char *hvalue)
   int i;
 
   i = encryption_init (&encryption);
-  if (i == -1)
+  if (i!=0)
     return -1;
   i = encryption_parse (encryption, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i!=0)
+    {
+      encryption_free(encryption);
+      sfree(encryption);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
@@ -76,6 +80,7 @@ encryption_parse (encryption_t * cd, char *hvalue)
   if (cd_params - hvalue + 1 < 2)
     return -1;
   cd->element = (char *) smalloc (cd_params - hvalue + 1);
+  if (cd->element==NULL) return -1;
   sstrncpy (cd->element, hvalue, cd_params - hvalue);
   sclrspace (cd->element);
 

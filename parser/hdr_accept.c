@@ -37,11 +37,15 @@ msg_setaccept (sip_t * sip, char *hvalue)
   int i;
 
   i = accept_init (&accept);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = accept_parse (accept, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)
+    {
+      accept_free(accept);
+      sfree(accept);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

@@ -85,7 +85,8 @@ msg_init (sip_t ** sip)
   list_init ((*sip)->alert_infos);
   (*sip)->allows = (list_t *) smalloc (sizeof (list_t));
   list_init ((*sip)->allows);
-  (*sip)->authorization = NULL;
+  (*sip)->authorizations = (list_t *) smalloc (sizeof (list_t));
+  list_init ((*sip)->authorizations);
   (*sip)->call_id = NULL;
   (*sip)->call_infos = (list_t *) smalloc (sizeof (list_t));
   list_init ((*sip)->call_infos);
@@ -243,11 +244,18 @@ msg_free (sip_t * sip)
       }
     sfree (sip->allows);
   }
-  if (sip->authorization != NULL)
-    {
-      authorization_free (sip->authorization);
-      sfree (sip->authorization);
-    }
+  {
+    authorization_t *al;
+
+    while (!list_eol (sip->authorizations, pos))
+      {
+        al = (authorization_t *) list_get (sip->authorizations, pos);
+        list_remove (sip->authorizations, pos);
+        authorization_free (al);
+        sfree (al);
+      }
+    sfree (sip->authorizations);
+  }
   if (sip->call_id != NULL)
     {
       call_id_free (sip->call_id);
@@ -572,12 +580,21 @@ msg_clone (sip_t * sip, sip_t ** dest)
         pos++;
       }
   }
-  if (sip->authorization != NULL)
-    {
-      i = authorization_clone (sip->authorization, &(copy->authorization));
-      if (i != 0)
-        goto mc_error1;
-    }
+  {
+    authorization_t *authorization;
+    authorization_t *authorization2;
+
+    pos = 0;
+    while (!list_eol (sip->authorizations, pos))
+      {
+        authorization = (authorization_t *) list_get (sip->authorizations, pos);
+        i = authorization_clone (authorization, &authorization2);
+        if (i != 0)
+          goto mc_error1;
+        list_add (copy->authorizations, authorization2, -1);
+        pos++;
+      }
+  }
   if (sip->call_id != NULL)
     {
       i = call_id_clone (sip->call_id, &(copy->call_id));

@@ -35,7 +35,11 @@ msg_setcall_info (sip_t * sip, char *hvalue)
     return -1;
   i = call_info_parse (call_info, hvalue);
   if (i != 0)                   /* allocation failed */
-    return -1;
+    {
+      call_info_free(call_info);
+      sfree(call_info);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
@@ -61,9 +65,16 @@ int
 call_info_init (call_info_t ** call_info)
 {
   *call_info = (call_info_t *) smalloc (sizeof (call_info_t));
+  if (*call_info==NULL) return -1;
+
   (*call_info)->element = NULL;
 
   (*call_info)->gen_params = (list_t *) smalloc (sizeof (list_t));
+  if ((*call_info)->gen_params==NULL) {
+    sfree(*call_info);
+    *call_info = NULL;
+    return -1;
+  }
   list_init ((*call_info)->gen_params);
 
   return 0;
@@ -94,6 +105,7 @@ call_info_parse (call_info_t * call_info, char *hvalue)
   if (call_info_params - hvalue + 1 < 2)
     return -1;
   call_info->element = (char *) smalloc (call_info_params - hvalue + 1);
+  if (call_info->element==NULL) return -1;
   sstrncpy (call_info->element, hvalue, call_info_params - hvalue);
   sclrspace (call_info->element);
 
@@ -107,17 +119,21 @@ int
 call_info_2char (call_info_t * call_info, char **dest)
 {
   char *buf;
+  char *tmp;
+  int len;
+  int plen;
 
   *dest = NULL;
   if ((call_info == NULL) || (call_info->element == NULL))
     return -1;
 
-  buf = (char *) smalloc (200);
+  len = strlen(call_info->element)+2;
+  buf = (char *) smalloc (len);
+  if (buf==NULL) return -1;
   *dest = buf;
 
   sprintf (buf, "%s", call_info->element);
 
-  buf = buf + strlen (buf);
   {
     int pos = 0;
     generic_param_t *u_param;
@@ -125,8 +141,18 @@ call_info_2char (call_info_t * call_info, char **dest)
     while (!list_eol (call_info->gen_params, pos))
       {
         u_param = (generic_param_t *) list_get (call_info->gen_params, pos);
-        sprintf (buf, ";%s=%s", u_param->gname, u_param->gvalue);
-        buf = buf + strlen (buf);
+	if (u_param->gvalue==NULL)
+	  plen = strlen (u_param->gname) + 2;
+	else
+	  plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
+        len = len + plen;
+        buf = (char *) realloc (buf, len);
+        tmp = buf;
+        tmp = tmp + strlen (tmp);
+	if (u_param->gvalue==NULL)
+	  sprintf (tmp, ";%s", u_param->gname);
+	else
+	  sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
         pos++;
       }
   }
@@ -177,7 +203,11 @@ call_info_clone (call_info_t * ctt, call_info_t ** dest)
         u_param = (generic_param_t *) list_get (ctt->gen_params, pos);
         i = generic_param_clone (u_param, &dest_param);
         if (i != 0)
-          return -1;
+          {
+	    call_info_free(ct);
+	    sfree(ct);
+	    return -1;
+	  }
         list_add (ct->gen_params, dest_param, -1);
         pos++;
       }

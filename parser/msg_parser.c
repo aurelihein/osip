@@ -540,16 +540,7 @@ msg_body_parse (sip_t * sip, char *start_of_buf, char **next_body)
   /* if MIME-Version: does not exist we just have */
   /* to deal with one body and no header... */
   if (sip->mime_version == NULL)
-    {                           /* Mime-Version header does NOT exist */
-      if (sip->contentlength == NULL)
-        {                       /* if content_length does not exist, set it to 0 */
-          char *tmp = sgetcopy ("0");
-
-          i = msg_setcontent_length (sip, tmp);
-          sfree (tmp);
-          if (i == -1)
-            return -1;
-        }
+    {        /* Mime-Version header does NOT exist */
       if (sip->content_type == NULL)
         return 0;               /* no body is attached */
       else
@@ -570,18 +561,30 @@ msg_body_parse (sip_t * sip, char *start_of_buf, char **next_body)
           else
             return -1;          /* message does not end with CRLFCRLF, CRCR or LFLF */
 
-          body_len = satoi (sip->contentlength->value);
+	  if (sip->contentlength!=NULL)
+	    body_len = satoi (sip->contentlength->value);
+	  else
+	    {    /* if content_length does not exist, set it. */
+	      char *tmp = smalloc(8);
+	      body_len = strlen (start_of_body);
+	      sprintf(tmp, "%i", body_len);
+	      i = msg_setcontent_length (sip, tmp);
+	      sfree (tmp);
+	      if (i != 0)
+		return -1;
+	    }	    
 
           if (body_len > strlen (start_of_body))        /* we do not receive the */
             return -1;          /* complete message      */
           /* end_of_body = start_of_body + strlen(start_of_body); */
           end_of_body = start_of_body + body_len;
-          tmp = smalloc (end_of_body - start_of_body + 1);
+          tmp = smalloc (end_of_body - start_of_body + 2);
+	  if (tmp==NULL) return -1;
           sstrncpy (tmp, start_of_body, end_of_body - start_of_body);
 
           i = msg_setbody (sip, tmp);
           sfree (tmp);
-          if (i == -1)
+          if (i != 0)
             return -1;
           return 0;
         }
@@ -676,14 +679,14 @@ msg_parse (sip_t * sip, char *buf)
     }
   buf = next_header_index;
 
-  /* this is mantory in the oSIP stack */
-  if (sip->contentlength == NULL)
-    msg_setcontent_length (sip, "0");
-
-  /* this is a *very* simple test... */
+  /* this is a *very* simple test... (which handle most cases...) */
   if (strlen (buf) < 5)
-    return 0;                   /* no body found */
-
+    {
+      /* this is mantory in the oSIP stack */
+      if (sip->contentlength == NULL)
+	msg_setcontent_length (sip, "0");
+      return 0;                   /* no body found */
+    }
 
   i = msg_body_parse (sip, buf, &next_header_index);
   if (i == -1)
@@ -694,6 +697,10 @@ msg_parse (sip_t * sip, char *buf)
       return -1;
     }
   buf = next_header_index;
+
+  /* this is mantory in the oSIP stack */
+  if (sip->contentlength == NULL)
+    msg_setcontent_length (sip, "0");
 
   return 0;
 }

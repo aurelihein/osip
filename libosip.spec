@@ -1,46 +1,92 @@
-Summary: "libosip" - An  implementation of SIP - rfc2543.
-Name: libosip
-Version: 0.8.9
-Release: 1
-Group: Development/Libraries
-URL: http://www.atosc.org
-Source: http://www.atosc.org/download/libosip-%{version}.tar.gz
-Prefix: %{_prefix}
-Copyright: LGPL
-BuildRoot: %{_tmppath}/libosip
-Packager: David Sugar <dyfet@ostel.com>
+Summary:	The GNU oSIP library
+Summary(pl):	Biblioteka GNU oSIP
+Name:		libosip
+Version:	0.9.0
+Release:	1
+License:	LGPL
+Group:          Development/Libraries
+Source0:	ftp://ftp.gnu.org/gnu/osip/%{name}-%{version}.tar.gz
+URL:		http://www.fsf.org/software/osip/osip.html
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-This is the oSIP library (for Open SIP). It has been
-designed to provide the Internet Community a simple
-way to support the Session Initiation Protocol.
-SIP is described in the RFC2543 which is available at
-http://www.ietf.org/rfc/rfc2543.txt.
+This is "the GNU oSIP library" (for Omnibus SIP). It has been designed
+to provide the Internet Community a simple way to support the Session
+Initiation Protocol. SIP is described in the RFC2543 which is
+available at http://www.ietf.org/rfc/rfc2543.txt.
+
+%description -l pl
+To jest biblioteka GNU oSIP (Omnibus SIP). Zosta³a zaprojektowana, aby
+dostarczyæ Spo³eczno¶ci Internetowej prost± obs³ugê protoko³u SIP.
+Protokó³ SIP (Session Initiation Protocol) jest opisany w RFC2543.
+
+%package devel
+Summary:	The GNU oSIP library - development files
+Summary(pl):	Pliki dla programistów u¿ywaj±cych GNU oSIP
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
+
+%description devel
+Development files for the GNU oSIP library.
+
+%description devel -l pl
+Pliki dla programistów u¿ywaj±cych biblioteki GNU oSIP.
+
+%package static
+Summary:	The GNU oSIP library - static version
+Summary(pl):	Statyczna biblioteka GNU oSIP
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}
+
+%description static
+Static version of the GNU oSIP library.
+
+%description static -l pl
+Statyczna wersja biblioteki GNU oSIP.
 
 %prep
-rm -rf $RPM_BUILD_ROOT
-
-%setup
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --disable-debug --disable-trace
+%setup -q
 
 %build
-uname -a|grep SMP && make -j 2 || make
+rm -f acinclude.m4 
+%{__libtoolize}
+%{__aclocal} -I scripts
+%{__autoconf}
+%{__automake}
+%configure \
+	--enable-pthread \
+	--%{?debug:en}%{!?debug:dis}able-debug
+
+%{__make}
 
 %install
-make prefix=$RPM_BUILD_ROOT/%{_prefix} install
-strip $RPM_BUILD_ROOT/%{_prefix}/lib/lib*.so.*
+rm -rf $RPM_BUILD_ROOT
 
-%files
-%defattr(-,root,root,0755)
-%doc AUTHORS COPYING README NEWS TODO ChangeLog doc
-%{prefix}/lib/libosip*
-%{prefix}/include/osip
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-/sbin/ldconfig
+%post   -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
-%postun
-/sbin/ldconfig
+%files
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/lib*.so.*.*
+
+%files devel
+%defattr(644,root,root,755)
+%doc AUTHORS BUGS ChangeLog NEWS README TODO
+%attr(755,root,root) %{_libdir}/lib*.la
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_includedir}/*
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
+
+%define date	%(echo `LC_ALL="C" date +"%a %b %d %Y"`)

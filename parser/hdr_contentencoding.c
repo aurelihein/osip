@@ -34,11 +34,15 @@ msg_setcontent_encoding (sip_t * sip, char *hvalue)
   int i;
 
   i = content_encoding_init (&content_encoding);
-  if (i == -1)
+  if (i!=0)
     return -1;
   i = content_encoding_parse (content_encoding, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i!=0)
+    {
+      content_encoding_free(content_encoding);
+      sfree(content_encoding);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

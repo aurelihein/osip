@@ -28,10 +28,16 @@ int
 body_init (body_t ** body)
 {
   *body = (body_t *) smalloc (sizeof (body_t));
+  if (*body==NULL) return -1;
   (*body)->body = NULL;
   (*body)->content_type = NULL;
 
   (*body)->headers = (list_t *) smalloc (sizeof (list_t));
+  if ((*body)->headers==NULL) {
+    sfree(*body);
+    *body=NULL;
+    return -1;
+  }
   list_init ((*body)->headers);
   return 0;
 }
@@ -46,9 +52,11 @@ msg_setbody (sip_t * sip, char *buf)
   body_t *body;
   int i;
 
-  body_init (&body);
+  i = body_init (&body);
+  if (i != 0)
+    return -1;
   i = body_parse (body, buf);
-  if (i == -1)
+  if (i != 0)
     {
       body_free (body);
       sfree (body);
@@ -90,15 +98,24 @@ body_setcontenttype (body_t * body, char *hvalue)
     return -1;
 
   i = content_type_init (&(body->content_type));
-  if (i == -1)
+  if (i != 0)
     return -1;
-  return content_type_parse (body->content_type, hvalue);
+  i = content_type_parse (body->content_type, hvalue);
+  if (i != 0)
+    {
+      content_type_free(body->content_type);
+      sfree(body->content_type);
+      body->content_type=NULL;
+      return -1;
+    }
+  return 0;
 }
 
 int
 body_setheader (body_t * body, char *hname, char *hvalue)
 {
   header_t *h;
+  int i;
 
   if (body == NULL)
     return -1;
@@ -107,7 +124,9 @@ body_setheader (body_t * body, char *hname, char *hvalue)
   if (hvalue == NULL)
     return -1;
 
-  header_init (&h);
+  i = header_init (&h);
+  if (i!=0) return -1;
+
   h->hname = sgetcopy (hname);
   h->hvalue = sgetcopy (hvalue);
 
@@ -125,9 +144,11 @@ msg_setbody_mime (sip_t * sip, char *buf)
   body_t *body;
   int i;
 
-  body_init (&body);
+  i = body_init (&body);
+  if (i!=0)
+    return -1;
   i = body_parse_mime (body, buf);
-  if (i == -1)
+  if (i != 0)
     {
       body_free (body);
       sfree (body);
@@ -166,6 +187,8 @@ body_parse_header (body_t * body, char *start_of_body_header, char **next_body)
       if (colon_index - start_of_line + 1 < 2)
         return -1;
       hname = (char *) smalloc (colon_index - start_of_line + 1);
+      if (hname==NULL)
+	return -1;
       sstrncpy (hname, start_of_line, colon_index - start_of_line);
       sclrspace (hname);
       stolowercase (hname);
@@ -173,6 +196,11 @@ body_parse_header (body_t * body, char *start_of_body_header, char **next_body)
       if ((end_of_line - 2) - colon_index < 2)
         return -1;
       hvalue = (char *) smalloc ((end_of_line - 2) - colon_index);
+      if (hvalue==NULL)
+	{
+	  sfree(hname);
+	  return -1;
+	}
       sstrncpy (hvalue, colon_index + 1, (end_of_line - 2) - colon_index - 1);
       sclrspace (hvalue);
 
@@ -218,6 +246,7 @@ body_parse (body_t * body, char *start_of_body)
 
   i = strlen (start_of_body);
   body->body = (char *) smalloc (i + 1);
+  if (body->body==NULL) return -1;
   sstrncpy (body->body, start_of_body, i);
   return 0;
 }
@@ -257,6 +286,7 @@ body_parse_mime (body_t * body, char *start_of_body)
 
   end_of_body_header = end_of_body_header + strlen (end_of_body_header);
   body->body = (char *) smalloc (end_of_body_header - start_of_body_header + 1);
+  if (body->body==NULL) return -1;
   sstrncpy (body->body, start_of_body_header,
             end_of_body_header - start_of_body_header);
 
@@ -275,15 +305,19 @@ body_2char (body_t * body, char **dest)
   char *ptr;
   int pos;
   int i;
-
+  int length;
 
   *dest = NULL;
   if (body == NULL)
     return -1;
   if (body->body == NULL)
     return -1;
+  if (body->headers == NULL)
+    return -1;
 
-  tmp_body = (char *) smalloc (strlen (body->body) + BODY_MESSAGE_MAX_SIZE);
+  length = strlen (body->body) + (list_size(body->headers) * 40);
+  tmp_body = (char *) smalloc (length);
+  if (tmp_body==NULL) return -1;
   ptr = tmp_body;               /* save the initial address of the string */
 
   if (body->content_type != NULL)
@@ -296,6 +330,15 @@ body_2char (body_t * body, char **dest)
           sfree (tmp_body);
           return -1;
         }
+      if (length < tmp_body - ptr + strlen(tmp) + 4 )
+	{
+	  int len;
+	  len = tmp_body - ptr;
+	  length = length + strlen(tmp) +4;
+	  ptr = realloc(ptr, length);
+	  tmp_body = ptr+len;
+	}
+
       sstrncpy (tmp_body, tmp, strlen (tmp));
       sfree (tmp);
       tmp_body = tmp_body + strlen (tmp_body);
@@ -315,6 +358,14 @@ body_2char (body_t * body, char **dest)
           sfree (tmp_body);
           return -1;
         }
+      if (length < tmp_body - ptr + strlen(tmp) + 4 )
+	{
+	  int len;
+	  len = tmp_body - ptr;
+	  length = length + strlen(tmp) +4;
+	  ptr = realloc(ptr, length);
+	  tmp_body = ptr+len;
+	}
       sstrncpy (tmp_body, tmp, strlen (tmp));
       sfree (tmp);
       tmp_body = tmp_body + strlen (tmp_body);
@@ -327,6 +378,14 @@ body_2char (body_t * body, char **dest)
     {
       sstrncpy (tmp_body, CRLF, 2);
       tmp_body = tmp_body + 2;
+    }
+  if (length < tmp_body - ptr + strlen(body->body) + 4 )
+    {
+      int len;
+      len = tmp_body - ptr;
+      length = length + strlen(body->body) +4;
+      ptr = realloc(ptr, length);
+      tmp_body = ptr+len;
     }
   sstrncpy (tmp_body, body->body, strlen (body->body));
   tmp_body = tmp_body + strlen (body->body);

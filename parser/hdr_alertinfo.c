@@ -31,11 +31,15 @@ msg_setalert_info (sip_t * sip, char *hvalue)
   int i;
 
   i = alert_info_init (&alert_info);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = alert_info_parse (alert_info, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)
+    {
+      alert_info_free(alert_info);
+      sfree(alert_info);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

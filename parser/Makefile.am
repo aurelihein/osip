@@ -18,10 +18,10 @@ md5c.c         sdp_rfc2327.c  sdp_accessor.c
 
 
 libosip_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
--release $(OSIP_RELEASE) @PARSER_LIB@ @EXTRA_LIB@
+-release $(OSIP_RELEASE) $(PARSER_LIB) $(EXTRA_LIB)
 
 
 INCLUDES = -I$(top_srcdir)
-CFLAGS = -Wall @SIP_CFLAGS@ @SIP_PARSER_FLAGS@ @SIP_EXTRA_FLAGS@
+CFLAGS = -Wall $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
 
 

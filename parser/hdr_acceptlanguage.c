@@ -32,11 +32,15 @@ msg_setaccept_language (sip_t * sip, char *hvalue)
   int i;
 
   i = accept_language_init (&accept_language);
-  if (i == -1)
+  if (i != 0)
     return -1;
   i = accept_language_parse (accept_language, hvalue);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)
+    {
+      accept_language_free(accept_language);
+      sfree(accept_language);
+      return -1;
+    }
 
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;

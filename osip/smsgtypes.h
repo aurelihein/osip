@@ -372,7 +372,7 @@ extern "C"
     list_t *accept_languages;
     list_t *alert_infos;
     list_t *allows;
-    authorization_t *authorization;
+    list_t *authorizations;
     call_id_t *call_id;
     list_t *call_infos;
     list_t *contacts;

@@ -90,11 +90,6 @@ sstrncpy (char *dest, const char *src, int length)
 /* append string_to_append to string at position cur
    size is the current allocated size of the element
 */
-/* in fact, I don't know how to use realloc! so this
-   method does not work... Also, the changed size
-   is not returned!!!
-   THIS METHOD MUST BE CHANGED!
-*/
 char *
 sdp_append_string (char *string, int size, char *cur, char *string_to_append)
 {
@@ -102,10 +97,10 @@ sdp_append_string (char *string, int size, char *cur, char *string_to_append)
 
   if (cur + length - string > size)
     {
+      int length2;
+      length2 = cur-string;
       string = realloc (string, size + length + 10);
-      /* string may be another pointer?? does it contains
-         the previous element?? */
-      /* can we use cur??? after such a call?? */
+      cur = string + length2; /* the initial allocation may have changed! */
     }
   sstrncpy (cur, string_to_append, length);
   return cur + strlen (cur);

@@ -28,6 +28,7 @@ int
 cseq_init (cseq_t ** cseq)
 {
   *cseq = (cseq_t *) smalloc (sizeof (cseq_t));
+  if (*cseq==NULL) return -1;
   (*cseq)->method = NULL;
   (*cseq)->number = NULL;
   return 0;
@@ -45,12 +46,20 @@ msg_setcseq (sip_t * sip, char *hvalue)
   if (sip->cseq != NULL)
     return -1;
   i = cseq_init (&(sip->cseq));
-  if (i == -1)
+  if (i != 0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  return cseq_parse (sip->cseq, hvalue);
+  i = cseq_parse (sip->cseq, hvalue);
+  if (i!=0)
+    {
+      cseq_free(sip->cseq);
+      sfree(sip->cseq);
+      sip->cseq = NULL;
+      return -1;
+    }
+  return 0;
 }
 
 /* fills the cseq strucuture.                      */
@@ -75,12 +84,13 @@ cseq_parse (cseq_t * cseq, char *hvalue)
   if (method - hvalue + 1 < 2)
     return -1;
   cseq->number = (char *) smalloc (method - hvalue + 1);
+  if (cseq->number==NULL) return -1;
   sstrncpy (cseq->number, hvalue, method - hvalue);
   sclrspace (cseq->number);
 
-  if (end - method + 1 < 2)
-    return -1;
+  if (end - method + 1 < 2) return -1;
   cseq->method = (char *) smalloc (end - method + 1);
+  if (cseq->method==NULL) return -1;
   sstrncpy (cseq->method, method + 1, end - method);
   sclrspace (cseq->method);
 
@@ -133,6 +143,7 @@ cseq_2char (cseq_t * cseq, char **dest)
     return -1;
   len = strlen (cseq->method) + strlen (cseq->number) + 2;
   *dest = (char *) smalloc (len);
+  if (*dest==NULL) return -1;
   sprintf (*dest, "%s %s", cseq->number, cseq->method);
   return 0;
 }
@@ -163,8 +174,12 @@ cseq_clone (cseq_t * cseq, cseq_t ** dest)
     return -1;
 
   i = cseq_init (&cs);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i!=0)
+    {
+      cseq_free(cs);
+      sfree(cs);
+      return -1;
+    }
   cs->method = sgetcopy (cseq->method);
   cs->number = sgetcopy (cseq->number);
 
