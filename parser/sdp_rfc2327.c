@@ -1852,3 +1852,26 @@ sdp_free(sdp_t *sdp)
   sfree(sdp->m_medias);
 }
 
+int
+sdp_clone(sdp_t *sdp, sdp_t **dest)
+{
+  int i;
+  char *body;
+
+  i = sdp_init(*dest);
+  if (i!=0) return -1;
+  
+  i = sdp_2char(sdp, &body);
+  if (i!=0) goto error_sc1;
+
+  i = sdp_parse(*dest, body);
+  sfree(body);
+  if (i!=0) goto error_sc1;
+
+  return 0;
+
+ error_sc1:
+  sdp_free(*dest);
+  sfree(*dest);
+  return -1;
+}

@@ -243,6 +243,12 @@ int    sdp_2char         (sdp_t *sdp, char **dest);
  * @param sdp The element to work on.
  */
 void   sdp_free          (sdp_t *sdp);
+/**
+ * Clone a SDP packet.
+ * @param sdp The element to work on.
+ * @param dest The cloned element.
+ */
+int    sdp_clone(sdp_t *sdp, sdp_t **dest);
 
 /**
  * Set the version in a SDP packet.
