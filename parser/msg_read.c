@@ -885,6 +885,13 @@ msg_2char (sip_t * sip, char **dest)
 
 #ifdef ENABLE_TRACE
 
+#ifdef _WIN32_WCE
+
+void msg_logrequest (sip_t * sip, char *fmt) {}
+void msg_logresponse (sip_t * sip, char *fmt) {}
+
+#else
+
 void
 msg_logresponse (sip_t * sip, char *fmt)
 {
@@ -963,3 +970,6 @@ msg_logrequest (sip_t * sip, char *fmt)
     }
 }
 #endif
+
+#endif
+

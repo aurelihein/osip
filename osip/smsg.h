@@ -2528,8 +2528,8 @@ extern "C"
   void msg_logrequest (sip_t * sip, char *fmt);
   void msg_logresponse (sip_t * sip, char *fmt);
 #else
-#define msg_logrequest(P,Q) ;
-#define msg_logresponse(P,Q) ;
+  #define msg_logrequest(P,Q) ;
+  #define msg_logresponse(P,Q) ;
 #endif
 #endif
 

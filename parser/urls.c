@@ -135,7 +135,7 @@ url_parse (url_t * url, char *buf)
     return -1;
   sstrncpy (url->scheme, buf, tmp - buf);
 
-#ifndef WIN32
+#if (!defined WIN32 && !defined _WIN32_WCE)
   if (strlen (url->scheme) < 3 ||
       (0 != strncasecmp (url->scheme, "sip", 3)
        && 0 != strncasecmp (url->scheme, "sips", 4)))

@@ -85,7 +85,7 @@ quoted_string_set (char *name, char *str, char **result, char **next)
 
   if (strlen (str) <= strlen (name))
     return -1;			/* bad header format... */
-#ifndef WIN32
+#if (!defined WIN32 && !defined _WIN32_WCE)
   if (strncasecmp (name, str, strlen (name)) == 0)
 #else
   if (strnicmp (name, str, strlen (name)) == 0)
@@ -197,7 +197,7 @@ token_set (char *name, char *str, char **result, char **next)
     else
       return -1;		/* bad header format */
 
-#ifndef WIN32
+#if (!defined WIN32 && !defined _WIN32_WCE)
   if (strncasecmp (name, str, strlen (name)) == 0)
 #else
   if (strnicmp (name, str, strlen (name)) == 0)

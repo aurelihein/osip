@@ -1,6 +1,7 @@
 libosip (0.9.4)
 	* verify log strings are NULL terminated.
 	* add syslog support.
+	* continue WINCE port.
 	
 libosip (0.9.3)
 	* fix a bug for quoted strings starting with an escaped char '\'.
