@@ -1,9 +1,6 @@
-libosip (0.9.4-1) unstable; urgency=low
+libosip (0.9.5-1) unstable; urgency=low
 
-  * fix win32 compilation for Debug release.
-  * re-fix(?) the parsing of the Date header.
-  * verify log strings are NULL terminated.
-  * add syslog support.
-  * continue WINCE port.
+  * fix a memory leak for retransmissions in msg_2char. 
+  * fix a bug when startline end with CRCRLF.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Fry, 31 Jan 2003 13:04:32 +0100
+ -- Aymeric MOIZARD <jack@atosc.org>  Fry, 25 Feb 2003 13:04:32 +0100

@@ -7,10 +7,10 @@ dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=0
 OSIP_MINOR_VERSION=9
-OSIP_MICRO_VERSION=4
+OSIP_MICRO_VERSION=5
 
 dnl Library extension
-OSIP_RELEASE=0.9.4
+OSIP_RELEASE=0.9.5
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
