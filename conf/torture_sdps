@@ -5,7 +5,7 @@ i=Discussion of Mbone Engineering Issues
 e=mbone@somewhere.com
 c=IN IP4 224.2.0.1/127
 t=3149328700 0
-m=audio 3456 RTP/AVP 0
+m=audio 3456 RTP/AVP 0 
 a=rtpmap:0 PCMU/8000
 |
 v=0
