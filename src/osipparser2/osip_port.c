@@ -408,6 +408,54 @@ __osip_quote_find (const char *qstring)
   }
 }
 
+char *
+__osip_enquote(const char *s)
+{
+  char *rtn;
+  char *t;
+
+  t = rtn = osip_malloc(strlen(s) * 2 + 3);
+  *t++ = '"';
+  for ( ; *s != '\0'; s++) {
+    switch (*s) {
+    case '"':
+    case '\\':
+    case 0x7f:
+      *t++ = '\\';
+      *t++ = *s;
+      break;
+    case '\n':
+    case '\r':
+      *t++ = ' ';
+      break;
+    default:
+      *t++ = *s;
+      break;
+    }
+  }
+  *t++ = '"';
+  *t++ = '\0';
+  return rtn;
+}
+
+void
+__osip_dequote(char *s)
+{
+  int len;
+
+  if (*s == '\0')
+    return;
+  if (*s != '"')
+    return;
+  len = strlen(s);
+  memmove(s, s + 1, len--);
+  if (len > 0 && s[len - 1] == '"')
+    s[--len] = '\0';
+  for ( ; *s != '\0'; s++, len--) {
+    if (*s == '\\')
+      memmove(s, s + 1, len--);
+  }
+}
 
 /**********************************************************/
 /* only MACROS from osip/trace.h should be used by others */
