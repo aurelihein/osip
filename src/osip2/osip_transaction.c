@@ -486,35 +486,30 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * t
   if (b_response == NULL)
     {
 #ifdef FWDSUPPORT
-      // livio01042003: see if other criteria are met.
-      // Check that: Call-ID, CSeq, To, and From fields are the same 
-      
-      // the from tag (unique)
+      /* the from tag (unique) */
       if (from_tag_match(tr->from, response->from)!=0)
 	return -1;
-      // the Cseq field
+      /* the Cseq field */
       if (cseq_match(tr->cseq, response->cseq)!=0)
 	return -1;
-      // the To field
+      /* the To field */
       if (response->to->url->username==NULL && tr->from->url->username!=NULL)
 	return -1;
       if (response->to->url->username!=NULL && tr->from->url->username==NULL)
 	return -1;
       if (response->to->url->username!=NULL && tr->from->url->username!=NULL)
 	{
-	  /* if different -> return -1 */
 	  if (strcmp(response->to->url->host, tr->from->url->host) ||
 	      strcmp(response->to->url->username, tr->from->url->username))
 	    return -1;
 	}
       else
 	{
-	  /* if different -> return -1 */
 	  if (strcmp(response->to->url->host, tr->from->url->host))
 	    return -1;
 	}
 
-      // the Call-ID field
+      /* the Call-ID field */
       if (call_id_match(tr->callid, response->call_id)!=0)
 	return -1;
       return 0;

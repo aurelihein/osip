@@ -35,9 +35,9 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   char *requesturi;
   int i;
 
-  dest->sipmethod = NULL;
-  dest->statuscode = NULL;
-  dest->reasonphrase = NULL;
+  dest->sip_method = NULL;
+  dest->status_code = 0;
+  dest->reason_phrase = NULL;
 
   /* The first token is the method name: */
   p2 = strchr (buf, ' ');
@@ -50,8 +50,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
 		   "No space allowed here\n"));
       return -1;
     }
-  dest->sipmethod = (char *) osip_malloc (p2 - buf + 1);
-  osip_strncpy (dest->sipmethod, buf, p2 - buf);
+  dest->sip_method = (char *) osip_malloc (p2 - buf + 1);
+  osip_strncpy (dest->sip_method, buf, p2 - buf);
 
   /* The second token is a sip-url or a uri: */
   p1 = strchr (p2 + 2, ' ');	/* no space allowed inside sip-url */
@@ -61,8 +61,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   osip_strncpy (requesturi, p2 + 1, (p1 - p2 - 1));
   osip_clrspace (requesturi);
 
-  osip_uri_init (&(dest->rquri));
-  i = osip_uri_parse (dest->rquri, requesturi);
+  osip_uri_init (&(dest->req_uri));
+  i = osip_uri_parse (dest->req_uri, requesturi);
   osip_free (requesturi);
   if (i == -1)
     return -1;
@@ -85,8 +85,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
       }
     if (hp - p1 < 2)
       return -1;
-    dest->sipversion = (char *) osip_malloc (hp - p1);
-    osip_strncpy (dest->sipversion, p1 + 1, (hp - p1 - 1));
+    dest->sip_version = (char *) osip_malloc (hp - p1);
+    osip_strncpy (dest->sip_version, p1 + 1, (hp - p1 - 1));
 
     hp++;
     if ((*hp) && ('\r' == hp[-1]) && ('\n' == hp[0]))
@@ -103,20 +103,25 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
   const char *statuscode;
   const char *reasonphrase;
 
-  dest->rquri = NULL;
-  dest->sipmethod = NULL;
+  dest->req_uri = NULL;
+  dest->sip_method = NULL;
 
   *headers = buf;
 
   statuscode = strchr (buf, ' ');	/* search for first SPACE */
   if (statuscode == NULL)
     return -1;
-  dest->sipversion = (char *) osip_malloc (statuscode - (*headers) + 1);
-  osip_strncpy (dest->sipversion, *headers, statuscode - (*headers));
+  dest->sip_version = (char *) osip_malloc (statuscode - (*headers) + 1);
+  osip_strncpy (dest->sip_version, *headers, statuscode - (*headers));
 
   reasonphrase = strchr (statuscode + 1, ' ');
-  dest->statuscode = (char *) osip_malloc (reasonphrase - statuscode);
-  osip_strncpy (dest->statuscode, statuscode + 1, reasonphrase - statuscode - 1);
+  /* dest->status_code = (char *) osip_malloc (reasonphrase - statuscode); */
+  /* osip_strncpy (dest->status_code, statuscode + 1, reasonphrase - statuscode - 1); */
+  if (sscanf(statuscode + 1, "%d", &dest->status_code) != 1)
+    {
+      /* Non-numeric status code */
+      return -1;
+    }
 
   {
     const char *hp = reasonphrase;
@@ -133,8 +138,8 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
 	    return -1;
 	  }
       }
-    dest->reasonphrase = (char *) osip_malloc (hp - reasonphrase);
-    osip_strncpy (dest->reasonphrase, reasonphrase + 1, hp - reasonphrase - 1);
+    dest->reason_phrase = (char *) osip_malloc (hp - reasonphrase);
+    osip_strncpy (dest->reason_phrase, reasonphrase + 1, hp - reasonphrase - 1);
 
     hp++;
     if ((*hp) && ('\r' == hp[-1]) && ('\n' == hp[0]))
@@ -608,8 +613,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	  else
 	    return -1;		/* message does not end with CRLFCRLF, CRCR or LFLF */
 
-	  if (sip->contentlength != NULL)
-	    osip_body_len = osip_atoi (sip->contentlength->value);
+	  if (sip->content_length != NULL)
+	    osip_body_len = osip_atoi (sip->content_length->value);
 	  else
 	    {			/* if content_length does not exist, set it. */
 	      char *tmp = osip_malloc (8);
@@ -745,7 +750,7 @@ osip_message_parse (osip_message_t * sip, const char *buf)
   if (strlen (tmp) < 3)
     {
       /* this is mantory in the oSIP stack */
-      if (sip->contentlength == NULL)
+      if (sip->content_length == NULL)
 	osip_message_set_content_length (sip, "0");
       return 0;			/* no body found */
     }
@@ -761,7 +766,7 @@ osip_message_parse (osip_message_t * sip, const char *buf)
   tmp = (char *) next_header_index;
 
   /* this is mandatory in the oSIP stack */
-  if (sip->contentlength == NULL)
+  if (sip->content_length == NULL)
     osip_message_set_content_length (sip, "0");
 
   return 0;
@@ -807,133 +812,112 @@ osip_message_fix_last_via_header (osip_message_t * request, char *ip_addr, int p
   return 0;
 }
 
-char *
+const char *
 osip_message_get_reason (int replycode)
 {
-  int i;
+  struct code_to_reason {
+    int code;
+    const char *reason;
+  };
+  
+  static const struct code_to_reason reasons1xx[] = {
+    { 100, "Trying" },
+    { 180, "Ringing" },
+    { 181, "Call Is Being Forwarded" },
+    { 182, "Queued" },
+    { 183, "Session Progress" },
+  };
+  static const struct code_to_reason reasons2xx[] = {
+    { 200, "OK" },
+  };
+  static const struct code_to_reason reasons3xx[] = {
+    { 300, "Multiple Choices" },
+    { 301, "Moved Permanently" },
+    { 302, "Moved Temporarily" },
+    { 305, "Use Proxy" },
+    { 380, "Alternative Service" },
+  };
+  static const struct code_to_reason reasons4xx[] = {
+    { 400, "Bad Request" },
+    { 401, "Unauthorized" },
+    { 402, "Payment Required" },
+    { 403, "Forbidden" },
+    { 404, "Not Found" },
+    { 405, "Method Not Allowed" },
+    { 406, "Not Acceptable" },
+    { 407, "Proxy Authentication Required" },
+    { 408, "Request Timeout" },
+    { 409, "Conflict" },
+    { 410, "Gone" },
+    { 411, "Length Required" },
+    { 413, "Request Entity Too Large" },
+    { 414, "Request-URI Too Large" },
+    { 415, "Unsupported Media Type" },
+    { 416, "Unsupported Uri Scheme" },
+    { 420, "Bad Extension" },
+    { 423, "Interval Too Short" },
+    { 480, "Temporarily not available" },
+    { 481, "Call Leg/Transaction Does Not Exist" },
+    { 482, "Loop Detected" },
+    { 483, "Too Many Hops" },
+    { 484, "Address Incomplete" },
+    { 485, "Ambiguous" },
+    { 486, "Busy Here" },
+    { 487, "Request Cancelled" },
+    { 488, "Not Acceptable Here" },
+    { 489, "Bad Event" },
+  };
+  static const struct code_to_reason reasons5xx[] = {
+    { 500, "Internal Server Error" },
+    { 501, "Not Implemented" },
+    { 502, "Bad Gateway" },
+    { 503, "Service Unavailable" },
+    { 504, "Gateway Time-out" },
+    { 505, "SIP Version not supported" },
+  };
+  static const struct code_to_reason reasons6xx[] = {
+    { 600, "Busy Everywhere" },
+    { 603, "Decline" },
+    { 604, "Does not exist anywhere" },
+    { 606, "Not Acceptable" }
+  };
+  const struct code_to_reason *reasons;
+  int len, i;
 
-  i = replycode / 100;
-  if (i == 1)
-    {				/* 1xx  */
-      if (replycode == 100)
-	return osip_strdup ("Trying");
-      if (replycode == 180)
-	return osip_strdup ("Ringing");
-      if (replycode == 181)
-	return osip_strdup ("Call Is Being Forwarded");
-      if (replycode == 182)
-	return osip_strdup ("Queued");
-      if (replycode == 183)
-	return osip_strdup ("Session Progress");
-    }
-  if (i == 2)
-    {				/* 2xx */
-      return osip_strdup ("OK");
-    }
-  if (i == 3)
-    {				/* 3xx */
-      if (replycode == 300)
-	return osip_strdup ("Multiple Choices");
-      if (replycode == 301)
-	return osip_strdup ("Moved Permanently");
-      if (replycode == 302)
-	return osip_strdup ("Moved Temporarily");
-      if (replycode == 305)
-	return osip_strdup ("Use Proxy");
-      if (replycode == 380)
-	return osip_strdup ("Alternative Service");
-    }
-  if (i == 4)
-    {				/* 4xx */
-      if (replycode == 400)
-	return osip_strdup ("Bad Request");
-      if (replycode == 401)
-	return osip_strdup ("Unauthorized");
-      if (replycode == 402)
-	return osip_strdup ("Payment Required");
-      if (replycode == 403)
-	return osip_strdup ("Forbidden");
-      if (replycode == 404)
-	return osip_strdup ("Not Found");
-      if (replycode == 405)
-	return osip_strdup ("Method Not Allowed");
-      if (replycode == 406)
-	return osip_strdup ("Not Acceptable");
-      if (replycode == 407)
-	return osip_strdup ("Proxy Authentication Required");
-      if (replycode == 408)
-	return osip_strdup ("Request Timeout");
-      if (replycode == 409)
-	return osip_strdup ("Conflict");
-      if (replycode == 410)
-	return osip_strdup ("Gone");
-      if (replycode == 411)
-	return osip_strdup ("Length Required");
-      if (replycode == 413)
-	return osip_strdup ("Request Entity Too Large");
-      if (replycode == 414)
-	return osip_strdup ("Request-URI Too Large");
-      if (replycode == 415)
-	return osip_strdup ("Unsupported Media Type");
-      if (replycode == 416)
-	return osip_strdup ("Unsupported Uri Scheme");
-      if (replycode == 420)
-	return osip_strdup ("Bad Extension");
-      /* 
-         Robin Nayathodan <roooot@softhome.net> 
-         N.K Electronics INDIA
-
-         RFC 3261 10.3.7 
-       */
-      if (replycode == 423)
-	return osip_strdup ("Interval Too Short");
-      if (replycode == 480)
-	return osip_strdup ("Temporarily not available");
-      if (replycode == 481)
-	return osip_strdup ("Call Leg/Transaction Does Not Exist");
-      if (replycode == 482)
-	return osip_strdup ("Loop Detected");
-      if (replycode == 483)
-	return osip_strdup ("Too Many Hops");
-      if (replycode == 484)
-	return osip_strdup ("Address Incomplete");
-      if (replycode == 485)
-	return osip_strdup ("Ambiguous");
-      if (replycode == 486)
-	return osip_strdup ("Busy Here");
-      if (replycode == 487)
-	return osip_strdup ("Request Cancelled");
-      if (replycode == 488)
-	return osip_strdup ("Not Acceptable Here");
-      if (replycode == 488)
-	return osip_strdup ("Bad Event");
-    }
-  if (i == 5)
-    {				/* 5xx */
-      if (replycode == 500)
-	return osip_strdup ("Internal Server Error");
-      if (replycode == 501)
-	return osip_strdup ("Not Implemented");
-      if (replycode == 502)
-	return osip_strdup ("Bad Gateway");
-      if (replycode == 503)
-	return osip_strdup ("Service Unavailable");
-      if (replycode == 504)
-	return osip_strdup ("Gateway Time-out");
-      if (replycode == 505)
-	return osip_strdup ("SIP Version not supported");
-    }
-  if (i == 6)
-    {				/* 6xx */
-      if (replycode == 600)
-	return osip_strdup ("Busy Everywhere");
-      if (replycode == 603)
-	return osip_strdup ("Decline");
-      if (replycode == 604)
-	return osip_strdup ("Does not exist anywhere");
-      if (replycode == 606)
-	return osip_strdup ("Not Acceptable");
-    }
-
+  switch (replycode / 100) {
+  case 1:
+    reasons = reasons1xx;
+    len = sizeof(reasons1xx) / sizeof(*reasons);
+    break;
+  case 2:
+    reasons = reasons2xx;
+    len = sizeof(reasons2xx) / sizeof(*reasons);
+    break;
+  case 3:
+    reasons = reasons3xx;
+    len = sizeof(reasons3xx) / sizeof(*reasons);
+    break;
+  case 4:
+    reasons = reasons4xx;
+    len = sizeof(reasons4xx) / sizeof(*reasons);
+    break;
+  case 5:
+    reasons = reasons5xx;
+    len = sizeof(reasons5xx) / sizeof(*reasons);
+    break;
+  case 6:
+    reasons = reasons6xx;
+    len = sizeof(reasons6xx) / sizeof(*reasons);
+    break;
+  default:
+    return NULL;
+  }
+  
+  for (i = 0; i < len; i++)
+    if (reasons[i].code == replycode)
+      return reasons[i].reason;
+  
+  /* Not found. */
   return NULL;
 }
+

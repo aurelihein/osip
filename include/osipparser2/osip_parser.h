@@ -76,7 +76,7 @@ extern "C"
  * Get the usual reason phrase as defined in SIP for a specific status code.
  * @param status_code A status code.
  */
-  char *osip_message_get_reason (int status_code);
+  const char *osip_message_get_reason (int status_code);
 
 /**
  * Set the Accept header.

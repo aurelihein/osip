@@ -211,7 +211,7 @@ __osip_token_set (const char *name, const char *str, char **result,
       osip_clrspace (*result);
 
       /* make sure the element does not contain more parameter */
-      tmp = (*end) ? (end + 1) : end;    //end + 1;
+      tmp = (*end) ? (end + 1) : end;
       for (; *tmp == ' ' || *tmp == '\t'; tmp++)
 	{
 	}

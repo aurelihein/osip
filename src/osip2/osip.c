@@ -631,11 +631,11 @@ osip_create_transaction (osip_t * osip, osip_event_t * evt)
       /* delete request where cseq method does not match
 	 the method in request-line */
       if (evt->sip->cseq==NULL
-	  || evt->sip->cseq->method==NULL || evt->sip->sipmethod==NULL)
+	  || evt->sip->cseq->method==NULL || evt->sip->sip_method==NULL)
 	{
 	  return NULL;
 	}
-      if (0 != strcmp (evt->sip->cseq->method, evt->sip->sipmethod))
+      if (0 != strcmp (evt->sip->cseq->method, evt->sip->sip_method))
 	{
 	  OSIP_TRACE (osip_trace
 		      (__FILE__, __LINE__, OSIP_WARNING, NULL,

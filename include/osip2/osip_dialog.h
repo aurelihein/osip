@@ -21,7 +21,6 @@
 #define _DIALOG_H_
 
 #include <osip2/osip.h>
-//#include <osip2/osip_mt.h>
 
 /**
  * @file dialog.h

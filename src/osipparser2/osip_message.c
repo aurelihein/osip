@@ -29,6 +29,8 @@
 static int freesipcptr = 0;
 #endif
 
+const char *osip_protocol_version = "SIP/2.0";
+
 
 int
 osip_message_init (osip_message_t ** sip)
@@ -47,11 +49,11 @@ osip_message_init (osip_message_t ** sip)
   fflush (stdout);
 #endif
 
-  (*sip)->sipmethod = NULL;
-  (*sip)->sipversion = NULL;
-  (*sip)->statuscode = NULL;
-  (*sip)->reasonphrase = NULL;
-  (*sip)->rquri = NULL;
+  (*sip)->sip_method = NULL;
+  (*sip)->sip_version = NULL;
+  (*sip)->status_code = 0;
+  (*sip)->reason_phrase = NULL;
+  (*sip)->req_uri = NULL;
 
   (*sip)->accepts = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->accepts);
@@ -77,7 +79,7 @@ osip_message_init (osip_message_t ** sip)
 
   (*sip)->content_encodings = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->content_encodings);
-  (*sip)->contentlength = NULL;
+  (*sip)->content_length = NULL;
   (*sip)->content_type = NULL;
   (*sip)->cseq = NULL;
   (*sip)->error_infos = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
@@ -113,33 +115,33 @@ osip_message_init (osip_message_t ** sip)
 
 
 void
-osip_message_set_reasonphrase (osip_message_t * sip, char *reason)
+osip_message_set_reason_phrase (osip_message_t * sip, char *reason)
 {
-  sip->reasonphrase = reason;
+  sip->reason_phrase = reason;
 }
 
 void
-osip_message_set_statuscode (osip_message_t * sip, char *statuscode)
+osip_message_set_status_code (osip_message_t * sip, int status_code)
 {
-  sip->statuscode = statuscode;
+  sip->status_code = status_code;
 }
 
 void
-osip_message_set_method (osip_message_t * sip, char *sipmethod)
+osip_message_set_method (osip_message_t * sip, char *sip_method)
 {
-  sip->sipmethod = sipmethod;
+  sip->sip_method = sip_method;
 }
 
 void
-osip_message_set_version (osip_message_t * sip, char *version)
+osip_message_set_version (osip_message_t * sip, char *sip_version)
 {
-  sip->sipversion = version;
+  sip->sip_version = sip_version;
 }
 
 void
 osip_message_set_uri (osip_message_t * sip, osip_uri_t * url)
 {
-  sip->rquri = url;
+  sip->req_uri = url;
 }
 
 void
@@ -161,14 +163,13 @@ osip_message_free (osip_message_t * sip)
   if (sip == NULL)
     return;
 
-  osip_free (sip->sipmethod);
-  osip_free (sip->sipversion);
-  if (sip->rquri != NULL)
+  osip_free (sip->sip_method);
+  osip_free (sip->sip_version);
+  if (sip->req_uri != NULL)
     {
-      osip_uri_free (sip->rquri);
+      osip_uri_free (sip->req_uri);
     }
-  osip_free (sip->statuscode);
-  osip_free (sip->reasonphrase);  
+  osip_free (sip->reason_phrase);  
 
   {
     osip_accept_t *accept;
@@ -275,9 +276,9 @@ osip_message_free (osip_message_t * sip)
       }
     osip_free (sip->content_encodings);
   }
-  if (sip->contentlength != NULL)
+  if (sip->content_length != NULL)
     {
-      osip_content_length_free (sip->contentlength);
+      osip_content_length_free (sip->content_length);
     }
   if (sip->content_type != NULL)
     {
@@ -469,13 +470,13 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
   if (i != 0)
     return -1;
 
-  copy->sipmethod = osip_strdup (sip->sipmethod);
-  copy->sipversion = osip_strdup (sip->sipversion);
-  copy->statuscode = osip_strdup (sip->statuscode);
-  copy->reasonphrase = osip_strdup (sip->reasonphrase);
-  if (sip->rquri != NULL)
+  copy->sip_method = osip_strdup (sip->sip_method);
+  copy->sip_version = osip_strdup (sip->sip_version);
+  copy->status_code = sip->status_code;
+  copy->reason_phrase = osip_strdup (sip->reason_phrase);
+  if (sip->req_uri != NULL)
     {
-      i = osip_uri_clone (sip->rquri, &(copy->rquri));
+      i = osip_uri_clone (sip->req_uri, &(copy->req_uri));
       if (i != 0)
 	goto mc_error1;
     }
@@ -625,9 +626,9 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
 	pos++;
       }
   }
-  if (sip->contentlength != NULL)
+  if (sip->content_length != NULL)
     {
-      i = osip_content_length_clone (sip->contentlength, &(copy->contentlength));
+      i = osip_content_length_clone (sip->content_length, &(copy->content_length));
       if (i != 0)
 	goto mc_error1;
     }

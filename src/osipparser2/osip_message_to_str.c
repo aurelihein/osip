@@ -22,37 +22,44 @@
 #include <stdlib.h>
 
 #include <osipparser2/osip_port.h>
-#include <osipparser2/osip_message.h>
+#include <osipparser2/osip_parser.h>
 
 
 static int
 __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
 {
+  const char *sip_version;
   char *tmp;
   char *rquri;
   int i;
 
   *dest = NULL;
-  if ((sip == NULL) || (sip->rquri == NULL)
-      || (sip->sipmethod == NULL) || (sip->sipversion == NULL))
+  if ((sip == NULL) || (sip->req_uri == NULL)
+      || (sip->sip_method == NULL))
     return -1;
 
-  i = osip_uri_to_str (sip->rquri, &rquri);
-  if (i == -1)
+  i = osip_uri_to_str (sip->req_uri, &rquri);
+  if (i != 0)
     return -1;
-  *dest = (char *) osip_malloc (strlen (sip->sipmethod)
-			    + strlen (rquri) + strlen (sip->sipversion) +
-			    3);
+
+  if (sip->sip_version == NULL)
+    sip_version = osip_protocol_version;
+  else
+    sip_version = sip->sip_version;
+
+  *dest = (char *)osip_malloc(strlen (sip->sip_method)
+			      + strlen (rquri) + strlen (sip_version)
+			      + 3);
   tmp = *dest;
-  osip_strncpy (tmp, sip->sipmethod, strlen (sip->sipmethod));
-  tmp = tmp + strlen (sip->sipmethod);
+  osip_strncpy (tmp, sip->sip_method, strlen (sip->sip_method));
+  tmp = tmp + strlen (sip->sip_method);
   osip_strncpy (tmp, " ", 1);
   tmp = tmp + 1;
   osip_strncpy (tmp, rquri, strlen (rquri));
   tmp = tmp + strlen (rquri);
   osip_strncpy (tmp, " ", 1);
   tmp = tmp + 1;
-  osip_strncpy (tmp, sip->sipversion, strlen (sip->sipversion));
+  osip_strncpy (tmp, sip_version, strlen (sip_version));
 
   osip_free (rquri);
   return 0;
@@ -62,25 +69,35 @@ static int
 __osip_message_startline_to_strresp (osip_message_t * sip, char **dest)
 {
   char *tmp;
+  const char *sip_version;
+  char status_code[5];
 
   *dest = NULL;
-  if ((sip == NULL) || (sip->reasonphrase == NULL)
-      || (sip->statuscode == NULL) || (sip->sipversion == NULL))
+  if ((sip == NULL) || (sip->reason_phrase == NULL)
+      || (sip->status_code < 100) || (sip->status_code > 699))
     return -1;
-  *dest = (char *) osip_malloc (strlen (sip->sipversion)
-			    + strlen (sip->statuscode)
-			    + strlen (sip->reasonphrase) + 4);
+
+  if (sip->sip_version == NULL)
+    sip_version = osip_protocol_version;
+  else
+    sip_version = sip->sip_version;
+
+  sprintf(status_code, "%u", sip->status_code);
+
+  *dest = (char *) osip_malloc (strlen (sip_version)
+				+ 3
+				+ strlen (sip->reason_phrase) + 4);
   tmp = *dest;
 
-  osip_strncpy (tmp, sip->sipversion, strlen (sip->sipversion));
-  tmp = tmp + strlen (sip->sipversion);
+  osip_strncpy (tmp, sip_version, strlen (sip_version));
+  tmp = tmp + strlen (sip_version);
   osip_strncpy (tmp, " ", 1);
   tmp = tmp + 1;
-  osip_strncpy (tmp, sip->statuscode, strlen (sip->statuscode));
-  tmp = tmp + strlen (sip->statuscode);
+  osip_strncpy (tmp, status_code, 3);
+  tmp = tmp + 3;
   osip_strncpy (tmp, " ", 1);
   tmp = tmp + 1;
-  osip_strncpy (tmp, sip->reasonphrase, strlen (sip->reasonphrase));
+  osip_strncpy (tmp, sip->reason_phrase, strlen (sip->reason_phrase));
 
   return 0;
 }
@@ -89,45 +106,45 @@ static int
 __osip_message_startline_to_str (osip_message_t *sip, char **dest)
 {
 
-  if (sip->sipmethod != NULL)
+  if (sip->sip_method != NULL)
     return __osip_message_startline_to_strreq (sip, dest);
-  if (sip->statuscode != NULL)
+  if (sip->status_code != 0)
     return __osip_message_startline_to_strresp (sip, dest);
 
   OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, TRACE_LEVEL1, NULL,
-	       "ERROR method has no value!\n"));
+	       "ERROR method has no value or status code is 0!\n"));
   return -1;			/* should never come here */
 }
 
 char *
-osip_message_get_reasonphrase (const osip_message_t * sip)
+osip_message_get_reason_phrase (const osip_message_t * sip)
 {
-  return sip->reasonphrase;
+  return sip->reason_phrase;
 }
 
-char *
-osip_message_get_statuscode (const osip_message_t * sip)
+int
+osip_message_get_status_code (const osip_message_t * sip)
 {
-  return sip->statuscode;
+  return sip->status_code;
 }
 
 char *
 osip_message_get_method (const osip_message_t * sip)
 {
-  return sip->sipmethod;
+  return sip->sip_method;
 }
 
 char *
 osip_message_get_version (const osip_message_t * sip)
 {
-  return sip->sipversion;
+  return sip->sip_version;
 }
 
 osip_uri_t *
 osip_message_get_uri (const osip_message_t * sip)
 {
-  return sip->rquri;
+  return sip->req_uri;
 }
 
 int
@@ -398,8 +415,8 @@ osip_message_to_str (osip_message_t * sip, char **dest)
 #ifdef USE_TMP_BUFFER
   {
 #ifdef ENABLE_DEBUG
-    static int number_of_call;
-    static int number_of_call_avoided;
+    static int number_of_call = 0;
+    static int number_of_call_avoided = 0;
 
     number_of_call++;
 #endif
@@ -889,93 +906,4 @@ osip_message_to_str (osip_message_t * sip, char **dest)
   return 0;
 }
 
-#ifdef ENABLE_TRACE
-
-#ifdef _WIN32_WCE
-
-void msg_logrequest (osip_message_t * sip, char *fmt) {}
-void msg_logresponse (osip_message_t * sip, char *fmt) {}
-
-#else
-
-void
-msg_logresponse (osip_message_t * sip, char *fmt)
-{
-  char *tmp1;
-  char *tmp2;
-  int i;
-
-  if (1 == osip_is_trace_level_activate (TRACE_LEVEL4))
-    {
-      i = osip_message_to_str (sip, &tmp1);
-      if (i != -1)
-	{
-	  osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		      "MESSAGE :\n%s\n", tmp1);
-	  osip_free (tmp1);
-	}
-      else
-	osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		    "MESSAGE : Could not make a string of message!!!!\n");
-    }
-
-  if (1 == osip_is_trace_level_activate (TRACE_LEVEL0))
-    {
-      i = osip_from_to_str (sip->from, &tmp1);
-      if (i == -1)
-	return;
-      i = osip_to_to_str (sip->to, &tmp2);
-      if (i == -1)
-	return;
-
-      osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
-		  sip->statuscode, sip->reasonphrase,
-		  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
-		  sip->call_id->number);
-
-      osip_free (tmp1);
-      osip_free (tmp2);
-    }
-}
-
-void
-msg_logrequest (osip_message_t * sip, char *fmt)
-{
-  char *tmp1;
-  char *tmp2;
-  int i;
-
-  if (1 == osip_is_trace_level_activate (TRACE_LEVEL4))
-    {
-      i = osip_message_to_str (sip, &tmp1);
-      if (i != -1)
-	{
-	  osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		      "<app.c> MESSAGE :\n%s\n", tmp1);
-	  osip_free (tmp1);
-	}
-      else
-	osip_trace (__FILE__, __LINE__, TRACE_LEVEL4, stdout,
-		    "<app.c> MESSAGE :\n Could not make a string of message\n");
-    }
-
-  if (1 == osip_is_trace_level_activate (TRACE_LEVEL0))
-    {
-      i = osip_from_to_str (sip->from, &tmp1);
-      if (i == -1)
-	return;
-      i = osip_to_to_str (sip->to, &tmp2);
-      if (i == -1)
-	return;
-
-      osip_trace (__FILE__, __LINE__, TRACE_LEVEL0, NULL, fmt,
-		  sip->cseq->method, tmp1, tmp2, sip->cseq->number,
-		  sip->call_id->number);
-      osip_free (tmp1);
-      osip_free (tmp2);
-    }
-}
-#endif
-
-#endif
 

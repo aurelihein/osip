@@ -42,19 +42,19 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
-  if (sip->contentlength != NULL)
+  if (sip->content_length != NULL)
     return -1;
-  i = osip_content_length_init (&(sip->contentlength));
+  i = osip_content_length_init (&(sip->content_length));
   if (i != 0)
     return -1;
 #ifdef USE_TMP_BUFFER
   sip->message_property = 2;
 #endif
-  i = osip_content_length_parse (sip->contentlength, hvalue);
+  i = osip_content_length_parse (sip->content_length, hvalue);
   if (i != 0)
     {
-      osip_content_encoding_free (sip->contentlength);
-      sip->contentlength = 0;
+      osip_content_length_free (sip->content_length);
+      sip->content_length = NULL;
       return -1;
     }
 
@@ -62,14 +62,14 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
 }
 
 int
-osip_content_length_parse (osip_content_length_t * contentlength, const char *hvalue)
+osip_content_length_parse (osip_content_length_t * content_length, const char *hvalue)
 {
   if (strlen (hvalue) + 1 < 2)
     return -1;
-  contentlength->value = (char *) osip_malloc (strlen (hvalue) + 1);
-  if (contentlength->value == NULL)
+  content_length->value = (char *) osip_malloc (strlen (hvalue) + 1);
+  if (content_length->value == NULL)
     return -1;
-  osip_strncpy (contentlength->value, hvalue, strlen (hvalue));
+  osip_strncpy (content_length->value, hvalue, strlen (hvalue));
   return 0;
 }
 
@@ -79,7 +79,7 @@ osip_content_length_parse (osip_content_length_t * contentlength, const char *hv
 osip_content_length_t *
 osip_message_get_content_length (const osip_message_t * sip)
 {
-  return sip->contentlength;
+  return sip->content_length;
 }
 
 /* returns the content_length header as a string.          */

@@ -260,16 +260,16 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
   osip_free (ack->cseq->method);
   ack->cseq->method = osip_strdup ("ACK");
 
-  ack->sipmethod = (char *) osip_malloc (5);
-  sprintf (ack->sipmethod, "ACK");
-  ack->sipversion =
-    osip_strdup (ict->orig_request->sipversion);
+  ack->sip_method = (char *) osip_malloc (5);
+  sprintf (ack->sip_method, "ACK");
+  ack->sip_version =
+    osip_strdup (ict->orig_request->sip_version);
 
-  ack->statuscode = NULL;
-  ack->reasonphrase = NULL;
+  ack->status_code = 0;
+  ack->reason_phrase = NULL;
 
   /* MUST copy REQUEST-URI from Contact header! */
-  osip_uri_clone (ict->orig_request->rquri, &(ack->rquri));
+  osip_uri_clone (ict->orig_request->req_uri, &(ack->req_uri));
 
   /* ACK MUST contain only the TOP Via field from original request */
   {
@@ -355,10 +355,10 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 	    {
 	      int port = 5060;
 
-	      if (ack->rquri->port != NULL)
-		port = osip_atoi (ack->rquri->port);
+	      if (ack->req_uri->port != NULL)
+		port = osip_atoi (ack->req_uri->port);
 	      osip_ict_set_destination (ict->ict_context,
-				   osip_strdup (ack->rquri->host),
+				   osip_strdup (ack->req_uri->host),
 				   port);
 	    }
 	}
@@ -389,7 +389,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
      osip_fifo_insert(ict->transactionff, sipevt);
      else if (MSG_IS_RESPONSE(sipevt->sip))
      {
-     if (0==strcmp(sipevt->sip->statuscode, evt->sip->statuscode))
+     if (sipevt->sip->status_code==evt->sip->status_code)
      {
      OSIP_TRACE (osip_trace
      (__FILE__, __LINE__, OSIP_WARNING, NULL,

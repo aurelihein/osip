@@ -82,13 +82,13 @@ extern "C"
   struct osip_message
   {
     /* Start-Line definition */
-    char        *sipversion;
+    char        *sip_version;
     /* req */
-    osip_uri_t  *rquri;
-    char        *sipmethod;
+    osip_uri_t  *req_uri;
+    char        *sip_method;
     /* resp */
-    char        *statuscode;
-    char        *reasonphrase;
+    int         status_code;
+    char        *reason_phrase;
     /* End of Start-Line definition */
 
     osip_list_t *accepts;
@@ -102,7 +102,7 @@ extern "C"
     osip_list_t *contacts;
     osip_list_t *content_dispositions;
     osip_list_t *content_encodings;
-    osip_content_length_t *contentlength;
+    osip_content_length_t *content_length;
     osip_content_type_t *content_type;
     osip_cseq_t *cseq;
     osip_list_t *error_infos;
@@ -176,23 +176,23 @@ extern "C"
  * @param sip The element to work on.
  * @param reason The reason phrase.
  */
-  void osip_message_set_reasonphrase (osip_message_t * sip, char *reason);
+  void osip_message_set_reason_phrase (osip_message_t * sip, char *reason);
 /**
  * Get the reason phrase. This is entirely free in SIP.
  * @param sip The element to work on.
  */
-  char *osip_message_get_reasonphrase (const osip_message_t * sip);
+  char *osip_message_get_reason_phrase (const osip_message_t * sip);
 /**
  * Set the status code. This is entirely free in SIP.
  * @param sip The element to work on.
  * @param statuscode The status code.
  */
-  void osip_message_set_statuscode (osip_message_t * sip, char *statuscode);
+  void osip_message_set_status_code (osip_message_t * sip, int statuscode);
 /**
  * Get the status code.
  * @param sip The element to work on.
  */
-  char *osip_message_get_statuscode (const osip_message_t * sip);
+  int osip_message_get_status_code (const osip_message_t * sip);
 /**
  * Set the method. You can set any string here.
  * @param sip The element to work on.
@@ -205,7 +205,7 @@ extern "C"
  */
   char *osip_message_get_method (const osip_message_t * sip);
 /**
- * Set the SIP version used. (use "SIP/2.0")
+ * Set the SIP version used. (default is "SIP/2.0")
  * @param sip The element to work on.
  * @param version The version of SIP.
  */
@@ -235,136 +235,136 @@ extern "C"
  * Test if the message is a SIP RESPONSE
  * @param msg the SIP message.
  */
-#define MSG_IS_RESPONSE(msg) ((msg)->statuscode!=NULL)
+#define MSG_IS_RESPONSE(msg) ((msg)->status_code!=0)
 /**
  * Test if the message is a SIP REQUEST
  * @param msg the SIP message.
  */
-#define MSG_IS_REQUEST(msg)  ((msg)->statuscode==NULL)
+#define MSG_IS_REQUEST(msg)  ((msg)->status_code==0)
 
 /**
  * Test if the message is an INVITE REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_INVITE(msg)   (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"INVITE",6))
+			      0==strncmp((msg)->sip_method,"INVITE",6))
 /**
  * Test if the message is an ACK REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_ACK(msg)      (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"ACK",3))
+			      0==strncmp((msg)->sip_method,"ACK",3))
 /**
  * Test if the message is a REGISTER REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_REGISTER(msg) (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"REGISTER",8))
+			      0==strncmp((msg)->sip_method,"REGISTER",8))
 /**
  * Test if the message is a BYE REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_BYE(msg)      (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"BYE",3))
+			      0==strncmp((msg)->sip_method,"BYE",3))
 /**
  * Test if the message is an OPTIONS REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_OPTIONS(msg)  (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"OPTIONS",7))
+			      0==strncmp((msg)->sip_method,"OPTIONS",7))
 /**
  * Test if the message is an INFO REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_INFO(msg)     (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"INFO",4))
+			      0==strncmp((msg)->sip_method,"INFO",4))
 /**
  * Test if the message is a CANCEL REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_CANCEL(msg)   (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"CANCEL",6))
+			      0==strncmp((msg)->sip_method,"CANCEL",6))
 /**
  * Test if the message is a REFER REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_REFER(msg)   (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"REFER",5))
+			      0==strncmp((msg)->sip_method,"REFER",5))
 /**
  * Test if the message is a NOTIFY REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_NOTIFY(msg)   (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"NOTIFY",6))
+			      0==strncmp((msg)->sip_method,"NOTIFY",6))
 /**
  * Test if the message is a SUBSCRIBE REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_SUBSCRIBE(msg)  (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"SUBSCRIBE",9))
+			      0==strncmp((msg)->sip_method,"SUBSCRIBE",9))
 /**
  * Test if the message is a MESSAGE REQUEST
  * @param msg the SIP message.
  */
 #define MSG_IS_MESSAGE(msg)  (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"MESSAGE",7))
+			      0==strncmp((msg)->sip_method,"MESSAGE",7))
 /**
  * Test if the message is a PRACK REQUEST  (!! PRACK IS NOT SUPPORTED by the fsm!!)
  * @param msg the SIP message.
  */
 #define MSG_IS_PRACK(msg)    (MSG_IS_REQUEST(msg) && \
-			      0==strncmp((msg)->sipmethod,"PRACK",5))
+			      0==strncmp((msg)->sip_method,"PRACK",5))
 
 /**
  * Test if the message is a response with status between 100 and 199
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_1XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"1",1))
+#define MSG_IS_STATUS_1XX(msg) ((msg)->status_code >= 100 && \
+                                (msg)->status_code < 200)
 /**
  * Test if the message is a response with status between 200 and 299
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_2XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"2",1))
+#define MSG_IS_STATUS_2XX(msg) ((msg)->status_code >= 200 && \
+                                (msg)->status_code < 300)
 /**
  * Test if the message is a response with status between 300 and 399
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_3XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"3",1))
+#define MSG_IS_STATUS_3XX(msg) ((msg)->status_code >= 300 && \
+                                (msg)->status_code < 400)
 /**
  * Test if the message is a response with status between 400 and 499
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_4XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"4",1))
+#define MSG_IS_STATUS_4XX(msg) ((msg)->status_code >= 400 && \
+                                (msg)->status_code < 500)
 /**
  * Test if the message is a response with status between 500 and 599
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_5XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"5",1))
+#define MSG_IS_STATUS_5XX(msg) ((msg)->status_code >= 500 && \
+                                (msg)->status_code < 600)
 /**
  * Test if the message is a response with status between 600 and 699
  * @param msg the SIP message.
  */
-#define MSG_IS_STATUS_6XX(msg) (MSG_IS_RESPONSE(msg) && \
-				0==strncmp((msg)->statuscode,"6",1))
+#define MSG_IS_STATUS_6XX(msg) ((msg)->status_code >= 600 && \
+                                (msg)->status_code < 700)
 /**
  * Test if the message is a response with a status set to the code value.
  * @param msg the SIP message.
  * @param code the status code.
  */
 #define MSG_TEST_CODE(msg,code) (MSG_IS_RESPONSE(msg) && \
-				 code==(int)osip_atoi((msg)->statuscode))
+				 (code)==(msg)->status_code)
 /**
  * Test if the message is a response for a REQUEST of certain type
  * @param msg the SIP message.
  * @param requestname the method name to match.
  */
-#define MSG_IS_RESPONSEFOR(msg,requestname)  (MSG_IS_RESPONSE(msg) && \
-				 0==strcmp((msg)->cseq->method,requestname))
+#define MSG_IS_RESPONSE_FOR(msg,requestname)  (MSG_IS_RESPONSE(msg) && \
+				 0==strcmp((msg)->cseq->method,(requestname)))
 
 
 /**
@@ -434,6 +434,11 @@ extern "C"
  * @param generic_param The element to work on.
  */
   char *osip_generic_param_get_value (const osip_generic_param_t * generic_param);
+
+/**
+ * The SIP protocol version oSIP conforms to.
+ */
+  const char *osip_protocol_version;
 
 
 /** @} */

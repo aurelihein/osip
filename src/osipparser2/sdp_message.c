@@ -1278,8 +1278,8 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
 	else
 	  more_space_before_crlf = 0;
       }
-    if (tmp_next < crlf)	// tmp_next is still less than clrf: no space
-      {
+    if (tmp_next < crlf) 
+      { /* tmp_next is still less than clrf: no space */
 	i = __osip_set_next_token (&str, tmp, '\r', &tmp_next);
 	if (i != 0)
 	  {
