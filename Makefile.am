@@ -1,4 +1,4 @@
-EXTRA_DIST = README BUGS FEATURES HISTORY autogen.sh
+EXTRA_DIST = README BUGS FEATURES HISTORY autogen.sh libosip2.pc.in
 
 SUBDIRS = include src scripts help platform debian
 
@@ -23,4 +23,5 @@ indent:
 	rm -rf */*/*.c~
 	rm -rf */*/*.h~
 
-
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libosip2.pc

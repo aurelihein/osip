@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.61 $)dnl
+AC_REVISION($Revision: 1.62 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
-AC_MSG_NOTICE([osip                              The GNU Open SIP library.])
-AC_MSG_NOTICE([Copyright (C) 2001,2002,2003,2004 Aymeric MOIZARD - <jack@atosc.org>])
+AC_MSG_NOTICE([osip                                   The GNU Open SIP library.])
+AC_MSG_NOTICE([Copyright (C) 2001,2002,2003,2004,2005 Aymeric MOIZARD - <jack@atosc.org>])
 
 
 dnl *********************************************************************
@@ -306,6 +306,7 @@ AC_CHECK_HEADERS(sys/signal.h)
 AC_CHECK_HEADERS(malloc.h)
 
 AC_OUTPUT(
+libosip2.pc
 Makefile
 scripts/Makefile
 src/Makefile

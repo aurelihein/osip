@@ -450,10 +450,31 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   if (i != 0)
     goto diau_error_4;
 
+  {
+    osip_contact_t *contact;
+
+    if (!osip_list_eol (next_request->contacts, 0))
+      {
+	contact = osip_list_get (next_request->contacts, 0);
+	i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
+	if (i != 0)
+	  goto diau_error_5;
+      }
+    else
+      {
+	(*dialog)->remote_contact_uri = NULL;
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "Remote UA is not compliant? missing a contact in response!\n"));
+      }
+  }
+
   (*dialog)->secure = -1;	/* non secure */
 
   return 0;
 
+diau_error_5:
+  osip_from_free ((*dialog)->local_uri);
 diau_error_4:
   osip_from_free ((*dialog)->remote_uri);
 diau_error_3:
