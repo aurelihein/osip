@@ -34,7 +34,7 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
   osip_content_encoding_t *content_encoding;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_content_encoding_init (&content_encoding);
@@ -55,14 +55,15 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_content_encoding (const osip_message_t * sip, int pos,
-			 osip_content_encoding_t ** dest)
+				   osip_content_encoding_t ** dest)
 {
   osip_content_encoding_t *ce;
 
   *dest = NULL;
   if (osip_list_size (sip->content_encodings) <= pos)
     return -1;			/* does not exist */
-  ce = (osip_content_encoding_t *) osip_list_get (sip->content_encodings, pos);
+  ce =
+    (osip_content_encoding_t *) osip_list_get (sip->content_encodings, pos);
   *dest = ce;
   return pos;
 }

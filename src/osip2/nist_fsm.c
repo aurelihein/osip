@@ -38,7 +38,8 @@ __nist_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition =
+	(transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -52,7 +53,8 @@ __nist_load_fsm ()
 {
   transition_t *transition;
 
-  nist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  nist_fsm =
+    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   nist_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (nist_fsm->transitions);
 
@@ -149,28 +151,28 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
 
       if (MSG_IS_REGISTER (evt->sip))
 	__osip_message_callback (OSIP_NIST_REGISTER_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_BYE (evt->sip))
 	__osip_message_callback (OSIP_NIST_BYE_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_OPTIONS (evt->sip))
 	__osip_message_callback (OSIP_NIST_OPTIONS_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_INFO (evt->sip))
 	__osip_message_callback (OSIP_NIST_INFO_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_CANCEL (evt->sip))
 	__osip_message_callback (OSIP_NIST_CANCEL_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_NOTIFY (evt->sip))
 	__osip_message_callback (OSIP_NIST_NOTIFY_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else if (MSG_IS_SUBSCRIBE (evt->sip))
 	__osip_message_callback (OSIP_NIST_SUBSCRIBE_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
       else
 	__osip_message_callback (OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, nist,
-			   nist->orig_request);
+				 nist->orig_request);
     }
   else				/* NIST_PROCEEDING or NIST_COMPLETED */
     {
@@ -178,7 +180,7 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
       osip_message_free (evt->sip);
 
       __osip_message_callback (OSIP_NIST_REQUEST_RECEIVED_AGAIN, nist,
-			 nist->orig_request);
+			       nist->orig_request);
       if (nist->last_response != NULL)	/* retransmit last response */
 	{
 	  osip_via_t *via;
@@ -226,20 +228,20 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
 	    i = -1;
 	  if (i != 0)
 	    {
-              nist_handle_transport_error (nist, i);
+	      nist_handle_transport_error (nist, i);
 	      return;
 	    }
 	  else
 	    {
 	      if (MSG_IS_STATUS_1XX (nist->last_response))
 		__osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
-				   nist->last_response);
+					 nist->last_response);
 	      else if (MSG_IS_STATUS_2XX (nist->last_response))
-		__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT_AGAIN, nist,
-				   nist->last_response);
+		__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT_AGAIN,
+					 nist, nist->last_response);
 	      else
-		__osip_message_callback (OSIP_NIST_STATUS_3456XX_SENT_AGAIN, nist,
-				   nist->last_response);
+		__osip_message_callback (OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
+					 nist, nist->last_response);
 	      return;
 	    }
 	}
@@ -310,7 +312,8 @@ nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
       return;
     }
   else
-    __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist, nist->last_response);
+    __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
+			     nist->last_response);
 
   __osip_transaction_set_state (nist, NIST_PROCEEDING);
 }
@@ -376,23 +379,28 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
   else
     {
       if (EVT_IS_SND_STATUS_2XX (evt))
-	__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT, nist, nist->last_response);
+	__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT, nist,
+				 nist->last_response);
       else if (MSG_IS_STATUS_3XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_3XX_SENT, nist, nist->last_response);
+	__osip_message_callback (OSIP_NIST_STATUS_3XX_SENT, nist,
+				 nist->last_response);
       else if (MSG_IS_STATUS_4XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_4XX_SENT, nist, nist->last_response);
+	__osip_message_callback (OSIP_NIST_STATUS_4XX_SENT, nist,
+				 nist->last_response);
       else if (MSG_IS_STATUS_5XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_5XX_SENT, nist, nist->last_response);
+	__osip_message_callback (OSIP_NIST_STATUS_5XX_SENT, nist,
+				 nist->last_response);
       else
-	__osip_message_callback (OSIP_NIST_STATUS_6XX_SENT, nist, nist->last_response);
+	__osip_message_callback (OSIP_NIST_STATUS_6XX_SENT, nist,
+				 nist->last_response);
     }
 
   if (nist->state != NIST_COMPLETED)	/* start J timer */
     {
 #ifdef NEW_TIMER
-      gettimeofday(&nist->nist_context->timer_j_start, NULL);
-      add_gettimeofday(&nist->nist_context->timer_j_start,
-		       nist->nist_context->timer_j_length);
+      gettimeofday (&nist->nist_context->timer_j_start, NULL);
+      add_gettimeofday (&nist->nist_context->timer_j_start,
+			nist->nist_context->timer_j_length);
 #else
       nist->nist_context->timer_j_start = time (NULL);
 #endif

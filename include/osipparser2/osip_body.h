@@ -39,14 +39,14 @@
  * Structure for Body
  * @defvar osip_body_t
  */
-  typedef struct osip_body osip_body_t;
+typedef struct osip_body osip_body_t;
 
-  struct osip_body
-  {
-    char *body;
-    osip_list_t *headers;
-    osip_content_type_t *content_type;
-  };
+struct osip_body
+{
+  char *body;
+  osip_list_t *headers;
+  osip_content_type_t *content_type;
+};
 
 
 #ifdef __cplusplus
@@ -101,7 +101,8 @@ extern "C"
  * @param body The element to work on.
  * @param hvalue The header string value.
  */
-  int osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue);
+  int osip_body_set_header (osip_body_t * body, const char *hname,
+			    const char *hvalue);
 
 #ifdef __cplusplus
 }

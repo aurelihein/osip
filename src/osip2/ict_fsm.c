@@ -40,7 +40,8 @@ __ict_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition =
+	(transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -54,7 +55,8 @@ __ict_load_fsm ()
 {
   transition_t *transition;
 
-  ict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  ict_fsm =
+    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   ict_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (ict_fsm->transitions);
 
@@ -180,9 +182,9 @@ osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
   /* reset timer */
   ict->ict_context->timer_a_length = ict->ict_context->timer_a_length * 2;
 #ifdef NEW_TIMER
-  gettimeofday(&ict->ict_context->timer_a_start, NULL);
-  add_gettimeofday(&ict->ict_context->timer_a_start,
-		   ict->ict_context->timer_a_length);
+  gettimeofday (&ict->ict_context->timer_a_start, NULL);
+  add_gettimeofday (&ict->ict_context->timer_a_start,
+		    ict->ict_context->timer_a_length);
 #else
   ict->ict_context->timer_a_start = now;
 #endif
@@ -198,7 +200,8 @@ osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
       return;
     }
 
-  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict, ict->orig_request);
+  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict,
+			   ict->orig_request);
 }
 
 void
@@ -274,8 +277,7 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
 
   ack->sip_method = (char *) osip_malloc (5);
   sprintf (ack->sip_method, "ACK");
-  ack->sip_version =
-    osip_strdup (ict->orig_request->sip_version);
+  ack->sip_version = osip_strdup (ict->orig_request->sip_version);
 
   ack->status_code = 0;
   ack->reason_phrase = NULL;
@@ -306,7 +308,8 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
 
     while (!osip_list_eol (ict->orig_request->routes, pos))
       {
-	orig_route = (osip_route_t *) osip_list_get (ict->orig_request->routes, pos);
+	orig_route =
+	  (osip_route_t *) osip_list_get (ict->orig_request->routes, pos);
 	osip_route_clone (orig_route, &route);
 	osip_list_add (ack->routes, route, -1);
 	pos++;
@@ -342,7 +345,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 
       ict->ack = ack;
 
-      if (ict->ack==NULL)
+      if (ict->ack == NULL)
 	{
 	  __osip_transaction_set_state (ict, ICT_TERMINATED);
 	  __osip_kill_transaction_callback (OSIP_ICT_KILL_TRANSACTION, ict);
@@ -361,7 +364,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 	      if (route->url->port != NULL)
 		port = osip_atoi (route->url->port);
 	      osip_ict_set_destination (ict->ict_context,
-				   osip_strdup (route->url->host), port);
+					osip_strdup (route->url->host), port);
 	    }
 	  else
 	    {
@@ -370,15 +373,15 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 	      if (ack->req_uri->port != NULL)
 		port = osip_atoi (ack->req_uri->port);
 	      osip_ict_set_destination (ict->ict_context,
-				   osip_strdup (ack->req_uri->host),
-				   port);
+					osip_strdup (ack->req_uri->host),
+					port);
 	    }
 	}
       i = osip->cb_send_message (ict, ack, ict->ict_context->destination,
 				 ict->ict_context->port, ict->out_socket);
       if (i != 0)
 	{
-          ict_handle_transport_error (ict, i);
+	  ict_handle_transport_error (ict, i);
 	  return;
 	}
       if (MSG_IS_STATUS_3XX (evt->sip))
@@ -390,7 +393,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
       else
 	__osip_message_callback (OSIP_ICT_STATUS_6XX_RECEIVED, ict, evt->sip);
 
-      __osip_message_callback(OSIP_ICT_ACK_SENT, ict, evt->sip);
+      __osip_message_callback (OSIP_ICT_ACK_SENT, ict, evt->sip);
     }
 
   /* TEST ME:
@@ -421,9 +424,9 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
 #ifdef NEW_TIMER
-  gettimeofday(&ict->ict_context->timer_d_start, NULL);
-  add_gettimeofday(&ict->ict_context->timer_d_start,
-		   ict->ict_context->timer_d_length);
+  gettimeofday (&ict->ict_context->timer_d_start, NULL);
+  add_gettimeofday (&ict->ict_context->timer_d_start,
+		    ict->ict_context->timer_d_length);
 #else
   ict->ict_context->timer_d_start = time (NULL);
 #endif
@@ -454,7 +457,8 @@ ict_retransmit_ack (osip_transaction_t * ict, osip_event_t * evt)
   /* we should make a new ACK and send it!!! */
   /* TODO */
 
-  __osip_message_callback (OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN, ict, evt->sip);
+  __osip_message_callback (OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN, ict,
+			   evt->sip);
 
   osip_message_free (evt->sip);
 

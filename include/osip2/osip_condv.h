@@ -62,8 +62,8 @@ extern "C"
  */
   struct timespec
   {
-    long   tv_sec;
-    long   tv_nsec;
+    long tv_sec;
+    long tv_nsec;
   };
 #endif
 
@@ -77,26 +77,26 @@ extern "C"
  * Destroy a condition variable
  * @param cond The condition variable to destroy.
  */
-  int osip_cond_destroy (struct osip_cond * _cond);
+  int osip_cond_destroy (struct osip_cond *_cond);
 /**
  * Signal the condition variable.
  * @param cond The condition variable to signal.
  */
-  int osip_cond_signal (struct osip_cond * cond);
+  int osip_cond_signal (struct osip_cond *cond);
 
 /**
  * Wait on the condition variable.
  * @param cond The condition variable to wait on.
  * @param mut The external mutex 
  */
-  int osip_cond_wait (struct osip_cond * cond, struct osip_mutex * mut);
+  int osip_cond_wait (struct osip_cond *cond, struct osip_mutex *mut);
 /**
  * Timed wait on the condition variable.
  * @param cond The condition variable to wait on.
  * @param mut The external mutex 
  * @param abstime time to wait until
  */
-  int osip_cond_timedwait (struct osip_cond * cond, struct osip_mutex * mut,
+  int osip_cond_timedwait (struct osip_cond *cond, struct osip_mutex *mut,
 			   const struct timespec *abstime);
 
 

@@ -78,16 +78,16 @@ osip_parse (char *buf)
     }
   else
     {
-      if (se->sip->call_id!=NULL && se->sip->call_id->number!=NULL)
+      if (se->sip->call_id != NULL && se->sip->call_id->number != NULL)
 	{
 	  OSIP_TRACE (osip_trace
 		      (__FILE__, __LINE__, OSIP_INFO3, NULL,
 		       "MESSAGE REC. CALLID:%s\n", se->sip->call_id->number));
 	}
 
-      if (MSG_IS_REQUEST(se->sip))
+      if (MSG_IS_REQUEST (se->sip))
 	{
-	  if (se->sip->sip_method==NULL || se->sip->req_uri==NULL)
+	  if (se->sip->sip_method == NULL || se->sip->req_uri == NULL)
 	    {
 	      osip_message_free (se->sip);
 	      osip_free (se);
@@ -128,13 +128,13 @@ osip_new_outgoing_sipmessage (osip_message_t * sip)
 {
   osip_event_t *sipevent;
 
-  if (sip==NULL)
+  if (sip == NULL)
     return NULL;
-  if (MSG_IS_REQUEST(sip))
+  if (MSG_IS_REQUEST (sip))
     {
-      if (sip->sip_method==NULL)
+      if (sip->sip_method == NULL)
 	return NULL;
-      if (sip->req_uri==NULL)
+      if (sip->req_uri == NULL)
 	return NULL;
     }
   sipevent = (osip_event_t *) osip_malloc (sizeof (osip_event_t));
@@ -190,9 +190,12 @@ evt_set_type_outgoing_sipmessage (osip_message_t * sip)
     }
 }
 
-void osip_event_free (osip_event_t *event) {
-  if (event != NULL) {
-    osip_message_free( event->sip );
-    osip_free( event );
-  }
+void
+osip_event_free (osip_event_t * event)
+{
+  if (event != NULL)
+    {
+      osip_message_free (event->sip);
+      osip_free (event);
+    }
 }

@@ -26,8 +26,8 @@
 #include "xixt.h"
 
 #ifdef NEW_TIMER
-void add_gettimeofday(struct timeval *atv, int ms);
-void min_timercmp(struct timeval *tv1, struct timeval *tv2);
+void add_gettimeofday (struct timeval *atv, int ms);
+void min_timercmp (struct timeval *tv1, struct timeval *tv2);
 #endif
 
 typedef struct osip_statemachine osip_statemachine_t;
@@ -100,7 +100,8 @@ void osip_ict_timeout_b_event (osip_transaction_t * ict, osip_event_t * evt);
 void osip_ict_timeout_d_event (osip_transaction_t * ict, osip_event_t * evt);
 void ict_rcv_1xx (osip_transaction_t * ict, osip_event_t * evt);
 void ict_rcv_2xx (osip_transaction_t * ict, osip_event_t * evt);
-osip_message_t *ict_create_ack (osip_transaction_t * ict, osip_message_t * response);
+osip_message_t *ict_create_ack (osip_transaction_t * ict,
+				osip_message_t * response);
 void ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt);
 void ict_retransmit_ack (osip_transaction_t * ict, osip_event_t * evt);
 
@@ -108,7 +109,8 @@ void ict_retransmit_ack (osip_transaction_t * ict, osip_event_t * evt);
 /* FSM  ---- > IST      */
 /************************/
 
-osip_message_t *ist_create_resp_100 (osip_transaction_t * ist, osip_message_t * request);
+osip_message_t *ist_create_resp_100 (osip_transaction_t * ist,
+				     osip_message_t * request);
 void ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt);
 void osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt);
 void osip_ist_timeout_h_event (osip_transaction_t * ist, osip_event_t * evt);
@@ -123,9 +125,12 @@ void ist_rcv_ack (osip_transaction_t * ist, osip_event_t * evt);
 /***********************/
 
 void nict_snd_request (osip_transaction_t * nict, osip_event_t * evt);
-void osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt);
-void osip_nict_timeout_f_event (osip_transaction_t * nict, osip_event_t * evt);
-void osip_nict_timeout_k_event (osip_transaction_t * nict, osip_event_t * evt);
+void osip_nict_timeout_e_event (osip_transaction_t * nict,
+				osip_event_t * evt);
+void osip_nict_timeout_f_event (osip_transaction_t * nict,
+				osip_event_t * evt);
+void osip_nict_timeout_k_event (osip_transaction_t * nict,
+				osip_event_t * evt);
 void nict_rcv_1xx (osip_transaction_t * nict, osip_event_t * evt);
 void nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt);
 
@@ -138,16 +143,19 @@ void nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt);
 void nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt);
 void nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt);
 void nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt);
-void osip_nist_timeout_j_event (osip_transaction_t * nist, osip_event_t * evt);
+void osip_nist_timeout_j_event (osip_transaction_t * nist,
+				osip_event_t * evt);
 
 /************************/
 /* Internal Methods     */
 /************************/
 
 
-void __osip_message_callback (int type, osip_transaction_t *, osip_message_t *);
+void __osip_message_callback (int type, osip_transaction_t *,
+			      osip_message_t *);
 void __osip_kill_transaction_callback (int type, osip_transaction_t *);
-void __osip_transport_error_callback (int type, osip_transaction_t *, int error);
+void __osip_transport_error_callback (int type, osip_transaction_t *,
+				      int error);
 
 /**
  * Set the state of the transaction.
@@ -155,7 +163,8 @@ void __osip_transport_error_callback (int type, osip_transaction_t *, int error)
  * @param transaction The element to work on.
  * @param state The new state.
  */
-int __osip_transaction_set_state (osip_transaction_t * transaction, state_t state);
+int __osip_transaction_set_state (osip_transaction_t * transaction,
+				  state_t state);
 
 /**
  * Check if the response match a server transaction.
@@ -163,8 +172,11 @@ int __osip_transaction_set_state (osip_transaction_t * transaction, state_t stat
  * @param tr The transaction.
  * @param resp The SIP response received.
  */
-int __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * tr,
-							      osip_message_t * resp);
+int
+__osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
+							  tr,
+							  osip_message_t *
+							  resp);
 
 /**
  * Check if the request match a client transaction.
@@ -172,7 +184,10 @@ int __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t
  * @param tr The transaction.
  * @param request The SIP request received.
  */
-int __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr,
-							     osip_message_t * request);
+int
+__osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
+							 tr,
+							 osip_message_t *
+							 request);
 
 #endif

@@ -26,12 +26,13 @@
 #include "parser.h"
 
 int
-osip_message_set_content_disposition (osip_message_t * sip, const char *hvalue)
+osip_message_set_content_disposition (osip_message_t * sip,
+				      const char *hvalue)
 {
   osip_content_disposition_t *content_disposition;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_content_disposition_init (&content_disposition);
@@ -52,7 +53,7 @@ osip_message_set_content_disposition (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_content_disposition (const osip_message_t * sip, int pos,
-			    osip_content_disposition_t ** dest)
+				      osip_content_disposition_t ** dest)
 {
   osip_content_disposition_t *content_disposition;
 
@@ -60,7 +61,8 @@ osip_message_get_content_disposition (const osip_message_t * sip, int pos,
   if (osip_list_size (sip->content_dispositions) <= pos)
     return -1;			/* does not exist */
   content_disposition =
-    (osip_content_disposition_t *) osip_list_get (sip->content_dispositions, pos);
+    (osip_content_disposition_t *) osip_list_get (sip->content_dispositions,
+						  pos);
   *dest = content_disposition;
   return pos;
 }
@@ -68,7 +70,8 @@ osip_message_get_content_disposition (const osip_message_t * sip, int pos,
 
 
 int
-osip_content_disposition_parse (osip_content_disposition_t * cd, const char *hvalue)
+osip_content_disposition_parse (osip_content_disposition_t * cd,
+				const char *hvalue)
 {
   const char *cd_params;
 

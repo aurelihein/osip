@@ -29,7 +29,8 @@
 int
 osip_authorization_init (osip_authorization_t ** dest)
 {
-  *dest = (osip_authorization_t *) osip_malloc (sizeof (osip_authorization_t));
+  *dest =
+    (osip_authorization_t *) osip_malloc (sizeof (osip_authorization_t));
   if (*dest == NULL)
     return -1;
   (*dest)->auth_type = NULL;
@@ -58,7 +59,7 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
   osip_authorization_t *authorization;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   if (sip == NULL || sip->authorizations == NULL)
@@ -106,7 +107,8 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
     {
       int parse_ok = 0;
 
-      if (__osip_quoted_string_set ("username", space, &(auth->username), &next))
+      if (__osip_quoted_string_set
+	  ("username", space, &(auth->username), &next))
 	return -1;
       if (next == NULL)
 	return 0;		/* end of header detected! */
@@ -142,7 +144,8 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
 	  space = next;
 	  parse_ok++;
 	}
-      if (__osip_quoted_string_set ("response", space, &(auth->response), &next))
+      if (__osip_quoted_string_set
+	  ("response", space, &(auth->response), &next))
 	return -1;
       if (next == NULL)
 	return 0;		/* end of header detected! */
@@ -248,14 +251,15 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
 /* returns null on error. */
 int
 osip_message_get_authorization (const osip_message_t * sip, int pos,
-		      osip_authorization_t ** dest)
+				osip_authorization_t ** dest)
 {
   osip_authorization_t *authorization;
 
   *dest = NULL;
   if (osip_list_size (sip->authorizations) <= pos)
     return -1;			/* does not exist */
-  authorization = (osip_authorization_t *) osip_list_get (sip->authorizations, pos);
+  authorization =
+    (osip_authorization_t *) osip_list_get (sip->authorizations, pos);
   *dest = authorization;
   return pos;
 }
@@ -267,7 +271,8 @@ osip_authorization_get_auth_type (const osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_auth_type (osip_authorization_t * authorization, char *auth_type)
+osip_authorization_set_auth_type (osip_authorization_t * authorization,
+				  char *auth_type)
 {
   authorization->auth_type = (char *) auth_type;
 }
@@ -279,7 +284,8 @@ osip_authorization_get_username (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_username (osip_authorization_t * authorization, char *username)
+osip_authorization_set_username (osip_authorization_t * authorization,
+				 char *username)
 {
   authorization->username = (char *) username;
 }
@@ -291,7 +297,8 @@ osip_authorization_get_realm (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_realm (osip_authorization_t * authorization, char *realm)
+osip_authorization_set_realm (osip_authorization_t * authorization,
+			      char *realm)
 {
   authorization->realm = (char *) realm;
 }
@@ -303,7 +310,8 @@ osip_authorization_get_nonce (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_nonce (osip_authorization_t * authorization, char *nonce)
+osip_authorization_set_nonce (osip_authorization_t * authorization,
+			      char *nonce)
 {
   authorization->nonce = (char *) nonce;
 }
@@ -327,7 +335,8 @@ osip_authorization_get_response (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_response (osip_authorization_t * authorization, char *response)
+osip_authorization_set_response (osip_authorization_t * authorization,
+				 char *response)
 {
   authorization->response = (char *) response;
 }
@@ -339,7 +348,8 @@ osip_authorization_get_digest (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_digest (osip_authorization_t * authorization, char *digest)
+osip_authorization_set_digest (osip_authorization_t * authorization,
+			       char *digest)
 {
   authorization->digest = (char *) digest;
 }
@@ -351,7 +361,8 @@ osip_authorization_get_algorithm (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_algorithm (osip_authorization_t * authorization, char *algorithm)
+osip_authorization_set_algorithm (osip_authorization_t * authorization,
+				  char *algorithm)
 {
   authorization->algorithm = (char *) algorithm;
 }
@@ -363,7 +374,8 @@ osip_authorization_get_cnonce (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_cnonce (osip_authorization_t * authorization, char *cnonce)
+osip_authorization_set_cnonce (osip_authorization_t * authorization,
+			       char *cnonce)
 {
   authorization->cnonce = (char *) cnonce;
 }
@@ -375,7 +387,8 @@ osip_authorization_get_opaque (osip_authorization_t * authorization)
 }
 
 void
-osip_authorization_set_opaque (osip_authorization_t * authorization, char *opaque)
+osip_authorization_set_opaque (osip_authorization_t * authorization,
+			       char *opaque)
 {
   authorization->opaque = (char *) opaque;
 }
@@ -388,7 +401,7 @@ osip_authorization_get_message_qop (osip_authorization_t * authorization)
 
 void
 osip_authorization_set_message_qop (osip_authorization_t * authorization,
-			      char *message_qop)
+				    char *message_qop)
 {
   authorization->message_qop = (char *) message_qop;
 }
@@ -401,7 +414,7 @@ osip_authorization_get_nonce_count (osip_authorization_t * authorization)
 
 void
 osip_authorization_set_nonce_count (osip_authorization_t * authorization,
-			      char *nonce_count)
+				    char *nonce_count)
 {
   authorization->nonce_count = (char *) nonce_count;
 }
@@ -567,7 +580,8 @@ osip_authorization_free (osip_authorization_t * authorization)
 }
 
 int
-osip_authorization_clone (const osip_authorization_t * auth, osip_authorization_t ** dest)
+osip_authorization_clone (const osip_authorization_t * auth,
+			  osip_authorization_t ** dest)
 {
   int i;
   osip_authorization_t *au;

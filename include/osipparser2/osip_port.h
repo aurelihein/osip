@@ -146,7 +146,7 @@ extern "C"
 /**************************/
 
   void *osip_malloc (size_t size);
-  void  osip_free (void *ptr);
+  void osip_free (void *ptr);
 #ifdef WIN32
 #define alloca _alloca
 #endif
@@ -169,22 +169,23 @@ extern "C"
 /* STRING support         */
 /**************************/
 
-  int   osip_atoi (const char *number);
+  int osip_atoi (const char *number);
   char *osip_strncpy (char *dest, const char *src, size_t length);
   char *osip_strdup (const char *ch);
   char *osip_strdup_without_quote (const char *ch);
-  int   osip_tolower (char *word);
-  int   osip_clrspace (char *word);
+  int osip_tolower (char *word);
+  int osip_clrspace (char *word);
   char *__osip_sdp_append_string (char *string, size_t size,
-			   char *cur, char *string_osip_to_append);
-  int   __osip_set_next_token (char **dest, char *buf, int end_separator, char **next);
+				  char *cur, char *string_osip_to_append);
+  int __osip_set_next_token (char **dest, char *buf, int end_separator,
+			     char **next);
   /* find the next unescaped quote and return its index. */
   char *__osip_quote_find (const char *qstring);
-  char *osip_enquote(const char *s);
-  void  osip_dequote(char *s);
+  char *osip_enquote (const char *s);
+  void osip_dequote (char *s);
 
-  int   osip_strcasecmp (const char *s1, const char *s2);
-  int   osip_strncasecmp (const char *s1, const char *s2, size_t len);
+  int osip_strcasecmp (const char *s1, const char *s2);
+  int osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
 /**************************/
 /* LOG&DEBUG support      */
@@ -217,11 +218,11 @@ extern "C"
 
 /* these are defined in all cases, but are empty when oSIP is compiled
    without trace */
-  void osip_trace_initialize_syslog (osip_trace_level_t level, char* ident);
+  void osip_trace_initialize_syslog (osip_trace_level_t level, char *ident);
   void osip_trace_initialize (osip_trace_level_t level, FILE * file);
   void osip_trace_enable_level (osip_trace_level_t level);
   void osip_trace_disable_level (osip_trace_level_t level);
-  int  osip_is_trace_level_activate (osip_trace_level_t level);
+  int osip_is_trace_level_activate (osip_trace_level_t level);
 
 #ifndef ENABLE_TRACE
 
@@ -244,7 +245,8 @@ extern "C"
 /* INPUT: level | level of the trace               */
 /* INPUT: f | use f instead of default log file    */
 /* INPUT: chfr | format string for next args       */
-  int osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...);
+  int osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f,
+		  char *chfr, ...);
 
 #ifdef ENABLE_TRACE
 #define OSIP_TRACE(P) P

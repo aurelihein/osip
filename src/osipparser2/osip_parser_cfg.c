@@ -130,7 +130,8 @@ __osip_message_is_known_header (const char *hname)
 	return -1;
 
       if ((length == strlen (pconfig[i].hname))
-	  && osip_strncasecmp (hname, (const char *) pconfig[i].hname, length) == 0)
+	  && osip_strncasecmp (hname, (const char *) pconfig[i].hname,
+			       length) == 0)
 	return i;
 
       if (iinf == isup)
@@ -140,7 +141,8 @@ __osip_message_is_known_header (const char *hname)
 	  if ((i < NUMBER_OF_HEADERS - 1)
 	      && (length == strlen (pconfig[i + 1].hname))
 	      && osip_strncasecmp (hname,
-			  (const char *) pconfig[i + 1].hname, length) == 0)
+				   (const char *) pconfig[i + 1].hname,
+				   length) == 0)
 	    return i + 1;
 	  else
 	    return -1;
@@ -154,7 +156,7 @@ __osip_message_is_known_header (const char *hname)
 */
 	}
       if (0 < osip_strncasecmp (hname,
-		       (const char *) pconfig[i].hname, length))
+				(const char *) pconfig[i].hname, length))
 	{
 	  /* if this is true, search further */
 	  iinf = i;

@@ -30,7 +30,8 @@ static transition_t *fsm_findmethod (type_t type, state_t state,
 /* find the transition for state and type in statemachine */
 /* return NULL; if transition is not found.               */
 static transition_t *
-fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
+fsm_findmethod (type_t type, state_t state,
+		osip_statemachine_t * statemachine)
 {
   int pos;
 
@@ -39,7 +40,8 @@ fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
     {
       transition_t *transition;
 
-      transition = (transition_t *) osip_list_get (statemachine->transitions, pos);
+      transition =
+	(transition_t *) osip_list_get (statemachine->transitions, pos);
       if (transition->type == type && transition->state == state)
 	return transition;
       pos++;
@@ -51,8 +53,9 @@ fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
 /* call the right execution method.          */
 /*   return -1 when event must be discarded  */
 int
-fsm_callmethod (type_t type, state_t state, osip_statemachine_t * statemachine,
-		void *sipevent, void *transaction)
+fsm_callmethod (type_t type, state_t state,
+		osip_statemachine_t * statemachine, void *sipevent,
+		void *transaction)
 {
   transition_t *transition;
 

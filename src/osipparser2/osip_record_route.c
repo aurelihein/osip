@@ -40,7 +40,7 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
   osip_record_route_t *record_route;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_record_route_init (&record_route);
@@ -63,20 +63,23 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_record_route (const osip_message_t * sip, int pos, osip_record_route_t ** dest)
+osip_message_get_record_route (const osip_message_t * sip, int pos,
+			       osip_record_route_t ** dest)
 {
   osip_record_route_t *record_route;
 
   *dest = NULL;
   if (osip_list_size (sip->record_routes) <= pos)
     return -1;			/* does not exist */
-  record_route = (osip_record_route_t *) osip_list_get (sip->record_routes, pos);
+  record_route =
+    (osip_record_route_t *) osip_list_get (sip->record_routes, pos);
   *dest = record_route;
   return pos;
 }
 
 int
-osip_record_route_parse (osip_record_route_t * record_route, const char *hvalue)
+osip_record_route_parse (osip_record_route_t * record_route,
+			 const char *hvalue)
 {
   return osip_from_parse ((osip_from_t *) record_route, hvalue);
 }
@@ -85,7 +88,8 @@ osip_record_route_parse (osip_record_route_t * record_route, const char *hvalue)
 /* INPUT : osip_record_route_t *record_route | record_route header.  */
 /* returns -1 on error. */
 int
-osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
+osip_record_route_to_str (const osip_record_route_t * record_route,
+			  char **dest)
 {
   char *url;
   char *buf;
@@ -128,7 +132,8 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
     while (!osip_list_eol (record_route->gen_params, pos))
       {
 	u_param =
-	  (osip_generic_param_t *) osip_list_get (record_route->gen_params, pos);
+	  (osip_generic_param_t *) osip_list_get (record_route->gen_params,
+						  pos);
 
 	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;

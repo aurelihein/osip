@@ -128,7 +128,8 @@ bc_error1:
 /* OUTPUT: osip_body_t *body | structure to save results. */
 /* returns -1 on error. */
 int
-osip_message_get_body (const osip_message_t * sip, int pos, osip_body_t ** dest)
+osip_message_get_body (const osip_message_t * sip, int pos,
+		       osip_body_t ** dest)
 {
   osip_body_t *body;
 
@@ -164,7 +165,8 @@ osip_body_set_contenttype (osip_body_t * body, const char *hvalue)
 }
 
 int
-osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue)
+osip_body_set_header (osip_body_t * body, const char *hname,
+		      const char *hvalue)
 {
   osip_header_t *h;
   int i;
@@ -214,7 +216,8 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf)
 }
 
 static int
-osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_header,
+osip_body_parse_header (osip_body_t * body,
+			const char *start_of_osip_body_header,
 			const char **next_body)
 {
   const char *start_of_line;
@@ -253,7 +256,8 @@ osip_body_parse_header (osip_body_t * body, const char *start_of_osip_body_heade
 	  osip_free (hname);
 	  return -1;
 	}
-      osip_strncpy (hvalue, colon_index + 1, (end_of_line - 2) - colon_index - 1);
+      osip_strncpy (hvalue, colon_index + 1,
+		    (end_of_line - 2) - colon_index - 1);
       osip_clrspace (hvalue);
 
       /* really store the header in the sip structure */
@@ -319,7 +323,9 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body)
 
   start_of_osip_body_header = start_of_body;
 
-  i = osip_body_parse_header (body, start_of_osip_body_header, &end_of_osip_body_header);
+  i =
+    osip_body_parse_header (body, start_of_osip_body_header,
+			    &end_of_osip_body_header);
   if (i == -1)
     return -1;
 
@@ -336,13 +342,15 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body)
 	return -1;		/* message does not end with CRLFCRLF, CRCR or LFLF */
     }
 
-  end_of_osip_body_header = end_of_osip_body_header + strlen (end_of_osip_body_header);
+  end_of_osip_body_header =
+    end_of_osip_body_header + strlen (end_of_osip_body_header);
   body->body =
-    (char *) osip_malloc (end_of_osip_body_header - start_of_osip_body_header + 1);
+    (char *) osip_malloc (end_of_osip_body_header -
+			  start_of_osip_body_header + 1);
   if (body->body == NULL)
     return -1;
   osip_strncpy (body->body, start_of_osip_body_header,
-	    end_of_osip_body_header - start_of_osip_body_header);
+		end_of_osip_body_header - start_of_osip_body_header);
 
   return 0;
 

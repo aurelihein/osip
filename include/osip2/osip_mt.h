@@ -60,20 +60,21 @@ extern "C"
  * @param func The method where the thread start.
  * @param arg A pointer on the argument given to the method 'func'.
  */
-  struct osip_thread *osip_thread_create (int stacksize, void *(*func) (void *), void *arg);
+  struct osip_thread *osip_thread_create (int stacksize,
+					  void *(*func) (void *), void *arg);
 
 /**
  * Join a thread.
  * @param thread The thread to join.
  */
-  int osip_thread_join (struct osip_thread * thread);
+  int osip_thread_join (struct osip_thread *thread);
 
 /**
  * Set the priority of a thread. (NOT IMPLEMENTED ON ALL SYSTEMS)
  * @param thread The thread to work on.
  * @param priority The priority value to set.
  */
-  int osip_thread_set_priority (struct osip_thread * thread, int priority);
+  int osip_thread_set_priority (struct osip_thread *thread, int priority);
 /**
  * Exit from a thread.
  */
@@ -111,24 +112,24 @@ extern "C"
  * Destroy a semaphore.
  * @param sem The semaphore to destroy.
  */
-  int osip_sem_destroy (struct osip_sem * sem);
+  int osip_sem_destroy (struct osip_sem *sem);
 /**
  * Post operation on a semaphore.
  * @param sem The semaphore to destroy.
  */
-  int osip_sem_post (struct osip_sem * sem);
+  int osip_sem_post (struct osip_sem *sem);
 /**
  * Wait operation on a semaphore.
  * NOTE: this call will block if the semaphore is at 0.
  * @param sem The semaphore to destroy.
  */
-  int osip_sem_wait (struct osip_sem * sem);
+  int osip_sem_wait (struct osip_sem *sem);
 /**
  * Wait operation on a semaphore.
  * NOTE: if the semaphore is at 0, this call won't block.
  * @param sem The semaphore to destroy.
  */
-  int osip_sem_trywait (struct osip_sem * sem);
+  int osip_sem_trywait (struct osip_sem *sem);
 
 
 #ifdef __cplusplus
@@ -162,17 +163,17 @@ extern "C"
  * Destroy the mutex.
  * @param mut The mutex to destroy.
  */
-  void osip_mutex_destroy (struct osip_mutex * mut);
+  void osip_mutex_destroy (struct osip_mutex *mut);
 /**
  * Lock the mutex.
  * @param mut The mutex to lock.
  */
-  int osip_mutex_lock (struct osip_mutex * mut);
+  int osip_mutex_lock (struct osip_mutex *mut);
 /**
  * Unlock the mutex.
  * @param mut The mutex to unlock.
  */
-  int osip_mutex_unlock (struct osip_mutex * mut);
+  int osip_mutex_unlock (struct osip_mutex *mut);
 
 #ifdef __cplusplus
 }

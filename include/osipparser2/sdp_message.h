@@ -79,7 +79,7 @@ extern "C"
   {
     char *t_start_time;
     char *t_stop_time;
-    osip_list_t *r_repeats;		/* list of char * */
+    osip_list_t *r_repeats;	/* list of char * */
   };
 
 /**
@@ -216,15 +216,15 @@ extern "C"
     char *s_name;
     char *i_info;
     char *u_uri;
-    osip_list_t *e_emails;		/* list of char * */
-    osip_list_t *p_phones;		/* list of char * */
+    osip_list_t *e_emails;	/* list of char * */
+    osip_list_t *p_phones;	/* list of char * */
     sdp_connection_t *c_connection;
     osip_list_t *b_bandwidths;	/* list of sdp_bandwidth_t * */
-    osip_list_t *t_descrs;		/* list of sdp_time_descr_t * */
+    osip_list_t *t_descrs;	/* list of sdp_time_descr_t * */
     char *z_adjustments;
     sdp_key_t *k_key;
     osip_list_t *a_attributes;	/* list of sdp_attribute_t * */
-    osip_list_t *m_medias;		/* list of sdp_media_t * */
+    osip_list_t *m_medias;	/* list of sdp_media_t * */
   };
 
 
@@ -279,9 +279,9 @@ extern "C"
  * @param addrtype The token value.
  * @param addr The token value.
  */
-  int sdp_message_o_origin_set (sdp_message_t * sdp, char *username, char *sess_id,
-			char *sess_version, char *nettype,
-			char *addrtype, char *addr);
+  int sdp_message_o_origin_set (sdp_message_t * sdp, char *username,
+				char *sess_id, char *sess_version,
+				char *nettype, char *addrtype, char *addr);
 /**
  * Get the username ('o' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -329,7 +329,8 @@ extern "C"
  * @param pos_media The media line number.
  * @param value The token value.
  */
-  int sdp_message_i_info_set (sdp_message_t * sdp, int pos_media, char *value);
+  int sdp_message_i_info_set (sdp_message_t * sdp, int pos_media,
+			      char *value);
 /**
  * Get the session info ('i' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -382,12 +383,13 @@ extern "C"
  * @param addr_multicast_int The token value.
  */
   int sdp_message_c_connection_add (sdp_message_t * sdp, int pos_media,
-			    char *nettype, char *addrtype,
-			    char *addr, char *addr_multicast_ttl,
-			    char *addr_multicast_int);
+				    char *nettype, char *addrtype,
+				    char *addr, char *addr_multicast_ttl,
+				    char *addr_multicast_int);
 #ifndef DOXYGEN
 /* this method should be internal only... */
-  sdp_connection_t *sdp_message_connection_get (sdp_message_t * sdp, int pos_media, int pos);
+  sdp_connection_t *sdp_message_connection_get (sdp_message_t * sdp,
+						int pos_media, int pos);
 #endif
 /**
  * Get the network type ('c' field) of a SDP packet.
@@ -395,14 +397,16 @@ extern "C"
  * @param pos_media The media line number.
  * @param pos The index in the connection element list..
  */
-  char *sdp_message_c_nettype_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_c_nettype_get (sdp_message_t * sdp, int pos_media,
+				   int pos);
 /**
  * Get the address type ('c' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The index in the connection element list..
  */
-  char *sdp_message_c_addrtype_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_c_addrtype_get (sdp_message_t * sdp, int pos_media,
+				    int pos);
 /**
  * Get the address ('c' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -416,14 +420,16 @@ extern "C"
  * @param pos_media The media line number.
  * @param pos The index in the connection element list..
  */
-  char *sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp,
+					      int pos_media, int pos);
 /**
  * Get the multicast int info ('c' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The index in the connection element list..
  */
-  char *sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp,
+					      int pos_media, int pos);
 /**
  * Set the version in a SDP packet.
  * @param sdp The element to work on.
@@ -432,35 +438,39 @@ extern "C"
  * @param bandwidth The token value.
  */
   int sdp_message_b_bandwidth_add (sdp_message_t * sdp, int pos_media,
-			   char *bwtype, char *bandwidth);
+				   char *bwtype, char *bandwidth);
 /**
  * Get the bandwidth ('b' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The index in the bandwidth element list..
  */
-  sdp_bandwidth_t *sdp_message_bandwidth_get (sdp_message_t * sdp, int pos_media, int pos);
+  sdp_bandwidth_t *sdp_message_bandwidth_get (sdp_message_t * sdp,
+					      int pos_media, int pos);
 /**
  * Get the bandwidth type ('b' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The index in the bandwidth element list..
  */
-  char *sdp_message_b_bwtype_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_b_bwtype_get (sdp_message_t * sdp, int pos_media,
+				  int pos);
 /**
  * Get the bandwidth value ('b' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The index in the bandwidth element list..
  */
-  char *sdp_message_b_bandwidth_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_b_bandwidth_get (sdp_message_t * sdp, int pos_media,
+				     int pos);
 /**
  * Set the version in a SDP packet.
  * @param sdp The element to work on.
  * @param start The token value.
  * @param stop The token value.
  */
-  int sdp_message_t_time_descr_add (sdp_message_t * sdp, char *start, char *stop);
+  int sdp_message_t_time_descr_add (sdp_message_t * sdp, char *start,
+				    char *stop);
 /**
  * Get the start time value ('t' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -479,14 +489,16 @@ extern "C"
  * @param pos_time_descr index of t field.
  * @param value The token value.
  */
-  int sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr, char *value);
+  int sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr,
+				char *value);
 /**
  * Get the repeat information ('r' field) in a SDP packet.
  * @param sdp The element to work on.
  * @param pos_time_descr index of t field.
  * @param pos_repeat index of element in the 'r' field.
  */
-  char *sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr, int pos_repeat);
+  char *sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr,
+				  int pos_repeat);
 /**
  * Set the adjustments ('z' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -505,8 +517,8 @@ extern "C"
  * @param keytype The token value.
  * @param keydata The token value.
  */
-  int sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype,
-		     char *keydata);
+  int sdp_message_k_key_set (sdp_message_t * sdp, int pos_media,
+			     char *keytype, char *keydata);
 /**
  * Get the key type ('k' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -526,29 +538,32 @@ extern "C"
  * @param att_field The token value.
  * @param att_value The token value.
  */
-  int sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media, char *att_field,
-			   char *att_value);
+  int sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
+				   char *att_field, char *att_value);
 /**
  * Get one of the attribute ('a' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The attribute line number.
  */
-  sdp_attribute_t *sdp_message_attribute_get (sdp_message_t * sdp, int pos_media, int pos);
+  sdp_attribute_t *sdp_message_attribute_get (sdp_message_t * sdp,
+					      int pos_media, int pos);
 /**
  * Get the attribute name ('a' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The attribute line number.
  */
-  char *sdp_message_a_att_field_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_a_att_field_get (sdp_message_t * sdp, int pos_media,
+				     int pos);
 /**
  * Get the attribute value ('a' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The media line number.
  * @param pos The attribute line number.
  */
-  char *sdp_message_a_att_value_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_a_att_value_get (sdp_message_t * sdp, int pos_media,
+				     int pos);
 /**
  * Check if there is more media lines a SDP packet.
  * @param sdp The element to work on.
@@ -564,7 +579,7 @@ extern "C"
  * @param proto The token value.
  */
   int sdp_message_m_media_add (sdp_message_t * sdp, char *media,
-		       char *port, char *number_of_port, char *proto);
+			       char *port, char *number_of_port, char *proto);
 /**
  * Get the media type ('m' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -595,14 +610,16 @@ extern "C"
  * @param pos_media The line number.
  * @param payload The token value.
  */
-  int sdp_message_m_payload_add (sdp_message_t * sdp, int pos_media, char *payload);
+  int sdp_message_m_payload_add (sdp_message_t * sdp, int pos_media,
+				 char *payload);
 /**
  * Get one of the payload number ('m' field) of a SDP packet.
  * @param sdp The element to work on.
  * @param pos_media The line number.
  * @param pos The i th payload element.
  */
-  char *sdp_message_m_payload_get (sdp_message_t * sdp, int pos_media, int pos);
+  char *sdp_message_m_payload_get (sdp_message_t * sdp, int pos_media,
+				   int pos);
 
 
 /** @} */

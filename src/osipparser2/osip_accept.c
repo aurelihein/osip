@@ -36,7 +36,7 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
   osip_accept_t *accept;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = accept_init (&accept);
@@ -58,7 +58,8 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
 
 
 int
-osip_message_get_accept (const osip_message_t * sip, int pos, osip_accept_t ** dest)
+osip_message_get_accept (const osip_message_t * sip, int pos,
+			 osip_accept_t ** dest)
 {
   osip_accept_t *accept;
 

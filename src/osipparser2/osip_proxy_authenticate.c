@@ -35,7 +35,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
   osip_proxy_authenticate_t *proxy_authenticate;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_proxy_authenticate_init (&(proxy_authenticate));
@@ -61,7 +61,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
 /* returns null on error. */
 int
 osip_message_get_proxy_authenticate (const osip_message_t * sip, int pos,
-			   osip_proxy_authenticate_t ** dest)
+				     osip_proxy_authenticate_t ** dest)
 {
   osip_proxy_authenticate_t *proxy_authenticate;
 

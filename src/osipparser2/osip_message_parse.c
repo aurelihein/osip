@@ -29,9 +29,10 @@ static int osip_message_set__header (osip_message_t * sip, const char *hname,
 				     const char *hvalue);
 static int msg_handle_multiple_values (osip_message_t * sip, char *hname,
 				       char *hvalue);
-static int msg_headers_parse (osip_message_t * sip, const char *start_of_header,
-			      const char **body);
-static int msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
+static int msg_headers_parse (osip_message_t * sip,
+			      const char *start_of_header, const char **body);
+static int msg_osip_body_parse (osip_message_t * sip,
+				const char *start_of_buf,
 				const char **next_body);
 
 
@@ -52,7 +53,7 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   p2 = strchr (buf, ' ');
   if (p2 == NULL)
     return -1;
-  if (p2-buf==0)
+  if (p2 - buf == 0)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
@@ -126,7 +127,7 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
   reasonphrase = strchr (statuscode + 1, ' ');
   /* dest->status_code = (char *) osip_malloc (reasonphrase - statuscode); */
   /* osip_strncpy (dest->status_code, statuscode + 1, reasonphrase - statuscode - 1); */
-  if (sscanf(statuscode + 1, "%d", &dest->status_code) != 1)
+  if (sscanf (statuscode + 1, "%d", &dest->status_code) != 1)
     {
       /* Non-numeric status code */
       return -1;
@@ -148,7 +149,8 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
 	  }
       }
     dest->reason_phrase = (char *) osip_malloc (hp - reasonphrase);
-    osip_strncpy (dest->reason_phrase, reasonphrase + 1, hp - reasonphrase - 1);
+    osip_strncpy (dest->reason_phrase, reasonphrase + 1,
+		  hp - reasonphrase - 1);
 
     hp++;
     if ((*hp) && ('\r' == hp[-1]) && ('\n' == hp[0]))
@@ -187,48 +189,43 @@ __osip_find_next_occurence (const char *str, const char *buf,
    initial CRLFCRLF found or the end of the string.
 */
 static void
-osip_util_replace_all_lws(char *sip_message)
+osip_util_replace_all_lws (char *sip_message)
 {
   const char *end_of_message;
   char *tmp;
 
-  if (sip_message==NULL)
+  if (sip_message == NULL)
     return;
 
-  end_of_message = sip_message + strlen(sip_message);
+  end_of_message = sip_message + strlen (sip_message);
 
   tmp = sip_message;
-  for (;tmp<end_of_message;tmp++)
+  for (; tmp < end_of_message; tmp++)
     {
       if (('\0' == tmp[0])
-	  || ('\0' == tmp[1])
-	  || ('\0' == tmp[2])
-	  || ('\0' == tmp[3]))
-	  return;
+	  || ('\0' == tmp[1]) || ('\0' == tmp[2]) || ('\0' == tmp[3]))
+	return;
 
       if ((('\r' == tmp[0]) && ('\r' == tmp[1])
 	   && ('\r' == tmp[2]) && ('\r' == tmp[3]))
 	  ||
 	  (('\r' == tmp[0]) && ('\r' == tmp[1]))
+	  || (('\n' == tmp[0]) && ('\n' == tmp[1])))
+	return;			/* end of message */
+
+      if ((('\r' == tmp[0]) && ('\n' == tmp[1])
+	   && ((' ' == tmp[2]) || ('\t' == tmp[2])))
 	  ||
-	  (('\n' == tmp[0]) && ('\n' == tmp[1])))
-	return; /* end of message */
-      
-      if ( (('\r' == tmp[0]) && ('\n' == tmp[1])
-	    && ((' ' == tmp[2]) || ('\t' == tmp[2])))
-	   ||
-	   (('\r' == tmp[0])
-	    && ((' ' == tmp[1]) || ('\t' == tmp[1])))
-	   ||
-	   (('\n' == tmp[0])
-	    && ((' ' == tmp[1]) || ('\t' == tmp[1]))))
+	  (('\r' == tmp[0])
+	   && ((' ' == tmp[1]) || ('\t' == tmp[1])))
+	  || (('\n' == tmp[0]) && ((' ' == tmp[1]) || ('\t' == tmp[1]))))
 	{
 	  /* replace line end and TAB symbols by SP */
 	  tmp[0] = ' ';
 	  tmp[1] = ' ';
 	  tmp = tmp + 2;
 	  /* replace all following TAB symbols */
-	  for (; ('\t' == tmp[0] || ' ' == tmp[0]) ;)
+	  for (; ('\t' == tmp[0] || ' ' == tmp[0]);)
 	    {
 	      tmp[0] = ' ';
 	      tmp++;
@@ -238,7 +235,8 @@ osip_util_replace_all_lws(char *sip_message)
 }
 
 int
-__osip_find_next_crlf (const char *start_of_header, const char **end_of_header)
+__osip_find_next_crlf (const char *start_of_header,
+		       const char **end_of_header)
 {
   const char *soh = start_of_header;
 
@@ -256,22 +254,22 @@ __osip_find_next_crlf (const char *start_of_header, const char **end_of_header)
 	  return -1;
 	}
     }
-  
+
   if (('\r' == soh[0]) && ('\n' == soh[1]))
     /* case 1: CRLF is the separator
        case 2 or 3: CR or LF is the separator */
     soh = soh + 1;
-  
-  
+
+
   /* VERIFY if TMP is the end of header or LWS.            */
   /* LWS are extra SP, HT, CR and LF contained in headers. */
   if ((' ' == soh[1]) || ('\t' == soh[1]))
     {
       /* From now on, incoming message that potentially
-	 contains LWS must be processed with
-	 -> void osip_util_replace_all_lws(char *)
-	 This is because the parser methods does not
-	 support detection of LWS inside. */
+         contains LWS must be processed with
+         -> void osip_util_replace_all_lws(char *)
+         This is because the parser methods does not
+         support detection of LWS inside. */
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_BUG, NULL,
 		   "Message that contains LWS must be processed with osip_util_replace_all_lws(char *tmp) before being parsed.\n"));
@@ -283,7 +281,8 @@ __osip_find_next_crlf (const char *start_of_header, const char **end_of_header)
 }
 
 int
-__osip_find_next_crlfcrlf (const char *start_of_part, const char **end_of_part)
+__osip_find_next_crlfcrlf (const char *start_of_part,
+			   const char **end_of_part)
 {
   const char *start_of_line;
   const char *end_of_line;
@@ -325,7 +324,8 @@ __osip_find_next_crlfcrlf (const char *start_of_part, const char **end_of_part)
 }
 
 static int
-osip_message_set__header (osip_message_t * sip, const char *hname, const char *hvalue)
+osip_message_set__header (osip_message_t * sip, const char *hname,
+			  const char *hvalue)
 {
   int my_index;
 
@@ -389,8 +389,7 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
 
   osip_tolower (hname);
 
-  if (comma == NULL || (strncmp (hname, "date", 4) == 0 && strlen (hname) == 4 )
-      || strncmp (hname, "organization", 12) == 0 || (strncmp (hname, "to", 2) == 0 && strlen (hname) == 2) || (strncmp (hname, "from", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
+  if (comma == NULL || (strncmp (hname, "date", 4) == 0 && strlen (hname) == 4) || strncmp (hname, "organization", 12) == 0 || (strncmp (hname, "to", 2) == 0 && strlen (hname) == 2) || (strncmp (hname, "from", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
       || strncmp (hname, "call-id", 7) == 0 || (strncmp (hname, "cseq", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
       || strncmp (hname, "subject", 7) == 0 || strncmp (hname, "user-agent", 10) == 0 || strncmp (hname, "server", 6) == 0 || strncmp (hname, "www-authenticate", 16) == 0	/* AMD: BUG fix */
       || strncmp (hname, "authentication-info", 19) == 0 || strncmp (hname, "proxy-authenticate", 20) == 0 || strncmp (hname, "proxy-authorization", 19) == 0 || strncmp (hname, "proxy-authentication-info", 25) == 0	/* AMD: BUG fix */
@@ -485,7 +484,7 @@ static int
 msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 		   const char **body)
 {
-  const char *colon_index;		/* index of ':' */
+  const char *colon_index;	/* index of ':' */
   char *hname;
   char *hvalue;
   const char *end_of_header;
@@ -652,12 +651,12 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	}
     }
 
-  if (sip->content_type==NULL)
+  if (sip->content_type == NULL)
     return -1;
-    
+
   /* find the boundary */
   i = osip_generic_param_get_byname (sip->content_type->gen_params,
-			       "boundary", &ct_param);
+				     "boundary", &ct_param);
   if (i != 0)
     return -1;
 
@@ -673,7 +672,9 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   start_of_body = start_of_buf;
   for (;;)
     {
-      i = __osip_find_next_occurence (sep_boundary, start_of_body, &start_of_body);
+      i =
+	__osip_find_next_occurence (sep_boundary, start_of_body,
+				    &start_of_body);
       if (i == -1)
 	{
 	  osip_free (sep_boundary);
@@ -681,8 +682,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	}
       i =
 	__osip_find_next_occurence (sep_boundary,
-			     start_of_body + strlen (sep_boundary),
-			     &end_of_body);
+				    start_of_body + strlen (sep_boundary),
+				    &end_of_body);
       if (i == -1)
 	{
 	  osip_free (sep_boundary);
@@ -727,12 +728,12 @@ osip_message_parse (osip_message_t * sip, const char *buf)
   char *tmp;
 
 #ifdef WIN32
-  tmp = _alloca (strlen(buf)+2);
+  tmp = _alloca (strlen (buf) + 2);
 #else
-  tmp = alloca (strlen(buf)+2);
+  tmp = alloca (strlen (buf) + 2);
 #endif
-  osip_strncpy(tmp, buf, strlen(buf));
-  osip_util_replace_all_lws(tmp);
+  osip_strncpy (tmp, buf, strlen (buf));
+  osip_util_replace_all_lws (tmp);
   /* parse request or status line */
   i = __osip_message_startline_parse (sip, tmp, &next_header_index);
   if (i == -1)
@@ -784,7 +785,8 @@ osip_message_parse (osip_message_t * sip, const char *buf)
 /* This method just add a received parameter in the Via
    as requested by rfc3261 */
 int
-osip_message_fix_last_via_header (osip_message_t * request, const char *ip_addr, int port)
+osip_message_fix_last_via_header (osip_message_t * request,
+				  const char *ip_addr, int port)
 {
   osip_generic_param_t *rport;
   osip_via_t *via;
@@ -824,110 +826,111 @@ osip_message_fix_last_via_header (osip_message_t * request, const char *ip_addr,
 const char *
 osip_message_get_reason (int replycode)
 {
-  struct code_to_reason {
+  struct code_to_reason
+  {
     int code;
     const char *reason;
   };
-  
+
   static const struct code_to_reason reasons1xx[] = {
-    { 100, "Trying" },
-    { 180, "Ringing" },
-    { 181, "Call Is Being Forwarded" },
-    { 182, "Queued" },
-    { 183, "Session Progress" },
+    {100, "Trying"},
+    {180, "Ringing"},
+    {181, "Call Is Being Forwarded"},
+    {182, "Queued"},
+    {183, "Session Progress"},
   };
   static const struct code_to_reason reasons2xx[] = {
-    { 200, "OK" },
-    { 202, "Accepted" },
+    {200, "OK"},
+    {202, "Accepted"},
   };
   static const struct code_to_reason reasons3xx[] = {
-    { 300, "Multiple Choices" },
-    { 301, "Moved Permanently" },
-    { 302, "Moved Temporarily" },
-    { 305, "Use Proxy" },
-    { 380, "Alternative Service" },
+    {300, "Multiple Choices"},
+    {301, "Moved Permanently"},
+    {302, "Moved Temporarily"},
+    {305, "Use Proxy"},
+    {380, "Alternative Service"},
   };
   static const struct code_to_reason reasons4xx[] = {
-    { 400, "Bad Request" },
-    { 401, "Unauthorized" },
-    { 402, "Payment Required" },
-    { 403, "Forbidden" },
-    { 404, "Not Found" },
-    { 405, "Method Not Allowed" },
-    { 406, "Not Acceptable" },
-    { 407, "Proxy Authentication Required" },
-    { 408, "Request Timeout" },
-    { 409, "Conflict" },
-    { 410, "Gone" },
-    { 411, "Length Required" },
-    { 413, "Request Entity Too Large" },
-    { 414, "Request-URI Too Large" },
-    { 415, "Unsupported Media Type" },
-    { 416, "Unsupported Uri Scheme" },
-    { 420, "Bad Extension" },
-    { 423, "Interval Too Short" },
-    { 480, "Temporarily not available" },
-    { 481, "Call Leg/Transaction Does Not Exist" },
-    { 482, "Loop Detected" },
-    { 483, "Too Many Hops" },
-    { 484, "Address Incomplete" },
-    { 485, "Ambiguous" },
-    { 486, "Busy Here" },
-    { 487, "Request Cancelled" },
-    { 488, "Not Acceptable Here" },
-    { 489, "Bad Event" },
+    {400, "Bad Request"},
+    {401, "Unauthorized"},
+    {402, "Payment Required"},
+    {403, "Forbidden"},
+    {404, "Not Found"},
+    {405, "Method Not Allowed"},
+    {406, "Not Acceptable"},
+    {407, "Proxy Authentication Required"},
+    {408, "Request Timeout"},
+    {409, "Conflict"},
+    {410, "Gone"},
+    {411, "Length Required"},
+    {413, "Request Entity Too Large"},
+    {414, "Request-URI Too Large"},
+    {415, "Unsupported Media Type"},
+    {416, "Unsupported Uri Scheme"},
+    {420, "Bad Extension"},
+    {423, "Interval Too Short"},
+    {480, "Temporarily not available"},
+    {481, "Call Leg/Transaction Does Not Exist"},
+    {482, "Loop Detected"},
+    {483, "Too Many Hops"},
+    {484, "Address Incomplete"},
+    {485, "Ambiguous"},
+    {486, "Busy Here"},
+    {487, "Request Cancelled"},
+    {488, "Not Acceptable Here"},
+    {489, "Bad Event"},
   };
   static const struct code_to_reason reasons5xx[] = {
-    { 500, "Internal Server Error" },
-    { 501, "Not Implemented" },
-    { 502, "Bad Gateway" },
-    { 503, "Service Unavailable" },
-    { 504, "Gateway Time-out" },
-    { 505, "SIP Version not supported" },
+    {500, "Internal Server Error"},
+    {501, "Not Implemented"},
+    {502, "Bad Gateway"},
+    {503, "Service Unavailable"},
+    {504, "Gateway Time-out"},
+    {505, "SIP Version not supported"},
   };
   static const struct code_to_reason reasons6xx[] = {
-    { 600, "Busy Everywhere" },
-    { 603, "Decline" },
-    { 604, "Does not exist anywhere" },
-    { 606, "Not Acceptable" }
+    {600, "Busy Everywhere"},
+    {603, "Decline"},
+    {604, "Does not exist anywhere"},
+    {606, "Not Acceptable"}
   };
   const struct code_to_reason *reasons;
   int len, i;
 
-  switch (replycode / 100) {
-  case 1:
-    reasons = reasons1xx;
-    len = sizeof(reasons1xx) / sizeof(*reasons);
-    break;
-  case 2:
-    reasons = reasons2xx;
-    len = sizeof(reasons2xx) / sizeof(*reasons);
-    break;
-  case 3:
-    reasons = reasons3xx;
-    len = sizeof(reasons3xx) / sizeof(*reasons);
-    break;
-  case 4:
-    reasons = reasons4xx;
-    len = sizeof(reasons4xx) / sizeof(*reasons);
-    break;
-  case 5:
-    reasons = reasons5xx;
-    len = sizeof(reasons5xx) / sizeof(*reasons);
-    break;
-  case 6:
-    reasons = reasons6xx;
-    len = sizeof(reasons6xx) / sizeof(*reasons);
-    break;
-  default:
-    return NULL;
-  }
-  
+  switch (replycode / 100)
+    {
+    case 1:
+      reasons = reasons1xx;
+      len = sizeof (reasons1xx) / sizeof (*reasons);
+      break;
+    case 2:
+      reasons = reasons2xx;
+      len = sizeof (reasons2xx) / sizeof (*reasons);
+      break;
+    case 3:
+      reasons = reasons3xx;
+      len = sizeof (reasons3xx) / sizeof (*reasons);
+      break;
+    case 4:
+      reasons = reasons4xx;
+      len = sizeof (reasons4xx) / sizeof (*reasons);
+      break;
+    case 5:
+      reasons = reasons5xx;
+      len = sizeof (reasons5xx) / sizeof (*reasons);
+      break;
+    case 6:
+      reasons = reasons6xx;
+      len = sizeof (reasons6xx) / sizeof (*reasons);
+      break;
+    default:
+      return NULL;
+    }
+
   for (i = 0; i < len; i++)
     if (reasons[i].code == replycode)
       return reasons[i].reason;
-  
+
   /* Not found. */
   return NULL;
 }
-

@@ -33,7 +33,7 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   if (sip->call_id != NULL)
@@ -86,7 +86,7 @@ osip_call_id_free (osip_call_id_t * callid)
 
   callid->number = NULL;
   callid->host = NULL;
-  
+
   osip_free (callid);
 }
 
@@ -149,8 +149,8 @@ osip_call_id_to_str (const osip_call_id_t * callid, char **dest)
   else
     {
       *dest =
-	(char *) osip_malloc (strlen (callid->number) + strlen (callid->host) +
-			  2);
+	(char *) osip_malloc (strlen (callid->number) +
+			      strlen (callid->host) + 2);
       if (*dest == NULL)
 	return -1;
       sprintf (*dest, "%s@%s", callid->number, callid->host);

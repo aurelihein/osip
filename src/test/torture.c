@@ -29,9 +29,10 @@
 #include <osip2/internal.h>
 
 int test_message (char *msg, int verbose, int clone);
-static void usage(void);
+static void usage (void);
 
-static void usage ()
+static void
+usage ()
 {
   fprintf (stderr, "Usage: ./torture_test torture_file number [-v] [-c]\n");
   exit (1);
@@ -169,14 +170,14 @@ test_message (char *msg, int verbose, int clone)
 	    osip_message_free (sip);	/* try to free msg, even if it failed! */
 	    return -1;
 	  }
-	osip_message_free (sip);		/* try to free msg, even if it failed! */
+	osip_message_free (sip);	/* try to free msg, even if it failed! */
       }
 
     osip_message_init (&sip);
     if (osip_message_parse (sip, msg) != 0)
       {
 	fprintf (stdout, "ERROR: failed while parsing!\n");
-	osip_message_free (sip);		/* try to free msg, even if it failed! */
+	osip_message_free (sip);	/* try to free msg, even if it failed! */
 	/* this seems dangerous..... */
 	return -1;
       }

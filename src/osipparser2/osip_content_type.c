@@ -29,14 +29,16 @@
 int
 osip_content_type_init (osip_content_type_t ** content_type)
 {
-  *content_type = (osip_content_type_t *) osip_malloc (sizeof (osip_content_type_t));
+  *content_type =
+    (osip_content_type_t *) osip_malloc (sizeof (osip_content_type_t));
   if (*content_type == NULL)
     return -1;
 
   (*content_type)->type = NULL;
   (*content_type)->subtype = NULL;
 
-  (*content_type)->gen_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  (*content_type)->gen_params =
+    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*content_type)->gen_params == NULL)
     {
       osip_free ((*content_type)->gen_params);
@@ -60,7 +62,7 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
   if (sip->content_type != NULL)
     return -1;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_content_type_init (&(sip->content_type));
@@ -93,7 +95,8 @@ osip_message_get_content_type (const osip_message_t * sip)
 /* OUTPUT: osip_content_type_t *content_type | structure to save results.     */
 /* returns -1 on error. */
 int
-osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
+osip_content_type_parse (osip_content_type_t * content_type,
+			 const char *hvalue)
 {
   char *subtype;
   char *osip_content_type_params;
@@ -119,7 +122,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
   if (osip_content_type_params != NULL)
     {
       if (__osip_generic_param_parseall (content_type->gen_params,
-				  osip_content_type_params) == -1)
+					 osip_content_type_params) == -1)
 	return -1;
     }
   else
@@ -135,11 +138,12 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
 
   if (osip_content_type_params - subtype < 2)
     return -1;
-  content_type->subtype = (char *) osip_malloc (osip_content_type_params - subtype);
+  content_type->subtype =
+    (char *) osip_malloc (osip_content_type_params - subtype);
   if (content_type->subtype == NULL)
     return -1;
   osip_strncpy (content_type->subtype, subtype + 1,
-	    osip_content_type_params - subtype - 1);
+		osip_content_type_params - subtype - 1);
   osip_clrspace (content_type->subtype);
 
   return 0;
@@ -150,7 +154,8 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
 /* INPUT : osip_content_type_t *content_type | content_type header.   */
 /* returns null on error. */
 int
-osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
+osip_content_type_to_str (const osip_content_type_t * content_type,
+			  char **dest)
 {
   char *buf;
   char *tmp;
@@ -185,7 +190,8 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
 	size_t tmp_len;
 
 	u_param =
-	  (osip_generic_param_t *) osip_list_get (content_type->gen_params, pos);
+	  (osip_generic_param_t *) osip_list_get (content_type->gen_params,
+						  pos);
 	if (u_param->gvalue == NULL)
 	  {
 	    osip_free (buf);
@@ -224,12 +230,13 @@ osip_content_type_free (osip_content_type_t * content_type)
   content_type->type = NULL;
   content_type->subtype = NULL;
   content_type->gen_params = NULL;
-  
-  osip_free(content_type);
+
+  osip_free (content_type);
 }
 
 int
-osip_content_type_clone (const osip_content_type_t * ctt, osip_content_type_t ** dest)
+osip_content_type_clone (const osip_content_type_t * ctt,
+			 osip_content_type_t ** dest)
 {
   int i;
   osip_content_type_t *ct;
@@ -255,7 +262,8 @@ osip_content_type_clone (const osip_content_type_t * ctt, osip_content_type_t **
 
     while (!osip_list_eol (ctt->gen_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
 	i = osip_generic_param_clone (u_param, &dest_param);
 	if (i != 0)
 	  {

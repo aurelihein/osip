@@ -31,7 +31,7 @@ osip_message_set_alert_info (osip_message_t * sip, const char *hvalue)
   osip_alert_info_t *alert_info;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_alert_info_init (&alert_info);
@@ -51,7 +51,8 @@ osip_message_set_alert_info (osip_message_t * sip, const char *hvalue)
 }
 
 int
-osip_message_get_alert_info (const osip_message_t * sip, int pos, osip_alert_info_t ** dest)
+osip_message_get_alert_info (const osip_message_t * sip, int pos,
+			     osip_alert_info_t ** dest)
 {
   osip_alert_info_t *alert_info;
 

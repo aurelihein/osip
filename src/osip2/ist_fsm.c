@@ -38,7 +38,8 @@ __ist_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition =
+	(transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -52,7 +53,8 @@ __ist_load_fsm ()
 {
   transition_t *transition;
 
-  ist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  ist_fsm =
+    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   ist_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (ist_fsm->transitions);
 
@@ -157,7 +159,8 @@ ist_create_resp_100 (osip_transaction_t * ist, osip_message_t * request)
 
     while (!osip_list_eol (ist->orig_request->vias, pos))
       {
-	orig_via = (osip_via_t *) osip_list_get (ist->orig_request->vias, pos);
+	orig_via =
+	  (osip_via_t *) osip_list_get (ist->orig_request->vias, pos);
 	osip_via_clone (orig_via, &via);
 	osip_list_add (resp_100->vias, via, -1);
 	pos++;
@@ -203,7 +206,7 @@ ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
       osip_message_free (evt->sip);
 
       __osip_message_callback (OSIP_IST_INVITE_RECEIVED_AGAIN, ist,
-			 ist->orig_request);
+			       ist->orig_request);
       if (ist->last_response != NULL)	/* retransmit last response */
 	{
 	  osip_via_t *via;
@@ -251,20 +254,20 @@ ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
 	    i = -1;
 	  if (i != 0)
 	    {
-              ist_handle_transport_error (ist, i);
+	      ist_handle_transport_error (ist, i);
 	      return;
 	    }
 	  else
 	    {
 	      if (MSG_IS_STATUS_1XX (ist->last_response))
 		__osip_message_callback (OSIP_IST_STATUS_1XX_SENT, ist,
-				   ist->last_response);
+					 ist->last_response);
 	      else if (MSG_IS_STATUS_2XX (ist->last_response))
 		__osip_message_callback (OSIP_IST_STATUS_2XX_SENT_AGAIN, ist,
-				   ist->last_response);
+					 ist->last_response);
 	      else
-		__osip_message_callback (OSIP_IST_STATUS_3456XX_SENT_AGAIN, ist,
-				   ist->last_response);
+		__osip_message_callback (OSIP_IST_STATUS_3456XX_SENT_AGAIN,
+					 ist, ist->last_response);
 	    }
 	}
       return;
@@ -288,9 +291,9 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
   if (ist->ist_context->timer_g_length > 4000)
     ist->ist_context->timer_g_length = 4000;
 #ifdef NEW_TIMER
-  gettimeofday(&ist->ist_context->timer_g_start, NULL);
-  add_gettimeofday(&ist->ist_context->timer_g_start,
-		   ist->ist_context->timer_g_length);
+  gettimeofday (&ist->ist_context->timer_g_start, NULL);
+  add_gettimeofday (&ist->ist_context->timer_g_start,
+		    ist->ist_context->timer_g_length);
 #else
   ist->ist_context->timer_g_start = now;
 #endif
@@ -343,7 +346,7 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
       return;
     }
   __osip_message_callback (OSIP_IST_STATUS_3456XX_SENT_AGAIN, ist,
-		     ist->last_response);
+			   ist->last_response);
 }
 
 void
@@ -434,7 +437,8 @@ ist_snd_1xx (osip_transaction_t * ist, osip_event_t * evt)
       return;
     }
   else
-    __osip_message_callback (OSIP_IST_STATUS_1XX_SENT, ist, ist->last_response);
+    __osip_message_callback (OSIP_IST_STATUS_1XX_SENT, ist,
+			     ist->last_response);
 
   /* we are already in the proper state */
   return;
@@ -498,11 +502,13 @@ ist_snd_2xx (osip_transaction_t * ist, osip_event_t * evt)
       ist_handle_transport_error (ist, i);
       return;
     }
-  else {
-    __osip_message_callback (OSIP_IST_STATUS_2XX_SENT, ist, ist->last_response);
-  __osip_transaction_set_state (ist, IST_TERMINATED);
-    __osip_kill_transaction_callback (OSIP_IST_KILL_TRANSACTION, ist);
-  }
+  else
+    {
+      __osip_message_callback (OSIP_IST_STATUS_2XX_SENT, ist,
+			       ist->last_response);
+      __osip_transaction_set_state (ist, IST_TERMINATED);
+      __osip_kill_transaction_callback (OSIP_IST_KILL_TRANSACTION, ist);
+    }
   return;
 }
 
@@ -567,22 +573,26 @@ ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
   else
     {
       if (MSG_IS_STATUS_3XX (ist->last_response))
-	__osip_message_callback (OSIP_IST_STATUS_3XX_SENT, ist, ist->last_response);
+	__osip_message_callback (OSIP_IST_STATUS_3XX_SENT, ist,
+				 ist->last_response);
       else if (MSG_IS_STATUS_4XX (ist->last_response))
-	__osip_message_callback (OSIP_IST_STATUS_4XX_SENT, ist, ist->last_response);
+	__osip_message_callback (OSIP_IST_STATUS_4XX_SENT, ist,
+				 ist->last_response);
       else if (MSG_IS_STATUS_5XX (ist->last_response))
-	__osip_message_callback (OSIP_IST_STATUS_5XX_SENT, ist, ist->last_response);
+	__osip_message_callback (OSIP_IST_STATUS_5XX_SENT, ist,
+				 ist->last_response);
       else
-	__osip_message_callback (OSIP_IST_STATUS_6XX_SENT, ist, ist->last_response);
+	__osip_message_callback (OSIP_IST_STATUS_6XX_SENT, ist,
+				 ist->last_response);
     }
 
 #ifdef NEW_TIMER
-  gettimeofday(&ist->ist_context->timer_g_start, NULL);
-  add_gettimeofday(&ist->ist_context->timer_g_start,
-		   ist->ist_context->timer_g_length);
-  gettimeofday(&ist->ist_context->timer_h_start, NULL);
-  add_gettimeofday(&ist->ist_context->timer_h_start,
-		   ist->ist_context->timer_h_length);
+  gettimeofday (&ist->ist_context->timer_g_start, NULL);
+  add_gettimeofday (&ist->ist_context->timer_g_start,
+		    ist->ist_context->timer_g_length);
+  gettimeofday (&ist->ist_context->timer_h_start, NULL);
+  add_gettimeofday (&ist->ist_context->timer_h_start,
+		    ist->ist_context->timer_h_length);
 #else
   ist->ist_context->timer_g_start = time (NULL);
   ist->ist_context->timer_h_start = time (NULL);
@@ -607,9 +617,9 @@ ist_rcv_ack (osip_transaction_t * ist, osip_event_t * evt)
     __osip_message_callback (OSIP_IST_ACK_RECEIVED_AGAIN, ist, ist->ack);
   /* set the timer to 0 for reliable, and T4 for unreliable (already set) */
 #ifdef NEW_TIMER
-  gettimeofday(&ist->ist_context->timer_i_start, NULL);
-  add_gettimeofday(&ist->ist_context->timer_i_start,
-		   ist->ist_context->timer_i_length);
+  gettimeofday (&ist->ist_context->timer_i_start, NULL);
+  add_gettimeofday (&ist->ist_context->timer_i_start,
+		    ist->ist_context->timer_i_length);
 #else
   ist->ist_context->timer_i_start = time (NULL);	/* not started */
 #endif

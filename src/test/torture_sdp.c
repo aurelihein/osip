@@ -147,58 +147,66 @@ main (int argc, char **argv)
   if (i != 0)
     {
       fprintf (stderr, "Failed to initialize the SDP negociator\n");
-      fclose(torture_file);
+      fclose (torture_file);
       exit (1);
     }
   osip_negotiation_set_o_username (osip_negotiation, osip_strdup ("userX"));
-  osip_negotiation_set_o_session_id (osip_negotiation, osip_strdup ("20000001"));
-  osip_negotiation_set_o_session_version (osip_negotiation, osip_strdup ("20000001"));
+  osip_negotiation_set_o_session_id (osip_negotiation,
+				     osip_strdup ("20000001"));
+  osip_negotiation_set_o_session_version (osip_negotiation,
+					  osip_strdup ("20000001"));
   osip_negotiation_set_o_nettype (osip_negotiation, osip_strdup ("IN"));
   osip_negotiation_set_o_addrtype (osip_negotiation, osip_strdup ("IP4"));
-  osip_negotiation_set_o_addr (osip_negotiation, osip_strdup ("192.168.1.114"));
+  osip_negotiation_set_o_addr (osip_negotiation,
+			       osip_strdup ("192.168.1.114"));
 
   osip_negotiation_set_c_nettype (osip_negotiation, osip_strdup ("IN"));
   osip_negotiation_set_c_addrtype (osip_negotiation, osip_strdup ("IP4"));
-  osip_negotiation_set_c_addr (osip_negotiation, osip_strdup ("192.168.1.114"));
+  osip_negotiation_set_c_addr (osip_negotiation,
+			       osip_strdup ("192.168.1.114"));
 
   /* ALL CODEC MUST SHARE THE SAME "C=" line and proto as the media 
      will appear on the same "m" line... */
-  osip_negotiation_add_support_for_audio_codec (osip_negotiation, 
+  osip_negotiation_add_support_for_audio_codec (osip_negotiation,
 						osip_strdup ("0"),
 						osip_strdup ("2"),
 						/* NULL, */
-					  osip_strdup ("RTP/AVP"),
-					  NULL, NULL, NULL,
-					  NULL, NULL,
-					  osip_strdup ("0 PCMU/8000"));
-  osip_negotiation_add_support_for_audio_codec (osip_negotiation, 
-					       osip_strdup ("3"), NULL,
-					  osip_strdup ("RTP/AVP"), NULL, NULL,
-					  NULL, NULL, NULL,
-					  osip_strdup ("3 GSM/8000"));
-  osip_negotiation_add_support_for_audio_codec (osip_negotiation, 
-					       osip_strdup ("7"), NULL,
-					  osip_strdup ("RTP/AVP"), NULL, NULL,
-					  NULL, NULL, NULL,
-					  osip_strdup ("7 LPC/8000"));
-  osip_negotiation_add_support_for_audio_codec (osip_negotiation, 
-					       osip_strdup ("8"), NULL,
-					  osip_strdup ("RTP/AVP"), NULL, NULL,
-					  NULL, NULL, NULL,
-					  osip_strdup ("8 PCMA/8000"));
-  osip_negotiation_add_support_for_video_codec (osip_negotiation, 
-					       osip_strdup ("31"),
-					  NULL,
-					  osip_strdup ("RTP/AVP"),
-					  NULL, NULL, NULL,
-					  NULL, NULL,
-					  osip_strdup ("31 H261/90000"));
+						osip_strdup ("RTP/AVP"),
+						NULL, NULL, NULL,
+						NULL, NULL,
+						osip_strdup ("0 PCMU/8000"));
+  osip_negotiation_add_support_for_audio_codec (osip_negotiation,
+						osip_strdup ("3"), NULL,
+						osip_strdup ("RTP/AVP"), NULL,
+						NULL, NULL, NULL, NULL,
+						osip_strdup ("3 GSM/8000"));
+  osip_negotiation_add_support_for_audio_codec (osip_negotiation,
+						osip_strdup ("7"), NULL,
+						osip_strdup ("RTP/AVP"), NULL,
+						NULL, NULL, NULL, NULL,
+						osip_strdup ("7 LPC/8000"));
+  osip_negotiation_add_support_for_audio_codec (osip_negotiation,
+						osip_strdup ("8"), NULL,
+						osip_strdup ("RTP/AVP"), NULL,
+						NULL, NULL, NULL, NULL,
+						osip_strdup ("8 PCMA/8000"));
+  osip_negotiation_add_support_for_video_codec (osip_negotiation,
+						osip_strdup ("31"), NULL,
+						osip_strdup ("RTP/AVP"), NULL,
+						NULL, NULL, NULL, NULL,
+						osip_strdup
+						("31 H261/90000"));
 
-  osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation, &ua_sdp_accept_audio_codec);
-  osip_negotiation_set_fcn_accept_video_codec (osip_negotiation, &ua_sdp_accept_video_codec);
-  osip_negotiation_set_fcn_accept_other_codec (osip_negotiation, &ua_sdp_accept_other_codec);
-  osip_negotiation_set_fcn_get_audio_port (osip_negotiation, &ua_sdp_get_audio_port);
-  osip_negotiation_set_fcn_get_video_port (osip_negotiation, &ua_sdp_get_video_port);
+  osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation,
+					       &ua_sdp_accept_audio_codec);
+  osip_negotiation_set_fcn_accept_video_codec (osip_negotiation,
+					       &ua_sdp_accept_video_codec);
+  osip_negotiation_set_fcn_accept_other_codec (osip_negotiation,
+					       &ua_sdp_accept_other_codec);
+  osip_negotiation_set_fcn_get_audio_port (osip_negotiation,
+					   &ua_sdp_get_audio_port);
+  osip_negotiation_set_fcn_get_video_port (osip_negotiation,
+					   &ua_sdp_get_video_port);
 
   i = 0;
   tmp = (char *) osip_malloc (500);
@@ -219,8 +227,8 @@ main (int argc, char **argv)
     {
       fprintf (stderr,
 	       "Error! The message's number you specified does not exist\n");
-      fclose(torture_file);
-      osip_free(msg);
+      fclose (torture_file);
+      osip_free (msg);
       exit (1);			/* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
@@ -258,7 +266,7 @@ main (int argc, char **argv)
   osip_free (ua_context->m_audio_port);
   osip_free (ua_context->m_video_port);
   osip_free (ua_context);
-  fclose(torture_file);
+  fclose (torture_file);
   return 0;
 }
 
@@ -274,7 +282,7 @@ test_sdp_message (char *msg, int verbose)
     if (sdp_message_parse (sdp, msg) != 0)
       {
 	fprintf (stdout, "ERROR: failed while parsing!\n");
-	sdp_message_free (sdp);		/* try to free msg, even if it failed! */
+	sdp_message_free (sdp);	/* try to free msg, even if it failed! */
 	/* this seems dangerous..... */
 	return -1;
       }
@@ -305,7 +313,9 @@ test_sdp_message (char *msg, int verbose)
 	      sdp_message_t *dest;
 
 	      i = osip_negotiation_ctx_init (&context);
-	      i = osip_negotiation_ctx_set_mycontext (context, (void *) ua_context);
+	      i =
+		osip_negotiation_ctx_set_mycontext (context,
+						    (void *) ua_context);
 
 	      {
 		sdp_message_t *sdp;
@@ -335,8 +345,9 @@ test_sdp_message (char *msg, int verbose)
 	      else
 		{
 		  fprintf (stdout, "Trying to execute a SIP negotiation:\n");
-		  i = osip_negotiation_ctx_execute_negotiation (osip_negotiation,
-							       context);
+		  i =
+		    osip_negotiation_ctx_execute_negotiation
+		    (osip_negotiation, context);
 		  fprintf (stdout, "return code: %i\n", i);
 		  if (i == 200)
 		    {
@@ -384,7 +395,7 @@ test_accessor_get_api (sdp_message_t * sdp)
     printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
   if (sdp_message_o_sess_id_get (sdp))
     printf (" |%s|", sdp_message_o_sess_id_get (sdp));
-  if (sdp_message_o_sess_version_get (sdp)!=NULL)
+  if (sdp_message_o_sess_version_get (sdp) != NULL)
     printf (" |%s|", sdp_message_o_sess_version_get (sdp));
   if (sdp_message_o_nettype_get (sdp))
     printf (" |%s|", sdp_message_o_nettype_get (sdp));
@@ -424,13 +435,13 @@ test_accessor_get_api (sdp_message_t * sdp)
   tmp3 = sdp_message_c_addr_get (sdp, -1, k);
   tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, -1, k);
   tmp5 = sdp_message_c_addr_multicast_int_get (sdp, -1, k);
-  if (tmp != NULL && tmp4!=NULL && tmp5!=NULL)
+  if (tmp != NULL && tmp4 != NULL && tmp5 != NULL)
     printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
 	    tmp, tmp2, tmp3, tmp4, tmp5);
-  else if (tmp != NULL && tmp4!=NULL)
+  else if (tmp != NULL && tmp4 != NULL)
     printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
 	    tmp, tmp2, tmp3, tmp4, "(null)");
-  else if (tmp != NULL && tmp5!=NULL)
+  else if (tmp != NULL && tmp5 != NULL)
     printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
 	    tmp, tmp2, tmp3, "(null)", tmp5);
   k = 0;
@@ -559,7 +570,7 @@ test_accessor_get_api (sdp_message_t * sdp)
 	  printf ("\n");
 
 	  if (tmp != NULL)
-	  k++;
+	    k++;
 	}
       while (tmp != NULL);
 
@@ -577,7 +588,7 @@ test_accessor_get_api (sdp_message_t * sdp)
 	  else
 	    printf (":|%s|", "(null)");
 	  printf ("\n");
-	  
+
 	  k++;
 	}
       while (tmp != NULL);

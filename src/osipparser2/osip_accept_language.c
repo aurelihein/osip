@@ -32,7 +32,7 @@ osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
   osip_accept_language_t *accept_language;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_accept_language_init (&accept_language);
@@ -53,7 +53,7 @@ osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_accept_language (const osip_message_t * sip, int pos,
-			osip_accept_language_t ** dest)
+				  osip_accept_language_t ** dest)
 {
   osip_accept_language_t *accept_language;
 

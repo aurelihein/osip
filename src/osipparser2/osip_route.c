@@ -45,7 +45,7 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
   osip_route_t *route;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
 #ifdef __VXWORKS_OS__
@@ -72,7 +72,8 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_route (const osip_message_t * sip, int pos, osip_route_t ** dest)
+osip_message_get_route (const osip_message_t * sip, int pos,
+			osip_route_t ** dest)
 {
   osip_route_t *route;
 

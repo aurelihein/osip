@@ -21,28 +21,29 @@
 #include <osip2/osip_negotiation.h>
 #include <osip2/internal.h>
 
-static int sdp_partial_clone (osip_negotiation_t *config,
-			      osip_negotiation_ctx_t *con,
-			      sdp_message_t *remote, sdp_message_t **dest);
-static int sdp_confirm_media (osip_negotiation_t *config,
-			      osip_negotiation_ctx_t *context,
-			      sdp_message_t *remote, sdp_message_t **dest);
-static __payload_t *osip_negotiation_find_audio_payload (osip_negotiation_t *cfg,
-							 char *payload);
-static __payload_t *osip_negotiation_find_video_payload (osip_negotiation_t *cfg,
-							 char *payload);
-static __payload_t *osip_negotiation_find_other_payload (osip_negotiation_t *cfg,
-							 char *payload);
+static int sdp_partial_clone (osip_negotiation_t * config,
+			      osip_negotiation_ctx_t * con,
+			      sdp_message_t * remote, sdp_message_t ** dest);
+static int sdp_confirm_media (osip_negotiation_t * config,
+			      osip_negotiation_ctx_t * context,
+			      sdp_message_t * remote, sdp_message_t ** dest);
+static __payload_t *osip_negotiation_find_audio_payload (osip_negotiation_t *
+							 cfg, char *payload);
+static __payload_t *osip_negotiation_find_video_payload (osip_negotiation_t *
+							 cfg, char *payload);
+static __payload_t *osip_negotiation_find_other_payload (osip_negotiation_t *
+							 cfg, char *payload);
 
 
 
 int
 osip_negotiation_ctx_init (osip_negotiation_ctx_t ** con)
 {
-  (*con) = (osip_negotiation_ctx_t *) osip_malloc (sizeof (osip_negotiation_ctx_t));
+  (*con) =
+    (osip_negotiation_ctx_t *) osip_malloc (sizeof (osip_negotiation_ctx_t));
   if (*con == NULL)
     return -1;
-  (*con)->mycontext = NULL; /* fixed Sep 24 2003 */
+  (*con)->mycontext = NULL;	/* fixed Sep 24 2003 */
   (*con)->remote = NULL;
   (*con)->local = NULL;
   return 0;
@@ -61,7 +62,8 @@ osip_negotiation_ctx_free (osip_negotiation_ctx_t * con)
 /* this method is used by end-user application so any pointer can
    be associated with this context (usefull to link with your own context */
 int
-osip_negotiation_ctx_set_mycontext (osip_negotiation_ctx_t * con, void *my_instance)
+osip_negotiation_ctx_set_mycontext (osip_negotiation_ctx_t * con,
+				    void *my_instance)
 {
   if (con == NULL)
     return -1;
@@ -86,7 +88,8 @@ osip_negotiation_ctx_get_local_sdp (osip_negotiation_ctx_t * con)
 }
 
 int
-osip_negotiation_ctx_set_local_sdp (osip_negotiation_ctx_t * con, sdp_message_t * sdp)
+osip_negotiation_ctx_set_local_sdp (osip_negotiation_ctx_t * con,
+				    sdp_message_t * sdp)
 {
   if (con == NULL)
     return -1;
@@ -103,7 +106,8 @@ osip_negotiation_ctx_get_remote_sdp (osip_negotiation_ctx_t * con)
 }
 
 int
-osip_negotiation_ctx_set_remote_sdp (osip_negotiation_ctx_t * con, sdp_message_t * sdp)
+osip_negotiation_ctx_set_remote_sdp (osip_negotiation_ctx_t * con,
+				     sdp_message_t * sdp)
 {
   if (con == NULL)
     return -1;
@@ -147,7 +151,7 @@ __payload_free (__payload_t * payload)
 }
 
 int
-osip_negotiation_init (osip_negotiation_t **config_out)
+osip_negotiation_init (osip_negotiation_t ** config_out)
 {
   osip_negotiation_t *config;
 
@@ -190,7 +194,7 @@ osip_negotiation_init (osip_negotiation_t **config_out)
 }
 
 void
-osip_negotiation_free (osip_negotiation_t *config)
+osip_negotiation_free (osip_negotiation_t * config)
 {
   if (config == NULL)
     return;
@@ -207,9 +211,12 @@ osip_negotiation_free (osip_negotiation_t *config)
   osip_free (config->c_addr_multicast_ttl);
   osip_free (config->c_addr_multicast_int);
 
-  osip_list_special_free (config->audio_codec, (void *(*)(void *)) &__payload_free);
-  osip_list_special_free (config->video_codec, (void *(*)(void *)) &__payload_free);
-  osip_list_special_free (config->other_codec, (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->audio_codec,
+			  (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->video_codec,
+			  (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->other_codec,
+			  (void *(*)(void *)) &__payload_free);
 
   /* other are pointer to func, they don't need free() calls */
 
@@ -218,7 +225,7 @@ osip_negotiation_free (osip_negotiation_t *config)
 }
 
 int
-osip_negotiation_set_o_username (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_username (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -227,7 +234,7 @@ osip_negotiation_set_o_username (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_o_session_id (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_session_id (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -236,7 +243,8 @@ osip_negotiation_set_o_session_id (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_o_session_version (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_session_version (osip_negotiation_t * config,
+					char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -245,7 +253,7 @@ osip_negotiation_set_o_session_version (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_o_nettype (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_nettype (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -254,7 +262,7 @@ osip_negotiation_set_o_nettype (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_o_addrtype (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_addrtype (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -263,7 +271,7 @@ osip_negotiation_set_o_addrtype (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_o_addr (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_o_addr (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -272,7 +280,7 @@ osip_negotiation_set_o_addr (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_c_nettype (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_c_nettype (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -281,7 +289,7 @@ osip_negotiation_set_c_nettype (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_c_addrtype (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_c_addrtype (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -290,7 +298,7 @@ osip_negotiation_set_c_addrtype (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_c_addr (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_c_addr (osip_negotiation_t * config, char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -299,7 +307,8 @@ osip_negotiation_set_c_addr (osip_negotiation_t *config, char *tmp)
 }
 
 int
-osip_negotiation_set_c_addr_multicast_ttl (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_c_addr_multicast_ttl (osip_negotiation_t * config,
+					   char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -308,7 +317,8 @@ osip_negotiation_set_c_addr_multicast_ttl (osip_negotiation_t *config, char *tmp
 }
 
 int
-osip_negotiation_set_c_addr_multicast_int (osip_negotiation_t *config, char *tmp)
+osip_negotiation_set_c_addr_multicast_int (osip_negotiation_t * config,
+					   char *tmp)
 {
   if (config == NULL)
     return -1;
@@ -317,13 +327,14 @@ osip_negotiation_set_c_addr_multicast_int (osip_negotiation_t *config, char *tmp
 }
 
 int
-osip_negotiation_add_support_for_audio_codec (osip_negotiation_t *config,
-					char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+osip_negotiation_add_support_for_audio_codec (osip_negotiation_t * config,
+					      char *payload,
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap)
 {
   int i;
   __payload_t *my_payload;
@@ -345,13 +356,14 @@ osip_negotiation_add_support_for_audio_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_add_support_for_video_codec (osip_negotiation_t *config,
-					char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+osip_negotiation_add_support_for_video_codec (osip_negotiation_t * config,
+					      char *payload,
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap)
 {
   int i;
   __payload_t *my_payload;
@@ -373,13 +385,14 @@ osip_negotiation_add_support_for_video_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_add_support_for_other_codec (osip_negotiation_t *config,
-					char *payload, char *number_of_port,
-					char *proto, char *c_nettype,
-					char *c_addrtype, char *c_addr,
-					char *c_addr_multicast_ttl,
-					char *c_addr_multicast_int,
-					char *a_rtpmap)
+osip_negotiation_add_support_for_other_codec (osip_negotiation_t * config,
+					      char *payload,
+					      char *number_of_port,
+					      char *proto, char *c_nettype,
+					      char *c_addrtype, char *c_addr,
+					      char *c_addr_multicast_ttl,
+					      char *c_addr_multicast_int,
+					      char *a_rtpmap)
 {
   int i;
   __payload_t *my_payload;
@@ -401,34 +414,38 @@ osip_negotiation_add_support_for_other_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_remove_audio_payloads (osip_negotiation_t *config)
+osip_negotiation_remove_audio_payloads (osip_negotiation_t * config)
 {
-  osip_list_special_free (config->audio_codec, (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->audio_codec,
+			  (void *(*)(void *)) &__payload_free);
   config->audio_codec = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (config->audio_codec);
   return 0;
 }
 
 int
-osip_negotiation_remove_video_payloads (osip_negotiation_t *config)
+osip_negotiation_remove_video_payloads (osip_negotiation_t * config)
 {
-  osip_list_special_free (config->video_codec, (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->video_codec,
+			  (void *(*)(void *)) &__payload_free);
   config->video_codec = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (config->video_codec);
   return 0;
 }
 
 int
-osip_negotiation_remove_other_payloads (osip_negotiation_t *config)
+osip_negotiation_remove_other_payloads (osip_negotiation_t * config)
 {
-  osip_list_special_free (config->other_codec, (void *(*)(void *)) &__payload_free);
+  osip_list_special_free (config->other_codec,
+			  (void *(*)(void *)) &__payload_free);
   config->other_codec = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (config->other_codec);
   return 0;
 }
 
 static __payload_t *
-osip_negotiation_find_audio_payload (osip_negotiation_t *config, char *payload)
+osip_negotiation_find_audio_payload (osip_negotiation_t * config,
+				     char *payload)
 {
   __payload_t *my;
   size_t length = strlen (payload);
@@ -448,7 +465,8 @@ osip_negotiation_find_audio_payload (osip_negotiation_t *config, char *payload)
 }
 
 static __payload_t *
-osip_negotiation_find_video_payload (osip_negotiation_t *config, char *payload)
+osip_negotiation_find_video_payload (osip_negotiation_t * config,
+				     char *payload)
 {
   __payload_t *my;
   size_t length = strlen (payload);
@@ -468,7 +486,8 @@ osip_negotiation_find_video_payload (osip_negotiation_t *config, char *payload)
 }
 
 static __payload_t *
-osip_negotiation_find_other_payload (osip_negotiation_t *config, char *payload)
+osip_negotiation_find_other_payload (osip_negotiation_t * config,
+				     char *payload)
 {
   __payload_t *my;
   size_t length = strlen (payload);
@@ -488,8 +507,9 @@ osip_negotiation_find_other_payload (osip_negotiation_t *config, char *payload)
 }
 
 int
-osip_negotiation_set_fcn_set_info (osip_negotiation_t *config,
-				  int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *))
+osip_negotiation_set_fcn_set_info (osip_negotiation_t * config,
+				   int (*fcn) (osip_negotiation_ctx_t *,
+					       sdp_message_t *))
 {
   if (config == NULL)
     return -1;
@@ -498,8 +518,9 @@ osip_negotiation_set_fcn_set_info (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_set_uri (osip_negotiation_t *config,
-				 int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *))
+osip_negotiation_set_fcn_set_uri (osip_negotiation_t * config,
+				  int (*fcn) (osip_negotiation_ctx_t *,
+					      sdp_message_t *))
 {
   if (config == NULL)
     return -1;
@@ -508,8 +529,9 @@ osip_negotiation_set_fcn_set_uri (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_set_emails (osip_negotiation_t *config,
-				    int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *))
+osip_negotiation_set_fcn_set_emails (osip_negotiation_t * config,
+				     int (*fcn) (osip_negotiation_ctx_t *,
+						 sdp_message_t *))
 {
   if (config == NULL)
     return -1;
@@ -518,8 +540,9 @@ osip_negotiation_set_fcn_set_emails (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_set_phones (osip_negotiation_t *config,
-				    int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *))
+osip_negotiation_set_fcn_set_phones (osip_negotiation_t * config,
+				     int (*fcn) (osip_negotiation_ctx_t *,
+						 sdp_message_t *))
 {
   if (config == NULL)
     return -1;
@@ -528,8 +551,9 @@ osip_negotiation_set_fcn_set_phones (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_set_attributes (osip_negotiation_t *config,
-					int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *, int))
+osip_negotiation_set_fcn_set_attributes (osip_negotiation_t * config,
+					 int (*fcn) (osip_negotiation_ctx_t *,
+						     sdp_message_t *, int))
 {
   if (config == NULL)
     return -1;
@@ -538,9 +562,10 @@ osip_negotiation_set_fcn_set_attributes (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation_t *config,
-					    int (*fcn) (osip_negotiation_ctx_t *, char *,
-						   char *, int, char *))
+osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation_t * config,
+					     int (*fcn)
+					     (osip_negotiation_ctx_t *,
+					      char *, char *, int, char *))
 {
   if (config == NULL)
     return -1;
@@ -550,9 +575,10 @@ osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_accept_video_codec (osip_negotiation_t *config,
-					    int (*fcn) (osip_negotiation_ctx_t *, char *,
-						   char *, int, char *))
+osip_negotiation_set_fcn_accept_video_codec (osip_negotiation_t * config,
+					     int (*fcn)
+					     (osip_negotiation_ctx_t *,
+					      char *, char *, int, char *))
 {
   if (config == NULL)
     return -1;
@@ -562,9 +588,10 @@ osip_negotiation_set_fcn_accept_video_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_accept_other_codec (osip_negotiation_t *config,
-					    int (*fcn) (osip_negotiation_ctx_t *, char *,
-						   char *, char *, char *))
+osip_negotiation_set_fcn_accept_other_codec (osip_negotiation_t * config,
+					     int (*fcn)
+					     (osip_negotiation_ctx_t *,
+					      char *, char *, char *, char *))
 {
   if (config == NULL)
     return -1;
@@ -574,8 +601,9 @@ osip_negotiation_set_fcn_accept_other_codec (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_get_audio_port (osip_negotiation_t *config,
-					char *(*fcn) (osip_negotiation_ctx_t *, int))
+osip_negotiation_set_fcn_get_audio_port (osip_negotiation_t * config,
+					 char *(*fcn) (osip_negotiation_ctx_t
+						       *, int))
 {
   if (config == NULL)
     return -1;
@@ -584,8 +612,9 @@ osip_negotiation_set_fcn_get_audio_port (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_get_video_port (osip_negotiation_t *config,
-					char *(*fcn) (osip_negotiation_ctx_t *, int))
+osip_negotiation_set_fcn_get_video_port (osip_negotiation_t * config,
+					 char *(*fcn) (osip_negotiation_ctx_t
+						       *, int))
 {
   if (config == NULL)
     return -1;
@@ -594,8 +623,9 @@ osip_negotiation_set_fcn_get_video_port (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_set_fcn_get_other_port (osip_negotiation_t *config,
-					char *(*fcn) (osip_negotiation_ctx_t *, int))
+osip_negotiation_set_fcn_get_other_port (osip_negotiation_t * config,
+					 char *(*fcn) (osip_negotiation_ctx_t
+						       *, int))
 {
   if (config == NULL)
     return -1;
@@ -604,8 +634,9 @@ osip_negotiation_set_fcn_get_other_port (osip_negotiation_t *config,
 }
 
 static int
-sdp_partial_clone (osip_negotiation_t *config,
-		   osip_negotiation_ctx_t * con, sdp_message_t * remote, sdp_message_t ** dest)
+sdp_partial_clone (osip_negotiation_t * config,
+		   osip_negotiation_ctx_t * con, sdp_message_t * remote,
+		   sdp_message_t ** dest)
 {
   int i;
 
@@ -613,11 +644,12 @@ sdp_partial_clone (osip_negotiation_t *config,
 
   /* those fields MUST be set */
   sdp_message_o_origin_set (*dest,
-		    osip_strdup (config->o_username),
-		    osip_strdup (config->o_session_id),
-		    osip_strdup (config->o_session_version),
-		    osip_strdup (config->o_nettype),
-		    osip_strdup (config->o_addrtype), osip_strdup (config->o_addr));
+			    osip_strdup (config->o_username),
+			    osip_strdup (config->o_session_id),
+			    osip_strdup (config->o_session_version),
+			    osip_strdup (config->o_nettype),
+			    osip_strdup (config->o_addrtype),
+			    osip_strdup (config->o_addr));
   sdp_message_s_name_set (*dest, osip_strdup (remote->s_name));
   if (config->fcn_set_info != NULL)
     config->fcn_set_info (con, *dest);
@@ -629,11 +661,11 @@ sdp_partial_clone (osip_negotiation_t *config,
     config->fcn_set_phones (con, *dest);
   if (config->c_nettype != NULL)
     sdp_message_c_connection_add (*dest, -1,
-			  osip_strdup (config->c_nettype),
-			  osip_strdup (config->c_addrtype),
-			  osip_strdup (config->c_addr),
-			  osip_strdup (config->c_addr_multicast_ttl),
-			  osip_strdup (config->c_addr_multicast_int));
+				  osip_strdup (config->c_nettype),
+				  osip_strdup (config->c_addrtype),
+				  osip_strdup (config->c_addr),
+				  osip_strdup (config->c_addr_multicast_ttl),
+				  osip_strdup (config->c_addr_multicast_int));
 
   {				/* offer-answer draft says we must copy the "t=" line */
     char *tmp = sdp_message_t_start_time_get (remote, 0);
@@ -641,7 +673,9 @@ sdp_partial_clone (osip_negotiation_t *config,
 
     if (tmp == NULL || tmp2 == NULL)
       return -1;		/* no t line?? */
-    i = sdp_message_t_time_descr_add (*dest, osip_strdup (tmp), osip_strdup (tmp2));
+    i =
+      sdp_message_t_time_descr_add (*dest, osip_strdup (tmp),
+				    osip_strdup (tmp2));
     if (i != 0)
       return -1;
   }
@@ -651,8 +685,9 @@ sdp_partial_clone (osip_negotiation_t *config,
 }
 
 static int
-sdp_confirm_media (osip_negotiation_t *config,
-		   osip_negotiation_ctx_t * context, sdp_message_t * remote, sdp_message_t ** dest)
+sdp_confirm_media (osip_negotiation_t * config,
+		   osip_negotiation_ctx_t * context, sdp_message_t * remote,
+		   sdp_message_t ** dest)
 {
   char *payload;
   char *tmp, *tmp2, *tmp3, *tmp4;
@@ -673,7 +708,7 @@ sdp_confirm_media (osip_negotiation_t *config,
       if (tmp == NULL)
 	return -1;
       sdp_message_m_media_add (*dest, osip_strdup (tmp), osip_strdup ("0"),
-		       NULL, osip_strdup (tmp4));
+			       NULL, osip_strdup (tmp4));
       k = 0;
       if (0 == strncmp (tmp, "audio", 5))
 	{
@@ -694,12 +729,15 @@ sdp_confirm_media (osip_negotiation_t *config,
 							      payload);
 		      if (0 == ret)
 			{
-			  sdp_message_m_payload_add (*dest, i, osip_strdup (payload));
+			  sdp_message_m_payload_add (*dest, i,
+						     osip_strdup (payload));
 			  if (my_payload->a_rtpmap != NULL)
 			    sdp_message_a_attribute_add (*dest, i,
-						 osip_strdup ("rtpmap"),
-						 osip_strdup (my_payload->
-							   a_rtpmap));
+							 osip_strdup
+							 ("rtpmap"),
+							 osip_strdup
+							 (my_payload->
+							  a_rtpmap));
 			  if (my_payload->c_nettype != NULL)
 			    {
 			      sdp_media_t *med =
@@ -707,16 +745,21 @@ sdp_confirm_media (osip_negotiation_t *config,
 
 			      if (osip_list_eol (med->c_connections, 0))
 				sdp_message_c_connection_add (*dest, i,
-						      osip_strdup (my_payload->
-								c_nettype),
-						      osip_strdup (my_payload->
-								c_addrtype),
-						      osip_strdup (my_payload->
-								c_addr),
-						      osip_strdup (my_payload->
-								c_addr_multicast_ttl),
-						      osip_strdup (my_payload->
-								c_addr_multicast_int));
+							      osip_strdup
+							      (my_payload->
+							       c_nettype),
+							      osip_strdup
+							      (my_payload->
+							       c_addrtype),
+							      osip_strdup
+							      (my_payload->
+							       c_addr),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_ttl),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_int));
 			    }
 			}
 		    }
@@ -746,13 +789,16 @@ sdp_confirm_media (osip_negotiation_t *config,
 							  video_qty, payload);
 		      if (0 == ret)
 			{
-			  sdp_message_m_payload_add (*dest, i, osip_strdup (payload));
+			  sdp_message_m_payload_add (*dest, i,
+						     osip_strdup (payload));
 			  /* TODO  set the attribute list (rtpmap..) */
 			  if (my_payload->a_rtpmap != NULL)
 			    sdp_message_a_attribute_add (*dest, i,
-						 osip_strdup ("rtpmap"),
-						 osip_strdup (my_payload->
-							   a_rtpmap));
+							 osip_strdup
+							 ("rtpmap"),
+							 osip_strdup
+							 (my_payload->
+							  a_rtpmap));
 			  if (my_payload->c_nettype != NULL)
 			    {
 			      sdp_media_t *med =
@@ -760,16 +806,21 @@ sdp_confirm_media (osip_negotiation_t *config,
 
 			      if (osip_list_eol (med->c_connections, 0))
 				sdp_message_c_connection_add (*dest, i,
-						      osip_strdup (my_payload->
-								c_nettype),
-						      osip_strdup (my_payload->
-								c_addrtype),
-						      osip_strdup (my_payload->
-								c_addr),
-						      osip_strdup (my_payload->
-								c_addr_multicast_ttl),
-						      osip_strdup (my_payload->
-								c_addr_multicast_int));
+							      osip_strdup
+							      (my_payload->
+							       c_nettype),
+							      osip_strdup
+							      (my_payload->
+							       c_addrtype),
+							      osip_strdup
+							      (my_payload->
+							       c_addr),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_ttl),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_int));
 			    }
 			}
 		    }
@@ -799,7 +850,8 @@ sdp_confirm_media (osip_negotiation_t *config,
 							  tmp3, payload);
 		      if (0 == ret)
 			{
-			  sdp_message_m_payload_add (*dest, i, osip_strdup (payload));
+			  sdp_message_m_payload_add (*dest, i,
+						     osip_strdup (payload));
 			  /* rtpmap has no meaning here! */
 			  if (my_payload->c_nettype != NULL)
 			    {
@@ -808,16 +860,21 @@ sdp_confirm_media (osip_negotiation_t *config,
 
 			      if (osip_list_eol (med->c_connections, 0))
 				sdp_message_c_connection_add (*dest, i,
-						      osip_strdup (my_payload->
-								c_nettype),
-						      osip_strdup (my_payload->
-								c_addrtype),
-						      osip_strdup (my_payload->
-								c_addr),
-						      osip_strdup (my_payload->
-								c_addr_multicast_ttl),
-						      osip_strdup (my_payload->
-								c_addr_multicast_int));
+							      osip_strdup
+							      (my_payload->
+							       c_nettype),
+							      osip_strdup
+							      (my_payload->
+							       c_addrtype),
+							      osip_strdup
+							      (my_payload->
+							       c_addr),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_ttl),
+							      osip_strdup
+							      (my_payload->
+							       c_addr_multicast_int));
 			    }
 			}
 		    }
@@ -832,8 +889,8 @@ sdp_confirm_media (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_ctx_execute_negotiation (osip_negotiation_t *config,
-					 osip_negotiation_ctx_t * context)
+osip_negotiation_ctx_execute_negotiation (osip_negotiation_t * config,
+					  osip_negotiation_ctx_t * context)
 {
   int m_lines_that_match = 0;
   sdp_message_t *remote;
@@ -928,9 +985,10 @@ osip_negotiation_ctx_execute_negotiation (osip_negotiation_t *config,
 }
 
 int
-osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
-		 osip_negotiation_ctx_t * con, sdp_message_t ** sdp, char *audio_port,
-		 char *video_port)
+osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
+				  osip_negotiation_ctx_t * con,
+				  sdp_message_t ** sdp, char *audio_port,
+				  char *video_port)
 {
   int i;
   int media_line = 0;
@@ -943,11 +1001,12 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 
   /* those fields MUST be set */
   sdp_message_o_origin_set (*sdp,
-		    osip_strdup (config->o_username),
-		    osip_strdup (config->o_session_id),
-		    osip_strdup (config->o_session_version),
-		    osip_strdup (config->o_nettype),
-		    osip_strdup (config->o_addrtype), osip_strdup (config->o_addr));
+			    osip_strdup (config->o_username),
+			    osip_strdup (config->o_session_id),
+			    osip_strdup (config->o_session_version),
+			    osip_strdup (config->o_nettype),
+			    osip_strdup (config->o_addrtype),
+			    osip_strdup (config->o_addr));
   sdp_message_s_name_set (*sdp, osip_strdup ("A call"));
   if (config->fcn_set_info != NULL)
     config->fcn_set_info (con, *sdp);
@@ -959,11 +1018,11 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
     config->fcn_set_phones (con, *sdp);
   if (config->c_nettype != NULL)
     sdp_message_c_connection_add (*sdp, -1,
-			  osip_strdup (config->c_nettype),
-			  osip_strdup (config->c_addrtype),
-			  osip_strdup (config->c_addr),
-			  osip_strdup (config->c_addr_multicast_ttl),
-			  osip_strdup (config->c_addr_multicast_int));
+				  osip_strdup (config->c_nettype),
+				  osip_strdup (config->c_addrtype),
+				  osip_strdup (config->c_addr),
+				  osip_strdup (config->c_addr_multicast_ttl),
+				  osip_strdup (config->c_addr_multicast_int));
 
   {				/* offer-answer draft says we must copy the "t=" line */
     int now = time (NULL);
@@ -985,19 +1044,24 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
   if (!osip_list_eol (config->audio_codec, 0))
     {
       int pos = 0;
-      __payload_t *my = (__payload_t *) osip_list_get (config->audio_codec, pos);
+      __payload_t *my =
+	(__payload_t *) osip_list_get (config->audio_codec, pos);
 
       /* all media MUST have the same PROTO, PORT. */
-      sdp_message_m_media_add (*sdp, osip_strdup ("audio"), osip_strdup (audio_port),
-			       osip_strdup (my->number_of_port), osip_strdup (my->proto));
+      sdp_message_m_media_add (*sdp, osip_strdup ("audio"),
+			       osip_strdup (audio_port),
+			       osip_strdup (my->number_of_port),
+			       osip_strdup (my->proto));
 
       while (!osip_list_eol (config->audio_codec, pos))
 	{
 	  my = (__payload_t *) osip_list_get (config->audio_codec, pos);
-	  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
+	  sdp_message_m_payload_add (*sdp, media_line,
+				     osip_strdup (my->payload));
 	  if (my->a_rtpmap != NULL)
-	    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
-				 osip_strdup (my->a_rtpmap));
+	    sdp_message_a_attribute_add (*sdp, media_line,
+					 osip_strdup ("rtpmap"),
+					 osip_strdup (my->a_rtpmap));
 	  pos++;
 	}
       media_line++;
@@ -1007,19 +1071,24 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
   if (!osip_list_eol (config->video_codec, 0))
     {
       int pos = 0;
-      __payload_t *my = (__payload_t *) osip_list_get (config->video_codec, pos);
+      __payload_t *my =
+	(__payload_t *) osip_list_get (config->video_codec, pos);
 
       /* all media MUST have the same PROTO, PORT. */
-      sdp_message_m_media_add (*sdp, osip_strdup ("video"), osip_strdup (video_port),
-			       osip_strdup (my->number_of_port), osip_strdup (my->proto));
+      sdp_message_m_media_add (*sdp, osip_strdup ("video"),
+			       osip_strdup (video_port),
+			       osip_strdup (my->number_of_port),
+			       osip_strdup (my->proto));
 
       while (!osip_list_eol (config->video_codec, pos))
 	{
 	  my = (__payload_t *) osip_list_get (config->video_codec, pos);
-	  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
+	  sdp_message_m_payload_add (*sdp, media_line,
+				     osip_strdup (my->payload));
 	  if (my->a_rtpmap != NULL)
-	    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
-				 osip_strdup (my->a_rtpmap));
+	    sdp_message_a_attribute_add (*sdp, media_line,
+					 osip_strdup ("rtpmap"),
+					 osip_strdup (my->a_rtpmap));
 	  pos++;
 	}
       media_line++;
@@ -1032,10 +1101,11 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
  * - Limitation, only one codec will be proposed
  */
 int
-__osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
-		   osip_negotiation_ctx_t * con,
-		   sdp_message_t ** sdp, char *audio_port,
-		   char *video_port, char *audio_codec, char *video_codec)
+__osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
+				    osip_negotiation_ctx_t * con,
+				    sdp_message_t ** sdp, char *audio_port,
+				    char *video_port, char *audio_codec,
+				    char *video_codec)
 {
   int i;
   int media_line = 0;
@@ -1048,11 +1118,12 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 
   /* those fields MUST be set */
   sdp_message_o_origin_set (*sdp,
-		    osip_strdup (config->o_username),
-		    osip_strdup (config->o_session_id),
-		    osip_strdup (config->o_session_version),
-		    osip_strdup (config->o_nettype),
-		    osip_strdup (config->o_addrtype), osip_strdup (config->o_addr));
+			    osip_strdup (config->o_username),
+			    osip_strdup (config->o_session_id),
+			    osip_strdup (config->o_session_version),
+			    osip_strdup (config->o_nettype),
+			    osip_strdup (config->o_addrtype),
+			    osip_strdup (config->o_addr));
   sdp_message_s_name_set (*sdp, osip_strdup ("A call"));
   if (config->fcn_set_info != NULL)
     config->fcn_set_info (con, *sdp);
@@ -1064,11 +1135,11 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
     config->fcn_set_phones (con, *sdp);
   if (config->c_nettype != NULL)
     sdp_message_c_connection_add (*sdp, -1,
-			  osip_strdup (config->c_nettype),
-			  osip_strdup (config->c_addrtype),
-			  osip_strdup (config->c_addr),
-			  osip_strdup (config->c_addr_multicast_ttl),
-			  osip_strdup (config->c_addr_multicast_int));
+				  osip_strdup (config->c_nettype),
+				  osip_strdup (config->c_addrtype),
+				  osip_strdup (config->c_addr),
+				  osip_strdup (config->c_addr_multicast_ttl),
+				  osip_strdup (config->c_addr_multicast_int));
 
   {				/* offer-answer draft says we must copy the "t=" line */
     int now = time (NULL);
@@ -1087,25 +1158,30 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
 
 
   /* add all audio codec */
-  if (audio_codec!=NULL)
+  if (audio_codec != NULL)
     {
       if (!osip_list_eol (config->audio_codec, 0))
 	{
 	  int pos = 0;
-	  __payload_t *my = (__payload_t *) osip_list_get (config->audio_codec, pos);
-	      
+	  __payload_t *my =
+	    (__payload_t *) osip_list_get (config->audio_codec, pos);
+
 	  while (!osip_list_eol (config->audio_codec, pos))
 	    {
 	      my = (__payload_t *) osip_list_get (config->audio_codec, pos);
-	      if (0==strcmp(audio_codec, my->payload))
-		{	  
+	      if (0 == strcmp (audio_codec, my->payload))
+		{
 		  /* all media MUST have the same PROTO, PORT. */
-		  sdp_message_m_media_add (*sdp, osip_strdup ("audio"), osip_strdup (audio_port),
-					   osip_strdup (my->number_of_port), osip_strdup (my->proto));
-		  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
+		  sdp_message_m_media_add (*sdp, osip_strdup ("audio"),
+					   osip_strdup (audio_port),
+					   osip_strdup (my->number_of_port),
+					   osip_strdup (my->proto));
+		  sdp_message_m_payload_add (*sdp, media_line,
+					     osip_strdup (my->payload));
 		  if (my->a_rtpmap != NULL)
-		    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
-					 osip_strdup (my->a_rtpmap));
+		    sdp_message_a_attribute_add (*sdp, media_line,
+						 osip_strdup ("rtpmap"),
+						 osip_strdup (my->a_rtpmap));
 		  media_line++;
 		  break;
 		}
@@ -1115,25 +1191,30 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t *config,
     }
 
   /* add all video codec */
-  if (video_codec!=NULL)
+  if (video_codec != NULL)
     {
       if (!osip_list_eol (config->video_codec, 0))
 	{
 	  int pos = 0;
-	  __payload_t *my = (__payload_t *) osip_list_get (config->video_codec, pos);
-	      
+	  __payload_t *my =
+	    (__payload_t *) osip_list_get (config->video_codec, pos);
+
 	  while (!osip_list_eol (config->video_codec, pos))
 	    {
 	      my = (__payload_t *) osip_list_get (config->video_codec, pos);
-	      if (0==strcmp(video_codec, my->payload))
+	      if (0 == strcmp (video_codec, my->payload))
 		{
 		  /* all media MUST have the same PROTO, PORT. */
-		  sdp_message_m_media_add (*sdp, osip_strdup ("video"), osip_strdup (video_port),
-					   osip_strdup (my->number_of_port), osip_strdup (my->proto));
-		  sdp_message_m_payload_add (*sdp, media_line, osip_strdup (my->payload));
+		  sdp_message_m_media_add (*sdp, osip_strdup ("video"),
+					   osip_strdup (video_port),
+					   osip_strdup (my->number_of_port),
+					   osip_strdup (my->proto));
+		  sdp_message_m_payload_add (*sdp, media_line,
+					     osip_strdup (my->payload));
 		  if (my->a_rtpmap != NULL)
-		    sdp_message_a_attribute_add (*sdp, media_line, osip_strdup ("rtpmap"),
-					 osip_strdup (my->a_rtpmap));
+		    sdp_message_a_attribute_add (*sdp, media_line,
+						 osip_strdup ("rtpmap"),
+						 osip_strdup (my->a_rtpmap));
 		  media_line++;
 		  break;
 		}

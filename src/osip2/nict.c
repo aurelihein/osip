@@ -24,7 +24,8 @@
 #include "xixt.h"
 
 int
-__osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
+__osip_nict_init (osip_nict_t ** nict, osip_t * osip,
+		  osip_message_t * request)
 {
   osip_route_t *route;
   int i;
@@ -61,9 +62,9 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 	(*nict)->timer_e_length = DEFAULT_T1;
 	(*nict)->timer_k_length = DEFAULT_T4;
 #ifdef NEW_TIMER
-	gettimeofday(&(*nict)->timer_e_start, NULL);
-	add_gettimeofday(&(*nict)->timer_e_start, (*nict)->timer_e_length);
-	(*nict)->timer_k_start.tv_sec = -1; /* not started */
+	gettimeofday (&(*nict)->timer_e_start, NULL);
+	add_gettimeofday (&(*nict)->timer_e_start, (*nict)->timer_e_length);
+	(*nict)->timer_k_start.tv_sec = -1;	/* not started */
 #else
 	(*nict)->timer_e_start = now;	/* started */
 	(*nict)->timer_k_start = -1;	/* not started */
@@ -75,7 +76,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 	(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
 #ifdef NEW_TIMER
 	(*nict)->timer_e_start.tv_sec = -1;
-	(*nict)->timer_k_start.tv_sec = -1; /* not started */
+	(*nict)->timer_k_start.tv_sec = -1;	/* not started */
 #else
 	(*nict)->timer_e_start = -1;
 	(*nict)->timer_k_start = -1;	/* not started */
@@ -92,15 +93,16 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 
       if (route->url->port != NULL)
 	port = osip_atoi (route->url->port);
-      osip_nict_set_destination ((*nict), osip_strdup (route->url->host), port);
+      osip_nict_set_destination ((*nict), osip_strdup (route->url->host),
+				 port);
     }
   else
     (*nict)->port = 5060;
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
 #ifdef NEW_TIMER
-  gettimeofday(&(*nict)->timer_f_start, NULL);
-  add_gettimeofday(&(*nict)->timer_f_start, (*nict)->timer_f_length);
+  gettimeofday (&(*nict)->timer_f_start, NULL);
+  add_gettimeofday (&(*nict)->timer_f_start, (*nict)->timer_f_length);
 #else
   (*nict)->timer_f_start = now;	/* started */
 #endif
@@ -144,7 +146,8 @@ osip_nict_set_destination (osip_nict_t * nict, char *destination, int port)
 #ifndef NEW_TIMER
 
 osip_event_t *
-__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   time_t now = time (NULL);
 
@@ -161,7 +164,8 @@ __osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transacti
 }
 
 osip_event_t *
-__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   time_t now = time (NULL);
 
@@ -178,7 +182,8 @@ __osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state, int transacti
 }
 
 osip_event_t *
-__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   time_t now = time (NULL);
 
@@ -197,10 +202,11 @@ __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state, int transacti
 #else
 
 osip_event_t *
-__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (nict == NULL)
     return NULL;
@@ -208,17 +214,18 @@ __osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transacti
     {
       if (nict->timer_e_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &nict->timer_e_start, > ))
+      if (timercmp (&now, &nict->timer_e_start, >))
 	return __osip_event_new (TIMEOUT_E, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (nict == NULL)
     return NULL;
@@ -226,17 +233,18 @@ __osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state, int transacti
     {
       if (nict->timer_f_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &nict->timer_f_start, > ))
+      if (timercmp (&now, &nict->timer_f_start, >))
 	return __osip_event_new (TIMEOUT_F, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (nict == NULL)
     return NULL;
@@ -244,7 +252,7 @@ __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state, int transacti
     {
       if (nict->timer_k_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &nict->timer_k_start, > ))
+      if (timercmp (&now, &nict->timer_k_start, >))
 	return __osip_event_new (TIMEOUT_K, transactionid);
     }
   return NULL;

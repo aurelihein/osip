@@ -35,7 +35,7 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
   int i;
   osip_contact_t *contact;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_contact_init (&contact);
@@ -83,7 +83,8 @@ osip_contact_init (osip_contact_t ** contact)
 /* OUTPUT: osip_contact_t *contact | structure to save results. */
 /* returns -1 on error. */
 int
-osip_message_get_contact (const osip_message_t * sip, int pos, osip_contact_t ** dest)
+osip_message_get_contact (const osip_message_t * sip, int pos,
+			  osip_contact_t ** dest)
 {
   *dest = NULL;
   if (sip == NULL)

@@ -23,14 +23,20 @@
 #include "fsm.h"
 #include "xixt.h"
 
-static int __osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * topvia);
-static int __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * from);
-static int __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to);
-static int __osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t * call_id);
-static int __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cseq);
+static int __osip_transaction_set_topvia (osip_transaction_t * transaction,
+					  osip_via_t * topvia);
+static int __osip_transaction_set_from (osip_transaction_t * transaction,
+					osip_from_t * from);
+static int __osip_transaction_set_to (osip_transaction_t * transaction,
+				      osip_to_t * to);
+static int __osip_transaction_set_call_id (osip_transaction_t * transaction,
+					   osip_call_id_t * call_id);
+static int __osip_transaction_set_cseq (osip_transaction_t * transaction,
+					osip_cseq_t * cseq);
 
 static int
-__osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * topvia)
+__osip_transaction_set_topvia (osip_transaction_t * transaction,
+			       osip_via_t * topvia)
 {
   int i;
 
@@ -44,7 +50,8 @@ __osip_transaction_set_topvia (osip_transaction_t * transaction, osip_via_t * to
 }
 
 static int
-__osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * from)
+__osip_transaction_set_from (osip_transaction_t * transaction,
+			     osip_from_t * from)
 {
   int i;
 
@@ -72,7 +79,8 @@ __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to)
 }
 
 static int
-__osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t * call_id)
+__osip_transaction_set_call_id (osip_transaction_t * transaction,
+				osip_call_id_t * call_id)
 {
   int i;
 
@@ -86,7 +94,8 @@ __osip_transaction_set_call_id (osip_transaction_t * transaction, osip_call_id_t
 }
 
 static int
-__osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cseq)
+__osip_transaction_set_cseq (osip_transaction_t * transaction,
+			     osip_cseq_t * cseq)
 {
   int i;
 
@@ -100,8 +109,9 @@ __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cse
 }
 
 int
-osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_type,
-		  osip_t * osip, osip_message_t * request)
+osip_transaction_init (osip_transaction_t ** transaction,
+		       osip_fsm_type_t ctx_type, osip_t * osip,
+		       osip_message_t * request)
 {
   static int transactionid = 1;
   osip_via_t *topvia;
@@ -114,7 +124,8 @@ osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_ty
 	       "allocating transaction ressource %i %s\n", transactionid,
 	       request->call_id->number));
 
-  *transaction = (osip_transaction_t *) osip_malloc (sizeof (osip_transaction_t));
+  *transaction =
+    (osip_transaction_t *) osip_malloc (sizeof (osip_transaction_t));
   if (*transaction == NULL)
     return -1;
 
@@ -166,7 +177,8 @@ osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_ty
 
   (*transaction)->config = osip;
 
-  (*transaction)->transactionff = (osip_fifo_t *) osip_malloc (sizeof (osip_fifo_t));
+  (*transaction)->transactionff =
+    (osip_fifo_t *) osip_malloc (sizeof (osip_fifo_t));
   if ((*transaction)->transactionff == NULL)
     goto ti_error_6;
   osip_fifo_init ((*transaction)->transactionff);
@@ -315,22 +327,26 @@ osip_transaction_free2 (osip_transaction_t * transaction)
   osip_call_id_free (transaction->callid);
   osip_cseq_free (transaction->cseq);
 
-  osip_free(transaction);
+  osip_free (transaction);
   return 0;
 }
 
 int
-osip_transaction_add_event (osip_transaction_t * transaction, osip_event_t * evt)
+osip_transaction_add_event (osip_transaction_t * transaction,
+			    osip_event_t * evt)
 {
-  if (evt==NULL) return -1;
-  if (transaction==NULL) return -1;
-  evt->transactionid=transaction->transactionid;
+  if (evt == NULL)
+    return -1;
+  if (transaction == NULL)
+    return -1;
+  evt->transactionid = transaction->transactionid;
   osip_fifo_add (transaction->transactionff, evt);
   return 0;
 }
 
 int
-osip_transaction_execute (osip_transaction_t * transaction, osip_event_t * evt)
+osip_transaction_execute (osip_transaction_t * transaction,
+			  osip_event_t * evt)
 {
   osip_statemachine_t *statemachine;
 
@@ -391,23 +407,25 @@ osip_transaction_execute (osip_transaction_t * transaction, osip_event_t * evt)
 		  (__FILE__, __LINE__, OSIP_INFO4, NULL,
 		   "sipevent evt: method called!\n"));
     }
-  osip_free (evt);  /* this is the ONLY place for freeing event!! */
+  osip_free (evt);		/* this is the ONLY place for freeing event!! */
   return 1;
 }
 
 int
-osip_transaction_get_destination(osip_transaction_t * transaction, char **ip, int *port)
+osip_transaction_get_destination (osip_transaction_t * transaction, char **ip,
+				  int *port)
 {
-  *ip=NULL;
-  *port=0;
-  if (transaction==NULL) return -1;
-  if (transaction->ict_context!=NULL)
+  *ip = NULL;
+  *port = 0;
+  if (transaction == NULL)
+    return -1;
+  if (transaction->ict_context != NULL)
     {
       *ip = transaction->ict_context->destination;
       *port = transaction->ict_context->port;
       return 0;
     }
-  else if (transaction->nict_context!=NULL)
+  else if (transaction->nict_context != NULL)
     {
       *ip = transaction->nict_context->destination;
       *port = transaction->nict_context->port;
@@ -417,7 +435,8 @@ osip_transaction_get_destination(osip_transaction_t * transaction, char **ip, in
 }
 
 int
-osip_transaction_set_your_instance (osip_transaction_t * transaction, void *instance)
+osip_transaction_set_your_instance (osip_transaction_t * transaction,
+				    void *instance)
 {
   if (transaction == NULL)
     return -1;
@@ -461,8 +480,10 @@ osip_transaction_set_out_socket (osip_transaction_t * transaction, int sock)
 }
 
 int
-__osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * tr,
-							  osip_message_t * response)
+__osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
+							  tr,
+							  osip_message_t *
+							  response)
 {
   osip_generic_param_t *b_request;
   osip_generic_param_t *b_response;
@@ -496,30 +517,33 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * t
     {
 #ifdef FWDSUPPORT
       /* the from tag (unique) */
-      if (from_tag_match(tr->from, response->from)!=0)
+      if (from_tag_match (tr->from, response->from) != 0)
 	return -1;
       /* the Cseq field */
-      if (cseq_match(tr->cseq, response->cseq)!=0)
+      if (cseq_match (tr->cseq, response->cseq) != 0)
 	return -1;
       /* the To field */
-      if (response->to->url->username==NULL && tr->from->url->username!=NULL)
+      if (response->to->url->username == NULL
+	  && tr->from->url->username != NULL)
 	return -1;
-      if (response->to->url->username!=NULL && tr->from->url->username==NULL)
+      if (response->to->url->username != NULL
+	  && tr->from->url->username == NULL)
 	return -1;
-      if (response->to->url->username!=NULL && tr->from->url->username!=NULL)
+      if (response->to->url->username != NULL
+	  && tr->from->url->username != NULL)
 	{
-	  if (strcmp(response->to->url->host, tr->from->url->host) ||
-	      strcmp(response->to->url->username, tr->from->url->username))
+	  if (strcmp (response->to->url->host, tr->from->url->host) ||
+	      strcmp (response->to->url->username, tr->from->url->username))
 	    return -1;
 	}
       else
 	{
-	  if (strcmp(response->to->url->host, tr->from->url->host))
+	  if (strcmp (response->to->url->host, tr->from->url->host))
 	    return -1;
 	}
 
       /* the Call-ID field */
-      if (call_id_match(tr->callid, response->call_id)!=0)
+      if (call_id_match (tr->callid, response->call_id) != 0)
 	return -1;
       return 0;
 #else
@@ -555,8 +579,10 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * t
 }
 
 int
-__osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr,
-							 osip_message_t * request)
+__osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
+							 tr,
+							 osip_message_t *
+							 request)
 {
   osip_generic_param_t *b_origrequest;
   osip_generic_param_t *b_request;
@@ -584,7 +610,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
 
   if ((b_origrequest == NULL && b_request != NULL) ||
       (b_origrequest != NULL && b_request == NULL))
-    return -1; /* one request is compliant, the other one is not... */
+    return -1;			/* one request is compliant, the other one is not... */
 
   /* Section 17.2.3 Matching Requests to Server Transactions:
      "The branch parameter in the topmost Via header field of the request
@@ -616,25 +642,25 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
 	    return -1;		/* branch param does not match */
 	  {
 	    /* check the sent-by values */
-	    char *b_port = via_get_port(topvia_request);
-	    char *b_origport = via_get_port(tr->topvia);
-	    char *b_host = via_get_host(topvia_request);
-	    char *b_orighost = via_get_host(tr->topvia);
+	    char *b_port = via_get_port (topvia_request);
+	    char *b_origport = via_get_port (tr->topvia);
+	    char *b_host = via_get_host (topvia_request);
+	    char *b_orighost = via_get_host (tr->topvia);
 	    if ((b_host == NULL || b_orighost == NULL))
 	      return -1;
 	    if (0 != strcmp (b_orighost, b_host))
 	      return -1;
 
 	    if (b_port != NULL && b_origport == NULL
-		&& 0!=strcmp(b_port, "5060"))
+		&& 0 != strcmp (b_port, "5060"))
 	      return -1;
 	    else if (b_origport != NULL && b_port == NULL
-		&& 0!=strcmp(b_origport, "5060"))
+		     && 0 != strcmp (b_origport, "5060"))
 	      return -1;
 	    else if (b_origport != NULL && b_port != NULL
-		&& 0!=strcmp(b_origport, b_port))
+		     && 0 != strcmp (b_origport, b_port))
 	      return -1;
-	  }                                                                
+	  }
 #ifdef AC_BUG
 	  /* audiocodes bug (MP108-fxs-SIP-4-0-282-380) */
 	  if (0 != osip_from_tag_match (tr->from, request->from))
@@ -691,7 +717,8 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
 #if 0
 
 int
-callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2, osip_from_t * from2)
+callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2,
+	       osip_from_t * from2)
 {
   if (to1 == NULL || to2 == NULL)
     return -1;

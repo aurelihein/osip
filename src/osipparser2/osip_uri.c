@@ -81,7 +81,8 @@ osip_uri_init (osip_uri_t ** url)
 /* return it only if it is located before the */
 /* second separator. */
 char *
-next_separator (const char *ch, int separator_osip_to_find, int before_separator)
+next_separator (const char *ch, int separator_osip_to_find,
+		int before_separator)
 {
   char *ind;
   char *tmp;
@@ -122,7 +123,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
   const char *tmp;
 
   /* basic tests */
-  if (buf == NULL || buf[0]=='\0')
+  if (buf == NULL || buf[0] == '\0')
     return -1;
 
   tmp = strchr (buf, ':');
@@ -390,13 +391,15 @@ osip_uri_parse_headers (osip_uri_t * url, const char *headers)
 	      osip_free (hname);
 	      return -1;
 	    }
-	  hvalue = (char *) osip_malloc (headers + strlen (headers) - equal + 1);
+	  hvalue =
+	    (char *) osip_malloc (headers + strlen (headers) - equal + 1);
 	  if (hvalue == NULL)
 	    {
 	      osip_free (hname);
 	      return -1;
 	    }
-	  osip_strncpy (hvalue, equal + 1, headers + strlen (headers) - equal);
+	  osip_strncpy (hvalue, equal + 1,
+			headers + strlen (headers) - equal);
 	  __osip_uri_unescape (hvalue);
 	}
 
@@ -524,14 +527,13 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
   if (url->scheme == NULL && url->string != NULL)
     return -1;
   if (url->string == NULL && url->scheme == NULL)
-    scheme = "sip"; /* default is sipurl */
+    scheme = "sip";		/* default is sipurl */
   else
     scheme = url->scheme;
 
   if (url->string != NULL)
     {
-      buf =
-	(char *) osip_malloc (strlen (scheme) + strlen (url->string) + 3);
+      buf = (char *) osip_malloc (strlen (scheme) + strlen (url->string) + 3);
       if (buf == NULL)
 	return -1;
       *dest = buf;
@@ -639,7 +641,8 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 	char *tmp1;
 	char *tmp2;
 
-	u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+	u_header =
+	  (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
 	tmp1 = __osip_uri_escape_header_param (u_header->gname);
 	tmp2 = __osip_uri_escape_header_param (u_header->gvalue);
 
@@ -691,7 +694,8 @@ osip_uri_free (osip_uri_t * url)
 
     while (!osip_list_eol (url->url_headers, pos))
       {
-	u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+	u_header =
+	  (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
 	osip_list_remove (url->url_headers, pos);
 	osip_uri_header_free (u_header);
       }
@@ -829,7 +833,8 @@ osip_uri_param_freelist (osip_list_t * params)
 }
 
 int
-osip_uri_param_get_byname (osip_list_t * params, char *pname, osip_uri_param_t ** url_param)
+osip_uri_param_get_byname (osip_list_t * params, char *pname,
+			   osip_uri_param_t ** url_param)
 {
   int pos = 0;
   osip_uri_param_t *u_param;
@@ -849,7 +854,8 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname, osip_uri_param_t *
 }
 
 int
-osip_uri_param_clone (const osip_uri_param_t * uparam, osip_uri_param_t ** dest)
+osip_uri_param_clone (const osip_uri_param_t * uparam,
+		      osip_uri_param_t ** dest)
 {
   int i;
   osip_uri_param_t *up;

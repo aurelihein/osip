@@ -80,7 +80,7 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
 
   (*ist)->timer_h_length = 64 * DEFAULT_T1;
 #ifdef NEW_TIMER
-  (*ist)->timer_h_start.tv_sec = -1;          /* not started */
+  (*ist)->timer_h_start.tv_sec = -1;	/* not started */
 #else
   (*ist)->timer_h_start = -1;	/* not started */
 #endif
@@ -106,7 +106,8 @@ __osip_ist_free (osip_ist_t * ist)
 #ifndef NEW_TIMER
 
 osip_event_t *
-__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   time_t now = time (NULL);
 
@@ -125,7 +126,8 @@ __osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactioni
 }
 
 osip_event_t *
-__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   time_t now = time (NULL);
 
@@ -145,7 +147,8 @@ __osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state, int transactioni
 }
 
 osip_event_t *
-__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   time_t now = time (NULL);
 
@@ -165,10 +168,11 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state, int transactioni
 #else
 
 osip_event_t *
-__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -176,17 +180,18 @@ __osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactioni
     {
       if (ist->timer_g_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &ist->timer_g_start, > ))
+      if (timercmp (&now, &ist->timer_g_start, >))
 	return __osip_event_new (TIMEOUT_G, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -195,17 +200,18 @@ __osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state, int transactioni
       /* may need timer H */
       if (ist->timer_h_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &ist->timer_h_start, > ))
+      if (timercmp (&now, &ist->timer_h_start, >))
 	return __osip_event_new (TIMEOUT_H, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday (&now, NULL);
 
   if (ist == NULL)
     return NULL;
@@ -214,7 +220,7 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state, int transactioni
       /* may need timer I */
       if (ist->timer_i_start.tv_sec == -1)
 	return NULL;
-      if (timercmp(&now, &ist->timer_i_start, > ))
+      if (timercmp (&now, &ist->timer_i_start, >))
 	return __osip_event_new (TIMEOUT_I, transactionid);
     }
   return NULL;

@@ -32,7 +32,8 @@
 /* OUTPUT: osip_message_t *sip | structure to save results.          */
 /* returns -1 on error. */
 int
-osip_message_set_header (osip_message_t * sip, const char *hname, const char *hvalue)
+osip_message_set_header (osip_message_t * sip, const char *hname,
+			 const char *hvalue)
 {
   osip_header_t *h;
   int i;
@@ -80,7 +81,8 @@ osip_message_set_header (osip_message_t * sip, const char *hname, const char *hv
 /* OUTPUT: osip_message_t *sip | structure to save results.          */
 /* returns -1 on error. */
 int
-osip_message_set_topheader (osip_message_t * sip, const char *hname, const char *hvalue)
+osip_message_set_topheader (osip_message_t * sip, const char *hname,
+			    const char *hvalue)
 {
   osip_header_t *h;
   int i;
@@ -127,7 +129,8 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname, const char 
 /* OUTPUT: osip_message_t *sip | structure to scan for a header .*/
 /* return null on error. */
 int
-osip_message_get_header (const osip_message_t * sip, int pos, osip_header_t ** dest)
+osip_message_get_header (const osip_message_t * sip, int pos,
+			 osip_header_t ** dest)
 {
   *dest = NULL;
   if (osip_list_size (sip->headers) <= pos)
@@ -143,7 +146,7 @@ osip_message_get_header (const osip_message_t * sip, int pos, osip_header_t ** d
 /* and -1 on error. */
 int
 osip_message_header_get_byname (const osip_message_t * sip, const char *hname,
-		      int pos, osip_header_t ** dest)
+				int pos, osip_header_t ** dest)
 {
   int i;
   osip_header_t *tmp;
@@ -185,7 +188,7 @@ osip_header_free (osip_header_t * header)
   osip_free (header->hvalue);
   header->hname = NULL;
   header->hvalue = NULL;
-  
+
   osip_free (header);
 }
 

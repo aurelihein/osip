@@ -35,7 +35,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
   osip_via_t *via;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_via_init (&via);
@@ -339,7 +339,8 @@ osip_via_to_str (const osip_via_t * via, char **dest)
 
     while (!osip_list_eol (via->via_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (via->via_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (via->via_params, pos);
 
 	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;
@@ -473,7 +474,8 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
 
     while (!osip_list_eol (via->via_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (via->via_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (via->via_params, pos);
 	i = osip_generic_param_clone (u_param, &dest_param);
 	if (i != 0)
 	  {

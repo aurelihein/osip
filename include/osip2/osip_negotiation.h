@@ -156,7 +156,8 @@ extern "C"
  * @param ctx The element to work on.
  * @param value A pointer to your personal context.
  */
-  int osip_negotiation_ctx_set_mycontext (osip_negotiation_ctx_t * ctx, void *value);
+  int osip_negotiation_ctx_set_mycontext (osip_negotiation_ctx_t * ctx,
+					  void *value);
 /**
  * Get the context associated to this negotiation.
  * @param ctx The element to work on.
@@ -170,23 +171,27 @@ extern "C"
  * @param ctx The element to work on.
  * @param sdp The local SDP packet.
  */
-  int osip_negotiation_ctx_set_local_sdp (osip_negotiation_ctx_t * ctx, sdp_message_t * sdp);
+  int osip_negotiation_ctx_set_local_sdp (osip_negotiation_ctx_t * ctx,
+					  sdp_message_t * sdp);
 /**
  * Get the local SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  */
-  sdp_message_t *osip_negotiation_ctx_get_local_sdp (osip_negotiation_ctx_t * ctx);
+  sdp_message_t *osip_negotiation_ctx_get_local_sdp (osip_negotiation_ctx_t *
+						     ctx);
 /**
  * Set the remote SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  * @param sdp The remote SDP packet.
  */
-  int osip_negotiation_ctx_set_remote_sdp (osip_negotiation_ctx_t * ctx, sdp_message_t * sdp);
+  int osip_negotiation_ctx_set_remote_sdp (osip_negotiation_ctx_t * ctx,
+					   sdp_message_t * sdp);
 /**
  * Get the remote SDP packet associated to this negotiation.
  * @param ctx The element to work on.
  */
-  sdp_message_t *osip_negotiation_ctx_get_remote_sdp (osip_negotiation_ctx_t * ctx);
+  sdp_message_t *osip_negotiation_ctx_get_remote_sdp (osip_negotiation_ctx_t *
+						      ctx);
 
 
 /**
@@ -245,12 +250,12 @@ extern "C"
  * Initialise (and Allocate) a sdp_config element (this element is global).
  * Stores the initialized structure to conf_out.
  */
-  int osip_negotiation_init (osip_negotiation_t **conf_out);
+  int osip_negotiation_init (osip_negotiation_t ** conf_out);
 /**
  * Free resource stored by a sdp_config element.
  * This method must be called once when the application is stopped.
  */
-  void osip_negotiation_free (osip_negotiation_t *conf);
+  void osip_negotiation_free (osip_negotiation_t * conf);
 
 /**
  * Set the local username ('o' field) of all local SDP packet.
@@ -268,7 +273,8 @@ extern "C"
  * WARNING: this field should be updated for each new SDP packet?
  * @param tmp The session version.
  */
-  int osip_negotiation_set_o_session_version (osip_negotiation_t *, char *tmp);
+  int osip_negotiation_set_o_session_version (osip_negotiation_t *,
+					      char *tmp);
 /**
  * Set the local network type ('o' field) of all local SDP packet.
  * @param tmp The network type.
@@ -304,12 +310,14 @@ extern "C"
  * Set the local ttl for multicast address ('c' field) of all local SDP packet.
  * @param tmp The ttl for multicast address.
  */
-  int osip_negotiation_set_c_addr_multicast_ttl (osip_negotiation_t *, char *tmp);
+  int osip_negotiation_set_c_addr_multicast_ttl (osip_negotiation_t *,
+						 char *tmp);
 /**
  * Set the local int for multicast address ('c' field) of all local SDP packet.
  * @param tmp The int for multicast address.
  */
-  int osip_negotiation_set_c_addr_multicast_int (osip_negotiation_t *, char *tmp);
+  int osip_negotiation_set_c_addr_multicast_int (osip_negotiation_t *,
+						 char *tmp);
 
 /**
  * Add a supported audio codec.
@@ -325,13 +333,18 @@ extern "C"
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-  int osip_negotiation_add_support_for_audio_codec (osip_negotiation_t *, char *payload,
-					      char *number_of_port,
-					      char *proto, char *c_nettype,
-					      char *c_addrtype, char *c_addr,
-					      char *c_addr_multicast_ttl,
-					      char *c_addr_multicast_int,
-					      char *a_rtpmap);
+  int osip_negotiation_add_support_for_audio_codec (osip_negotiation_t *,
+						    char *payload,
+						    char *number_of_port,
+						    char *proto,
+						    char *c_nettype,
+						    char *c_addrtype,
+						    char *c_addr,
+						    char
+						    *c_addr_multicast_ttl,
+						    char
+						    *c_addr_multicast_int,
+						    char *a_rtpmap);
 /**
  * Add a supported video codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -346,13 +359,18 @@ extern "C"
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-  int osip_negotiation_add_support_for_video_codec (osip_negotiation_t *, char *payload,
-					      char *number_of_port,
-					      char *proto, char *c_nettype,
-					      char *c_addrtype, char *c_addr,
-					      char *c_addr_multicast_ttl,
-					      char *c_addr_multicast_int,
-					      char *a_rtpmap);
+  int osip_negotiation_add_support_for_video_codec (osip_negotiation_t *,
+						    char *payload,
+						    char *number_of_port,
+						    char *proto,
+						    char *c_nettype,
+						    char *c_addrtype,
+						    char *c_addr,
+						    char
+						    *c_addr_multicast_ttl,
+						    char
+						    *c_addr_multicast_int,
+						    char *a_rtpmap);
 /**
  * Add a supported (non-audio and non-video) codec.
  * Those codecs will be accepted as long as you return 0 when
@@ -367,27 +385,32 @@ extern "C"
  * @param c_addr_multicast_int The int for multicast address in the 'c' field.
  * @param a_rtpmap The rtpmap attribute in the 'a' field.
  */
-  int osip_negotiation_add_support_for_other_codec (osip_negotiation_t *, char *payload,
-					      char *number_of_port,
-					      char *proto, char *c_nettype,
-					      char *c_addrtype, char *c_addr,
-					      char *c_addr_multicast_ttl,
-					      char *c_addr_multicast_int,
-					      char *a_rtpmap);
+  int osip_negotiation_add_support_for_other_codec (osip_negotiation_t *,
+						    char *payload,
+						    char *number_of_port,
+						    char *proto,
+						    char *c_nettype,
+						    char *c_addrtype,
+						    char *c_addr,
+						    char
+						    *c_addr_multicast_ttl,
+						    char
+						    *c_addr_multicast_int,
+						    char *a_rtpmap);
 
 #ifndef DOXYGEN
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_audio_payloads (osip_negotiation_t *config);
+  int osip_negotiation_remove_audio_payloads (osip_negotiation_t * config);
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_video_payloads (osip_negotiation_t *config);
+  int osip_negotiation_remove_video_payloads (osip_negotiation_t * config);
 /**
  * Free resource in the global sdp_config..
  */
-  int osip_negotiation_remove_other_payloads (osip_negotiation_t *config);
+  int osip_negotiation_remove_other_payloads (osip_negotiation_t * config);
 #endif
 
 /**
@@ -396,28 +419,32 @@ extern "C"
  * @param fcn The callback.
  */
   int osip_negotiation_set_fcn_set_info (osip_negotiation_t *,
-					int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *));
+					 int (*fcn) (osip_negotiation_ctx_t *,
+						     sdp_message_t *));
 /**
  * Set the callback for setting a URI ('u' field) in a local SDP packet.
  * This callback is called once each time we need an 'u' field.
  * @param fcn The callback.
  */
   int osip_negotiation_set_fcn_set_uri (osip_negotiation_t *,
-				       int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *));
+					int (*fcn) (osip_negotiation_ctx_t *,
+						    sdp_message_t *));
 /**
  * Set the callback for setting an email ('e' field) in a local SDP packet.
  * This callback is called once each time we need an 'e' field.
  * @param fcn The callback.
  */
   int osip_negotiation_set_fcn_set_emails (osip_negotiation_t *,
-					  int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *));
+					   int (*fcn) (osip_negotiation_ctx_t
+						       *, sdp_message_t *));
 /**
  * Set the callback for setting a phone ('p' field) in a local SDP packet.
  * This callback is called once each time we need an 'p' field.
  * @param fcn The callback.
  */
   int osip_negotiation_set_fcn_set_phones (osip_negotiation_t *,
-					  int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *));
+					   int (*fcn) (osip_negotiation_ctx_t
+						       *, sdp_message_t *));
 /**
  * Set the callback for setting an attribute ('a' field) in a local SDP packet.
  * This callback is called once each time we need an 'a' field.
@@ -425,7 +452,9 @@ extern "C"
  */
   int
     osip_negotiation_set_fcn_set_attributes (osip_negotiation_t *,
-					    int (*fcn) (osip_negotiation_ctx_t *, sdp_message_t *, int));
+					     int (*fcn)
+					     (osip_negotiation_ctx_t *,
+					      sdp_message_t *, int));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -433,7 +462,10 @@ extern "C"
  */
   int
     osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation_t *,
-						int (*fcn) (osip_negotiation_ctx_t *, char *, char *, int, char *));
+						 int (*fcn)
+						 (osip_negotiation_ctx_t *,
+						  char *, char *, int,
+						  char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -441,7 +473,10 @@ extern "C"
  */
   int
     osip_negotiation_set_fcn_accept_video_codec (osip_negotiation_t *,
-						int (*fcn) (osip_negotiation_ctx_t *, char *, char *, int, char *));
+						 int (*fcn)
+						 (osip_negotiation_ctx_t *,
+						  char *, char *, int,
+						  char *));
 /**
  * Set the callback used to accept a codec during a negotiation.
  * This callback is called once each time we need to accept a codec.
@@ -449,25 +484,37 @@ extern "C"
  */
   int
     osip_negotiation_set_fcn_accept_other_codec (osip_negotiation_t *,
-						int (*fcn) (osip_negotiation_ctx_t *, char *, char *, char *, char *));
+						 int (*fcn)
+						 (osip_negotiation_ctx_t *,
+						  char *, char *, char *,
+						  char *));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-  int osip_negotiation_set_fcn_get_audio_port (osip_negotiation_t *, char *(*fcn) (osip_negotiation_ctx_t *, int));
+  int osip_negotiation_set_fcn_get_audio_port (osip_negotiation_t *,
+					       char
+					       *(*fcn) (osip_negotiation_ctx_t
+							*, int));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-  int osip_negotiation_set_fcn_get_video_port (osip_negotiation_t *, char *(*fcn) (osip_negotiation_ctx_t *, int));
+  int osip_negotiation_set_fcn_get_video_port (osip_negotiation_t *,
+					       char
+					       *(*fcn) (osip_negotiation_ctx_t
+							*, int));
 /**
  * Set the callback for setting the port number ('m' field) in a local SDP packet.
  * This callback is called once each time a 'm' line is accepted.
  * @param fcn The callback.
  */
-  int osip_negotiation_set_fcn_get_other_port (osip_negotiation_t *, char *(*fcn) (osip_negotiation_ctx_t *, int));
+  int osip_negotiation_set_fcn_get_other_port (osip_negotiation_t *,
+					       char
+					       *(*fcn) (osip_negotiation_ctx_t
+							*, int));
 
 /**
  * Start the automatic negotiation for a UA
@@ -488,11 +535,13 @@ extern "C"
   int osip_negotiation_sdp_build_offer (osip_negotiation_t *,
 					osip_negotiation_ctx_t * con,
 					sdp_message_t ** sdp,
-					char *audio_port,
-					char *video_port);
+					char *audio_port, char *video_port);
   int __osip_negotiation_sdp_build_offer (osip_negotiation_t *,
-			 osip_negotiation_ctx_t * con, sdp_message_t ** sdp, char *audio_port,
-			 char *video_port, char *audio_codec, char *video_codec);
+					  osip_negotiation_ctx_t * con,
+					  sdp_message_t ** sdp,
+					  char *audio_port, char *video_port,
+					  char *audio_codec,
+					  char *video_codec);
 
   /* for non "on-hold sdp" in outgoing invite */
   int osip_negotiation_sdp_message_put_on_hold (sdp_message_t * sdp);

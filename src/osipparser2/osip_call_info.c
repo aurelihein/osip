@@ -31,7 +31,7 @@ osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
   osip_call_info_t *call_info;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_call_info_init (&call_info);
@@ -51,7 +51,8 @@ osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
 }
 
 int
-osip_message_get_call_info (const osip_message_t * sip, int pos, osip_call_info_t ** dest)
+osip_message_get_call_info (const osip_message_t * sip, int pos,
+			    osip_call_info_t ** dest)
 {
   osip_call_info_t *call_info;
 
@@ -72,7 +73,8 @@ osip_call_info_init (osip_call_info_t ** call_info)
 
   (*call_info)->element = NULL;
 
-  (*call_info)->gen_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  (*call_info)->gen_params =
+    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*call_info)->gen_params == NULL)
     {
       osip_free (*call_info);
@@ -101,8 +103,8 @@ osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
 
   if (osip_call_info_params != NULL)
     {
-      if (__osip_generic_param_parseall (call_info->gen_params, osip_call_info_params) ==
-	  -1)
+      if (__osip_generic_param_parseall
+	  (call_info->gen_params, osip_call_info_params) == -1)
 	return -1;
     }
   else
@@ -110,7 +112,8 @@ osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
 
   if (osip_call_info_params - hvalue + 1 < 2)
     return -1;
-  call_info->element = (char *) osip_malloc (osip_call_info_params - hvalue + 1);
+  call_info->element =
+    (char *) osip_malloc (osip_call_info_params - hvalue + 1);
   if (call_info->element == NULL)
     return -1;
   osip_strncpy (call_info->element, hvalue, osip_call_info_params - hvalue);
@@ -148,7 +151,8 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
 
     while (!osip_list_eol (call_info->gen_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (call_info->gen_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (call_info->gen_params, pos);
 	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;
 	else
@@ -182,7 +186,7 @@ osip_call_info_free (osip_call_info_t * call_info)
 
   call_info->element = NULL;
   call_info->gen_params = NULL;
-  
+
   osip_free (call_info);
 }
 
@@ -210,7 +214,8 @@ osip_call_info_clone (const osip_call_info_t * ctt, osip_call_info_t ** dest)
 
     while (!osip_list_eol (ctt->gen_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
 	i = osip_generic_param_clone (u_param, &dest_param);
 	if (i != 0)
 	  {

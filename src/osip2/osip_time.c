@@ -25,24 +25,24 @@
 #include "fsm.h"
 
 void
-add_gettimeofday(struct timeval *atv, int ms)
+add_gettimeofday (struct timeval *atv, int ms)
 {
   int m;
   atv->tv_usec += ms * 1000;
-  m = atv->tv_usec/1000000;
-  atv->tv_usec = atv->tv_usec%1000000;
+  m = atv->tv_usec / 1000000;
+  atv->tv_usec = atv->tv_usec % 1000000;
   atv->tv_sec += m;
 }
 
 void
-min_timercmp(struct timeval *tv1, struct timeval *tv2)
+min_timercmp (struct timeval *tv1, struct timeval *tv2)
 {
-  if (tv2->tv_sec==-1)
+  if (tv2->tv_sec == -1)
     return;
-  if (timercmp(tv1, tv2, > ))
+  if (timercmp (tv1, tv2, >))
     {
       /* replace tv1 with tv2 info */
-      tv1->tv_sec  = tv2->tv_sec;
+      tv1->tv_sec = tv2->tv_sec;
       tv1->tv_usec = tv2->tv_usec;
     }
 }
@@ -52,14 +52,15 @@ min_timercmp(struct timeval *tv1, struct timeval *tv2)
 #include <time.h>
 #include <sys/timeb.h>
 
-int gettimeofday(struct timeval *tp, void *tz)
+int
+gettimeofday (struct timeval *tp, void *tz)
 {
-   struct _timeb timebuffer;
+  struct _timeb timebuffer;
 
-   _ftime(&timebuffer);
-   tp->tv_sec = timebuffer.time;
-   tp->tv_usec = timebuffer.millitm * 1000;
-   return 0;
+  _ftime (&timebuffer);
+  tp->tv_sec = timebuffer.time;
+  tp->tv_usec = timebuffer.millitm * 1000;
+  return 0;
 }
 #endif
 

@@ -44,8 +44,8 @@ sdp_message_v_version_get (sdp_message_t * sdp)
 
 int
 sdp_message_o_origin_set (sdp_message_t * sdp, char *username, char *sess_id,
-		  char *sess_version, char *nettype, char *addrtype,
-		  char *addr)
+			  char *sess_version, char *nettype, char *addrtype,
+			  char *addr)
 {
   if (sdp == NULL)
     return -1;
@@ -216,9 +216,9 @@ sdp_message_p_phone_get (sdp_message_t * sdp, int pos)
 
 int
 sdp_message_c_connection_add (sdp_message_t * sdp, int pos_media,
-		      char *nettype, char *addrtype,
-		      char *addr, char *addr_multicast_ttl,
-		      char *addr_multicast_int)
+			      char *nettype, char *addrtype,
+			      char *addr, char *addr_multicast_ttl,
+			      char *addr_multicast_int)
 {
   int i;
   sdp_media_t *med;
@@ -293,7 +293,8 @@ sdp_message_c_addr_get (sdp_message_t * sdp, int pos_media, int pos)
 }
 
 char *
-sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media, int pos)
+sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media,
+				      int pos)
 {
   sdp_connection_t *conn = sdp_message_connection_get (sdp, pos_media, pos);
 
@@ -303,7 +304,8 @@ sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media, int po
 }
 
 char *
-sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media, int pos)
+sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media,
+				      int pos)
 {
   sdp_connection_t *conn = sdp_message_connection_get (sdp, pos_media, pos);
 
@@ -314,7 +316,7 @@ sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media, int po
 
 int
 sdp_message_b_bandwidth_add (sdp_message_t * sdp, int pos_media, char *bwtype,
-		     char *bandwidth)
+			     char *bandwidth)
 {
   int i;
   sdp_media_t *med;
@@ -418,7 +420,8 @@ sdp_message_t_stop_time_get (sdp_message_t * sdp, int pos_td)
 }
 
 int
-sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr, char *field)
+sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr,
+			  char *field)
 {
   sdp_time_descr_t *td;
 
@@ -432,7 +435,8 @@ sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr, char *field)
 }
 
 char *
-sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr, int pos_repeat)
+sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr,
+			  int pos_repeat)
 {
   sdp_time_descr_t *td;
 
@@ -462,7 +466,8 @@ sdp_message_z_adjustments_get (sdp_message_t * sdp)
 }
 
 int
-sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype, char *keydata)
+sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype,
+		       char *keydata)
 {
   sdp_key_t *key;
   sdp_media_t *med;
@@ -527,8 +532,8 @@ sdp_message_k_keydata_get (sdp_message_t * sdp, int pos_media)
 }
 
 int
-sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media, char *att_field,
-		     char *att_value)
+sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
+			     char *att_field, char *att_value)
 {
   int i;
   sdp_media_t *med;
@@ -602,7 +607,7 @@ sdp_message_endof_media (sdp_message_t * sdp, int i)
 
 int
 sdp_message_m_media_add (sdp_message_t * sdp, char *media,
-		 char *port, char *number_of_port, char *proto)
+			 char *port, char *number_of_port, char *proto)
 {
   int i;
   sdp_media_t *med;

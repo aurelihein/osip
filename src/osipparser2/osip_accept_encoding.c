@@ -35,7 +35,7 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
   osip_accept_encoding_t *accept_encoding;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_accept_encoding_init (&accept_encoding);
@@ -56,7 +56,7 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_accept_encoding (const osip_message_t * sip, int pos,
-			osip_accept_encoding_t ** dest)
+				  osip_accept_encoding_t ** dest)
 {
   osip_accept_encoding_t *accept_encoding;
 
@@ -78,7 +78,8 @@ osip_accept_encoding_init (osip_accept_encoding_t ** accept_encoding)
     return -1;
   (*accept_encoding)->element = NULL;
 
-  (*accept_encoding)->gen_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  (*accept_encoding)->gen_params =
+    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*accept_encoding)->gen_params == NULL)
     {
       osip_free (*accept_encoding);
@@ -92,7 +93,7 @@ osip_accept_encoding_init (osip_accept_encoding_t ** accept_encoding)
 
 int
 osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
-		       const char *hvalue)
+			    const char *hvalue)
 {
   const char *osip_accept_encoding_params;
 
@@ -101,7 +102,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
   if (osip_accept_encoding_params != NULL)
     {
       if (__osip_generic_param_parseall (accept_encoding->gen_params,
-				  osip_accept_encoding_params) == -1)
+					 osip_accept_encoding_params) == -1)
 	return -1;
     }
   else
@@ -114,7 +115,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
   if (accept_encoding->element == NULL)
     return -1;
   osip_strncpy (accept_encoding->element, hvalue,
-	    osip_accept_encoding_params - hvalue);
+		osip_accept_encoding_params - hvalue);
   osip_clrspace (accept_encoding->element);
 
   return 0;
@@ -124,7 +125,8 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
 /* INPUT : osip_accept_encoding_t *accept_encoding | accept_encoding header.   */
 /* returns null on error. */
 int
-osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, char **dest)
+osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
+			     char **dest)
 {
   char *buf;
   char *tmp;
@@ -148,7 +150,8 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, cha
     while (!osip_list_eol (accept_encoding->gen_params, pos))
       {
 	u_param =
-	  (osip_generic_param_t *) osip_list_get (accept_encoding->gen_params, pos);
+	  (osip_generic_param_t *) osip_list_get (accept_encoding->gen_params,
+						  pos);
 	if (u_param->gvalue == NULL)
 	  plen = strlen (u_param->gname) + 2;
 	else
@@ -186,7 +189,7 @@ osip_accept_encoding_free (osip_accept_encoding_t * accept_encoding)
 
 int
 osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
-		       osip_accept_encoding_t ** dest)
+			    osip_accept_encoding_t ** dest)
 {
   int i;
   osip_accept_encoding_t *ct;
@@ -213,7 +216,8 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
 
     while (!osip_list_eol (ctt->gen_params, pos))
       {
-	u_param = (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
 	i = osip_generic_param_clone (u_param, &dest_param);
 	if (i != 0)
 	  {

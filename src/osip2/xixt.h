@@ -30,9 +30,11 @@ extern "C"
 #endif
 
 
-  void __osip_message_callback (int type, osip_transaction_t *, osip_message_t *);
+  void __osip_message_callback (int type, osip_transaction_t *,
+				osip_message_t *);
   void __osip_kill_transaction_callback (int type, osip_transaction_t *);
-  void __osip_transport_error_callback (int type, osip_transaction_t *, int error);
+  void __osip_transport_error_callback (int type, osip_transaction_t *,
+					int error);
 
 /**
  * Allocate an osip_ict_t element. (for outgoing INVITE transaction)
@@ -41,7 +43,8 @@ extern "C"
  * @param osip The global instance of oSIP.
  * @param invite The SIP request that initiate the transaction.
  */
-  int __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite);
+  int __osip_ict_init (osip_ict_t ** ict, osip_t * osip,
+		       osip_message_t * invite);
 /**
  * Free all resource in a osip_ict_t element.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -57,7 +60,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
+  osip_event_t *__osip_ict_need_timer_a_event (osip_ict_t * ict,
+					       state_t state,
 					       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_B event 
@@ -66,7 +70,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
+  osip_event_t *__osip_ict_need_timer_b_event (osip_ict_t * ict,
+					       state_t state,
 					       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_D event 
@@ -75,7 +80,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
+  osip_event_t *__osip_ict_need_timer_d_event (osip_ict_t * ict,
+					       state_t state,
 					       int transactionid);
 
 /**
@@ -85,7 +91,8 @@ extern "C"
  * @param osip The global instance of oSIP.
  * @param request The SIP request that initiate the transaction.
  */
-  int __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request);
+  int __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
+			osip_message_t * request);
 /**
  * Free all resource in an osip_nict_t element.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -101,8 +108,9 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
-					      int transactionid);
+  osip_event_t *__osip_nict_need_timer_e_event (osip_nict_t * nict,
+						state_t state,
+						int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_F event 
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -110,7 +118,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
+  osip_event_t *__osip_nict_need_timer_f_event (osip_nict_t * nict,
+						state_t state,
 						int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_K event 
@@ -119,9 +128,10 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
+  osip_event_t *__osip_nict_need_timer_k_event (osip_nict_t * nict,
+						state_t state,
 						int transactionid);
-  
+
 /**
  * Allocate an osip_ist_t element. (for incoming INVITE transaction)
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -129,7 +139,8 @@ extern "C"
  * @param osip The global instance of oSIP.
  * @param invite The SIP invite that initiate the transaction.
  */
-  int __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite);
+  int __osip_ist_init (osip_ist_t ** ist, osip_t * osip,
+		       osip_message_t * invite);
 /**
  * Free all resource in a osip_ist_t element.
  * NOTE: THIS IS AN INTERNAL METHOD ONLY
@@ -144,7 +155,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
+  osip_event_t *__osip_ist_need_timer_g_event (osip_ist_t * ist,
+					       state_t state,
 					       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_H event 
@@ -153,7 +165,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state,
+  osip_event_t *__osip_ist_need_timer_h_event (osip_ist_t * ist,
+					       state_t state,
 					       int transactionid);
 /**
  * Check if this transaction needs a TIMEOUT_I event 
@@ -162,7 +175,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
+  osip_event_t *__osip_ist_need_timer_i_event (osip_ist_t * ist,
+					       state_t state,
 					       int transactionid);
 
 /**
@@ -172,7 +186,8 @@ extern "C"
  * @param osip The global instance of oSIP.
  * @param request The SIP request that initiate the transaction.
  */
-  int __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * request);
+  int __osip_nist_init (osip_nist_t ** nist, osip_t * osip,
+			osip_message_t * request);
 
 /**
  * Free all resource in a osip_nist_t element.
@@ -188,7 +203,8 @@ extern "C"
  * @param state The actual state of the transaction.
  * @param transactionid The transaction id.
  */
-  osip_event_t *__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
+  osip_event_t *__osip_nist_need_timer_j_event (osip_nist_t * nist,
+						state_t state,
 						int transactionid);
 
 /**
@@ -197,8 +213,9 @@ extern "C"
  * @param tr The transaction.
  * @param resp The SIP response received.
  */
-  int __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t * tr,
-								osip_message_t * resp);
+  int
+    __osip_transaction_matching_response_osip_to_xict_17_1_3
+    (osip_transaction_t * tr, osip_message_t * resp);
 
 /**
  * Check if the request match a client transaction.
@@ -206,8 +223,9 @@ extern "C"
  * @param tr The transaction.
  * @param request The SIP request received.
  */
-  int __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr,
-							       osip_message_t * request);
+  int
+    __osip_transaction_matching_request_osip_to_xist_17_2_3
+    (osip_transaction_t * tr, osip_message_t * request);
 
 
 
@@ -306,13 +324,15 @@ extern "C"
  * @param osip The element to work on.
  * @param nict The transaction to add.
  */
-  int __osip_remove_nict_transaction (osip_t * osip, osip_transaction_t * nict);
+  int __osip_remove_nict_transaction (osip_t * osip,
+				      osip_transaction_t * nict);
 /**
  * Remove a nist transaction from the nist list of transaction.
  * @param osip The element to work on.
  * @param nist The transaction to add.
  */
-  int __osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist);
+  int __osip_remove_nist_transaction (osip_t * osip,
+				      osip_transaction_t * nist);
 
 /**
  * Allocate a sipevent.

@@ -82,13 +82,13 @@ extern "C"
   struct osip_message
   {
     /* Start-Line definition */
-    char        *sip_version;
+    char *sip_version;
     /* req */
-    osip_uri_t  *req_uri;
-    char        *sip_method;
+    osip_uri_t *req_uri;
+    char *sip_method;
     /* resp */
-    int         status_code;
-    char        *reason_phrase;
+    int status_code;
+    char *reason_phrase;
     /* End of Start-Line definition */
 
     osip_list_t *accepts;
@@ -417,23 +417,27 @@ extern "C"
  * @param generic_param The element to work on.
  * @param name the token name to set.
  */
-  void osip_generic_param_set_name (osip_generic_param_t * generic_param, char *name);
+  void osip_generic_param_set_name (osip_generic_param_t * generic_param,
+				    char *name);
 /**
  * Get the name of a generic parameter element.
  * @param generic_param The element to work on.
  */
-  char *osip_generic_param_get_name (const osip_generic_param_t * generic_param);
+  char *osip_generic_param_get_name (const osip_generic_param_t *
+				     generic_param);
 /**
  * Set the value of a generic parameter element.
  * @param generic_param The element to work on.
  * @param value the token name to set.
  */
-  void osip_generic_param_set_value (osip_generic_param_t * generic_param, char *value);
+  void osip_generic_param_set_value (osip_generic_param_t * generic_param,
+				     char *value);
 /**
  * Get the value of a generic parameter element.
  * @param generic_param The element to work on.
  */
-  char *osip_generic_param_get_value (const osip_generic_param_t * generic_param);
+  char *osip_generic_param_get_value (const osip_generic_param_t *
+				      generic_param);
 
 /** @} */
 

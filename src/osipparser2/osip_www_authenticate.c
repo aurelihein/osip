@@ -29,7 +29,9 @@
 int
 osip_www_authenticate_init (osip_www_authenticate_t ** dest)
 {
-  *dest = (osip_www_authenticate_t *) osip_malloc (sizeof (osip_www_authenticate_t));
+  *dest =
+    (osip_www_authenticate_t *)
+    osip_malloc (sizeof (osip_www_authenticate_t));
   if (*dest == NULL)
     return -1;
   (*dest)->auth_type = NULL;
@@ -54,7 +56,7 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
   osip_www_authenticate_t *www_authenticate;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   if (sip == NULL || sip->www_authenticates == NULL)
@@ -77,7 +79,7 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
 
 int
 __osip_quoted_string_set (const char *name, const char *str,
-		   char **result, const char **next)
+			  char **result, const char **next)
 {
   *next = str;
   if (*result != NULL)
@@ -177,7 +179,7 @@ __osip_quoted_string_set (const char *name, const char *str,
 
 int
 __osip_token_set (const char *name, const char *str, char **result,
-	   const char **next)
+		  const char **next)
 {
   const char *beg;
   const char *tmp;
@@ -254,7 +256,8 @@ __osip_token_set (const char *name, const char *str, char **result,
    verify many situations (extra SP....)
 */
 int
-osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
+osip_www_authenticate_parse (osip_www_authenticate_t * wwwa,
+			     const char *hvalue)
 {
   const char *space;
   const char *next = NULL;
@@ -328,7 +331,8 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
 	  space = next;
 	  parse_ok++;
 	}
-      if (__osip_quoted_string_set ("qop", space, &(wwwa->qop_options), &next))
+      if (__osip_quoted_string_set
+	  ("qop", space, &(wwwa->qop_options), &next))
 	return -1;
       if (next == NULL)
 	return 0;		/* end of header detected! */
@@ -375,7 +379,7 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
 /* returns null on error. */
 int
 osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
-			 osip_www_authenticate_t ** dest)
+				   osip_www_authenticate_t ** dest)
 {
   osip_www_authenticate_t *www_authenticate;
 
@@ -391,14 +395,15 @@ osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
 }
 
 char *
-osip_www_authenticate_get_auth_type (osip_www_authenticate_t * www_authenticate)
+osip_www_authenticate_get_auth_type (osip_www_authenticate_t *
+				     www_authenticate)
 {
   return www_authenticate->auth_type;
 }
 
 void
-osip_www_authenticate_set_auth_type (osip_www_authenticate_t * www_authenticate,
-			       char *auth_type)
+osip_www_authenticate_set_auth_type (osip_www_authenticate_t *
+				     www_authenticate, char *auth_type)
 {
   www_authenticate->auth_type = (char *) auth_type;
 }
@@ -410,7 +415,8 @@ osip_www_authenticate_get_realm (osip_www_authenticate_t * www_authenticate)
 }
 
 void
-osip_www_authenticate_set_realm (osip_www_authenticate_t * www_authenticate, char *realm)
+osip_www_authenticate_set_realm (osip_www_authenticate_t * www_authenticate,
+				 char *realm)
 {
   www_authenticate->realm = (char *) realm;
 }
@@ -423,7 +429,7 @@ osip_www_authenticate_get_domain (osip_www_authenticate_t * www_authenticate)
 
 void
 osip_www_authenticate_set_domain (osip_www_authenticate_t * www_authenticate,
-			    char *domain)
+				  char *domain)
 {
   www_authenticate->domain = (char *) domain;
 }
@@ -435,7 +441,8 @@ osip_www_authenticate_get_nonce (osip_www_authenticate_t * www_authenticate)
 }
 
 void
-osip_www_authenticate_set_nonce (osip_www_authenticate_t * www_authenticate, char *nonce)
+osip_www_authenticate_set_nonce (osip_www_authenticate_t * www_authenticate,
+				 char *nonce)
 {
   www_authenticate->nonce = (char *) nonce;
 }
@@ -447,7 +454,8 @@ osip_www_authenticate_get_stale (osip_www_authenticate_t * www_authenticate)
 }
 
 void
-osip_www_authenticate_set_stale (osip_www_authenticate_t * www_authenticate, char *stale)
+osip_www_authenticate_set_stale (osip_www_authenticate_t * www_authenticate,
+				 char *stale)
 {
   www_authenticate->stale = (char *) stale;
 }
@@ -460,33 +468,35 @@ osip_www_authenticate_get_opaque (osip_www_authenticate_t * www_authenticate)
 
 void
 osip_www_authenticate_set_opaque (osip_www_authenticate_t * www_authenticate,
-			    char *opaque)
+				  char *opaque)
 {
   www_authenticate->opaque = (char *) opaque;
 }
 
 char *
-osip_www_authenticate_get_algorithm (osip_www_authenticate_t * www_authenticate)
+osip_www_authenticate_get_algorithm (osip_www_authenticate_t *
+				     www_authenticate)
 {
   return www_authenticate->algorithm;
 }
 
 void
-osip_www_authenticate_set_algorithm (osip_www_authenticate_t * www_authenticate,
-			       char *algorithm)
+osip_www_authenticate_set_algorithm (osip_www_authenticate_t *
+				     www_authenticate, char *algorithm)
 {
   www_authenticate->algorithm = (char *) algorithm;
 }
 
 char *
-osip_www_authenticate_get_qop_options (osip_www_authenticate_t * www_authenticate)
+osip_www_authenticate_get_qop_options (osip_www_authenticate_t *
+				       www_authenticate)
 {
   return www_authenticate->qop_options;
 }
 
 void
-osip_www_authenticate_set_qop_options (osip_www_authenticate_t * www_authenticate,
-				 char *qop_options)
+osip_www_authenticate_set_qop_options (osip_www_authenticate_t *
+				       www_authenticate, char *qop_options)
 {
   www_authenticate->qop_options = (char *) qop_options;
 }
@@ -497,7 +507,8 @@ osip_www_authenticate_set_qop_options (osip_www_authenticate_t * www_authenticat
 /* INPUT : osip_www_authenticate_t *www_authenticate | www_authenticate header.  */
 /* returns null on error. */
 int
-osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa, char **dest)
+osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa,
+			      char **dest)
 {
   size_t len;
   char *tmp;
@@ -594,21 +605,21 @@ osip_www_authenticate_free (osip_www_authenticate_t * www_authenticate)
   if (www_authenticate == NULL)
     return;
 
-    osip_free (www_authenticate->auth_type);
-    osip_free (www_authenticate->realm);
-    osip_free (www_authenticate->domain);
+  osip_free (www_authenticate->auth_type);
+  osip_free (www_authenticate->realm);
+  osip_free (www_authenticate->domain);
   osip_free (www_authenticate->nonce);
-    osip_free (www_authenticate->opaque);
-    osip_free (www_authenticate->stale);
-    osip_free (www_authenticate->algorithm);
-    osip_free (www_authenticate->qop_options);
+  osip_free (www_authenticate->opaque);
+  osip_free (www_authenticate->stale);
+  osip_free (www_authenticate->algorithm);
+  osip_free (www_authenticate->qop_options);
 
   osip_free (www_authenticate);
 }
 
 int
 osip_www_authenticate_clone (const osip_www_authenticate_t * wwwa,
-			osip_www_authenticate_t ** dest)
+			     osip_www_authenticate_t ** dest)
 {
   int i;
   osip_www_authenticate_t *wa;

@@ -137,7 +137,8 @@ osip_uri_test_accessor_api (osip_uri_t * url)
 
     while (!osip_list_eol (url->url_headers, pos))
       {
-	u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+	u_header =
+	  (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
 	if (pos == 0)
 	  fprintf (stdout, "?%s|=|%s|", u_header->gname, u_header->gvalue);
 	else

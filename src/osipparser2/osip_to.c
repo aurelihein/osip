@@ -39,7 +39,7 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
 {
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   if (sip->to != NULL)

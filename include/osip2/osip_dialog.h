@@ -146,7 +146,8 @@ extern "C"
  * @param dialog The element to allocate.
  * @param response The response containing the informations.
  */
-  int osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response);
+  int osip_dialog_init_as_uac (osip_dialog_t ** dialog,
+			       osip_message_t * response);
 /**
  * Allocate a osip_dialog_t element as a UAC.
  * <UL><LI>This could be used to initiate dialog with a NOTIFY coming
@@ -155,7 +156,10 @@ extern "C"
  * @param next_request The response containing the informations.
  * @param local_cseq The local cseq
  */
-  int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog, osip_message_t *next_request, int local_cseq);
+  int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
+						   osip_message_t *
+						   next_request,
+						   int local_cseq);
 
 /**
  * Allocate a osip_dialog_t element as a UAS.
@@ -166,8 +170,9 @@ extern "C"
  * @param invite The INVITE request containing some informations.
  * @param response The response containing other informations.
  */
-  int osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
-			  osip_message_t * response);
+  int osip_dialog_init_as_uas (osip_dialog_t ** dialog,
+			       osip_message_t * invite,
+			       osip_message_t * response);
 /**
  * Free all resource in a osip_dialog_t element.
  * @param dialog The element to free.
@@ -190,28 +195,32 @@ extern "C"
  * @param dialog The element to work on.
  * @param invite The invite received.
  */
-  int osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog, osip_message_t * invite);
+  int osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
+					   osip_message_t * invite);
 /**
  * Update the CSeq (remote cseq) during a UAS transaction of a dialog.
  * NOTE: All INCOMING transactions MUST update the remote CSeq.
  * @param dialog The element to work on.
  * @param request The request received.
  */
-  int osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog, osip_message_t * request);
+  int osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
+					   osip_message_t * request);
 
 /**
  * Match a response received with a dialog.
  * @param dialog The element to work on.
  * @param response The response received.
  */
-  int osip_dialog_match_as_uac (osip_dialog_t * dialog, osip_message_t * response);
+  int osip_dialog_match_as_uac (osip_dialog_t * dialog,
+				osip_message_t * response);
 /**
  * Update the tag as UAC of a dialog?. (this could be needed if the 180
  * does not contains any tag, but the 200 contains one.
  * @param dialog The element to work on.
  * @param response The response received.
  */
-  int osip_dialog_update_tag_as_uac (osip_dialog_t * dialog, osip_message_t * response);
+  int osip_dialog_update_tag_as_uac (osip_dialog_t * dialog,
+				     osip_message_t * response);
 /**
  * Update the Route-Set as UAC of a dialog.
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
@@ -222,14 +231,16 @@ extern "C"
  * @param dialog The element to work on.
  * @param response The response received.
  */
-  int osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog, osip_message_t * response);
+  int osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
+					   osip_message_t * response);
 
 /**
  * Match a request (response sent??) received with a dialog.
  * @param dialog The element to work on.
  * @param request The request received.
  */
-  int osip_dialog_match_as_uas (osip_dialog_t * dialog, osip_message_t * request);
+  int osip_dialog_match_as_uas (osip_dialog_t * dialog,
+				osip_message_t * request);
 
 #ifndef DOXYGEN
   int osip_dialog_is_originator (osip_dialog_t * dialog);

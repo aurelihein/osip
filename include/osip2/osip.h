@@ -447,22 +447,22 @@ extern "C"
   {
     /* state machine is implied... */
 #ifdef NEW_TIMER
-    int            timer_a_length; /* A=T1, A=2xT1... (unreliable tr only)  */
+    int timer_a_length;		/* A=T1, A=2xT1... (unreliable tr only)  */
     struct timeval timer_a_start;
-    int            timer_b_length; /* B = 64* T1                            */
-    struct timeval timer_b_start;  /* fire when transaction timeouts        */
-    int            timer_d_length; /* D >= 32s for unreliable tr (or 0)     */
-    struct timeval timer_d_start;  /* should be equal to timer H            */
+    int timer_b_length;		/* B = 64* T1                            */
+    struct timeval timer_b_start;	/* fire when transaction timeouts        */
+    int timer_d_length;		/* D >= 32s for unreliable tr (or 0)     */
+    struct timeval timer_d_start;	/* should be equal to timer H            */
 #else
-    int timer_a_length;	   /* A=T1, A=2xT1... (unreliable transport only)  */
+    int timer_a_length;		/* A=T1, A=2xT1... (unreliable transport only)  */
     time_t timer_a_start;
-    int timer_b_length;	   /* B = 64* T1                                   */
-    time_t timer_b_start;  /* fire when transaction timeouts               */
-    int timer_d_length;    /* D >= 32s for unreliable transport (else = 0) */
-    time_t timer_d_start;  /* should be equal to timer H                   */
+    int timer_b_length;		/* B = 64* T1                                   */
+    time_t timer_b_start;	/* fire when transaction timeouts               */
+    int timer_d_length;		/* D >= 32s for unreliable transport (else = 0) */
+    time_t timer_d_start;	/* should be equal to timer H                   */
 #endif
-    char *destination;	   /* url used to send requests         */
-    int port;		   /* port of next hop                  */
+    char *destination;		/* url used to send requests         */
+    int port;			/* port of next hop                  */
 
   };
 
@@ -477,22 +477,22 @@ extern "C"
     /* state machine is implied... */
 
 #ifdef NEW_TIMER
-    int            timer_e_length; /* A=T1, A=2xT1... (unreliable tr. only) */
-    struct timeval timer_e_start;  /*  (else = -1) not active               */
-    int            timer_f_length; /* B = 64* T1                            */
-    struct timeval timer_f_start;  /* fire when transaction timeouts        */
-    int            timer_k_length; /* K = T4 (else = 0)                     */
+    int timer_e_length;		/* A=T1, A=2xT1... (unreliable tr. only) */
+    struct timeval timer_e_start;	/*  (else = -1) not active               */
+    int timer_f_length;		/* B = 64* T1                            */
+    struct timeval timer_f_start;	/* fire when transaction timeouts        */
+    int timer_k_length;		/* K = T4 (else = 0)                     */
     struct timeval timer_k_start;
 #else
-    int timer_e_length;    /* A=T1, A=2xT1... (unreliable transport only)  */
-    time_t timer_e_start;  /*  (else = -1) not active                      */
-    int timer_f_length;	   /* B = 64* T1                                   */
-    time_t timer_f_start;  /* fire when transaction timeouts               */
-    int timer_k_length;	   /* K = T4 (else = 0)                            */
+    int timer_e_length;		/* A=T1, A=2xT1... (unreliable transport only)  */
+    time_t timer_e_start;	/*  (else = -1) not active                      */
+    int timer_f_length;		/* B = 64* T1                                   */
+    time_t timer_f_start;	/* fire when transaction timeouts               */
+    int timer_k_length;		/* K = T4 (else = 0)                            */
     time_t timer_k_start;
 #endif
-    char *destination;	   /* url used to send requests         */
-    int port;		   /* port of next hop                  */
+    char *destination;		/* url used to send requests         */
+    int port;			/* port of next hop                  */
 
   };
 
@@ -505,19 +505,19 @@ extern "C"
   struct osip_ist
   {
 #ifdef NEW_TIMER
-    int            timer_g_length; /* G=MIN(T1*2,T2) for unreliable trans.  */
-    struct timeval timer_g_start;  /* 0 when reliable transport is used!    */
-    int            timer_h_length; /* H = 64* T1                            */
-    struct timeval timer_h_start;  /* fire when if no ACK is received       */
-    int            timer_i_length; /* I = T4 for unreliable transport (or 0)*/
-    struct timeval timer_i_start;  /* absorb all ACK                        */
+    int timer_g_length;		/* G=MIN(T1*2,T2) for unreliable trans.  */
+    struct timeval timer_g_start;	/* 0 when reliable transport is used!    */
+    int timer_h_length;		/* H = 64* T1                            */
+    struct timeval timer_h_start;	/* fire when if no ACK is received       */
+    int timer_i_length;		/* I = T4 for unreliable transport (or 0) */
+    struct timeval timer_i_start;	/* absorb all ACK                        */
 #else
-    int timer_g_length;   /* G=MIN(T1*2,T2) for unreliable transport    */
-    time_t timer_g_start; /* else = 0 when reliable transport is used!  */
-    int timer_h_length;	  /* H = 64* T1                                 */
-    time_t timer_h_start; /* fire when if no ACK is received            */
-    int timer_i_length;	  /* I = T4 for unreliable transport (else = 0) */
-    time_t timer_i_start; /* absorb all ACK                             */
+    int timer_g_length;		/* G=MIN(T1*2,T2) for unreliable transport    */
+    time_t timer_g_start;	/* else = 0 when reliable transport is used!  */
+    int timer_h_length;		/* H = 64* T1                                 */
+    time_t timer_h_start;	/* fire when if no ACK is received            */
+    int timer_i_length;		/* I = T4 for unreliable transport (else = 0) */
+    time_t timer_i_start;	/* absorb all ACK                             */
 #endif
   };
 
@@ -530,7 +530,7 @@ extern "C"
   struct osip_nist
   {
 #ifdef NEW_TIMER
-    int            timer_j_length; /* J = 64*T1 (else 0) */
+    int timer_j_length;		/* J = 64*T1 (else 0) */
     struct timeval timer_j_start;
 #else
     int timer_j_length;		/* J = 64*T1 (else 0) */
@@ -559,7 +559,7 @@ extern "C"
 
     osip_message_t *orig_request;	/* last request sent                 */
     osip_message_t *last_response;	/* last response received            */
-    osip_message_t *ack;			/* ack request sent                  */
+    osip_message_t *ack;	/* ack request sent                  */
 
     state_t state;		/* state of transaction              */
 
@@ -581,7 +581,8 @@ extern "C"
   };
 
 
-  typedef enum osip_message_callback_type {
+  typedef enum osip_message_callback_type
+  {
     OSIP_ICT_INVITE_SENT = 0,
     OSIP_ICT_INVITE_SENT_AGAIN,
     OSIP_ICT_ACK_SENT,
@@ -648,7 +649,8 @@ extern "C"
     OSIP_MESSAGE_CALLBACK_COUNT
   } osip_message_callback_type_t;
 
-  typedef enum osip_kill_callback_type {
+  typedef enum osip_kill_callback_type
+  {
     OSIP_ICT_KILL_TRANSACTION,
     OSIP_IST_KILL_TRANSACTION,
     OSIP_NICT_KILL_TRANSACTION,
@@ -657,7 +659,8 @@ extern "C"
     OSIP_KILL_CALLBACK_COUNT
   } osip_kill_callback_type_t;
 
-  typedef enum osip_transport_error_callback_type {
+  typedef enum osip_transport_error_callback_type
+  {
     OSIP_ICT_TRANSPORT_ERROR,
     OSIP_IST_TRANSPORT_ERROR,
     OSIP_NICT_TRANSPORT_ERROR,
@@ -666,10 +669,11 @@ extern "C"
     OSIP_TRANSPORT_ERROR_CALLBACK_COUNT
   } osip_transport_error_callback_type_t;
 
-  typedef void (* osip_message_cb_t) (int type, osip_transaction_t *, osip_message_t *);
-  typedef void (* osip_kill_transaction_cb_t) (int type, osip_transaction_t *);
-  typedef void (* osip_transport_error_cb_t) (int type, osip_transaction_t *,
-					      int error);
+  typedef void (*osip_message_cb_t) (int type, osip_transaction_t *,
+				     osip_message_t *);
+  typedef void (*osip_kill_transaction_cb_t) (int type, osip_transaction_t *);
+  typedef void (*osip_transport_error_cb_t) (int type, osip_transaction_t *,
+					     int error);
 
 
 #ifdef OSIP_RETRANSMIT_2XX
@@ -679,16 +683,16 @@ extern "C"
 
   struct ixt_t
   {
-    /* any ACK received that match this context will set counter to -1*/
+    /* any ACK received that match this context will set counter to -1 */
     struct osip_dialog *dialog;
-    osip_message_t *msg2xx;    /* copy of string to retransmit */
-    osip_message_t *ack;       /* useless for ist */
+    osip_message_t *msg2xx;	/* copy of string to retransmit */
+    osip_message_t *ack;	/* useless for ist */
     time_t start;
-    int interval;     /* between each retransmission, in ms */
+    int interval;		/* between each retransmission, in ms */
     char *dest;
     int port;
     int sock;
-    int counter;      /* start at 7 */
+    int counter;		/* start at 7 */
   };
 
 #endif
@@ -712,15 +716,17 @@ extern "C"
     osip_list_t *osip_ist_transactions;
     osip_list_t *osip_nict_transactions;
     osip_list_t *osip_nist_transactions;
-    
-    osip_list_t *ixt_retransmissions; /* for retransmission of 2xx & ACK for INVITE */
+
+    osip_list_t *ixt_retransmissions;	/* for retransmission of 2xx & ACK for INVITE */
 
     osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];
     osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT];
-    osip_transport_error_cb_t tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];
+    osip_transport_error_cb_t
+      tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];
 
     /* callbacks for sending messages */
-    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *, int, int);
+    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *,
+			    int, int);
   };
 
   int osip_set_message_callback (osip_t *, int type, osip_message_cb_t cb);
@@ -755,8 +761,9 @@ extern "C"
  * @param osip The global instance of oSIP.
  * @param request The SIP request that initiate the transaction.
  */
-  int osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_type,
-			     osip_t * osip, osip_message_t * request);
+  int osip_transaction_init (osip_transaction_t ** transaction,
+			     osip_fsm_type_t ctx_type, osip_t * osip,
+			     osip_message_t * request);
 /**
  * Free all resource in a osip_transaction_t element.
  * @param transaction The element to free.
@@ -780,7 +787,8 @@ extern "C"
  * @param destination The destination host.
  * @param port The destination port.
  */
-  int osip_ict_set_destination (osip_ict_t * ict, char *destination, int port);
+  int osip_ict_set_destination (osip_ict_t * ict, char *destination,
+				int port);
 
 /**
  * Set the host and port destination used for sending the SIP message.
@@ -791,14 +799,16 @@ extern "C"
  * @param destination The destination host.
  * @param port The destination port.
  */
-  int osip_nict_set_destination (osip_nict_t * nict, char *destination, int port);
+  int osip_nict_set_destination (osip_nict_t * nict, char *destination,
+				 int port);
 
 /**
  * Add a SIP event in the fifo of a osip_transaction_t element.
  * @param transaction The element to work on.
  * @param evt The event to add.
  */
-  int osip_transaction_add_event (osip_transaction_t * transaction, osip_event_t * evt);
+  int osip_transaction_add_event (osip_transaction_t * transaction,
+				  osip_event_t * evt);
 /**
  * Consume one osip_event_t element previously added in the fifo.
  * NOTE: This method MUST NEVER be called within another call
@@ -807,7 +817,8 @@ extern "C"
  * @param transaction The element to free.
  * @param evt The element to consume.
  */
-  int osip_transaction_execute (osip_transaction_t * transaction, osip_event_t * evt);
+  int osip_transaction_execute (osip_transaction_t * transaction,
+				osip_event_t * evt);
 /**
  * Set a pointer to your personal context associated with this transaction.
  * NOTE: this is a very useful method that allow you to avoid searching
@@ -820,7 +831,7 @@ extern "C"
  * @param instance The address of your context.
  */
   int osip_transaction_set_your_instance (osip_transaction_t * transaction,
-				     void *instance);
+					  void *instance);
 /**
  * Get a pointer to your personal context associated with this transaction.
  * @param transaction The element to work on.
@@ -834,7 +845,8 @@ extern "C"
  * @param ip The ip of host where to send initial request.
  * @param port The port where to send initial request.
  */
-  int osip_transaction_get_destination(osip_transaction_t * transaction, char **ip, int *port);
+  int osip_transaction_get_destination (osip_transaction_t * transaction,
+					char **ip, int *port);
 
 #ifndef DOXYGEN
 
@@ -844,14 +856,16 @@ extern "C"
  * @param transaction The element to work on.
  * @param sock The socket for incoming message.
  */
-  int osip_transaction_set_in_socket (osip_transaction_t * transaction, int sock);
+  int osip_transaction_set_in_socket (osip_transaction_t * transaction,
+				      int sock);
 /**
  * Set the socket for outgoing message.
  * NOTE: THIS HAS NEVER TESTED! Please send feedback.
  * @param transaction The element to work on.
  * @param sock The socket for outgoing message.
  */
-  int osip_transaction_set_out_socket (osip_transaction_t * transaction, int sock);
+  int osip_transaction_set_out_socket (osip_transaction_t * transaction,
+				       int sock);
 
 
 #if 0
@@ -865,7 +879,8 @@ extern "C"
  * @param to2 The new to header.
  * @param from2 The new from header.
  */
-  int callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2, osip_from_t * from2);
+  int callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2,
+		     osip_from_t * from2);
 
 #endif
 
@@ -937,9 +952,9 @@ extern "C"
  * @param osip The element to work on.
  * @param lower_tv The minimum timer when the application should wake up.
  */
-  void osip_timers_gettimeout(osip_t * osip, struct timeval *lower_tv);
+  void osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv);
 #ifdef WIN32
-  int gettimeofday(struct timeval *tp, void *tz);
+  int gettimeofday (struct timeval *tp, void *tz);
 #endif
 
 #endif
@@ -972,7 +987,7 @@ extern "C"
  */
   osip_transaction_t *osip_transaction_find (osip_list_t * transactions,
 					     osip_event_t * evt);
-  
+
 
 #ifndef DOXYGEN
 /**
@@ -983,7 +998,8 @@ extern "C"
  * @param evt The element representing the SIP MESSAGE.
  */
 #ifndef OSIP_MT
-  osip_transaction_t *osip_find_transaction (osip_t * osip, osip_event_t * evt);
+  osip_transaction_t *osip_find_transaction (osip_t * osip,
+					     osip_event_t * evt);
 #endif
 
   osip_transaction_t *__osip_find_transaction (osip_t * osip,
@@ -1004,7 +1020,8 @@ extern "C"
  * @param osip The element to work on.
  * @param evt The element representing the new SIP REQUEST.
  */
-  osip_transaction_t *osip_create_transaction (osip_t * osip, osip_event_t * evt);
+  osip_transaction_t *osip_create_transaction (osip_t * osip,
+					       osip_event_t * evt);
 
 /**
  * Create a sipevent from a SIP message string.
@@ -1015,7 +1032,7 @@ extern "C"
 
 #ifdef OSIP_RETRANSMIT_2XX
 
-  void osip_retransmissions_execute(osip_t *osip);
+  void osip_retransmissions_execute (osip_t * osip);
 
 /**
  * Start out of fsm 200 Ok retransmissions. This is usefull for user-agents.
@@ -1024,7 +1041,9 @@ extern "C"
  * @param msg200ok The 200 ok response.
  * @param sock The socket to be used to send the message. (optional).
  */
-  void osip_start_200ok_retransmissions(osip_t *osip, struct osip_dialog *dialog, osip_message_t *msg200ok, int sock);
+  void osip_start_200ok_retransmissions (osip_t * osip,
+					 struct osip_dialog *dialog,
+					 osip_message_t * msg200ok, int sock);
 
 /**
  * Start out of fsm ACK retransmissions. This is usefull for user-agents.
@@ -1035,14 +1054,17 @@ extern "C"
  * @param sock The destination port.
  * @param sock The socket to be used to send the message. (optional).
  */
-  void osip_start_ack_retransmissions(osip_t *osip, struct osip_dialog *dialog, osip_message_t *ack, char *dest, int port, int sock);
+  void osip_start_ack_retransmissions (osip_t * osip,
+				       struct osip_dialog *dialog,
+				       osip_message_t * ack, char *dest,
+				       int port, int sock);
 
 /**
  * Stop the out of fsm 200 Ok retransmissions matching an incoming ACK.
  * @param osip The osip_t structure.
  * @param ack  The ack that has just been received.
  */
-  void osip_stop_200ok_retransmissions(osip_t *osip, osip_message_t *ack);
+  void osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack);
 
 /**
  * Stop out of fsm retransmissions (ACK or 200 Ok) associated to a given dialog.
@@ -1051,7 +1073,8 @@ extern "C"
  * @param osip The osip_t structure
  * @param dialog The dialog.
  */
-  void osip_stop_retransmissions_from_dialog(osip_t *osip, struct osip_dialog *dialog);
+  void osip_stop_retransmissions_from_dialog (osip_t * osip,
+					      struct osip_dialog *dialog);
 
 #endif
 
@@ -1065,7 +1088,7 @@ extern "C"
  * Free all ressource in a sipevent.
  * @param event The event to free.
  */
-  void osip_event_free( osip_event_t *event );
+  void osip_event_free (osip_event_t * event);
 
 /**
  * Register the callback used to send SIP message.
