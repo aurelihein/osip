@@ -1,3 +1,6 @@
+libosip (0.8.9)
+	* smsg.h: fix max_forward to max_forwards.
+	
 libosip (0.8.8)
 	* windows: The windows contributions was wrong. Thread were killed
 	  instead of joined. I changed that...

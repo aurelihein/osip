@@ -2658,14 +2658,16 @@ void    msg_logresponse(sip_t *sip,char *fmt);
  * @param header The element to work on.
  * @param value the value of the new header.
  */
-#define msg_setmax_forward(header,value)     msg_setheader((sip_t *)header,(char *)"max-forward",value)
+#define msg_setmax_forward(header,value)     msg_setheader((sip_t *)header,(char *)"max-forwards",value)
+#define msg_setmax_forwards(header,value)     msg_setheader((sip_t *)header,(char *)"max-forwards",value)
 /**
  * Find a Max-Forward header.
  * @param header The element to work on.
  * @param pos The index of the header in the list of unknown header.
  * @param dest A pointer on the element found.
  */
-#define msg_getmax_forward(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"max-forward",pos,(header_t **)dest)
+#define msg_getmax_forward(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"max-forwards",pos,(header_t **)dest)
+#define msg_getmax_forwards(header,pos,dest)   msg_header_getbyname(( sip_t *)header,"max-forwards",pos,(header_t **)dest)
 /**
  * Allocate and Add a new Priority header.
  * @param header The element to work on.

@@ -158,13 +158,6 @@ list_remove(list_t *li,int pos) {
     
   ntmp = li->node;  /* exist because nb_elt>0 */
 
-  if ((pos == 0)&&( li->nb_elt > 1))
-    { /* special case */
-    li->node = (node_t *)ntmp->next;
-    li->nb_elt--;
-    sfree(ntmp);
-    return li->nb_elt;
-    }
   if ((pos == 0))
     { /* special case  */
     li->node = (node_t *)ntmp->next;
