@@ -1,5 +1,6 @@
 libosip2 (2.0.6)
-	$ Fix possible buffer overflow in uri.
+	* Fix a memory access in authentication headers.
+	* Fix possible buffer overflow in uri.
 	* Two memory bug fix in the parser.
 	* allow missing tag in To header of incoming request.
 	* reindentation of all code.

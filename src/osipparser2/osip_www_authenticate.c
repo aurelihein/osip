@@ -99,6 +99,9 @@ __osip_quoted_string_set (const char *name, const char *str,
       const char *quote2;
       const char *tmp;
       const char *hack = strchr (str, '=');
+      
+      if (hack == NULL)
+        return -1;
 
       while (' ' == *(hack - 1))	/* get rid of extra spaces */
 	hack--;
