@@ -23,6 +23,11 @@
 #ifndef _INTERNAL_H_
 #define _INTERNAL_H_
 
+#ifdef __BORLANDC__
+#define _timeb timeb
+#define _ftime ftime
+#endif
+
 #ifndef DOXYGEN
 
 /**
@@ -84,7 +89,7 @@ typedef pthread_mutex_t osip_mutex_t;
 #endif
 
 #ifdef __VXWORKS_OS__
-typedef
+typedef struct
 {
   int id;
 }
@@ -190,7 +195,11 @@ osip_sem_t;
 
 #if defined(__PSOS__) || defined(__VXWORKS_OS__)
 
-/* TODO */
+typedef struct osip_cond
+{
+  struct osip_sem *sem;
+} osip_cond_t;
+
 
 #else
 
