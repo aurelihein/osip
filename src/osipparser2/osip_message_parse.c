@@ -418,7 +418,7 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
   char *end;			/* end of a header */
   char *quote1;			/* first quote of a pair of quotes   */
   char *quote2;			/* second quuote of a pair of quotes */
-
+  int   hname_len;
 
   beg = hvalue;
   end = NULL;
@@ -433,15 +433,26 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
 
   comma = strchr (ptr, ',');
 
-
+  hname_len = strlen(hname);
   osip_tolower (hname);
 
-  if (comma == NULL || (strncmp (hname, "date", 4) == 0 && strlen (hname) == 4) || strncmp (hname, "organization", 12) == 0 || (strncmp (hname, "to", 2) == 0 && strlen (hname) == 2) || (strncmp (hname, "from", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
-      || strncmp (hname, "call-id", 7) == 0 || (strncmp (hname, "cseq", 4) == 0 && strlen (hname) == 4)	/* AMD: BUG fix */
-      || strncmp (hname, "subject", 7) == 0 || strncmp (hname, "user-agent", 10) == 0 || strncmp (hname, "server", 6) == 0 || strncmp (hname, "www-authenticate", 16) == 0	/* AMD: BUG fix */
-      || strncmp (hname, "authentication-info", 19) == 0 || strncmp (hname, "proxy-authenticate", 20) == 0 || strncmp (hname, "proxy-authorization", 19) == 0 || strncmp (hname, "proxy-authentication-info", 25) == 0	/* AMD: BUG fix */
-      || strncmp (hname, "expires", 7) == 0
-      || strncmp (hname, "authorization", 13) == 0)
+  if (comma == NULL
+      || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
+      || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
+      || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
+      || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
+      || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
+      || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
+      || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
+      || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
+      || (hname_len == 10 && strncmp (hname, "user-agent", 10) == 0)
+      || (hname_len == 16 && strncmp (hname, "www-authenticate", 16) == 0)
+      || (hname_len == 19 && strncmp (hname, "authentication-info", 19) == 0)
+      || (hname_len == 18 && strncmp (hname, "proxy-authenticate", 18) == 0)
+      || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
+      || (hname_len == 25 && strncmp (hname, "proxy-authentication-info", 25) == 0)
+      || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
+      || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
     /* or hname is a TEXT-UTF8-TRIM and may     */
