@@ -134,7 +134,6 @@ extern "C"
     state_t state;		/* DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
   };
 
-
 /**
  * Allocate a osip_dialog_t element as a UAC.
  * <UL><LI>NOTE1: Only INVITE transactions can create a dialog.</LI>

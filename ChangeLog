@@ -1,3 +1,7 @@
+libosip2 (2.0.1)
+	* add optionnal retransmission of 2xx and ACK for INVITE capabilities.
+	* fix bug on exit for WIN32.
+
 libosip2 (2.0.0)
 	* initial release of libosip2
 	

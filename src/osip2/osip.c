@@ -30,6 +30,14 @@ static struct osip_mutex *nict_fastmutex;
 static struct osip_mutex *nist_fastmutex;
 #endif
 
+#ifdef OSIP_RETRANSMIT_2XX
+
+#include <osip2/osip_dialog.h>
+#ifdef OSIP_MT
+static struct osip_mutex *ixt_fastmutex;
+#endif
+
+#endif
 
 int
 __osip_global_init ()
@@ -52,6 +60,11 @@ __osip_global_init ()
   ist_fastmutex = osip_mutex_init ();
   nict_fastmutex = osip_mutex_init ();
   nist_fastmutex = osip_mutex_init ();
+
+#ifdef OSIP_RETRANSMIT_2XX
+  ixt_fastmutex = osip_mutex_init ();
+#endif
+
 #endif
   return 0;
 }
@@ -69,8 +82,237 @@ __osip_global_free ()
   osip_mutex_destroy (ist_fastmutex);
   osip_mutex_destroy (nict_fastmutex);
   osip_mutex_destroy (nist_fastmutex);
+
+#ifdef OSIP_RETRANSMIT_2XX
+  osip_mutex_destroy (ixt_fastmutex);
+#endif
 #endif
 }
+
+#ifdef OSIP_RETRANSMIT_2XX
+
+int osip_ixt_lock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return osip_mutex_lock (ixt_fastmutex);
+#else
+  return 0;
+#endif
+}
+
+int osip_ixt_unlock(osip_t *osip)
+{
+#ifdef OSIP_MT
+  return osip_mutex_unlock (ixt_fastmutex);
+#else
+  return 0;
+#endif
+}
+
+/* these are for transactions that would need retransmission not handled by state machines */
+void osip_add_ixt(osip_t *osip, ixt_t * ixt)
+{
+  /* ajout dans la liste de osip_t->ixt */
+  osip_ixt_lock(osip);
+  osip_list_add(osip->ixt_retransmissions,(void*)ixt,0);
+  osip_ixt_unlock(osip);  
+}
+
+void osip_remove_ixt(osip_t *osip, ixt_t * ixt)
+{
+  int i;
+  int found=0;
+  ixt_t *tmp;
+  /* ajout dans la liste de osip_t->ixt */
+  osip_ixt_lock(osip);
+  for(i=0;!osip_list_eol(osip->ixt_retransmissions,i);i++)
+    {
+      tmp= (ixt_t*)osip_list_get(osip->ixt_retransmissions,i);
+      if (tmp==ixt)
+	{
+	  osip_list_remove(osip->ixt_retransmissions,i);
+	  found=1;
+	  break;
+	}
+    }
+  osip_ixt_unlock(osip);
+}
+
+
+void response_get_destination(osip_message_t *response, char **address, int *portnum)
+{
+  osip_via_t *via;
+  char *host=NULL;
+  int port=0;
+  
+  via = (osip_via_t *) osip_list_get (response->vias, 0);
+  if (via)
+    {
+      osip_generic_param_t *maddr;
+      osip_generic_param_t *received;
+      osip_generic_param_t *rport;
+      osip_via_param_get_byname (via, "maddr", &maddr);
+      osip_via_param_get_byname (via, "received", &received);
+      osip_via_param_get_byname (via, "rport", &rport);
+      /* 1: user should not use the provided information
+	 (host and port) if they are using a reliable
+	 transport. Instead, they should use the already
+	 open socket attached to this transaction. */
+      /* 2: check maddr and multicast usage */
+      if (maddr != NULL)
+	host = maddr->gvalue;
+      /* we should check if this is a multicast address and use
+	 set the "ttl" in this case. (this must be done in the
+	 UDP message (not at the SIP layer) */
+      else if (received != NULL)
+	host = received->gvalue;
+      else
+	host = via->host;
+ 
+      if (rport == NULL || rport->gvalue == NULL)
+	{
+	  if (via->port != NULL)
+	    port = osip_atoi (via->port);
+	  else
+	    port = 5060;
+	}
+      else
+	port = osip_atoi (rport->gvalue);
+    }
+  *portnum=port;
+  if (host!=NULL) *address=osip_strdup(host);
+  else *address=NULL;
+}
+
+
+int ixt_init(ixt_t **ixt)
+{
+  ixt_t *pixt;
+  *ixt= pixt= (ixt_t*)osip_malloc(sizeof(ixt_t));
+  pixt->dialog=NULL;
+  pixt->msg2xx=NULL;
+  pixt->ack=NULL;
+  pixt->start=time(NULL);
+  pixt->interval=500;
+  pixt->counter=7;
+  pixt->dest=NULL;
+  pixt->port=5060;
+  pixt->sock=-1;
+  return 0;
+}
+
+void ixt_free(ixt_t *ixt)
+{
+  osip_message_free(ixt->ack);
+  osip_message_free(ixt->msg2xx);
+  osip_free(ixt->dest);
+  osip_free(ixt);
+}
+
+/* usefull for UAs */
+void osip_start_200ok_retransmissions(osip_t *osip, osip_dialog_t *dialog, osip_message_t *msg200ok, int sock)
+{
+  ixt_t *ixt;
+  ixt_init(&ixt);
+  ixt->dialog=dialog;
+  osip_message_clone(msg200ok,&ixt->msg2xx);
+  ixt->sock=sock;
+  response_get_destination(msg200ok,&ixt->dest,&ixt->port);
+  osip_add_ixt(osip,ixt);
+}
+
+void osip_start_ack_retransmissions(osip_t *osip, osip_dialog_t *dialog, osip_message_t *ack, char *dest, int port, int sock)
+{
+  int i;
+  ixt_t *ixt;
+  i = ixt_init(&ixt);
+  if (i!=0)
+    return;
+  ixt->dialog=dialog;
+  osip_message_clone(ack,&ixt->ack);
+  ixt->dest=osip_strdup(dest);
+  ixt->port=port;
+  ixt->sock=sock;
+  osip_add_ixt(osip,ixt);
+}
+
+/* we stop the 200ok when receiving the corresponding ack */
+void osip_stop_200ok_retransmissions(osip_t *osip, osip_message_t *ack)
+{
+  int i;
+  ixt_t *ixt;
+  osip_ixt_lock(osip);
+  for (i=0;!osip_list_eol(osip->ixt_retransmissions,i);i++)
+    {
+      ixt = (ixt_t*)osip_list_get(osip->ixt_retransmissions,i);
+      if (osip_dialog_match_as_uas(ixt->dialog, ack)==0)
+	{
+	  osip_list_remove(osip->ixt_retransmissions,i);
+	  ixt_free(ixt);
+	  break;
+	}
+    }
+  osip_ixt_unlock(osip);
+}
+
+/* when a dialog is destroyed by the application,
+   it is safer to remove all ixt that are related to it */
+void osip_stop_retransmissions_from_dialog(osip_t *osip, osip_dialog_t *dialog)
+{
+  int i;
+  ixt_t *ixt;
+  osip_ixt_lock(osip);
+  for (i=0;!osip_list_eol(osip->ixt_retransmissions,i);i++)
+    {
+      ixt = (ixt_t*)osip_list_get(osip->ixt_retransmissions,i);
+      if (ixt->dialog==dialog)
+	{
+	  osip_list_remove(osip->ixt_retransmissions,i);
+	  ixt_free(ixt);
+	  i--;
+	}
+    }
+  osip_ixt_unlock(osip);
+}
+
+void ixt_retransmit(osip_t *osip, ixt_t *ixt, time_t current)
+{
+  if ( (current-ixt->start)*1000 > ixt->interval){
+    ixt->interval=ixt->interval*2;
+    ixt->start=current;
+    if (ixt->ack!=NULL)
+      osip->cb_send_message (NULL, ixt->ack,
+			     ixt->dest,ixt->port, ixt->sock);
+    else if (ixt->msg2xx!=NULL)
+      osip->cb_send_message (NULL, ixt->msg2xx,
+			     ixt->dest,ixt->port, ixt->sock);
+    ixt->counter--;
+  }
+}
+
+void osip_retransmissions_execute(osip_t *osip)
+{
+  int i;
+  time_t current;
+  ixt_t *ixt;
+  current=time(NULL);
+  osip_ixt_lock(osip);
+  for (i=0;!osip_list_eol(osip->ixt_retransmissions, i);i++)
+    {
+      ixt = (ixt_t*)osip_list_get(osip->ixt_retransmissions, i);
+      ixt_retransmit(osip, ixt, current);
+      if (ixt->counter==0)
+	{
+	  /* remove it */
+	  osip_list_remove(osip->ixt_retransmissions, i);
+	  ixt_free(ixt);
+	  i--;
+	}
+    }
+  osip_ixt_unlock(osip);
+}
+
+#endif
 
 int
 osip_ict_lock (osip_t * osip)
@@ -789,6 +1031,13 @@ osip_init (osip_t ** osip)
   (*osip)->osip_nist_transactions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*osip)->osip_nist_transactions);
 
+#ifdef OSIP_RETRANSMIT_2XX
+  (*osip)->ixt_retransmissions = (osip_list_t *) osip_malloc(sizeof (osip_list_t));
+  osip_list_init ((*osip)->ixt_retransmissions);
+#else
+  (*osip)->ixt_retransmissions = NULL;
+#endif
+
   return 0;
 }
 
@@ -799,6 +1048,11 @@ osip_release (osip_t * osip)
   osip_free (osip->osip_ist_transactions);
   osip_free (osip->osip_nict_transactions);
   osip_free (osip->osip_nist_transactions);
+
+#ifdef OSIP_RETRANSMIT_2XX
+  osip_free (osip->ixt_retransmissions);
+#endif
+
   osip_free (osip);
   decrease_ref_count ();
 }

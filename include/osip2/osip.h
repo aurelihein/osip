@@ -647,6 +647,27 @@ extern "C"
 					      int error);
 
 
+#ifdef OSIP_RETRANSMIT_2XX
+  struct osip_dialog;
+
+  typedef struct ixt_t ixt_t;
+
+  struct ixt_t
+  {
+    /* any ACK received that match this context will set counter to -1*/
+    struct osip_dialog *dialog;
+    osip_message_t *msg2xx;    /* copy of string to retransmit */
+    osip_message_t *ack;       /* useless for ist */
+    time_t start;
+    int interval;     /* between each retransmission, in ms */
+    char *dest;
+    int port;
+    int sock;
+    int counter;      /* start at 7 */
+  };
+
+#endif
+
 /**
  * Structure for osip handling.
  * In order to use osip, you have to manage at least one global instance
@@ -666,6 +687,8 @@ extern "C"
     osip_list_t *osip_ist_transactions;
     osip_list_t *osip_nict_transactions;
     osip_list_t *osip_nist_transactions;
+    
+    osip_list_t *ixt_retransmissions; /* for retransmission of 2xx & ACK for INVITE */
 
     osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];
     osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT];
@@ -948,6 +971,49 @@ extern "C"
  * @param buf The SIP message as a string.
  */
   osip_event_t *osip_parse (char *buf);
+
+
+#ifdef OSIP_RETRANSMIT_2XX
+
+  void osip_retransmissions_execute(osip_t *osip);
+
+/**
+ * Start out of fsm 200 Ok retransmissions. This is usefull for user-agents.
+ * @param osip The osip_t structure.
+ * @param dialog The dialog the 200 Ok is part of.
+ * @param msg200ok The 200 ok response.
+ * @param sock The socket to be used to send the message. (optional).
+ */
+  void osip_start_200ok_retransmissions(osip_t *osip, struct osip_dialog *dialog, osip_message_t *msg200ok, int sock);
+
+/**
+ * Start out of fsm ACK retransmissions. This is usefull for user-agents.
+ * @param osip The osip_t structure.
+ * @param dialog The dialog the ACK is part of.
+ * @param ack The ACK that has just been sent in response to a 200 Ok.
+ * @param dest The destination host.
+ * @param sock The destination port.
+ * @param sock The socket to be used to send the message. (optional).
+ */
+  void osip_start_ack_retransmissions(osip_t *osip, struct osip_dialog *dialog, osip_message_t *ack, char *dest, int port, int sock);
+
+/**
+ * Stop the out of fsm 200 Ok retransmissions matching an incoming ACK.
+ * @param osip The osip_t structure.
+ * @param ack  The ack that has just been received.
+ */
+  void osip_stop_200ok_retransmissions(osip_t *osip, osip_message_t *ack);
+
+/**
+ * Stop out of fsm retransmissions (ACK or 200 Ok) associated to a given dialog.
+ * This function must be called before freeing a dialog if out of fsm retransmissions
+ * have been scheduled.
+ * @param osip The osip_t structure
+ * @param dialog The dialog.
+ */
+  void osip_stop_retransmissions_from_dialog(osip_t *osip, struct osip_dialog *dialog);
+
+#endif
 
 /**
  * Allocate a sipevent (we know this message is an OUTGOING SIP message).
