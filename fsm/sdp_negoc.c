@@ -840,10 +840,28 @@ sdp_context_execute_negociation (sdp_context_t * context)
 
           m_lines_that_match++;
           sfree (med->m_port);
-          if (config->fcn_get_audio_port != NULL)
-            med->m_port = config->fcn_get_audio_port (context, i);
-          else
-            med->m_port = sgetcopy ("0");       /* should never happen */
+	  /* AMD: use the correct fcn_get_xxx_port method: */
+	  if (0 == strcmp (med->m_media, "audio"))
+	    {
+	      if (config->fcn_get_audio_port != NULL)
+		med->m_port = config->fcn_get_audio_port (context, i);
+	      else
+		med->m_port = sgetcopy ("0");  /* should never happen */
+	    }
+	  else if (0 == strcmp (med->m_media, "video"))
+	    {
+	      if (config->fcn_get_video_port != NULL)
+		med->m_port = config->fcn_get_video_port (context, i);
+	      else
+		med->m_port = sgetcopy ("0");  /* should never happen */
+	    }
+	  else
+	    {
+	      if (config->fcn_get_other_port != NULL)
+		med->m_port = config->fcn_get_other_port (context, i);
+	      else
+		med->m_port = sgetcopy ("0");  /* should never happen */
+	    }
         }
       i++;
     }
@@ -947,7 +965,7 @@ sdp_build_offer (sdp_context_t * con, sdp_t ** sdp, char *audio_port,
 
       while (!list_eol (config->video_codec, pos))
         {
-          my = (payload_t *) list_get (config->audio_codec, pos);
+          my = (payload_t *) list_get (config->video_codec, pos);
           sdp_m_payload_add (*sdp, media_line, sgetcopy (my->payload));
           if (my->a_rtpmap != NULL)
             sdp_a_attribute_add (*sdp, media_line, sgetcopy ("rtpmap"),

@@ -39,6 +39,7 @@ typedef struct _ua_context_t
   /* only one audio port is allowed at this time.. In the case, we
      receive more than one m audio line, this may fail... */
   char *m_audio_port;           /* audio port to be used for this session */
+  char *m_video_port;           /* audio port to be used for this session */
 
 }
 ua_context_t;
@@ -56,8 +57,8 @@ ua_sdp_accept_audio_codec (sdp_context_t * context,
   if (0 != audio_qty)
     return -1;
 
-  if (0 == strncmp (payload, "0", 1) || 0 == strncmp (payload, "3", 1) ||
-      0 == strncmp (payload, "7", 1) || 0 == strncmp (payload, "8", 1))
+  if (0 == strcmp (payload, "0") || 0 == strcmp (payload, "3") ||
+      0 == strcmp (payload, "7") || 0 == strcmp (payload, "8"))
     return 0;
   return -1;
 }
@@ -72,6 +73,8 @@ ua_sdp_accept_video_codec (sdp_context_t * context,
   if (0 != video_qty)
     return -1;
   /* ... */
+  if (0 == strcmp (payload, "31"))
+    return 0;
   return -1;
 }
 
@@ -82,6 +85,17 @@ ua_sdp_accept_other_codec (sdp_context_t * context,
 {
   /* ... */
   return -1;
+}
+
+char *
+ua_sdp_get_video_port (sdp_context_t * context, int pos_media)
+{
+  ua_context_t *ua_con;
+
+  ua_con = (ua_context_t *) context->mycontext;
+  return sgetcopy (ua_con->m_video_port);       /* this port should not be static ... */
+  /* also, this method should be called more than once... */
+  /* If there is more than one audio line, this may fail :( */
 }
 
 char *
@@ -126,6 +140,7 @@ main (int argc, char **argv)
   ua_context = (ua_context_t *) smalloc (sizeof (ua_context_t));
 
   ua_context->m_audio_port = sgetcopy ("20030");
+  ua_context->m_video_port = sgetcopy ("20040");
 
   i = sdp_config_init ();
   if (i != 0)
@@ -164,10 +179,17 @@ main (int argc, char **argv)
                                           NULL, NULL, NULL,
                                           sgetcopy ("8 PCMA/8000"));
 
+  sdp_config_add_support_for_video_codec (sgetcopy ("31"),
+                                          NULL,
+                                          sgetcopy ("RTP/AVP"),
+                                          NULL, NULL, NULL,
+                                          NULL, NULL, sgetcopy ("31 H261/90000"));
+
   sdp_config_set_fcn_accept_audio_codec (&ua_sdp_accept_audio_codec);
   sdp_config_set_fcn_accept_video_codec (&ua_sdp_accept_video_codec);
   sdp_config_set_fcn_accept_other_codec (&ua_sdp_accept_other_codec);
   sdp_config_set_fcn_get_audio_port (&ua_sdp_get_audio_port);
+  sdp_config_set_fcn_get_video_port (&ua_sdp_get_video_port);
 
   i = 0;
   tmp = (char *) smalloc (500);
@@ -272,7 +294,9 @@ test_sdp_message (char *msg, int verbose)
               {
                 sdp_t *sdp;
 
-                sdp_build_offer (context, &sdp, "10020", "10020");
+                sdp_build_offer (context, &sdp,
+				 ua_context->m_audio_port,
+				 ua_context->m_video_port);
                 sdp_2char (sdp, &result);
                 fprintf (stdout, "Here is the offer:\n%s\n", result);
                 sfree (result);
