@@ -139,7 +139,7 @@ extern "C"
 /** @} */
 
 /**
- * @defgroup oSIP_MUTEX oSIP semaphore definitions
+ * @defgroup oSIP_MUTEX oSIP mutex definitions
  * @ingroup osip2_port
  * @{
  */
@@ -150,13 +150,13 @@ extern "C"
 #endif
 
 /**
- * Structure for referencing a semaphore element.
+ * Structure for referencing a mutex element.
  * @struct osip_mutex
  */
   struct osip_mutex;
 
 /**
- * Allocate and Initialise a semaphore.
+ * Allocate and Initialise a mutex.
  */
   struct osip_mutex *osip_mutex_init (void);
 /**
