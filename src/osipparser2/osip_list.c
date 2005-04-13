@@ -146,7 +146,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
   if (pos == li->nb_elt)
     {
       ntmp->next = (__node_t *) osip_malloc (sizeof (__node_t));
-      if (li->node == NULL) return -1; /* leave the list unchanged */
+      if (ntmp->next == NULL) return -1; /* leave the list unchanged */
       ntmp = (__node_t *) ntmp->next;
       ntmp->element = el;
       ntmp->next = NULL;
