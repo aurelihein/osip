@@ -249,6 +249,7 @@ osip_nict_timeout_f_event (osip_transaction_t * nict, osip_event_t * evt)
   nict->nict_context->timer_f_length = -1;
   nict->nict_context->timer_f_start.tv_sec = -1;
 
+  __osip_message_callback (OSIP_NICT_STATUS_TIMEOUT, nict, evt->sip);
   __osip_transaction_set_state (nict, NICT_TERMINATED);
   __osip_kill_transaction_callback (OSIP_NICT_KILL_TRANSACTION, nict);
 }

@@ -386,6 +386,9 @@ extern "C"
     OSIP_NIST_STATUS_6XX_SENT,              /**< 6XX FOR MESSAGE SENT */
     OSIP_NIST_STATUS_3456XX_SENT_AGAIN,     /**< RESPONSE RETRANSMITTED */
 
+    OSIP_ICT_STATUS_TIMEOUT,                /**< TIMER B EXPIRATION: NO REMOTE ANSWER  */
+    OSIP_NICT_STATUS_TIMEOUT,               /**< TIMER F EXPIRATION: NO REMOTE ANSWER  */
+
     OSIP_MESSAGE_CALLBACK_COUNT             /**< END OF ENUM */
   } osip_message_callback_type_t;
 
