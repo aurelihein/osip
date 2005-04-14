@@ -78,6 +78,17 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   /* for PROXY, the destination MUST be set by the application layer,
      this one may not be correct. */
   osip_message_get_route (invite, 0, &route);
+  if (route != NULL && route->url!=NULL)
+    {
+      osip_uri_param_t *lr_param;
+      osip_uri_uparam_get_byname(route->url, "lr", &lr_param);
+      if (lr_param==NULL)
+	{
+	  /* using uncompliant proxy: destination is the request-uri */
+	  route = NULL;
+	}
+    }
+
   if (route != NULL)
     {
       int port = 5060;
@@ -87,7 +98,15 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
       osip_ict_set_destination ((*ict), osip_strdup (route->url->host), port);
     }
   else
-    (*ict)->port = 5060;
+    {
+      int port = 5060;
+      
+      if (invite->req_uri->port != NULL)
+	port = osip_atoi (invite->req_uri->port);
+      osip_ict_set_destination ((*ict),
+				osip_strdup (invite->req_uri->host),
+				port);
+    }
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
   osip_gettimeofday (&(*ict)->timer_b_start, NULL);

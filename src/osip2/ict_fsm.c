@@ -347,6 +347,17 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
       if (ict->ict_context->destination == NULL)
 	{
 	  osip_message_get_route (ack, 0, &route);
+	  if (route != NULL && route->url!=NULL)
+	    {
+	      osip_uri_param_t *lr_param;
+	      osip_uri_uparam_get_byname(route->url, "lr", &lr_param);
+	      if (lr_param==NULL)
+		{
+		  /* using uncompliant proxy: destination is the request-uri */
+		  route = NULL;
+		}
+	    }
+
 	  if (route != NULL)
 	    {
 	      int port = 5060;
