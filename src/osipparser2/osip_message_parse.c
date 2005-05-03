@@ -27,8 +27,6 @@
 static void osip_util_replace_all_lws (char *sip_message);
 static int osip_message_set__header (osip_message_t * sip, const char *hname,
 				     const char *hvalue);
-static int msg_handle_multiple_values (osip_message_t * sip, char *hname,
-				       char *hvalue);
 static int msg_headers_parse (osip_message_t * sip,
 			      const char *start_of_header, const char **body);
 static int msg_osip_body_parse (osip_message_t * sip,
@@ -426,8 +424,9 @@ osip_message_set__header (osip_message_t * sip, const char *hname,
   return 0;
 }
 
-static int
-msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
+int
+osip_message_set_multiple_header (osip_message_t * sip, char *hname,
+				  char *hvalue)
 {
   int i;
   char *ptr;			/* current location of the search */
@@ -632,7 +631,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
       /* are separated by commas. But, a comma may be part of a   */
       /* quoted-string ("here, and there" is an example where the */
       /* comma is not a separator!) */
-      i = msg_handle_multiple_values (sip, hname, hvalue);
+      i = osip_message_set_multiple_header (sip, hname, hvalue);
 
       osip_free (hname);
       if (hvalue!=NULL) osip_free (hvalue);

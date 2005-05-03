@@ -448,6 +448,16 @@ extern "C"
  */
   int osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
 					 osip_www_authenticate_t ** dest);
+#ifndef DOXYGEN
+/**
+ * Allocate and Add multiple header (not defined in oSIP).
+ * @param sip The element to work on.
+ * @param hname The token name. NAME MUST BE DYNAMICLY ALLOCATED
+ * @param hvalue The token value. VALUE MUST BE DYNAMICLY ALLOCATED
+ */
+  int osip_message_set_multiple_header (osip_message_t * sip, char *hname,
+					char *hvalue);
+#endif
 /**
  * Allocate and Add an "unknown" header (not defined in oSIP).
  * @param sip The element to work on.
