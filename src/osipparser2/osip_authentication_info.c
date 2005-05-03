@@ -260,7 +260,7 @@ osip_authentication_info_set_qop_options (osip_authentication_info_t * authentic
 int
 osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char **dest)
 {
-  int len;
+  size_t len;
   char *tmp;
 
   *dest = NULL;

@@ -837,7 +837,7 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
 			   osip_uri_param_t ** url_param)
 {
   int pos = 0;
-  int pname_len;
+  size_t pname_len;
   osip_uri_param_t *u_param;
   *url_param = NULL;
   if (pname==NULL)
@@ -847,7 +847,7 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
     return -1;
   while (!osip_list_eol (params, pos))
     {
-      int len;
+      size_t len;
       u_param = (osip_uri_param_t *) osip_list_get (params, pos);
       len = strlen(u_param->gname);
       if (pname_len == len && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0)

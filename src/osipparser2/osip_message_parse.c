@@ -436,7 +436,7 @@ msg_handle_multiple_values (osip_message_t * sip, char *hname, char *hvalue)
   char *end;			/* end of a header */
   char *quote1;			/* first quote of a pair of quotes   */
   char *quote2;			/* second quuote of a pair of quotes */
-  int   hname_len;
+  size_t   hname_len;
 
   beg = hvalue;
   end = NULL;
