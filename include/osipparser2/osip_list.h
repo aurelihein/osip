@@ -70,6 +70,14 @@ extern "C"
  */
   typedef struct osip_list osip_list_t;
 
+/* added by bennewit@cs.tu-berlin.de */
+  typedef struct {
+    __node_t * actual;
+    __node_t ** prev;
+    osip_list_t * li;
+    int pos;
+  } osip_list_iterator_t;
+
 /**
  * Structure for referencing a list of elements.
  * @struct osip_list
@@ -81,6 +89,9 @@ extern "C"
     __node_t *node;     /**< Next node containing element  */
 
   };
+
+/* added by bennewit@cs.tu-berlin.de */
+#define osip_list_iterator_has_elem( iterator ) ( 0 != (iterator).actual && (iterator).pos < (iterator).li->nb_elt )
 
 /**
  * Initialise a osip_list_t element.
@@ -131,6 +142,12 @@ extern "C"
  */
   int osip_list_remove (osip_list_t * li, int pos);
 
+/* added by bennewit@cs.tu-berlin.de */
+  void * osip_list_get_first( osip_list_t * li, osip_list_iterator_t * iterator );
+/* added by bennewit@cs.tu-berlin.de */
+  void * osip_list_get_next( osip_list_iterator_t * iterator );
+/* added by bennewit@cs.tu-berlin.de */
+  void * osip_list_iterator_remove( osip_list_iterator_t * iterator );
 
 #ifdef __cplusplus
 }

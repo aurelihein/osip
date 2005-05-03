@@ -101,11 +101,6 @@ osip_list_add (osip_list_t * li, void *el, int pos)
 
   if (li == NULL) return -1;
 
-  if (pos == -1 || pos >= li->nb_elt)
-    {				/* insert at the end  */
-      pos = li->nb_elt;
-    }
-
   if (li->nb_elt == 0)
     {
 
@@ -115,6 +110,11 @@ osip_list_add (osip_list_t * li, void *el, int pos)
       li->node->next = NULL;
       li->nb_elt++;
       return li->nb_elt;
+    }
+
+  if (pos == -1 || pos >= li->nb_elt)
+    {				/* insert at the end  */
+      pos = li->nb_elt;
     }
 
   ntmp = li->node;		/* exist because nb_elt>0  */
@@ -194,6 +194,56 @@ osip_list_get (const osip_list_t * li, int pos)
       ntmp = (__node_t *) ntmp->next;
     }
   return ntmp->element;
+}
+
+/* added by bennewit@cs.tu-berlin.de */
+void * osip_list_get_first( osip_list_t * li, osip_list_iterator_t * iterator )
+{
+  if ( 0 >= li->nb_elt) {
+    iterator->actual = 0;
+    return 0;
+  }
+
+  iterator->actual = li->node;
+  iterator->prev = &li->node;
+  iterator->li = li;
+  iterator->pos = 0;
+
+  return li->node->element;
+}
+
+/* added by bennewit@cs.tu-berlin.de */
+void * osip_list_get_next( osip_list_iterator_t * iterator )
+{
+  iterator->prev = (__node_t**)&(iterator->actual->next);
+  iterator->actual = iterator->actual->next;
+  ++(iterator->pos);
+
+  if ( osip_list_iterator_has_elem( *iterator ) ) {
+    return iterator->actual->element;
+  }
+
+  iterator->actual = 0;
+  return 0;
+}
+
+/* added by bennewit@cs.tu-berlin.de */
+void * osip_list_iterator_remove( osip_list_iterator_t * iterator )
+{
+  if ( osip_list_iterator_has_elem( *iterator ) ) {
+    --(iterator->li->nb_elt);
+
+    *(iterator->prev) = iterator->actual->next;
+
+    osip_free( iterator->actual );
+    iterator->actual = *(iterator->prev);
+  }
+  
+  if ( osip_list_iterator_has_elem( *iterator ) ) {
+    return iterator->actual->element;
+  }
+
+  return 0;
 }
 
 /* return -1 if failed */
