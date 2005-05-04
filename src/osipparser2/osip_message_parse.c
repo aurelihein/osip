@@ -792,7 +792,10 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
       tmp = osip_malloc (end_of_body - start_of_body + 2);
       if (tmp == NULL)
-	return -1;
+	{
+	  osip_free (sep_boundary);
+	  return -1;
+	}
       memcpy (tmp, start_of_body, end_of_body - start_of_body);
       tmp[end_of_body - start_of_body]='\0';
       

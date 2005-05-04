@@ -1,5 +1,5 @@
 libosip2 (2.2.1)
-	* fix a potential mem leak in osip_content_type_init.
+	* fix a potential mem leak content_type and osip_message_parse.
 	* fix osip_body_clone method (add terminating NULL)
 	* fix for binary support when multipart is used.
 	* automatic check for reliable protocol SCTP and TLS.
