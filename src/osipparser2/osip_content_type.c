@@ -41,7 +41,7 @@ osip_content_type_init (osip_content_type_t ** content_type)
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*content_type)->gen_params == NULL)
     {
-      osip_free ((*content_type)->gen_params);
+      osip_free (*content_type);
       *content_type = NULL;
       return -1;
     }
