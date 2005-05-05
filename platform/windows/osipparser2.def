@@ -408,3 +408,5 @@ EXPORTS
      osip_message_get_authentication_info        @409
      osip_message_set_proxy_authentication_info  @410
      osip_message_get_proxy_authentication_info  @411
+     osip_list_iterator_remove   @412
+     osip_list_get_next          @413
