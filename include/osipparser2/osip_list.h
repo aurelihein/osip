@@ -91,7 +91,7 @@ extern "C"
   };
 
 /* added by bennewit@cs.tu-berlin.de */
-#define osip_list_iterator_has_elem( iterator ) ( 0 != (iterator).actual && (iterator).pos < (iterator).li->nb_elt )
+#define osip_list_iterator_has_elem( it ) ( 0 != (it).actual && (it).pos < (it).li->nb_elt )
 
 /**
  * Initialise a osip_list_t element.
@@ -143,11 +143,11 @@ extern "C"
   int osip_list_remove (osip_list_t * li, int pos);
 
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_get_first( osip_list_t * li, osip_list_iterator_t * iterator );
+  void * osip_list_get_first( osip_list_t * li, osip_list_iterator_t * it );
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_get_next( osip_list_iterator_t * iterator );
+  void * osip_list_get_next( osip_list_iterator_t * it );
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_iterator_remove( osip_list_iterator_t * iterator );
+  void * osip_list_iterator_remove( osip_list_iterator_t * it );
 
 #ifdef __cplusplus
 }
