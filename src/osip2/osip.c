@@ -1092,7 +1092,7 @@ osip_ict_execute (osip_t * osip)
   int len;
   int index = 0;
 
-  // list must be copied because osip_transaction_execute() may change it
+  /* list must be copied because osip_transaction_execute() may change it */
 #ifdef OSIP_MT
   osip_mutex_lock (ict_fastmutex);
 #endif
@@ -1144,7 +1144,7 @@ osip_ist_execute (osip_t * osip)
   int len;
   int index = 0;
 
-  // list must be copied because osip_transaction_execute() may change it
+  /* list must be copied because osip_transaction_execute() may change it */
 #ifdef OSIP_MT
   osip_mutex_lock (ist_fastmutex);
 #endif
@@ -1197,7 +1197,7 @@ osip_nict_execute (osip_t * osip)
   int len;
   int index = 0;
 
-  // list must be copied because osip_transaction_execute() may change it
+  /* list must be copied because osip_transaction_execute() may change it */
 #ifdef OSIP_MT
   osip_mutex_lock (nict_fastmutex);
 #endif
@@ -1249,7 +1249,7 @@ osip_nist_execute (osip_t * osip)
   int len;
   int index = 0;
 
-  // list must be copied because osip_transaction_execute() may change it
+  /* list must be copied because osip_transaction_execute() may change it */
 #ifdef OSIP_MT
   osip_mutex_lock (nist_fastmutex);
 #endif

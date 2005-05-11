@@ -652,7 +652,7 @@ int osip_rfc3264_prepare_answer(struct osip_rfc3264 *config,
 
   if (osip_list_size(remote_sdp->t_descrs)>0)
 
-#if (defined WIN32 || defined _WIN32_WCE)   
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
   _snprintf(local_sdp, 4096,
 	   "v=0\r\n\
 o=userX 20000001 20000001 IN IP4 TOREPLACE\r\n\
@@ -673,13 +673,13 @@ c=IN IP4 TOREPLACE\r\n");
       sdp_time_descr_t *td;
       td = (sdp_time_descr_t *) osip_list_get(remote_sdp->t_descrs, pos);
       if (td->t_start_time!=NULL && td->t_stop_time!=NULL)
-#if (defined WIN32 || defined _WIN32_WCE)   
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 	  _snprintf(tmp, 100, "t=%s %s\r\n", td->t_start_time, td->t_stop_time);
 #else
       snprintf(tmp, 100, "t=%s %s\r\n", td->t_start_time, td->t_stop_time);
 #endif
       else
-#if (defined WIN32 || defined _WIN32_WCE)        
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 	_snprintf(tmp, 100, "t=0 0\r\n");
 #else
 	snprintf(tmp, 100, "t=0 0\r\n");
@@ -720,7 +720,7 @@ c=IN IP4 TOREPLACE\r\n");
       char inactive='X';
       sdp_media_t *med;
 
-#if (defined WIN32 || defined _WIN32_WCE)   
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
       _snprintf(tmp2, 199, "\r\n");
 #else
       snprintf(tmp2, 199, "\r\n");
@@ -736,7 +736,7 @@ c=IN IP4 TOREPLACE\r\n");
 	    {
 	      if (0==osip_strncasecmp(attr->a_att_field, "sendonly", 8))
 		{
-#if (defined WIN32 || defined _WIN32_WCE)   
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 		  _snprintf(tmp2, 199, "\r\na=recvonly\r\n");
 #else
 		  snprintf(tmp2, 199, "\r\na=recvonly\r\n");
@@ -745,7 +745,7 @@ c=IN IP4 TOREPLACE\r\n");
 		}
 	      else if (0==osip_strncasecmp(attr->a_att_field, "recvonly", 8))
 		{
-#if (defined WIN32 || defined _WIN32_WCE) 
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 		  _snprintf(tmp2, 199, "\r\na=sendonly\r\n");
 #else
 		  snprintf(tmp2, 199, "\r\na=sendonly\r\n");
@@ -758,7 +758,7 @@ c=IN IP4 TOREPLACE\r\n");
 		}
 	      else if (0==osip_strncasecmp(attr->a_att_field, "inactive", 8))
 		{
-#if (defined WIN32 || defined _WIN32_WCE) 
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 		  _snprintf(tmp2, 199, "\r\na=inactive\r\n");
 #else
 		  snprintf(tmp2, 199, "\r\na=inactive\r\n");
@@ -772,7 +772,7 @@ c=IN IP4 TOREPLACE\r\n");
 
       if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port==NULL)
 	{
-#if (defined WIN32 || defined _WIN32_WCE) 
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 	_snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
 #else
 	snprintf(tmp, 199, "m=%s %c %s ", med->m_media, inactive, med->m_proto);
@@ -780,7 +780,7 @@ c=IN IP4 TOREPLACE\r\n");
 	}
       else if (med->m_media!=NULL && med->m_proto!=NULL && med->m_number_of_port!=NULL)
 	{
-#if (defined WIN32 || defined _WIN32_WCE) 
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 	  _snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);
 #else
 	  snprintf(tmp, 199, "m=%s %c %s/%s ", med->m_media, inactive, med->m_proto, med->m_number_of_port);

@@ -917,7 +917,7 @@ osip_message_fix_last_via_header (osip_message_t * request,
       if (rport->gvalue == NULL)
 	{
 	  rport->gvalue = (char *) osip_malloc (9);
-#if (defined WIN32 || defined _WIN32_WCE)
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
 	  _snprintf (rport->gvalue, 8, "%i", port);
 #else
 	  snprintf (rport->gvalue, 8, "%i", port);

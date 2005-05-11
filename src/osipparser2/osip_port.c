@@ -42,7 +42,14 @@
 #include <ctype.h>
 #endif
 
-#include <time.h>
+#if defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
+#	include <TimeMgr.h>
+#	include <SysUtils.h>
+#	include <SystemMgr.h>
+#	include <StringMgr.h>
+#else
+#	include <time.h>
+#endif
 
 #if defined(__VXWORKS_OS__)
 #include <selectLib.h>
@@ -52,6 +59,11 @@
 #include <fioLib.h>
 #include <string.h>
 
+#elif defined(__PALMOS__)
+#	if __PALMOS__ >= 0x06000000
+#		include <sys/time.h>
+#		include <SysThread.h>
+#	endif
 #elif (!defined(WIN32) && !defined(_WIN32_WCE))
 #include <sys/time.h>
 #elif defined(WIN32)
@@ -106,7 +118,16 @@ osip_fallback_random_number ()
   if (!random_seed_set)
     {
       unsigned int ticks;
-#ifdef WIN32
+#ifdef __PALMOS__
+#	if __PALMOS__ < 0x06000000
+      SysRandom((Int32)TimGetTicks());
+#	else
+      struct timeval tv;
+      gettimeofday (&tv, NULL);
+      srand (tv.tv_usec);
+      ticks = tv.tv_sec + tv.tv_usec;
+#	endif
+#elif defined(WIN32)
       LARGE_INTEGER lCount;
       QueryPerformanceCounter(&lCount);
       ticks = lCount.LowPart + lCount.HighPart;
@@ -228,7 +249,16 @@ __osip_sdp_append_string (char *string, size_t size, char *cur,
 void
 osip_usleep (int useconds)
 {
-#ifdef WIN32
+#if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
+	/* This bit will work for the Protein API, but not the Palm 68K API */
+	nsecs_t nanoseconds = useconds*1000;
+	SysThreadDelay(nanoseconds, P_ABSOLUTE_TIMEOUT);
+#elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
+	UInt32 stoptime = TimGetTicks() + (useconds / 1000000) * SysTicksPerSecond();
+	while (stoptime > TimGetTicks())
+		/* I wish there was some type of yield function here */
+		;	
+#elif defined(WIN32) 
   Sleep (useconds / 1000);
 #else
   struct timeval delay;
@@ -309,7 +339,9 @@ osip_strcasecmp (const char *s1, const char *s2)
     s2++;
   }
   return (tolower(*s1) - tolower(*s2));
-#elif (!defined WIN32 && !defined _WIN32_WCE)
+#elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
+  return StrCaselessCompare(s1, s2);
+#elif defined(__PALMOS__) || (!defined WIN32 && !defined _WIN32_WCE)
   return strcasecmp (s1, s2);
 #else
   return _stricmp (s1, s2);
@@ -330,7 +362,9 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
     s2++;
   }
   return tolower(*s1) - tolower(*s2);
-#elif (!defined WIN32 && !defined _WIN32_WCE)
+#elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
+  return StrNCaselessCompare(s1, s2, len);
+#elif defined(__PALMOS__) || (!defined WIN32 && !defined _WIN32_WCE)
   return strncasecmp (s1, s2, len);
 #else
   return _strnicmp (s1, s2, len);
