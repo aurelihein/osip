@@ -178,6 +178,9 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
       return -1;
     }
 
+  if (dest->status_code==0)
+    return -1;
+
   {
     const char *hp = reasonphrase;
 
