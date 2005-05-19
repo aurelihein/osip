@@ -279,6 +279,9 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char 
   if (ainfo->qop_options != NULL)
     len = len + strlen (ainfo->qop_options) + 6;
 
+  if (len == 0)
+    return -1;
+
   tmp = (char *) osip_malloc (len);
   if (tmp == NULL)
     return -1;
