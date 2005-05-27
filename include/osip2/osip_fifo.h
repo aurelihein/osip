@@ -77,7 +77,11 @@ extern "C"
 
 /**
  * Initialise a osip_fifo_t element.
- * NOTE: this element MUST be previously allocated.
+ * NOTE: this element MUST be previously allocated with
+ * osip_malloc(). The osip_free() call on the fifo is
+ * still automatically done by osip_fifo_free(). This
+ * also means you can't use a static osip_fifo_t variable
+ * if you want to use osip_fifo_free().
  * @param ff The element to initialise.
  */
   void osip_fifo_init (osip_fifo_t * ff);

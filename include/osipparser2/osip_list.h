@@ -95,7 +95,11 @@ extern "C"
 
 /**
  * Initialise a osip_list_t element.
- * NOTE: this element MUST be previously allocated.
+ * NOTE: this element MUST be previously allocated with
+ * osip_malloc(). The osip_free() call on the list is
+ * still automatically done by osip_list_free(). This
+ * also means you can't use a static osip_list_t variable
+ * if you want to use osip_list_free().
  * @param li The element to initialise.
  */
   int osip_list_init (osip_list_t * li);
