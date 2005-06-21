@@ -1000,7 +1000,7 @@ __osip_uri_unescape (char *string)
       if ('%' == in)
 	{
 	  /* encoded part */
-	  if (sscanf (ptr + 1, "%02X", &hex))
+	  if (sscanf (ptr + 1, "%02X", &hex) == 1)
 	    {
 	      in = (unsigned char) hex;
               if (*(ptr+2) &&
