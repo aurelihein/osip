@@ -917,7 +917,10 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 	  malloc_size = message - *dest + body_length + 100;
 	  *dest = osip_realloc (*dest, malloc_size);
 	  if (*dest == NULL)
-	    return -1;
+	    {
+	      osip_free (tmp); /* fixed 09/Jun/2005 */
+	      return -1;
+	    }
 	  start_of_bodies = *dest + offset_of_body;
 	  if (content_length_to_modify != NULL)
 	    content_length_to_modify = *dest + offset_content_length_to_modify;
