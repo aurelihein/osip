@@ -34,15 +34,7 @@ osip_www_authenticate_init (osip_www_authenticate_t ** dest)
     osip_malloc (sizeof (osip_www_authenticate_t));
   if (*dest == NULL)
     return -1;
-  (*dest)->auth_type = NULL;
-  (*dest)->realm = NULL;
-  (*dest)->domain = NULL;	/* optionnal */
-  (*dest)->nonce = NULL;
-  (*dest)->opaque = NULL;	/* optionnal */
-  (*dest)->stale = NULL;	/* optionnal */
-  (*dest)->algorithm = NULL;	/* optionnal */
-  (*dest)->qop_options = NULL;	/* optionnal (contains a list of qop-value) */
-  (*dest)->auth_param = NULL;
+  memset(*dest, 0, sizeof(osip_www_authenticate_t));
   return 0;
 }
 
@@ -630,19 +622,17 @@ osip_www_authenticate_clone (const osip_www_authenticate_t * wwwa,
     return -1;
   if (wwwa->auth_type == NULL)
     return -1;
-  if (wwwa->realm == NULL)
-    return -1;
-  if (wwwa->nonce == NULL)
-    return -1;
 
   i = osip_www_authenticate_init (&wa);
   if (i == -1)			/* allocation failed */
     return -1;
   wa->auth_type = osip_strdup (wwwa->auth_type);
-  wa->realm = osip_strdup (wwwa->realm);
+  if (wwwa->realm != NULL)
+    wa->realm = osip_strdup (wwwa->realm);
   if (wwwa->domain != NULL)
     wa->domain = osip_strdup (wwwa->domain);
-  wa->nonce = osip_strdup (wwwa->nonce);
+  if (wwwa->nonce != NULL)
+    wa->nonce = osip_strdup (wwwa->nonce);
   if (wwwa->opaque != NULL)
     wa->opaque = osip_strdup (wwwa->opaque);
   if (wwwa->stale != NULL)
