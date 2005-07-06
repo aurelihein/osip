@@ -507,8 +507,7 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa,
   char *tmp;
 
   *dest = NULL;
-  if ((wwwa == NULL) || (wwwa->auth_type == NULL) || (wwwa->realm == NULL)
-      || (wwwa->nonce == NULL))
+  if ((wwwa == NULL) || (wwwa->auth_type == NULL))
     return -1;
 
   len = strlen (wwwa->auth_type) + 1;
@@ -585,6 +584,14 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa,
       tmp = tmp + 6;
       osip_strncpy (tmp, wwwa->qop_options, strlen (wwwa->qop_options));
       tmp = tmp + strlen (tmp);
+    }
+
+  if (wwwa->realm == NULL)
+    {
+      /* remove comma */
+      len = strlen (wwwa->auth_type);
+      if ((*dest)[len] == ',')
+	(*dest)[len] = ' ';
     }
 
   return 0;
