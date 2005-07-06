@@ -47,9 +47,8 @@ osip_message_set_proxy_authentication_info (osip_message_t * sip, const char *hv
       osip_proxy_authentication_info_free (proxy_authentication_info);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
+
   osip_list_add (sip->proxy_authentication_infos, proxy_authentication_info, -1);
   return 0;
 }

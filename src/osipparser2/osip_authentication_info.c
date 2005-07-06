@@ -64,9 +64,8 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
       osip_authentication_info_free (authentication_info);
       return -1;
     }
-#ifdef USE_TMP_BUFFER
   sip->message_property = 2;
-#endif
+
   osip_list_add (sip->authentication_infos, authentication_info, -1);
   return 0;
 }
