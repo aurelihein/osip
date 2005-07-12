@@ -1,3 +1,13 @@
+libosip2 (2.2.1-1) unstable; urgency=low
+  * fix a potential mem leak content_type and osip_message_parse.
+  * fix osip_body_clone method (add terminating NULL)
+  * fix for binary support when multipart is used.
+  * automatic check for reliable protocol SCTP and TLS.
+  * avoid <winsock.h> inclusion so user can (and must) now include either
+    <winsock.h> or <winsock2.h> before including <osip/osip2.h>
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 12 Jul 2005 13:04:32 +0100
+
 libosip2 (2.2.0-1) unstable; urgency=low
   * remove #ifdef OSIP_RETRANSMIT_2XX to always compile it.
   * initialize remote_contact_uri when dialog is built with notify.
