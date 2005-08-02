@@ -449,6 +449,8 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
   }
 
   message = (char *) osip_malloc (SIP_MESSAGE_MAX_LENGTH);	/* ???? message could be > 4000  */
+  if (message==NULL)
+      return -1;
   *dest = message;
 
   /* add the first line of message */
