@@ -30,6 +30,7 @@ typedef struct ___osip_message_config_t
 {
   char *hname;
   int (*setheader) (osip_message_t *, const char *);
+  int i;
 }
 __osip_message_config_t;
 

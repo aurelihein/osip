@@ -622,7 +622,9 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
       length_br = strlen (b_origrequest->gvalue);
       length_br2 = strlen (b_request->gvalue);
       if (length_br != length_br2)
-	return -1;		/* can't be the same */
+	return -1;
+
+      /* can't be the same */
       if (0 == strncmp (b_origrequest->gvalue, "z9hG4bK", 7)
 	  && 0 == strncmp (b_request->gvalue, "z9hG4bK", 7))
 	{

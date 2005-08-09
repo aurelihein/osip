@@ -257,16 +257,16 @@ __osip_find_next_occurence (const char *str, const char *buf,
 static void
 osip_util_replace_all_lws (char *sip_message)
 {
-  const char *end_of_message;
+  /* const char *end_of_message; */
   char *tmp;
 
   if (sip_message == NULL)
     return;
 
-  end_of_message = sip_message + strlen (sip_message);
+  /* end_of_message = sip_message + strlen (sip_message); */
 
   tmp = sip_message;
-  for (; tmp < end_of_message; tmp++)
+  for (; tmp[0] != '\0'; tmp++)
     {
       if (('\0' == tmp[0])
 	  || ('\0' == tmp[1]) || ('\0' == tmp[2]) || ('\0' == tmp[3]))
