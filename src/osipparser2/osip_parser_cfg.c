@@ -29,7 +29,7 @@
 static dict *dct = NULL;
 static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
 
-#define HSIZE           30011
+#define HSIZE           33
 
 unsigned
 s_hash(const unsigned char *p);
@@ -54,7 +54,7 @@ parser_init ()
       int i = 0;
       dict_set_malloc(malloc);
       dct = hashtable_dict_new((dict_cmp_func)strcmp, (dict_hsh_func)s_hash,
-			       free, free, HSIZE);
+			       NULL, NULL, HSIZE);
 
 
       pconfig[i].hname = ACCEPT;
