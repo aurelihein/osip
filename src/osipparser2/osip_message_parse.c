@@ -502,9 +502,43 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 
       if ((quote1 == NULL) || (quote1 > comma))
 	{
+	  /* We must search for the next comma which is not
+	     within quotes! */
 	  end = comma;
-	  comma = strchr (comma + 1, ',');
-	  ptr = comma + 1;
+
+	  if (quote1 != NULL && quote1>comma)
+	    {
+	      /* comma may be within the quotes */
+	      /* ,<sip:usera@host.example.com>;methods=\"INVITE,BYE,OPTIONS,ACK,CANCEL\",<sip:userb@host.blah.com> */
+	      /* we want the next comma after the quotes */
+	      char *tmp_comma;
+	      char *tmp_quote1;
+	      char *tmp_quote2;
+	      tmp_quote1 = quote1;
+	      tmp_quote2 = quote2;
+	      tmp_comma = strchr (comma + 1, ',');
+	      while (1)
+		{
+		  if (tmp_comma<tmp_quote1)
+		    break; /* ok (before to quotes) */
+		  if (tmp_comma<tmp_quote2)
+		    {
+		      tmp_comma = strchr (tmp_quote2 + 1, ',');
+		    }
+		  tmp_quote1 = __osip_quote_find (tmp_quote2 + 1);
+		  if (tmp_quote1==NULL)
+		    break;
+		  tmp_quote2 = __osip_quote_find (tmp_quote1 + 1);
+		  if (tmp_quote2==NULL)
+		    break; /* probably a malformed message? */
+		}
+	      comma = tmp_comma; /* this one is not enclosed within quotes */
+	    }
+	  else
+	    comma = strchr (comma + 1, ',');
+	  if (comma!=NULL)
+	    ptr = comma + 1;
+
 	}
       else if ((quote1 < comma) && (quote2 < comma))
 	{			/* quotes are located before the comma, */
