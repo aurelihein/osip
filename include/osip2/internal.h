@@ -30,7 +30,7 @@
 
 #ifndef DOXYGEN
 
-#if !defined(__PALMOS__) && (defined(WIN32) || defined(_WIN32_WCE))
+#if !((defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL)))
 /* Struct timeval */
 struct timeval {
         long    tv_sec;         /* seconds */

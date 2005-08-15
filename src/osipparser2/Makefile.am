@@ -19,7 +19,7 @@ osip_content_type.c         osip_proxy_authenticate.c  osip_rfc3264.c         \
 osip_authentication_info.c  osip_proxy_authentication_info.c
 
 libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
- $(PARSER_LIB) $(EXTRA_LIB)
+ $(PARSER_LIB) $(EXTRA_LIB) -no-undefined
 
 
 INCLUDES = -I$(top_srcdir)/include
