@@ -29,6 +29,7 @@ osip_event_t *
 osip_parse (const char *buf, size_t length)
 {
   osip_event_t *se = __osip_event_new (UNKNOWN_EVT, 0);
+  if (se == NULL) return NULL;
   int i;
 
 #ifdef TEST_PARSER_SPEED
@@ -66,6 +67,10 @@ osip_parse (const char *buf, size_t length)
 #endif
   /* parse message and set up an event */
   i = osip_message_init (&(se->sip));
+  if (i != 0) {
+    osip_free(se);
+    return NULL;
+  }
   if (osip_message_parse (se->sip, buf, length) == -1)
     {
       OSIP_TRACE (osip_trace
