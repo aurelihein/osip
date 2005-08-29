@@ -178,11 +178,13 @@ osip_content_type_to_str (const osip_content_type_t * content_type,
     int pos = 0;
     osip_generic_param_t *u_param;
 
+#if 0
     if (!osip_list_eol (content_type->gen_params, pos))
       {				/* needed for cannonical form! (authentication issue of rfc2543) */
 	sprintf (tmp, " ");
 	tmp++;
       }
+#endif
     while (!osip_list_eol (content_type->gen_params, pos))
       {
 	size_t tmp_len;
@@ -196,14 +198,14 @@ osip_content_type_to_str (const osip_content_type_t * content_type,
 	    return -1;
 	  }
 	tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
-	  + strlen (u_param->gvalue);
+	  + strlen (u_param->gvalue) + 1;
 	if (len < tmp_len)
 	  {
 	    buf = osip_realloc (buf, tmp_len);
 	    len = tmp_len;
 	    tmp = buf + strlen (buf);
 	  }
-	sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+	sprintf (tmp, "; %s=%s", u_param->gname, u_param->gvalue);
 	tmp = tmp + strlen (tmp);
 	pos++;
       }
