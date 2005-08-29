@@ -28,9 +28,9 @@
 osip_event_t *
 osip_parse (const char *buf, size_t length)
 {
+  int i;
   osip_event_t *se = __osip_event_new (UNKNOWN_EVT, 0);
   if (se == NULL) return NULL;
-  int i;
 
 #ifdef TEST_PARSER_SPEED
   {
