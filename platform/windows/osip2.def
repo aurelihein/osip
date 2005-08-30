@@ -132,4 +132,4 @@ EXPORTS
      osip_stop_200ok_retransmissions @132
      osip_stop_retransmissions_from_dialog @133
      osip_gettimeofday @134
-
+     osip_cond_wait @135
