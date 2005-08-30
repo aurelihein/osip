@@ -260,7 +260,7 @@ osip_transaction_free (osip_transaction_t * transaction)
 
   if (i != 0)			/* yet removed ??? */
     {
-      OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_BUG, NULL,
+      OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO4, NULL,
 			      "transaction already removed from list %i!\n",
 			      transaction->transactionid));
     }
