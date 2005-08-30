@@ -133,6 +133,7 @@ osip_fallback_random_number ()
       ticks = lCount.LowPart + lCount.HighPart;
 #elif defined(_WIN32_WCE)
       ticks = GetTickCount();
+#elif defined(__PSOS__)
 #elif defined(__VXWORKS_OS__)
       struct timespec tp;
       clock_gettime(CLOCK_REALTIME, &tp);
@@ -332,7 +333,7 @@ osip_tolower (char *word)
 int
 osip_strcasecmp (const char *s1, const char *s2)
 {
-#if defined(__VXWORKS_OS__)
+#if defined(__VXWORKS_OS__) || defined( __PSOS__)
   while ( (*s1 != '\0') && (tolower(*s1) == tolower(*s2)) )
   {
     s1++;
@@ -351,7 +352,7 @@ osip_strcasecmp (const char *s1, const char *s2)
 int
 osip_strncasecmp (const char *s1, const char *s2, size_t len)
 {
-#if defined(__VXWORKS_OS__)
+#if defined(__VXWORKS_OS__) || defined( __PSOS__)
   if ( len == 0 ) return 0;
   while ( (len > 0) && (tolower(*s1) == tolower(*s2)) )
   {
@@ -961,6 +962,91 @@ int osip_snprintf( char* buf, int max, const char* fmt, ... )
   retval = osip_vsnprintf( buf, max, fmt, ap );
   va_end( ap );
   return retval;
+}
+
+#endif
+
+
+#if defined(__PSOS__)
+
+int osip_snprintf( char* buf, int max, const char* fmt, ... )
+{
+  static char buffer[1024];
+  int retval;
+  va_list ap;
+  buffer[0] = '\n';
+  va_start( ap, fmt );
+  vsprintf(&(buffer[strlen(buffer)]), fmt, ap );
+  va_end( ap );
+  retval = strlen(buffer);
+  memmove(buf,buffer,max);
+  if ( retval > max )
+    return -1;
+  return retval;
+}
+
+#endif
+
+#ifdef DEBUG_MEM
+
+/*
+  This is a debug facility for detecting memory leaks.
+  I recommend to use external tools such as mpatrol
+  when possible. On some fancy platform, you may not
+  have any usefull tools: in this case, use this code!
+ */
+
+void* _osip_malloc( size_t size, char* file, unsigned short line )
+{
+  void* mem;
+  mem = osip_malloc_func( size+20 );
+  if ( mem != NULL )
+  {
+    char* s;
+    memcpy( mem, &line, 2 );
+    for ( s = file + strlen(file); s != file; s-- )
+    {
+      if ( *s == '\\' || *s == '/' )
+      {
+        s++;
+        break;
+      }
+    }
+    strncpy( (char*)mem+2, s, 18 );
+    return (void*)((char*)mem+20);
+  }
+  return NULL;
+}
+
+void  _osip_free( void* ptr )
+{
+  if ( ptr != NULL )
+  {
+    osip_free_func( (char*)ptr-20 );
+  }
+}
+
+void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line )
+{
+  void* mem;
+  mem = osip_realloc_func( (char*)ptr-20, size+20 );
+  if ( mem != NULL )
+  {
+    char* s;
+    memcpy( mem, &line, 2 );
+    
+    for ( s = file + strlen(file); s != file; s-- )
+    {
+      if ( *s == '\\' || *s == '/' )
+      {
+        s++;
+        break;
+      }
+    }
+    strncpy( (char*)mem+2, s, 18 );
+    return (char*)mem+20;
+  }
+  return NULL;
 }
 
 #endif

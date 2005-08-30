@@ -133,7 +133,19 @@ int osip_snprintf(  char *buf, int max, const char *fmt, ...);
 
 #ifdef __PSOS__
 #define VA_START(a, f)  va_start(a, f)
+#include "pna.h"
+#include "stdlib.h"
+#include "time.h"
+#define timercmp(tvp, uvp, cmp) \
+        ((tvp)->tv_sec cmp (uvp)->tv_sec || \
+         (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
+#define snprintf  osip_snprintf
+#ifndef INT_MAX
+#define INT_MAX 0x7FFFFFFF
 #endif
+
+#endif
+
 
 #if __STDC__
 #  ifndef NOPROTOS
@@ -178,6 +190,25 @@ void osip_set_allocators(osip_malloc_func_t  *malloc_func,
                          osip_realloc_func_t *realloc_func, 
                          osip_free_func_t    *free_func);
 
+
+#ifdef DEBUG_MEM
+
+void* _osip_malloc( size_t size, char* file, unsigned short line );
+void  _osip_free( void* ptr );
+void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line );
+
+#ifndef osip_malloc
+#define osip_malloc(S) _osip_malloc(S,__FILE__,__LINE__)
+#endif
+#ifndef osip_realloc
+#define osip_realloc(P,S) _osip_realloc(P,S,__FILE__,__LINE__)
+#endif
+#ifndef osip_free
+#define osip_free(P) { if (P!=NULL) { _osip_free(P); } }
+#endif
+  
+#else
+
 #ifndef osip_malloc
 #define osip_malloc(S) (osip_malloc_func?osip_malloc_func(S):malloc(S))
 #endif
@@ -188,10 +219,14 @@ void osip_set_allocators(osip_malloc_func_t  *malloc_func,
 #define osip_free(P) { if (P!=NULL) { if (osip_free_func) osip_free_func(P); else free(P);} }
 #endif
 
+#endif
+
 #else
+
 void *osip_malloc(size_t size);
 void *osip_realloc(void *, size_t size);
 void osip_free(void *);
+
 #endif
 
 #ifdef WIN32
