@@ -276,6 +276,8 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
 void
 osip_uri_set_scheme (osip_uri_t * url, char *scheme)
 {
+  if (url == NULL)
+    return;
   url->scheme = scheme;
 }
 
@@ -290,6 +292,8 @@ osip_uri_get_scheme (osip_uri_t * url)
 void
 osip_uri_set_username (osip_uri_t * url, char *username)
 {
+  if (url == NULL)
+    return;
   url->username = username;
 }
 
@@ -304,6 +308,8 @@ osip_uri_get_username (osip_uri_t * url)
 void
 osip_uri_set_password (osip_uri_t * url, char *password)
 {
+  if (url == NULL)
+    return;
   url->password = password;
 }
 
@@ -318,6 +324,8 @@ osip_uri_get_password (osip_uri_t * url)
 void
 osip_uri_set_host (osip_uri_t * url, char *host)
 {
+  if (url == NULL)
+    return;
   url->host = host;
 }
 
@@ -332,6 +340,8 @@ osip_uri_get_host (osip_uri_t * url)
 void
 osip_uri_set_port (osip_uri_t * url, char *port)
 {
+  if (url == NULL)
+    return;
   url->port = port;
 }
 
