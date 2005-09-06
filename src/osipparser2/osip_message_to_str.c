@@ -424,7 +424,7 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
   malloc_size = SIP_MESSAGE_MAX_LENGTH;
 
   *dest = NULL;
-  if ((sip == NULL) || (sip->to == NULL) || (sip->from == NULL))
+  if ((sip == NULL))
     return -1;
 
   {

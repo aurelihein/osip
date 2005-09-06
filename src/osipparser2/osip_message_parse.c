@@ -616,6 +616,15 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 		       "End of header Not found\n"));
 	  return -1;		/* this is an error case!     */
 	}
+
+      /* the list of headers MUST always end with  */
+      /* CRLFCRLF (also CRCR and LFLF are allowed) */
+      if ((start_of_header[0] == '\r') || (start_of_header[0] == '\n'))
+	{
+	  *body = start_of_header;
+	  return 0;		/* end of header found        */
+	}
+
       if (end_of_header[0] == '\0')
 	{			/* final CRLF is missing */
 	  OSIP_TRACE (osip_trace
@@ -680,13 +689,6 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  return -1;
 	}
 
-      /* the list of headers MUST always end with  */
-      /* CRLFCRLF (also CRCR and LFLF are allowed) */
-      if ((end_of_header[0] == '\r') || (end_of_header[0] == '\n'))
-	{
-	  *body = end_of_header;
-	  return 0;		/* end of header found        */
-	}
       /* continue on the next header */
       start_of_header = end_of_header;
     }
