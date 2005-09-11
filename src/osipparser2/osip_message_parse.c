@@ -48,6 +48,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   dest->status_code = 0;
   dest->reason_phrase = NULL;
 
+  *headers = buf;
+
   /* The first token is the method name: */
   p2 = strchr (buf, ' ');
   if (p2 == NULL)
@@ -608,6 +610,14 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 
   for (;;)
     {
+      if (start_of_header[0] == '\0')
+	{			/* final CRLF is missing */
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		       "SIP message does not end with CRLFCRLF\n"));
+	  return 0;
+	}
+
       i = __osip_find_next_crlf (start_of_header, &end_of_header);
       if (i == -1)
 	{
@@ -625,13 +635,6 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  return 0;		/* end of header found        */
 	}
 
-      if (end_of_header[0] == '\0')
-	{			/* final CRLF is missing */
-	  OSIP_TRACE (osip_trace
-		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-		       "SIP message does not end with CRLFCRLF\n"));
-	  return -1;
-	}
       /* find the header name */
       colon_index = strchr (start_of_header, ':');
       if (colon_index == NULL)
@@ -861,8 +864,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 }
 
 /* osip_message_t *sip is filled while analysing buf */
-int
-osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
+static int
+_osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int sipfrag)
 {
   int i;
   const char *next_header_index;
@@ -882,7 +885,7 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
   osip_util_replace_all_lws (tmp);
   /* parse request or status line */
   i = __osip_message_startline_parse (sip, tmp, &next_header_index);
-  if (i == -1)
+  if (i == -1 && !sipfrag)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
@@ -930,6 +933,19 @@ osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
 
   return 0;
 }
+
+int
+osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
+{
+  return _osip_message_parse(sip, buf, length, 0);
+}
+
+int
+osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length)
+{
+  return _osip_message_parse(sip, buf, length, 1);
+}
+
 
 /* This method just add a received parameter in the Via
    as requested by rfc3261 */

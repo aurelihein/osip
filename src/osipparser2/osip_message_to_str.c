@@ -407,8 +407,9 @@ osip_message_force_update (osip_message_t * sip)
   return 0;
 }
 
-int
-osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
+static int
+_osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
+		     int sipfrag)
 {
   size_t malloc_size;
   size_t total_length = 0;
@@ -457,15 +458,23 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
   i = __osip_message_startline_to_str (sip, &tmp);
   if (i == -1)
     {
-      osip_free (*dest);
-      *dest = NULL;
-      return -1;
+      if (!sipfrag)
+	{
+	  osip_free (*dest);
+	  *dest = NULL;
+	  return -1;
+	}
+
+      /* A start-line isn't required for message/sipfrag parts. */
     }
-  osip_strncpy (message, tmp, strlen (tmp));
-  osip_free (tmp);
-  message = message + strlen (message);
-  osip_strncpy (message, CRLF, 2);
-  message = message + 2;
+  else
+    {
+      osip_strncpy (message, tmp, strlen (tmp));
+      osip_free (tmp);
+      message = message + strlen (message);
+      osip_strncpy (message, CRLF, 2);
+      message = message + 2;
+    }
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message, sip->vias,
@@ -978,4 +987,17 @@ osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
 	*message_length = total_length;
     }
   return 0;
+}
+
+int
+osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length)
+{
+  return _osip_message_to_str(sip, dest, message_length, 0);
+}
+
+int
+osip_message_to_str_sipfrag (osip_message_t * sip, char **dest,
+			     size_t *message_length)
+{
+  return _osip_message_to_str(sip, dest, message_length, 1);
 }

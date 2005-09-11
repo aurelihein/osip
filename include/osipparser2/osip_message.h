@@ -136,12 +136,27 @@ extern "C"
  */
   int osip_message_parse (osip_message_t * sip, const char *buf, size_t length);
 /**
+ * Parse a message/sipfrag part and store it in an osip_message_t element.
+ * @param sip The resulting element.
+ * @param buf The buffer to parse.
+ * @param length The length of the buffer to parse.
+ */
+  int osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length);
+/**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
  */
   int osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length);
+/**
+ * Get a string representation of a message/sipfrag part
+ * stored in an osip_message_t element.
+ * @param sip The element to work on.
+ * @param dest new allocated buffer returned.
+ * @param message_length The length of the returned buffer.
+ */
+  int osip_message_to_str_sipfrag (osip_message_t * sip, char **dest, size_t *message_length);
 /**
  * Clone a osip_message_t element.
  * @param sip The element to clone.
