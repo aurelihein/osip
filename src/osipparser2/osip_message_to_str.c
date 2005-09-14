@@ -835,6 +835,22 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
       message = *dest + size;
     }
 
+  if (sipfrag && osip_list_eol (sip->bodies, 0))
+    {
+      /* end of headers */
+      osip_strncpy (message, CRLF, 2);
+      message = message + 2;
+
+      /* same remark as at the beginning of the method */
+      sip->message_property = 1;
+      sip->message = osip_strdup (*dest);
+      sip->message_length = message - *dest;
+      if (message_length!=NULL)
+	*message_length = message - *dest;
+
+      return 0;			/* it's all done */
+    }
+
   osip_strncpy (message, "Content-Length: ", 16);
   message = message + strlen (message);
 
