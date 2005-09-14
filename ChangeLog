@@ -1,3 +1,9 @@
+libosip2 (2.2.2)
+	* improve sipfrag support.
+	* add NULL checks (uris...).
+	* add libdict support (hastable for parser).
+	* patch for PSOS support.
+	
 libosip2 (2.2.1)
 	* fix a potential mem leak content_type and osip_message_parse.
 	* fix osip_body_clone method (add terminating NULL)
