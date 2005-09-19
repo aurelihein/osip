@@ -407,11 +407,56 @@ osip_nist_unlock (osip_t * osip)
 #endif
 }
 
+#if defined(HAVE_DICT_DICT_H)
+#define HSIZE           200
+
+unsigned
+s_hash(const unsigned char *p);
+
+unsigned
+s_hash(const unsigned char *p)
+{
+        unsigned hash = 0;
+
+        while (*p) {
+                hash *= 31;
+                hash ^= *p++;
+        }
+        return hash;
+}
+#endif
+
 int
 __osip_add_ict (osip_t * osip, osip_transaction_t * ict)
 {
 #ifdef OSIP_MT
   osip_mutex_lock (ict_fastmutex);
+#endif
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (ict->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_insert(osip->osip_ict_hastable,
+		       b_request->gvalue, (void*)ict, FALSE);
+    else
+      rv = dict_insert(osip->osip_ict_hastable,
+		       b_request->gvalue, (void *)ict, FALSE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key inserted in ict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "already inserted `%s'\n", b_request->gvalue));
+      }
+  }
 #endif
   osip_list_add (osip->osip_ict_transactions, ict, -1);
 #ifdef OSIP_MT
@@ -426,6 +471,32 @@ __osip_add_ist (osip_t * osip, osip_transaction_t * ist)
 #ifdef OSIP_MT
   osip_mutex_lock (ist_fastmutex);
 #endif
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (ist->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_insert(osip->osip_ist_hastable,
+		       b_request->gvalue, (void*)ist, FALSE);
+    else
+      rv = dict_insert(osip->osip_ist_hastable,
+		       b_request->gvalue, (void *)ist, FALSE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key inserted in ist hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "already inserted `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
   osip_list_add (osip->osip_ist_transactions, ist, -1);
 #ifdef OSIP_MT
   osip_mutex_unlock (ist_fastmutex);
@@ -439,6 +510,32 @@ __osip_add_nict (osip_t * osip, osip_transaction_t * nict)
 #ifdef OSIP_MT
   osip_mutex_lock (nict_fastmutex);
 #endif
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (nict->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_insert(osip->osip_nict_hastable,
+		       b_request->gvalue, (void*)nict, FALSE);
+    else
+      rv = dict_insert(osip->osip_nict_hastable,
+		       b_request->gvalue, (void *)nict, FALSE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key inserted in nict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "already inserted `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
   osip_list_add (osip->osip_nict_transactions, nict, -1);
 #ifdef OSIP_MT
   osip_mutex_unlock (nict_fastmutex);
@@ -451,6 +548,32 @@ __osip_add_nist (osip_t * osip, osip_transaction_t * nist)
 {
 #ifdef OSIP_MT
   osip_mutex_lock (nist_fastmutex);
+#endif
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (nist->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_insert(osip->osip_nist_hastable,
+		       b_request->gvalue, (void*)nist, FALSE);
+    else
+      rv = dict_insert(osip->osip_nist_hastable,
+		       b_request->gvalue, (void *)nist, FALSE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key inserted in ict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "already inserted `%s'\n", b_request->gvalue));
+      }
+  }
 #endif
   osip_list_add (osip->osip_nist_transactions, nist, -1);
 #ifdef OSIP_MT
@@ -487,6 +610,31 @@ __osip_remove_ict_transaction (osip_t * osip, osip_transaction_t * ict)
 #ifdef OSIP_MT
   osip_mutex_lock (ict_fastmutex);
 #endif
+
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (ict->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_remove(osip->osip_ict_hastable,
+		       b_request->gvalue, TRUE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key deleted in ict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "key not removed `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
+
   tmp = (osip_transaction_t*)osip_list_get_first( osip->osip_ict_transactions, &iterator );
   while ( osip_list_iterator_has_elem( iterator ) )
     {
@@ -515,6 +663,31 @@ __osip_remove_ist_transaction (osip_t * osip, osip_transaction_t * ist)
 #ifdef OSIP_MT
   osip_mutex_lock (ist_fastmutex);
 #endif
+
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (ist->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_remove(osip->osip_ist_hastable,
+		       b_request->gvalue, TRUE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key deleted in ist hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "key not removed `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
+
   tmp = (osip_transaction_t*)osip_list_get_first( osip->osip_ist_transactions, &iterator );
   while (osip_list_iterator_has_elem( iterator ))
     {
@@ -543,6 +716,31 @@ __osip_remove_nict_transaction (osip_t * osip, osip_transaction_t * nict)
 #ifdef OSIP_MT
   osip_mutex_lock (nict_fastmutex);
 #endif
+
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (nict->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_remove(osip->osip_nict_hastable,
+		       b_request->gvalue, TRUE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key deleted in nict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "key not removed `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
+
   tmp = (osip_transaction_t*)osip_list_get_first( osip->osip_nict_transactions, &iterator );
   while ( osip_list_iterator_has_elem( iterator ) )
     {
@@ -571,6 +769,31 @@ __osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist)
 #ifdef OSIP_MT
   osip_mutex_lock (nist_fastmutex);
 #endif
+
+#if defined(HAVE_DICT_DICT_H)
+  {
+    osip_generic_param_t *b_request=NULL;
+    int rv;
+    osip_via_param_get_byname (nist->topvia, "branch", &b_request);
+    if (b_request != NULL && b_request->gvalue!=NULL)
+      rv = dict_remove(osip->osip_nist_hastable,
+		       b_request->gvalue, TRUE);
+
+    if (rv == 0)
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		     "New key deleted in ict hastable `%s'\n", b_request->gvalue));
+      }
+    else
+      {
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		     "key not removed `%s'\n", b_request->gvalue));
+      }
+  }
+#endif
+
   tmp = (osip_transaction_t*)osip_list_get_first( osip->osip_nist_transactions, &iterator );
   while ( osip_list_iterator_has_elem( iterator ) )
     {
@@ -936,9 +1159,55 @@ osip_transaction_find (osip_list_t * transactions, osip_event_t * evt)
 {
   osip_list_iterator_t iterator;
   osip_transaction_t *transaction;
+  osip_t *osip=NULL;
+
+  transaction = (osip_transaction_t*)osip_list_get_first( transactions, &iterator );
+  if (transaction!=NULL)
+    osip = (osip_t*) transaction->config;
+  if (osip==NULL)
+    return NULL;
 
   if (EVT_IS_INCOMINGREQ (evt))
     {
+#ifdef HAVE_DICT_DICT_H
+      /* search in hastable! */
+      osip_generic_param_t *b_request;
+      osip_via_t *topvia_request;
+
+      topvia_request = osip_list_get (evt->sip->vias, 0);
+      if (topvia_request == NULL)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		       "Remote UA is not compliant: missing a Via header!\n"));
+	  return NULL;
+	}
+      osip_via_param_get_byname (topvia_request, "branch", &b_request);
+      if (b_request != NULL && b_request->gvalue != NULL)
+	{
+	  if (MSG_IS_INVITE(evt->sip) || MSG_IS_ACK(evt->sip))
+	    {
+	      transaction = (osip_transaction_t *) dict_search(osip->osip_ist_hastable,
+							       b_request->gvalue);
+	      OSIP_TRACE (osip_trace
+			  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+			   "Find matching Via header for INVITE(ACK) REQUEST!\n"));
+	      if (transaction!=NULL)
+		return transaction;
+	    }
+	  else
+	    {
+	      transaction = (osip_transaction_t *) dict_search(osip->osip_nist_hastable,
+							       b_request->gvalue);
+	      OSIP_TRACE (osip_trace
+			  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+			   "Find matching Via header for NON-INVITE REQUEST!\n"));
+	      if (transaction!=NULL)
+		return transaction;
+	    }
+	}
+#endif
+
       transaction = (osip_transaction_t*)osip_list_get_first( transactions, &iterator );
       while ( osip_list_iterator_has_elem( iterator ) )
 	{
@@ -951,6 +1220,45 @@ osip_transaction_find (osip_list_t * transactions, osip_event_t * evt)
     }
   else if (EVT_IS_INCOMINGRESP (evt))
     {
+#ifdef HAVE_DICT_DICT_H
+      /* search in hastable! */
+      osip_generic_param_t *b_request;
+      osip_via_t *topvia_request;
+
+      topvia_request = osip_list_get (evt->sip->vias, 0);
+      if (topvia_request == NULL)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		       "Remote UA is not compliant: missing a Via header!\n"));
+	  return NULL;
+	}
+      osip_via_param_get_byname (topvia_request, "branch", &b_request);
+      if (b_request != NULL && b_request->gvalue != NULL)
+	{
+	  if (MSG_IS_RESPONSE_FOR(evt->sip, "INVITE"))
+	    {
+	      transaction = (osip_transaction_t *) dict_search(osip->osip_ict_hastable,
+							       b_request->gvalue);
+	      OSIP_TRACE (osip_trace
+			  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+			   "Find matching Via header for INVITE ANSWER!\n"));
+	      if (transaction!=NULL)
+		return transaction;
+	    }
+	  else
+	    {
+	      transaction = (osip_transaction_t *) dict_search(osip->osip_nict_hastable,
+							       b_request->gvalue);
+	      OSIP_TRACE (osip_trace
+			  (__FILE__, __LINE__, OSIP_INFO2, NULL,
+			   "Find matching Via header for NON-INVITE ANSWER!\n"));
+	      if (transaction!=NULL)
+		return transaction;
+	    }
+	}
+#endif
+
       transaction = (osip_transaction_t*)osip_list_get_first( transactions, &iterator );
       while ( osip_list_iterator_has_elem( iterator ) )
 	{
@@ -1048,6 +1356,30 @@ osip_init (osip_t ** osip)
   (*osip)->ixt_retransmissions =
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*osip)->ixt_retransmissions);
+
+#if defined(HAVE_DICT_DICT_H)
+  (*osip)->osip_ict_hastable = hashtable_dict_new((dict_cmp_func)strcmp,
+						  (dict_hsh_func)s_hash,
+						  NULL, NULL, HSIZE);
+  (*osip)->osip_ist_hastable = hashtable_dict_new((dict_cmp_func)strcmp,
+						  (dict_hsh_func)s_hash,
+						  NULL, NULL, HSIZE);
+  (*osip)->osip_nict_hastable = hashtable_dict_new((dict_cmp_func)strcmp,
+						   (dict_hsh_func)s_hash,
+						   NULL, NULL, HSIZE);
+  (*osip)->osip_nist_hastable = hashtable_dict_new((dict_cmp_func)strcmp,
+						   (dict_hsh_func)s_hash,
+						   NULL, NULL, HSIZE);
+#elif defined(HAVE_DICT_DICT_H_HASHTABLE)
+  (*osip)->osip_ict_hastable = rb_tree_new((dict_cmp_func)strcmp,
+					   NULL, NULL);
+  (*osip)->osip_ist_hastable = rb_tree_new((dict_cmp_func)strcmp,
+					   NULL, NULL);
+  (*osip)->osip_nict_hastable = rb_tree_new((dict_cmp_func)strcmp,
+					    NULL, NULL);
+  (*osip)->osip_nist_hastable = rb_tree_new((dict_cmp_func)strcmp,
+					    NULL, NULL);
+#endif
 
   return 0;
 }

@@ -21,6 +21,10 @@
 #ifndef _OSIP_H_
 #define _OSIP_H_
 
+#if defined(HAVE_DICT_DICT_H)
+#include <dict/dict.h>
+#endif
+
 #include <osipparser2/osip_const.h>
 
 /* Time-related functions and data types */
@@ -484,10 +488,10 @@ extern "C"
     void *application_context;	/**< User defined Pointer */
 
     /* list of transactions for ict, ist, nict, nist */
-    osip_list_t *osip_ict_transactions;  /**< list of ict transactions */
-    osip_list_t *osip_ist_transactions;  /**< list of ist transactions */
-    osip_list_t *osip_nict_transactions; /**< list of nict transactions */
-    osip_list_t *osip_nist_transactions; /**< list of nist transactions */
+    osip_list_t *osip_ict_transactions;   /**< list of ict transactions */
+    osip_list_t *osip_ist_transactions;   /**< list of ist transactions */
+    osip_list_t *osip_nict_transactions;  /**< list of nict transactions */
+    osip_list_t *osip_nist_transactions;  /**< list of nist transactions */
 
     osip_list_t *ixt_retransmissions;	 /**< list of ixt elements */
 
@@ -497,6 +501,13 @@ extern "C"
 
     int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *,
 			    int, int);  /**@internal */
+
+#if defined(HAVE_DICT_DICT_H)
+    dict        *osip_ict_hastable;       /**< htable of ict transactions */
+    dict        *osip_ist_hastable;       /**< htable of ist transactions */
+    dict        *osip_nict_hastable;      /**< htable of nict transactions */
+    dict        *osip_nist_hastable;      /**< htable of nist transactions */
+#endif
   };
 
 /**
