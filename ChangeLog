@@ -1,4 +1,5 @@
 libosip2 (2.2.2)
+	* improve mime support.
 	* improve sipfrag support.
 	* add NULL checks (uris...).
 	* add libdict support (hastable for parser).

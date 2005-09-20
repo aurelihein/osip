@@ -28,7 +28,7 @@
 #include <osipparser2/osip_parser.h>
 #include <osip2/internal.h>
 
-int test_message (char *msg, int verbose, int clone);
+int test_message (char *msg, size_t len, int verbose, int clone);
 static void usage (void);
 
 static void
@@ -36,6 +36,63 @@ usage ()
 {
   fprintf (stderr, "Usage: ./torture_test torture_file number [-v] [-c]\n");
   exit (1);
+}
+
+static int
+read_binary(char **msg, int *len, FILE *torture_file)
+{
+  *msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
+
+  *len = fread (*msg, 1, 100000, torture_file);
+  return ferror(torture_file) ? -1 : 0;
+}
+
+static char *
+read_text (int num, FILE *torture_file)
+{
+  char *marker;
+  char *tmp;
+  char *tmpmsg;
+  char *msg;
+  int i;
+  static int num_test = 0;
+
+  i = 0;
+  tmp = (char *) osip_malloc (500);
+  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
+  while (marker != NULL && i < num)
+    {
+      if (0 == strncmp (tmp, "|", 1))
+	i++;
+      marker = fgets (tmp, 500, torture_file);
+    }
+  num_test++;
+
+  msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
+  if (msg == NULL)
+    {
+      fprintf (stderr, "Error! osip_malloc failed\n");
+      return NULL;
+    }
+  tmpmsg = msg;
+
+  if (marker == NULL)
+    {
+      fprintf (stderr,
+	       "Error! The message's number you specified does not exist\n");
+      return NULL;			/* end of file detected! */
+    }
+  /* this part reads an entire message, separator is "|" */
+  /* (it is unlinkely that it will appear in messages!) */
+  while (marker != NULL && strncmp (tmp, "|", 1))
+    {
+      osip_strncpy (tmpmsg, tmp, strlen (tmp));
+      tmpmsg = tmpmsg + strlen (tmp);
+      marker = fgets (tmp, 500, torture_file);
+    }
+
+  osip_free (tmp);
+  return msg;
 }
 
 int
@@ -46,29 +103,20 @@ main (int argc, char **argv)
   int i;
   int verbose = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
   int clone = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
-  char *marker;
+  int binary = 0;
   FILE *torture_file;
-  char *tmp;
   char *msg;
-  char *tmpmsg;
-  static int num_test = 0;
+  int pos;
+  int len;
 
-  if (argc > 3)
+  for (pos = 3; pos < argc; pos++)
     {
-      if (0 == strncmp (argv[3], "-v", 2))
+      if (0 == strncmp (argv[pos], "-v", 2))
 	verbose = 1;
-      else if (0 == strncmp (argv[3], "-c", 2))
+      else if (0 == strncmp (argv[pos], "-c", 2))
 	clone = 1;
-      else
-	usage ();
-    }
-
-  if (argc > 4)
-    {
-      if (0 == strncmp (argv[4], "-v", 2))
-	verbose = 1;
-      else if (0 == strncmp (argv[4], "-c", 2))
-	clone = 1;
+      else if (0 == strncmp (argv[pos], "-b", 2))
+	binary = 1;
       else
 	usage ();
     }
@@ -87,45 +135,24 @@ main (int argc, char **argv)
   /* initialize parser */
   parser_init ();
 
-  i = 0;
-  tmp = (char *) osip_malloc (500);
-  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
-  while (marker != NULL && i < atoi (argv[2]))
+  if (binary)
     {
-      if (0 == strncmp (tmp, "|", 1))
-	i++;
-      marker = fgets (tmp, 500, torture_file);
+      if (read_binary(&msg, &len, torture_file) < 0)
+	return -1;
     }
-  num_test++;
-
-  msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
-  if (msg == NULL)
+  else
     {
-      fprintf (stderr, "Error! osip_malloc failed\n");
-      return -1;
-    }
-  tmpmsg = msg;
-
-  if (marker == NULL)
-    {
-      fprintf (stderr,
-	       "Error! The message's number you specified does not exist\n");
-      exit (1);			/* end of file detected! */
-    }
-  /* this part reads an entire message, separator is "|" */
-  /* (it is unlinkely that it will appear in messages!) */
-  while (marker != NULL && strncmp (tmp, "|", 1))
-    {
-      osip_strncpy (tmpmsg, tmp, strlen (tmp));
-      tmpmsg = tmpmsg + strlen (tmp);
-      marker = fgets (tmp, 500, torture_file);
+      msg = read_text(atoi(argv[2]), torture_file);
+      if (!msg)
+	return -1;
+      len = strlen(msg);
     }
 
-  success = test_message (msg, verbose, clone);
+  success = test_message (msg, len, verbose, clone);
   if (verbose)
     {
       fprintf (stdout, "test %s : ============================ \n", argv[2]);
-      fprintf (stdout, "%s", msg);
+      fwrite (msg, 1, len, stdout);
 
       if (0 == success)
 	fprintf (stdout, "test %s : ============================ OK\n",
@@ -136,14 +163,13 @@ main (int argc, char **argv)
     }
 
   osip_free (msg);
-  osip_free (tmp);
   fclose (torture_file);
 
   return success;
 }
 
 int
-test_message (char *msg, int verbose, int clone)
+test_message (char *msg, size_t len, int verbose, int clone)
 {
   osip_message_t *sip;
 
@@ -161,7 +187,7 @@ test_message (char *msg, int verbose, int clone)
       {
 	j--;
 	osip_message_init (&sip);
-	if (osip_message_parse (sip, msg, strlen(msg)) != 0)
+	if (osip_message_parse (sip, msg, len) != 0)
 	  {
 	    fprintf (stdout, "ERROR: failed while parsing!\n");
 	    osip_message_free (sip);
@@ -171,7 +197,7 @@ test_message (char *msg, int verbose, int clone)
       }
 
     osip_message_init (&sip);
-    if (osip_message_parse (sip, msg, strlen(msg)) != 0)
+    if (osip_message_parse (sip, msg, len) != 0)
       {
 	fprintf (stdout, "ERROR: failed while parsing!\n");
 	osip_message_free (sip);
@@ -192,7 +218,7 @@ test_message (char *msg, int verbose, int clone)
 	else
 	  {
 	    if (verbose)
-	      fprintf (stdout, "%s", result);
+	      fwrite (result, 1, length, stdout);
 	    if (clone)
 	      {
 		/* create a clone of message */
@@ -237,7 +263,11 @@ test_message (char *msg, int verbose, int clone)
 			      printf
 				("ERROR: The osip_message_clone method DOES NOT works\n");
 			    if (verbose)
-			      printf ("Here is the copy: \n%s\n", tmp);
+			      {
+				printf ("Here is the copy: \n");
+				fwrite (tmp, 1, length, stdout);
+				printf ("\n");
+			      }
 
 			    osip_free (tmp);
 			  }

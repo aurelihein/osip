@@ -24,6 +24,8 @@
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
 
+#define MIME_MAX_BOUNDARY_LEN 70
+
 extern const char *osip_protocol_version;
 
 static int strcat_simple_header (char **_string, size_t * malloc_size,
@@ -408,6 +410,24 @@ osip_message_force_update (osip_message_t * sip)
 }
 
 static int
+_osip_message_realloc(char **message, char **dest, size_t needed,
+		      size_t *malloc_size)
+{
+  size_t size = *message - *dest;
+
+  if (*malloc_size < (size_t) (size + needed + 100))
+    {
+      *malloc_size = size + needed + 100;
+      *dest = osip_realloc (*dest, *malloc_size);
+      if (*dest == NULL)
+	return -1;
+      *message = *dest + size;
+    }
+  
+  return 0;
+}
+
+static int
 _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 		     int sipfrag)
 {
@@ -422,6 +442,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
   char *tmp;
   int pos;
   int i;
+  char *boundary = NULL;
   malloc_size = SIP_MESSAGE_MAX_LENGTH;
 
   *dest = NULL;
@@ -634,6 +655,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
   while (!osip_list_eol (sip->headers, pos))
     {
       osip_header_t *header;
+      size_t header_len = 0;
 
       header = (osip_header_t *) osip_list_get (sip->headers, pos);
       i = osip_header_to_str (header, &tmp);
@@ -644,17 +666,13 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 	  return -1;
 	}
 
-      if (malloc_size < (size_t) (message - *dest + 100 + 16))
-	{
-	  size_t size = message - *dest;
-	  malloc_size = message - *dest + 16 + 100;
-	  *dest = osip_realloc (*dest, malloc_size);
-	  if (*dest == NULL)
-	    return -1;
-	  message = *dest + size;
-	}
+      header_len = strlen (tmp);
 
-      osip_strncpy (message, tmp, strlen (tmp));
+      if (_osip_message_realloc (&message, dest, header_len + 3,
+				 &malloc_size) < 0)
+	return -1;
+
+      osip_strncpy (message, tmp, header_len);
       osip_free (tmp);
       message = message + strlen (message);
       osip_strncpy (message, CRLF, 2);
@@ -825,15 +843,9 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 
   /* we have to create the body before adding the contentlength */
   /* add enough lenght for "Content-Length: " */
-  if (malloc_size < (size_t) (message - *dest + 100 + 16))
-    {
-      size_t size = message - *dest;
-      malloc_size = message - *dest + 16 + 100;
-      *dest = osip_realloc (*dest, malloc_size);
-      if (*dest == NULL)
-	return -1;
-      message = *dest + size;
-    }
+
+  if (_osip_message_realloc (&message, dest, 16, &malloc_size) < 0)
+    return -1;
 
   if (sipfrag && osip_list_eol (sip->bodies, 0))
     {
@@ -909,6 +921,38 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
       return 0;			/* it's all done */
     }
 
+  if (sip->mime_version != NULL && sip->content_type
+      && sip->content_type->type
+      && !strcasecmp(sip->content_type->type, "multipart"))
+    {
+      osip_generic_param_t *ct_param = NULL;
+
+      /* find the boundary */
+      i = osip_generic_param_get_byname (sip->content_type->gen_params,
+					 "boundary", &ct_param);
+      if ((i >= 0) && ct_param && ct_param->gvalue)
+	{
+	  size_t len = strlen(ct_param->gvalue);
+
+	  if (len > MIME_MAX_BOUNDARY_LEN)
+	    {
+	      osip_free (*dest);
+	      *dest = NULL;
+	      return -1;
+	    }
+
+	  boundary = osip_malloc (len + 5);
+
+	  osip_strncpy (boundary, CRLF, 2);
+	  osip_strncpy (boundary + 2, "--", 2);
+
+	  if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len-1] == '"')
+	    osip_strncpy (boundary + 4, ct_param->gvalue + 1, len - 2);
+	  else
+	    osip_strncpy (boundary + 4, ct_param->gvalue, len);
+	}
+    }
+  
   pos = 0;
   while (!osip_list_eol (sip->bodies, pos))
     {
@@ -917,9 +961,11 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 
       body = (osip_body_t *) osip_list_get (sip->bodies, pos);
 
-      if (sip->mime_version != NULL)
+      if (boundary)
 	{
-	  osip_strncpy (message, "--++", strlen ("--++"));
+	  /* Needs at most 77 bytes,
+	     last realloc allocate at least 100 bytes extra */
+	  osip_strncpy (message, boundary, strlen (boundary));
 	  message = message + strlen (message);
 	  osip_strncpy (message, CRLF, 2);
 	  message = message + 2;
@@ -930,6 +976,8 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 	{
 	  osip_free (*dest);
 	  *dest = NULL;
+	  if (boundary)
+	    osip_free(boundary);
 	  return -1;
 	}
 
@@ -946,6 +994,8 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
 	  if (*dest == NULL)
 	    {
 	      osip_free (tmp); /* fixed 09/Jun/2005 */
+	      if (boundary)
+		osip_free(boundary);
 	      return -1;
 	    }
 	  start_of_bodies = *dest + offset_of_body;
@@ -962,16 +1012,23 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
       pos++;
     }
 
-  if (sip->mime_version != NULL)
+  if (boundary)
     {
-      osip_strncpy (message, "--++--", strlen ("--++--"));
+      /* Needs at most 79 bytes,
+	 last realloc allocate at least 100 bytes extra */
+      osip_strncpy (message, boundary, strlen(boundary));
       message = message + strlen (message);
+      osip_strncpy (message, "--", 2);
+      message = message + 2;
       osip_strncpy (message, CRLF, 2);
       message = message + 2;
       /* ADDED at SIPit day1:  Is this needed for MIME type?
          osip_strncpy(message,CRLF,2);
          message = message + 2;
          strncpy(message,"\0",1); */
+
+      osip_free(boundary);
+      boundary = NULL;
     }
 
   if (content_length_to_modify == NULL)

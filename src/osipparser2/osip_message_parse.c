@@ -799,8 +799,17 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   if (ct_param->gvalue == NULL)
     return -1;			/* No boundary but multiple headers??? */
 
-  sep_boundary = (char *) osip_malloc (strlen (ct_param->gvalue) + 3);
-  sprintf (sep_boundary, "--%s", ct_param->gvalue);
+  {
+    const char *boundary_prefix = "\n--";
+
+    size_t len = strlen(ct_param->gvalue);
+    sep_boundary = (char *) osip_malloc (len + sizeof(boundary_prefix));
+    sprintf (sep_boundary, boundary_prefix);
+    if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len-1] == '"')
+      strncat (sep_boundary, ct_param->gvalue + 1, len - 2);
+    else
+      strncat (sep_boundary, ct_param->gvalue, len);
+  }
 
   *next_body = NULL;
   start_of_body = start_of_buf;
@@ -809,6 +818,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
   for (;;)
     {
+      size_t body_len = 0;
+
       i =
 	__osip_find_next_occurence (sep_boundary, start_of_body,
 				    &start_of_body, end_of_buf);
@@ -817,6 +828,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	  osip_free (sep_boundary);
 	  return -1;
 	}
+
       i =
 	__osip_find_next_occurence (sep_boundary,
 				    start_of_body + strlen (sep_boundary),
@@ -832,16 +844,22 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       if ('\n' == start_of_body[0] || '\r' == start_of_body[0])
 	start_of_body++;
 
-      tmp = osip_malloc (end_of_body - start_of_body + 2);
+      body_len = end_of_body - start_of_body;
+
+      /* Skip CR before end boundary. */
+      if (*(end_of_body-1) == '\r')
+	body_len--;
+
+      tmp = osip_malloc (body_len + 2);
       if (tmp == NULL)
 	{
 	  osip_free (sep_boundary);
 	  return -1;
 	}
-      memcpy (tmp, start_of_body, end_of_body - start_of_body);
-      tmp[end_of_body - start_of_body]='\0';
+      memcpy (tmp, start_of_body, body_len);
+      tmp[body_len]='\0';
       
-      i = osip_message_set_body_mime (sip, tmp, end_of_body - start_of_body);
+      i = osip_message_set_body_mime (sip, tmp, body_len);
       osip_free (tmp);
       if (i == -1)
 	{
@@ -855,6 +873,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	  osip_free (sep_boundary);
 	  return 0;
 	}
+
       /* continue on the next body */
       start_of_body = end_of_body;
     }
