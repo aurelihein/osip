@@ -435,14 +435,16 @@ __osip_add_ict (osip_t * osip, osip_transaction_t * ict)
 #if defined(HAVE_DICT_DICT_H)
   {
     osip_generic_param_t *b_request=NULL;
-    int rv;
+    int rv=-99;
     osip_via_param_get_byname (ict->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
       rv = dict_insert(osip->osip_ict_hastable,
 		       b_request->gvalue, (void*)ict, FALSE);
+#if 0
     else
       rv = dict_insert(osip->osip_ict_hastable,
 		       b_request->gvalue, (void *)ict, FALSE);
+#endif
 
     if (rv == 0)
       {
@@ -450,7 +452,7 @@ __osip_add_ict (osip_t * osip, osip_transaction_t * ict)
 		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
 		     "New key inserted in ict hastable `%s'\n", b_request->gvalue));
       }
-    else
+    else if (rv!=-99)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -474,22 +476,23 @@ __osip_add_ist (osip_t * osip, osip_transaction_t * ist)
 #if defined(HAVE_DICT_DICT_H)
   {
     osip_generic_param_t *b_request=NULL;
-    int rv;
+    int rv=-99;
     osip_via_param_get_byname (ist->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
       rv = dict_insert(osip->osip_ist_hastable,
 		       b_request->gvalue, (void*)ist, FALSE);
     else
+#if 0
       rv = dict_insert(osip->osip_ist_hastable,
 		       b_request->gvalue, (void *)ist, FALSE);
-
+#endif
     if (rv == 0)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
 		     "New key inserted in ist hastable `%s'\n", b_request->gvalue));
       }
-    else
+    else if (rv!=-99)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -513,14 +516,16 @@ __osip_add_nict (osip_t * osip, osip_transaction_t * nict)
 #if defined(HAVE_DICT_DICT_H)
   {
     osip_generic_param_t *b_request=NULL;
-    int rv;
+    int rv=-99;
     osip_via_param_get_byname (nict->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
       rv = dict_insert(osip->osip_nict_hastable,
 		       b_request->gvalue, (void*)nict, FALSE);
+#if 0
     else
       rv = dict_insert(osip->osip_nict_hastable,
 		       b_request->gvalue, (void *)nict, FALSE);
+#endif
 
     if (rv == 0)
       {
@@ -528,7 +533,7 @@ __osip_add_nict (osip_t * osip, osip_transaction_t * nict)
 		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
 		     "New key inserted in nict hastable `%s'\n", b_request->gvalue));
       }
-    else
+    else if (rv!=-99)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -552,22 +557,23 @@ __osip_add_nist (osip_t * osip, osip_transaction_t * nist)
 #if defined(HAVE_DICT_DICT_H)
   {
     osip_generic_param_t *b_request=NULL;
-    int rv;
+    int rv=-99;
     osip_via_param_get_byname (nist->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
       rv = dict_insert(osip->osip_nist_hastable,
 		       b_request->gvalue, (void*)nist, FALSE);
+#if 0
     else
       rv = dict_insert(osip->osip_nist_hastable,
 		       b_request->gvalue, (void *)nist, FALSE);
-
+#endif
     if (rv == 0)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
 		     "New key inserted in ict hastable `%s'\n", b_request->gvalue));
       }
-    else
+    else if (rv!=-99)
       {
 	OSIP_TRACE (osip_trace
 		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -617,21 +623,22 @@ __osip_remove_ict_transaction (osip_t * osip, osip_transaction_t * ict)
     int rv;
     osip_via_param_get_byname (ict->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
+    {
       rv = dict_remove(osip->osip_ict_hastable,
 		       b_request->gvalue, TRUE);
-
-    if (rv == 0)
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-		     "New key deleted in ict hastable `%s'\n", b_request->gvalue));
-      }
-    else
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "key not removed `%s'\n", b_request->gvalue));
-      }
+      if (rv == 0)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		       "New key deleted in ict hastable `%s'\n", b_request->gvalue));
+	}
+      else
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		       "key not removed `%s'\n", b_request->gvalue));
+	}
+    }
   }
 #endif
 
@@ -670,21 +677,23 @@ __osip_remove_ist_transaction (osip_t * osip, osip_transaction_t * ist)
     int rv;
     osip_via_param_get_byname (ist->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
+    {
       rv = dict_remove(osip->osip_ist_hastable,
 		       b_request->gvalue, TRUE);
-
-    if (rv == 0)
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-		     "New key deleted in ist hastable `%s'\n", b_request->gvalue));
-      }
-    else
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "key not removed `%s'\n", b_request->gvalue));
-      }
+      
+      if (rv == 0)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		       "New key deleted in ist hastable `%s'\n", b_request->gvalue));
+	}
+      else
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		       "key not removed `%s'\n", b_request->gvalue));
+	}
+    }
   }
 #endif
 
@@ -723,21 +732,23 @@ __osip_remove_nict_transaction (osip_t * osip, osip_transaction_t * nict)
     int rv;
     osip_via_param_get_byname (nict->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
+    {
       rv = dict_remove(osip->osip_nict_hastable,
 		       b_request->gvalue, TRUE);
-
-    if (rv == 0)
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-		     "New key deleted in nict hastable `%s'\n", b_request->gvalue));
-      }
-    else
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "key not removed `%s'\n", b_request->gvalue));
-      }
+      
+      if (rv == 0)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		       "New key deleted in nict hastable `%s'\n", b_request->gvalue));
+	}
+      else
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		       "key not removed `%s'\n", b_request->gvalue));
+	}
+    }
   }
 #endif
 
@@ -776,21 +787,23 @@ __osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist)
     int rv;
     osip_via_param_get_byname (nist->topvia, "branch", &b_request);
     if (b_request != NULL && b_request->gvalue!=NULL)
+    {
       rv = dict_remove(osip->osip_nist_hastable,
 		       b_request->gvalue, TRUE);
-
-    if (rv == 0)
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-		     "New key deleted in ict hastable `%s'\n", b_request->gvalue));
-      }
-    else
-      {
-	OSIP_TRACE (osip_trace
-		    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		     "key not removed `%s'\n", b_request->gvalue));
-      }
+      
+      if (rv == 0)
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_INFO1, NULL,
+		       "New key deleted in ict hastable `%s'\n", b_request->gvalue));
+	}
+      else
+	{
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_WARNING, NULL,
+		       "key not removed `%s'\n", b_request->gvalue));
+	}
+    }
   }
 #endif
 
