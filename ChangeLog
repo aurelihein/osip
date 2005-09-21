@@ -1,4 +1,5 @@
 libosip2 (2.2.2)
+	* fix a bug in the parser for empty header (also store empty Accept header)
 	* improve mime support.
 	* improve sipfrag support.
 	* add NULL checks (uris...).

@@ -775,7 +775,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length,
     strcat_headers_all_on_one_line (dest, &malloc_size, &message,
 				    sip->accepts, "Accept: ", 8,
 				    ((int (*)(void *, char **))
-				     &osip_content_type_to_str), &next);
+				     &osip_accept_to_str), &next);
   if (i != 0)
     {
       osip_free (*dest);

@@ -67,14 +67,13 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the new allocated string.
  */
-#define osip_accept_to_str(header, dest) osip_content_type_to_str(header, dest)
+  int osip_accept_to_str (const osip_accept_t * header, char **dest);
 /**
  * Clone an Accept element.
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
 #define osip_accept_clone(header, dest) osip_content_type_clone(header, dest)
-
 /**
  * Allocate and add a header parameter in an Accept element.
  * @param header The element to work on.

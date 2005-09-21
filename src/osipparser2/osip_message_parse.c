@@ -445,6 +445,11 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
   beg = hvalue;
   end = NULL;
   ptr = hvalue;
+
+#ifndef DONOTLOWERCASEHEADERS
+  osip_tolower (hname);
+#endif
+
   if (hvalue == NULL)
     {
       i = osip_message_set__header (sip, hname, hvalue);
@@ -456,10 +461,6 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
   comma = strchr (ptr, ',');
 
   hname_len = strlen(hname);
-
-#ifndef DONOTLOWERCASEHEADERS
-  osip_tolower (hname);
-#endif
 
   if (comma == NULL
       || (hname_len == 4 && osip_strncasecmp (hname, "date", 4) == 0)

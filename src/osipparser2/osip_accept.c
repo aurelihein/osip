@@ -36,8 +36,10 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
   osip_accept_t *accept;
   int i;
 
+#if 0
   if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
+#endif
 
   i = accept_init (&accept);
   if (i != 0)
@@ -68,3 +70,79 @@ osip_message_get_accept (const osip_message_t * sip, int pos,
   *dest = accept;
   return pos;
 }
+
+/* returns the content_type header as a string.  */
+/* INPUT : osip_content_type_t *content_type | content_type header.   */
+/* returns null on error. */
+int
+osip_accept_to_str (const osip_accept_t * accept,
+		    char **dest)
+{
+  char *buf;
+  char *tmp;
+  size_t len;
+
+  *dest = NULL;
+  if (accept == NULL)
+    return -1;
+
+  if ((accept->type == NULL) && (accept->subtype == NULL))
+    {
+      /* Empty header ! */
+      buf = (char *) osip_malloc (2);
+      buf[0]=' ';
+      buf[1]='\0';
+      *dest = buf;
+      return 0;
+    }
+
+  /* try to guess a long enough length */
+  len = strlen (accept->type) + strlen (accept->subtype) + 4	/* for '/', ' ', ';' and '\0' */
+    + 10 * osip_list_size (accept->gen_params);
+
+  buf = (char *) osip_malloc (len);
+  tmp = buf;
+
+  sprintf (tmp, "%s/%s", accept->type, accept->subtype);
+
+  tmp = tmp + strlen (tmp);
+  {
+    int pos = 0;
+    osip_generic_param_t *u_param;
+
+#if 0
+    if (!osip_list_eol (accept->gen_params, pos))
+      {				/* needed for cannonical form! (authentication issue of rfc2543) */
+	sprintf (tmp, " ");
+	tmp++;
+      }
+#endif
+    while (!osip_list_eol (accept->gen_params, pos))
+      {
+	size_t tmp_len;
+
+	u_param =
+	  (osip_generic_param_t *) osip_list_get (accept->gen_params,
+						  pos);
+	if (u_param->gvalue == NULL)
+	  {
+	    osip_free (buf);
+	    return -1;
+	  }
+	tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
+	  + strlen (u_param->gvalue) + 1;
+	if (len < tmp_len)
+	  {
+	    buf = osip_realloc (buf, tmp_len);
+	    len = tmp_len;
+	    tmp = buf + strlen (buf);
+	  }
+	sprintf (tmp, "; %s=%s", u_param->gname, u_param->gvalue);
+	tmp = tmp + strlen (tmp);
+	pos++;
+      }
+  }
+  *dest = buf;
+  return 0;
+}
+

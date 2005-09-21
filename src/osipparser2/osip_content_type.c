@@ -110,6 +110,8 @@ osip_content_type_parse (osip_content_type_t * content_type,
      application/multipart ; boundary=
      ^          ^
    */
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return 0; /* It's valid to add empty Accept header! */
 
   subtype = strchr (hvalue, '/');
   osip_content_type_params = strchr (hvalue, ';');
@@ -244,16 +246,14 @@ osip_content_type_clone (const osip_content_type_t * ctt,
   *dest = NULL;
   if (ctt == NULL)
     return -1;
-  if (ctt->type == NULL)
-    return -1;
-  if (ctt->subtype == NULL)
-    return -1;
 
   i = osip_content_type_init (&ct);
   if (i != 0)			/* allocation failed */
     return -1;
-  ct->type = osip_strdup (ctt->type);
-  ct->subtype = osip_strdup (ctt->subtype);
+  if (ctt->type != NULL)
+    ct->type = osip_strdup (ctt->type);
+  if (ctt->subtype != NULL)
+    ct->subtype = osip_strdup (ctt->subtype);
 
   {
     int pos = 0;
