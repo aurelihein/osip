@@ -130,8 +130,12 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
 	  i = osip_record_route_clone (rr, &rr2);
 	  if (i != 0)
 	    return -1;
-	  osip_list_add (dialog->route_set, rr2, -1);
-	  pos++;
+#ifdef OSIP_FUTURE_FIX_2_3
+      osip_list_add (dialog->route_set, rr2, 0);
+#else
+      osip_list_add (dialog->route_set, rr2, -1);
+#endif
+      pos++;
 	}
     }
 
@@ -372,7 +376,11 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
       i = osip_record_route_clone (rr, &rr2);
       if (i != 0)
 	goto diau_error_2;
+#ifdef OSIP_FUTURE_FIX_2_3
+      osip_list_add ((*dialog)->route_set, rr2, 0);
+#else
       osip_list_add ((*dialog)->route_set, rr2, -1);
+#endif
       pos++;
     }
 
