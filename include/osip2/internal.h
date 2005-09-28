@@ -177,11 +177,24 @@ osip_sem_t;
 #define _WINSOCKAPI_
 #include <windows.h>
 #undef _WINSOCKAPI_
+
+#if (_WIN32_WINNT >= 0x0500)
+
+#define OSIP_CRITICALSECTION_SPIN  4000
+typedef struct
+{
+  CRITICAL_SECTION h;
+}
+osip_mutex_t;
+#else
+
 typedef struct
 {
   HANDLE h;
 }
 osip_mutex_t;
+#endif
+
 typedef struct
 {
   HANDLE h;

@@ -316,8 +316,53 @@ osip_sem_trywait (struct osip_sem *_sem)
 
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
-
 #include <limits.h>
+
+#if (_WIN32_WINNT >= 0x0500)
+struct osip_mutex *
+osip_mutex_init ()
+{
+  osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
+  if (mut == NULL)
+    return NULL;
+  if (InitializeCriticalSectionAndSpinCount (&mut->h, OSIP_CRITICALSECTION_SPIN) != 0)
+    return (struct osip_mutex *) (mut);
+  osip_free (mut);
+  return (NULL);
+}
+
+void
+osip_mutex_destroy (struct osip_mutex *_mut)
+{
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+  if (mut == NULL)
+    return;
+  DeleteCriticalSection (&mut->h);
+  osip_free (mut);
+}
+
+int
+osip_mutex_lock (struct osip_mutex *_mut)
+{
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
+  if (mut == NULL)
+    return -1;
+  EnterCriticalSection (&mut->h);
+    
+  return (0);
+}
+
+int
+osip_mutex_unlock (struct osip_mutex *_mut)
+{
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+  if (mut == NULL)
+    return -1;
+   LeaveCriticalSection (&mut->h);
+  return (0);
+}
+#else
 
 struct osip_mutex *
 osip_mutex_init ()
@@ -363,6 +408,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   ReleaseMutex (mut->h);
   return (0);
 }
+#endif
 
 struct osip_sem *
 osip_sem_init (unsigned int value)
