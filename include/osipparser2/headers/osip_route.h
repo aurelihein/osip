@@ -45,16 +45,12 @@ extern "C"
 {
 #endif
 
-#ifdef __VXWORKS_OS__
-/* osip_route_init is already defined somewhere on VXWORKS.. */
-  int osip_route_init2 (osip_route_t ** header);
-#else
+
 /**
  * Allocate a Route element.
  * @param header The element to work on.
  */
   int osip_route_init (osip_route_t ** header);
-#endif
 /**
  * Free a Route element.
  * @param header The element to work on.

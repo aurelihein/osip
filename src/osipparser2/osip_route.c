@@ -24,13 +24,8 @@
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 
-#ifdef __VXWORKS_OS__
-int
-osip_route_init2 (osip_route_t ** route)
-#else
 int
 osip_route_init (osip_route_t ** route)
-#endif
 {
   return osip_from_init ((osip_from_t **) route);
 }
