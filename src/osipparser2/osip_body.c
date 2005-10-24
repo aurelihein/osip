@@ -378,7 +378,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
   if (body->length <= 0)
     return -1;
 
-  length = body->length + (osip_list_size (body->headers) * 40);
+  length = 15 + body->length + (osip_list_size (body->headers) * 40);
   tmp_body = (char *) osip_malloc (length);
   if (tmp_body == NULL)
     return -1;
