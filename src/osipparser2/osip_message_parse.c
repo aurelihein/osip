@@ -556,8 +556,13 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	  if (comma == NULL)
 	    /* this header last at the end of the line! */
 	    {			/* this one does not need an allocation... */
+#if 0
 	      if (strlen (beg) < 2)
 		return 0;	/* empty header */
+#else
+	      if (beg[0]=='\0' || beg[1]=='\0')
+		return 0;	/* empty header */
+#endif
 	      osip_clrspace (beg);
 	      i = osip_message_set__header (sip, hname, beg);
 	      if (i == -1)
@@ -585,8 +590,13 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	  if (comma == NULL)
 	    /* this header last at the end of the line! */
 	    {			/* this one does not need an allocation... */
+#if 0
 	      if (strlen (beg) < 2)
 		return 0;	/* empty header */
+#else
+	      if (beg[0]=='\0' || beg[1]=='\0')
+		return 0;	/* empty header */
+#endif
 	      osip_clrspace (beg);
 	      i = osip_message_set__header (sip, hname, beg);
 	      if (i == -1)
@@ -715,6 +725,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   int i;
 
   char *sep_boundary;
+  size_t len_sep_boundary;
   osip_generic_param_t *ct_param;
 
   if (sip->content_type == NULL
@@ -812,6 +823,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       strncat (sep_boundary, ct_param->gvalue, len);
   }
 
+  len_sep_boundary = strlen (sep_boundary);
+
   *next_body = NULL;
   start_of_body = start_of_buf;
 
@@ -832,7 +845,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
       i =
 	__osip_find_next_occurence (sep_boundary,
-				    start_of_body + strlen (sep_boundary),
+				    start_of_body + len_sep_boundary,
 				    &end_of_body, end_of_buf);
       if (i == -1)
 	{
@@ -841,7 +854,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	}
 
       /* this is the real beginning of body */
-      start_of_body = start_of_body + strlen (sep_boundary) + 1;
+      start_of_body = start_of_body + len_sep_boundary + 1;
       if ('\n' == start_of_body[0] || '\r' == start_of_body[0])
 	start_of_body++;
 
@@ -868,7 +881,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	  return -1;
 	}
 
-      if (strncmp (end_of_body + strlen (sep_boundary), "--", 2) == 0)
+      if (strncmp (end_of_body + len_sep_boundary, "--", 2) == 0)
 	{			/* end of all bodies */
 	  *next_body = end_of_body;
 	  osip_free (sep_boundary);
@@ -928,7 +941,7 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int s
   tmp = (char *) next_header_index;
 
   /* this is a *very* simple test... (which handle most cases...) */
-  if (strlen (tmp) < 3)
+  if (tmp[0]=='\0' || tmp[1]=='\0' || tmp[2]=='\0')
     {
       /* this is mantory in the oSIP stack */
       if (sip->content_length == NULL)
@@ -1066,6 +1079,8 @@ osip_message_get_reason (int replycode)
     {487, "Request Cancelled"},
     {488, "Not Acceptable Here"},
     {489, "Bad Event"},
+    {491, "Request Pending"},
+    {493, "Undecipherable"},
   };
   static const struct code_to_reason reasons5xx[] = {
     {500, "Internal Server Error"},
