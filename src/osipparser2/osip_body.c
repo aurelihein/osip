@@ -248,8 +248,7 @@ osip_body_parse_header (osip_body_t * body,
       hname = (char *) osip_malloc (colon_index - start_of_line + 1);
       if (hname == NULL)
 	return -1;
-      osip_strncpy (hname, start_of_line, colon_index - start_of_line);
-      osip_clrspace (hname);
+      osip_clrncpy (hname, start_of_line, colon_index - start_of_line);
 
       if ((end_of_line - 2) - colon_index < 2)
 	return -1;
@@ -259,9 +258,8 @@ osip_body_parse_header (osip_body_t * body,
 	  osip_free (hname);
 	  return -1;
 	}
-      osip_strncpy (hvalue, colon_index + 1,
+      osip_clrncpy (hvalue, colon_index + 1,
 		    (end_of_line - 2) - colon_index - 1);
-      osip_clrspace (hvalue);
 
       /* really store the header in the sip structure */
       if (osip_strncasecmp (hname, "content-type", 12) == 0)
@@ -386,8 +384,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 
   if (body->content_type != NULL)
     {
-      osip_strncpy (tmp_body, "content-type: ", 14);
-      tmp_body = tmp_body + strlen (tmp_body);
+      tmp_body = osip_strn_append (tmp_body, "content-type: ", 14);
       i = osip_content_type_to_str (body->content_type, &tmp);
       if (i == -1)
 	{
@@ -404,11 +401,9 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 	  tmp_body = ptr + len;
 	}
 
-      osip_strncpy (tmp_body, tmp, strlen (tmp));
+      tmp_body = osip_str_append (tmp_body, tmp);
       osip_free (tmp);
-      tmp_body = tmp_body + strlen (tmp_body);
-      osip_strncpy (tmp_body, CRLF, 2);
-      tmp_body = tmp_body + 2;
+      tmp_body = osip_strn_append (tmp_body, CRLF, 2);
     }
 
   pos = 0;
@@ -432,18 +427,15 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t *str_length)
 	  ptr = osip_realloc (ptr, length);
 	  tmp_body = ptr + len;
 	}
-      osip_strncpy (tmp_body, tmp, strlen (tmp));
+      tmp_body = osip_str_append (tmp_body, tmp);
       osip_free (tmp);
-      tmp_body = tmp_body + strlen (tmp_body);
-      osip_strncpy (tmp_body, CRLF, 2);
-      tmp_body = tmp_body + 2;
+      tmp_body = osip_strn_append (tmp_body, CRLF, 2);
       pos++;
     }
 
   if ((osip_list_size (body->headers) > 0) || (body->content_type != NULL))
     {
-      osip_strncpy (tmp_body, CRLF, 2);
-      tmp_body = tmp_body + 2;
+      tmp_body = osip_strn_append (tmp_body, CRLF, 2);
     }
   if (length < tmp_body - ptr + body->length + 4)
     {

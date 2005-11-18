@@ -170,8 +170,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
 	  from->displayname = (char *) osip_malloc (url - hvalue + 1);
 	  if (from->displayname == NULL)
 	    return -1;
-	  osip_strncpy (from->displayname, hvalue, url - hvalue);
-	  osip_clrspace (from->displayname);
+	  osip_clrncpy (from->displayname, hvalue, url - hvalue);
 	}
       url++;			/* place pointer on the beginning of url */
     }

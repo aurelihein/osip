@@ -463,94 +463,71 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
     return -1;
   *dest = tmp;
 
-  osip_strncpy (tmp, auth->auth_type, strlen (auth->auth_type));
-  tmp = tmp + strlen (tmp);
+  tmp = osip_str_append (tmp, auth->auth_type );
 
   if (auth->username != NULL)
     {
-      osip_strncpy (tmp, " username=", 10);
-      tmp = tmp + 10;
+      tmp = osip_strn_append (tmp, " username=", 10);
       /* !! username-value must be a quoted string !! */
-      osip_strncpy (tmp, auth->username, strlen (auth->username));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append(tmp, auth->username);
     }
 
   if (auth->realm != NULL)
     {
-      osip_strncpy (tmp, ", realm=", 8);
-      tmp = tmp + 8;
+      tmp = osip_strn_append (tmp, ", realm=", 8);
       /* !! realm-value must be a quoted string !! */
-      osip_strncpy (tmp, auth->realm, strlen (auth->realm));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append (tmp, auth->realm);
     }
   if (auth->nonce != NULL)
     {
-      osip_strncpy (tmp, ", nonce=", 8);
-      tmp = tmp + 8;
+      tmp = osip_strn_append (tmp, ", nonce=", 8);
       /* !! nonce-value must be a quoted string !! */
-      osip_strncpy (tmp, auth->nonce, strlen (auth->nonce));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append(tmp, auth->nonce);
     }
 
   if (auth->uri != NULL)
     {
-      osip_strncpy (tmp, ", uri=", 6);
-      tmp = tmp + 6;
+      tmp = osip_strn_append (tmp, ", uri=", 6);
       /* !! domain-value must be a list of URI in a quoted string !! */
-      osip_strncpy (tmp, auth->uri, strlen (auth->uri));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append (tmp, auth->uri);
     }
   if (auth->response != NULL)
     {
-      osip_strncpy (tmp, ", response=", 11);
-      tmp = tmp + 11;
+      tmp = osip_strn_append (tmp, ", response=", 11);
       /* !! domain-value must be a list of URI in a quoted string !! */
-      osip_strncpy (tmp, auth->response, strlen (auth->response));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append (tmp, auth->response);
     }
 
   if (auth->digest != NULL)
     {
-      osip_strncpy (tmp, ", digest=", 9);
-      tmp = tmp + 9;
+      tmp = osip_strn_append (tmp, ", digest=", 9);
       /* !! domain-value must be a list of URI in a quoted string !! */
-      osip_strncpy (tmp, auth->digest, strlen (auth->digest));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_str_append (tmp, auth->digest);
     }
   if (auth->algorithm != NULL)
     {
-      osip_strncpy (tmp, ", algorithm=", 12);
-      tmp = tmp + 12;
-      osip_strncpy (tmp, auth->algorithm, strlen (auth->algorithm));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", algorithm=", 12);
+      tmp = osip_str_append(tmp, auth->algorithm);
     }
   if (auth->cnonce != NULL)
     {
-      osip_strncpy (tmp, ", cnonce=", 9);
-      tmp = tmp + 9;
-      osip_strncpy (tmp, auth->cnonce, strlen (auth->cnonce));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", cnonce=", 9);
+      tmp = osip_str_append(tmp, auth->cnonce);
     }
   if (auth->opaque != NULL)
     {
-      osip_strncpy (tmp, ", opaque=", 9);
-      tmp = tmp + 9;
-      osip_strncpy (tmp, auth->opaque, strlen (auth->opaque));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append (tmp, ", opaque=", 9);
+      tmp = osip_str_append(tmp, auth->opaque);
     }
   if (auth->message_qop != NULL)
     {
-      osip_strncpy (tmp, ", qop=", 6);
-      tmp = tmp + 6;
-      osip_strncpy (tmp, auth->message_qop, strlen (auth->message_qop));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", qop=", 6);
+      tmp = osip_str_append(tmp, auth->message_qop);
     }
   if (auth->nonce_count != NULL)
     {
-      osip_strncpy (tmp, ", nc=", 5);
-      tmp = tmp + 5;
-      osip_strncpy (tmp, auth->nonce_count, strlen (auth->nonce_count));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append (tmp, ", nc=", 5);
+      tmp = osip_str_append(tmp, auth->nonce_count);
     }
   return 0;
 }

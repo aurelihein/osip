@@ -243,8 +243,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
 	  url->port = (char *) osip_malloc (params - port);
 	  if (url->port == NULL)
 	    return -1;
-	  osip_strncpy (url->port, port + 1, params - port - 1);
-	  osip_clrspace (url->port);
+	  osip_clrncpy (url->port, port + 1, params - port - 1);
 	}
     }
   else
@@ -267,8 +266,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
   url->host = (char *) osip_malloc (port - host);
   if (url->host == NULL)
     return -1;
-  osip_strncpy (url->host, host + 1, port - host - 1);
-  osip_clrspace (url->host);
+  osip_clrncpy (url->host, host + 1, port - host - 1);
 
   return 0;
 }

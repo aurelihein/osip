@@ -88,16 +88,14 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
   cseq->number = (char *) osip_malloc (method - hvalue + 1);
   if (cseq->number == NULL)
     return -1;
-  osip_strncpy (cseq->number, hvalue, method - hvalue);
-  osip_clrspace (cseq->number);
+  osip_clrncpy (cseq->number, hvalue, method - hvalue);
 
   if (end - method + 1 < 2)
     return -1;
   cseq->method = (char *) osip_malloc (end - method + 1);
   if (cseq->method == NULL)
     return -1;
-  osip_strncpy (cseq->method, method + 1, end - method);
-  osip_clrspace (cseq->method);
+  osip_clrncpy (cseq->method, method + 1, end - method);
 
   return 0;			/* ok */
 }

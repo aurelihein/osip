@@ -68,12 +68,16 @@ int
 osip_content_length_parse (osip_content_length_t * content_length,
 			   const char *hvalue)
 {
-  if (strlen (hvalue) + 1 < 2)
+  int len;
+  if (hvalue==NULL)
     return -1;
-  content_length->value = (char *) osip_malloc (strlen (hvalue) + 1);
+  len = strlen (hvalue);
+  if (len + 1 < 2)
+    return -1;
+  content_length->value = (char *) osip_malloc (len + 1);
   if (content_length->value == NULL)
     return -1;
-  osip_strncpy (content_length->value, hvalue, strlen (hvalue));
+  osip_strncpy (content_length->value, hvalue, len);
   return 0;
 }
 

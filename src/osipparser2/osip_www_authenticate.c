@@ -208,8 +208,7 @@ __osip_token_set (const char *name, const char *str, char **result,
       *result = (char *) osip_malloc (end - beg);
       if (*result == NULL)
 	return -1;
-      osip_strncpy (*result, beg + 1, end - beg - 1);
-      osip_clrspace (*result);
+      osip_clrncpy (*result, beg + 1, end - beg - 1);
 
       /* make sure the element does not contain more parameter */
       tmp = (*end) ? (end + 1) : end;
@@ -533,57 +532,42 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa,
     return -1;
   *dest = tmp;
 
-  osip_strncpy (tmp, wwwa->auth_type, strlen (wwwa->auth_type));
-  tmp = tmp + strlen (tmp);
+  tmp = osip_str_append(tmp, wwwa->auth_type);
 
   if (wwwa->realm != NULL)
     {
-      osip_strncpy (tmp, " realm=", 7);
-      tmp = tmp + 7;
-      osip_strncpy (tmp, wwwa->realm, strlen (wwwa->realm));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, " realm=", 7);
+      tmp = osip_str_append(tmp, wwwa->realm);
     }
   if (wwwa->domain != NULL)
     {
-      osip_strncpy (tmp, ", domain=", 9);
-      tmp = tmp + 9;
-      osip_strncpy (tmp, wwwa->domain, strlen (wwwa->domain));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", domain=", 9);
+      tmp = osip_str_append(tmp, wwwa->domain);
     }
   if (wwwa->nonce != NULL)
     {
-      osip_strncpy (tmp, ", nonce=", 8);
-      tmp = tmp + 8;
-      osip_strncpy (tmp, wwwa->nonce, strlen (wwwa->nonce));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", nonce=", 8);
+      tmp = osip_str_append(tmp, wwwa->nonce);
     }
   if (wwwa->opaque != NULL)
     {
-      osip_strncpy (tmp, ", opaque=", 9);
-      tmp = tmp + 9;
-      osip_strncpy (tmp, wwwa->opaque, strlen (wwwa->opaque));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", opaque=", 9);
+      tmp = osip_str_append(tmp, wwwa->opaque);
     }
   if (wwwa->stale != NULL)
     {
-      osip_strncpy (tmp, ", stale=", 8);
-      tmp = tmp + 8;
-      osip_strncpy (tmp, wwwa->stale, strlen (wwwa->stale));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", stale=", 8);
+      tmp = osip_str_append(tmp, wwwa->stale);
     }
   if (wwwa->algorithm != NULL)
     {
-      osip_strncpy (tmp, ", algorithm=", 12);
-      tmp = tmp + 12;
-      osip_strncpy (tmp, wwwa->algorithm, strlen (wwwa->algorithm));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", algorithm=", 12);
+      tmp = osip_str_append(tmp, wwwa->algorithm);
     }
   if (wwwa->qop_options != NULL)
     {
-      osip_strncpy (tmp, ", qop=", 6);
-      tmp = tmp + 6;
-      osip_strncpy (tmp, wwwa->qop_options, strlen (wwwa->qop_options));
-      tmp = tmp + strlen (tmp);
+      tmp = osip_strn_append(tmp, ", qop=", 6);
+      tmp = osip_str_append(tmp, wwwa->qop_options);
     }
 
   if (wwwa->realm == NULL)

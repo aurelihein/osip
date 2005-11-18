@@ -88,8 +88,7 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
   cd->element = (char *) osip_malloc (cd_params - hvalue + 1);
   if (cd->element == NULL)
     return -1;
-  osip_strncpy (cd->element, hvalue, cd_params - hvalue);
-  osip_clrspace (cd->element);
+  osip_clrncpy (cd->element, hvalue, cd_params - hvalue);
 
   return 0;
 }

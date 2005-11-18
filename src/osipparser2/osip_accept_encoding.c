@@ -112,9 +112,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
     (char *) osip_malloc (osip_accept_encoding_params - hvalue + 1);
   if (accept_encoding->element == NULL)
     return -1;
-  osip_strncpy (accept_encoding->element, hvalue,
-		osip_accept_encoding_params - hvalue);
-  osip_clrspace (accept_encoding->element);
+  osip_clrncpy (accept_encoding->element, hvalue, osip_accept_encoding_params - hvalue);
 
   return 0;
 }

@@ -269,6 +269,11 @@ void osip_free(void *);
   int osip_strcasecmp (const char *s1, const char *s2);
   int osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
+  unsigned long osip_hash( const char* str );
+  char* osip_str_append( char* dst, const char* src );
+  char* osip_strn_append( char* dst, const char* src, size_t len );
+  char* osip_clrncpy( char* dst, const char* src, size_t len );
+
 /**************************/
 /* LOG&DEBUG support      */
 /**************************/

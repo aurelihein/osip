@@ -156,8 +156,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   via->version = (char *) osip_malloc (protocol - version);
   if (via->version == NULL)
     return -1;
-  osip_strncpy (via->version, version + 1, protocol - version - 1);
-  osip_clrspace (via->version);
+  osip_clrncpy (via->version, version + 1, protocol - version - 1);
 
   /* Here: we avoid matching an additionnal space */
   host = strchr (protocol + 1, ' ');
@@ -183,8 +182,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   via->protocol = (char *) osip_malloc (host - protocol);
   if (via->protocol == NULL)
     return -1;
-  osip_strncpy (via->protocol, protocol + 1, host - protocol - 1);
-  osip_clrspace (via->protocol);
+  osip_clrncpy (via->protocol, protocol + 1, host - protocol - 1);
 
   /* comments in Via are not allowed any more in the latest draft (09) */
   comment = strchr (host, '(');
@@ -241,8 +239,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
       via->host = (char *) osip_malloc (port - ipv6host);
       if (via->host == NULL)
 	return -1;
-      osip_strncpy (via->host, ipv6host + 1, port - ipv6host - 1);
-      osip_clrspace (via->host);
+      osip_clrncpy (via->host, ipv6host + 1, port - ipv6host - 1);
 
       port = strchr (port, ':');
     }
@@ -259,8 +256,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
       via->port = (char *) osip_malloc (via_params - port);
       if (via->port == NULL)
 	return -1;
-      osip_strncpy (via->port, port + 1, via_params - port - 1);
-      osip_clrspace (via->port);
+      osip_clrncpy (via->port, port + 1, via_params - port - 1);
     }
   else
     port = via_params;
@@ -274,8 +270,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   via->host = (char *) osip_malloc (port - host);
   if (via->host == NULL)
     return -1;
-  osip_strncpy (via->host, host + 1, port - host - 1);
-  osip_clrspace (via->host);
+  osip_clrncpy (via->host, host + 1, port - host - 1);
 
   return 0;
 }

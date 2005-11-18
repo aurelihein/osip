@@ -22,136 +22,158 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
-#if defined(HAVE_DICT_DICT_H)
+#ifndef USE_GPERF
 
-#include <dict/dict.h>
-
-static dict *dct = NULL;
 static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
 
-#define HSIZE           33
+/* The size of the hash table seems large for a limited number of possible entries
+ * The 'problem' is that the header name are too much alike for the osip_hash() function
+ * which gives a poor deviation.
+ * Anyway, this mechanism improves the search time (from binary seach (log(n)) to 1).
+ */
 
-unsigned
-s_hash(const unsigned char *p);
+#define HASH_TABLE_SIZE 150                 /* set this to the hash table size, 150 is the first size
+                                               where no conflicts occur                               */
+static int hdr_ref_table[HASH_TABLE_SIZE];  /* the hashtable contains indices to the pconfig table    */
 
-unsigned
-s_hash(const unsigned char *p)
+/*
+  list of compact header:
+  i: Call-ID   => ok
+  m: Contact   => ok
+  e: Content-Encoding   => ok
+  l: Content-Length   => ok
+  c: Content-Type   => ok
+  f: From   => ok
+  s: Subject   => NOT A SUPPORTED HEADER! will be
+                 available in the list of unknown headers
+  t: To   => ok
+  v: Via   => ok
+*/
+/* This method must be called before using the parser */
+int parser_init (void)
 {
-        unsigned hash = 0;
+  int i = 0;
 
-        while (*p) {
-                hash *= 31;
-                hash ^= *p++;
-        }
-        return hash;
-}
+  pconfig[i].hname = ACCEPT;
+  pconfig[i++].setheader = (&osip_message_set_accept);
+  pconfig[i].hname = ACCEPT_ENCODING;
+  pconfig[i++].setheader = (&osip_message_set_accept_encoding);
+  pconfig[i].hname = ACCEPT_LANGUAGE;
+  pconfig[i++].setheader = (&osip_message_set_accept_language);
+  pconfig[i].hname = ALERT_INFO;
+  pconfig[i++].setheader = (&osip_message_set_alert_info);
+  pconfig[i].hname = ALLOW;
+  pconfig[i++].setheader = (&osip_message_set_allow);
+  pconfig[i].hname = AUTHENTICATION_INFO;
+  pconfig[i++].setheader = (&osip_message_set_authentication_info);
+  pconfig[i].hname = AUTHORIZATION;
+  pconfig[i++].setheader = (&osip_message_set_authorization);
+  pconfig[i].hname = CONTENT_TYPE_SHORT;	/* "l" */
+  pconfig[i++].setheader = (&osip_message_set_content_type);
+  pconfig[i].hname = CALL_ID;
+  pconfig[i++].setheader = (&osip_message_set_call_id);
+  pconfig[i].hname = CALL_INFO;
+  pconfig[i++].setheader = (&osip_message_set_call_info);
+  pconfig[i].hname = CONTACT;
+  pconfig[i++].setheader = (&osip_message_set_contact);
+  pconfig[i].hname = CONTENT_ENCODING;
+  pconfig[i++].setheader = (&osip_message_set_content_encoding);
+  pconfig[i].hname = CONTENT_LENGTH;
+  pconfig[i++].setheader = (&osip_message_set_content_length);
+  pconfig[i].hname = CONTENT_TYPE;
+  pconfig[i++].setheader = (&osip_message_set_content_type);
+  pconfig[i].hname = CSEQ;
+  pconfig[i++].setheader = (&osip_message_set_cseq);
+  pconfig[i].hname = CONTENT_ENCODING_SHORT;	/* "e" */
+  pconfig[i++].setheader = (&osip_message_set_content_encoding);
+  pconfig[i].hname = ERROR_INFO;
+  pconfig[i++].setheader = (&osip_message_set_error_info);
+  pconfig[i].hname = FROM_SHORT;	/* "f" */
+  pconfig[i++].setheader = (&osip_message_set_from);
+  pconfig[i].hname = FROM;
+  pconfig[i++].setheader = (&osip_message_set_from);
+  pconfig[i].hname = CALL_ID_SHORT;	/* "i" */
+  pconfig[i++].setheader = (&osip_message_set_call_id);
+  pconfig[i].hname = CONTENT_LENGTH_SHORT;	/* "l" */
+  pconfig[i++].setheader = (&osip_message_set_content_length);
+  pconfig[i].hname = CONTACT_SHORT;	/* "m" */
+  pconfig[i++].setheader = (&osip_message_set_contact);
+  pconfig[i].hname = MIME_VERSION;
+  pconfig[i++].setheader = (&osip_message_set_mime_version);
+  pconfig[i].hname = PROXY_AUTHENTICATE;
+  pconfig[i++].setheader = (&osip_message_set_proxy_authenticate);
+  pconfig[i].hname = PROXY_AUTHENTICATION_INFO;
+  pconfig[i++].setheader = (&osip_message_set_proxy_authentication_info);
+  pconfig[i].hname = PROXY_AUTHORIZATION;
+  pconfig[i++].setheader = (&osip_message_set_proxy_authorization);
+  pconfig[i].hname = RECORD_ROUTE;
+  pconfig[i++].setheader = (&osip_message_set_record_route);
+  pconfig[i].hname = ROUTE;
+  pconfig[i++].setheader = (&osip_message_set_route);
+  pconfig[i].hname = TO_SHORT;
+  pconfig[i++].setheader = (&osip_message_set_to);
+  pconfig[i].hname = TO;
+  pconfig[i++].setheader = (&osip_message_set_to);
+  pconfig[i].hname = VIA_SHORT;
+  pconfig[i++].setheader = (&osip_message_set_via);
+  pconfig[i].hname = VIA;
+  pconfig[i++].setheader = (&osip_message_set_via);
+  pconfig[i].hname = WWW_AUTHENTICATE;
+  pconfig[i++].setheader = (&osip_message_set_www_authenticate);
 
-int
-parser_init ()
-{
-  if (dct==NULL)
+  /* build up hash table for fast header lookup */
+
+  /* initialize the table */
+  for ( i = 0; i < HASH_TABLE_SIZE; i++ )
+  {
+    hdr_ref_table[i] = -1; /* -1 -> no entry */
+  }
+
+  for ( i=0; i < NUMBER_OF_HEADERS; i++ )
+  {
+    unsigned long hash;
+    /* calculate hash value using lower case */
+    /* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
+    hash = osip_hash( pconfig[i].hname );
+    hash = hash % HASH_TABLE_SIZE;
+
+    if ( hdr_ref_table[hash] == -1 )
     {
-      int i = 0;
-      dict_set_malloc(malloc);
-      dct = hashtable_dict_new((dict_cmp_func)strcmp, (dict_hsh_func)s_hash,
-			       NULL, NULL, HSIZE);
-
-
-      pconfig[i].hname = ACCEPT;
-      pconfig[i++].setheader = (&osip_message_set_accept);
-      pconfig[i].hname = ACCEPT_ENCODING;
-      pconfig[i++].setheader = (&osip_message_set_accept_encoding);
-      pconfig[i].hname = ACCEPT_LANGUAGE;
-      pconfig[i++].setheader = (&osip_message_set_accept_language);
-      pconfig[i].hname = ALERT_INFO;
-      pconfig[i++].setheader = (&osip_message_set_alert_info);
-      pconfig[i].hname = ALLOW;
-      pconfig[i++].setheader = (&osip_message_set_allow);
-      pconfig[i].hname = AUTHENTICATION_INFO;
-      pconfig[i++].setheader = (&osip_message_set_authentication_info);
-      pconfig[i].hname = AUTHORIZATION;
-      pconfig[i++].setheader = (&osip_message_set_authorization);
-      pconfig[i].hname = CONTENT_TYPE_SHORT;	/* "l" */
-      pconfig[i++].setheader = (&osip_message_set_content_type);
-      pconfig[i].hname = CALL_ID;
-      pconfig[i++].setheader = (&osip_message_set_call_id);
-      pconfig[i].hname = CALL_INFO;
-      pconfig[i++].setheader = (&osip_message_set_call_info);
-      pconfig[i].hname = CONTACT;
-      pconfig[i++].setheader = (&osip_message_set_contact);
-      pconfig[i].hname = CONTENT_ENCODING;
-      pconfig[i++].setheader = (&osip_message_set_content_encoding);
-      pconfig[i].hname = CONTENT_LENGTH;
-      pconfig[i++].setheader = (&osip_message_set_content_length);
-      pconfig[i].hname = CONTENT_TYPE;
-      pconfig[i++].setheader = (&osip_message_set_content_type);
-      pconfig[i].hname = CSEQ;
-      pconfig[i++].setheader = (&osip_message_set_cseq);
-      pconfig[i].hname = CONTENT_ENCODING_SHORT;	/* "e" */
-      pconfig[i++].setheader = (&osip_message_set_content_encoding);
-      pconfig[i].hname = ERROR_INFO;
-      pconfig[i++].setheader = (&osip_message_set_error_info);
-      pconfig[i].hname = FROM_SHORT;	/* "f" */
-      pconfig[i++].setheader = (&osip_message_set_from);
-      pconfig[i].hname = FROM;
-      pconfig[i++].setheader = (&osip_message_set_from);
-      pconfig[i].hname = CALL_ID_SHORT;	/* "i" */
-      pconfig[i++].setheader = (&osip_message_set_call_id);
-      pconfig[i].hname = CONTENT_LENGTH_SHORT;	/* "l" */
-      pconfig[i++].setheader = (&osip_message_set_content_length);
-      pconfig[i].hname = CONTACT_SHORT;	/* "m" */
-      pconfig[i++].setheader = (&osip_message_set_contact);
-      pconfig[i].hname = MIME_VERSION;
-      pconfig[i++].setheader = (&osip_message_set_mime_version);
-      pconfig[i].hname = PROXY_AUTHENTICATE;
-      pconfig[i++].setheader = (&osip_message_set_proxy_authenticate);
-      pconfig[i].hname = PROXY_AUTHENTICATION_INFO;
-      pconfig[i++].setheader = (&osip_message_set_proxy_authentication_info);
-      pconfig[i].hname = PROXY_AUTHORIZATION;
-      pconfig[i++].setheader = (&osip_message_set_proxy_authorization);
-      pconfig[i].hname = RECORD_ROUTE;
-      pconfig[i++].setheader = (&osip_message_set_record_route);
-      pconfig[i].hname = ROUTE;
-      pconfig[i++].setheader = (&osip_message_set_route);
-      pconfig[i].hname = TO_SHORT;
-      pconfig[i++].setheader = (&osip_message_set_to);
-      pconfig[i].hname = TO;
-      pconfig[i++].setheader = (&osip_message_set_to);
-      pconfig[i].hname = VIA_SHORT;
-      pconfig[i++].setheader = (&osip_message_set_via);
-      pconfig[i].hname = VIA;
-      pconfig[i++].setheader = (&osip_message_set_via);
-      pconfig[i].hname = WWW_AUTHENTICATE;
-      pconfig[i++].setheader = (&osip_message_set_www_authenticate);
-      
-      for (i=0;i<NUMBER_OF_HEADERS;i++)
-	{
-	  int rv;
-	  pconfig[i].i = i;
-	  rv = dict_insert(dct, pconfig[i].hname, (void *)&pconfig[i].i, FALSE);
-	  if (rv == 0)
-	    {
-	      OSIP_TRACE (osip_trace
-			  (__FILE__, __LINE__, OSIP_INFO4, NULL,
-			   "inserted `%s'\n", pconfig[i].hname));
-	    }
-	}
+      /* store reference(index) to pconfig table */
+      hdr_ref_table[hash] = i;
     }
+    else
+    {
+      /* oops, conflict!-> change the hash table or use another hash function size */
+      return -1;
+    }
+  }
+
   return 0;
 }
 
-int
-__osip_message_is_known_header (const char *hname)
+/* improved look-up mechanism
+   precondition: hname is all lowercase */
+int __osip_message_is_known_header (const char *hname)
 {
-  int *i;
-  i = (int *)dict_search(dct, hname);
-  if (i==NULL)
-    return -1;
-  return *i;
+  unsigned long hash;
+  int result = -1;
+
+  int index;
+  hash = osip_hash( hname );
+  hash = hash % HASH_TABLE_SIZE;
+  index = hdr_ref_table[hash];
+
+  if ( (index != -1) &&
+       (0 == strcmp(pconfig[index].hname, hname)) )
+  {
+    result = index;
+  }
+
+  return result;
 }
 
-#elif defined(USE_GPERF)
-
+#else /* USE_GPERF */
 /* C code produced by gperf version 2.7.2 */
 /* Command-line: gperf sip.gperf  */
 
@@ -337,167 +359,6 @@ __osip_message_is_known_header (const char *hname)
 
   iLength = strlen (hname);
   return in_word_set (hname, iLength);
-}
-
-
-#else /* basic list */
-
-static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
-
-/*
-  list of compact header:
-  i: Call-ID   => ok
-  m: Contact   => ok
-  e: Content-Encoding   => ok
-  l: Content-Length   => ok
-  c: Content-Type   => ok
-  f: From   => ok
-  s: Subject   => NOT A SUPPORTED HEADER! will be
-                 available in the list of unknown headers
-  t: To   => ok
-  v: Via   => ok
-*/
-/* This method must be called before using the parser */
-int
-parser_init ()
-{
-  int i = 0;
-
-  pconfig[i].hname = ACCEPT;
-  pconfig[i++].setheader = (&osip_message_set_accept);
-  pconfig[i].hname = ACCEPT_ENCODING;
-  pconfig[i++].setheader = (&osip_message_set_accept_encoding);
-  pconfig[i].hname = ACCEPT_LANGUAGE;
-  pconfig[i++].setheader = (&osip_message_set_accept_language);
-  pconfig[i].hname = ALERT_INFO;
-  pconfig[i++].setheader = (&osip_message_set_alert_info);
-  pconfig[i].hname = ALLOW;
-  pconfig[i++].setheader = (&osip_message_set_allow);
-  pconfig[i].hname = AUTHENTICATION_INFO;
-  pconfig[i++].setheader = (&osip_message_set_authentication_info);
-  pconfig[i].hname = AUTHORIZATION;
-  pconfig[i++].setheader = (&osip_message_set_authorization);
-  pconfig[i].hname = CONTENT_TYPE_SHORT;	/* "l" */
-  pconfig[i++].setheader = (&osip_message_set_content_type);
-  pconfig[i].hname = CALL_ID;
-  pconfig[i++].setheader = (&osip_message_set_call_id);
-  pconfig[i].hname = CALL_INFO;
-  pconfig[i++].setheader = (&osip_message_set_call_info);
-  pconfig[i].hname = CONTACT;
-  pconfig[i++].setheader = (&osip_message_set_contact);
-  pconfig[i].hname = CONTENT_ENCODING;
-  pconfig[i++].setheader = (&osip_message_set_content_encoding);
-  pconfig[i].hname = CONTENT_LENGTH;
-  pconfig[i++].setheader = (&osip_message_set_content_length);
-  pconfig[i].hname = CONTENT_TYPE;
-  pconfig[i++].setheader = (&osip_message_set_content_type);
-  pconfig[i].hname = CSEQ;
-  pconfig[i++].setheader = (&osip_message_set_cseq);
-  pconfig[i].hname = CONTENT_ENCODING_SHORT;	/* "e" */
-  pconfig[i++].setheader = (&osip_message_set_content_encoding);
-  pconfig[i].hname = ERROR_INFO;
-  pconfig[i++].setheader = (&osip_message_set_error_info);
-  pconfig[i].hname = FROM_SHORT;	/* "f" */
-  pconfig[i++].setheader = (&osip_message_set_from);
-  pconfig[i].hname = FROM;
-  pconfig[i++].setheader = (&osip_message_set_from);
-  pconfig[i].hname = CALL_ID_SHORT;	/* "i" */
-  pconfig[i++].setheader = (&osip_message_set_call_id);
-  pconfig[i].hname = CONTENT_LENGTH_SHORT;	/* "l" */
-  pconfig[i++].setheader = (&osip_message_set_content_length);
-  pconfig[i].hname = CONTACT_SHORT;	/* "m" */
-  pconfig[i++].setheader = (&osip_message_set_contact);
-  pconfig[i].hname = MIME_VERSION;
-  pconfig[i++].setheader = (&osip_message_set_mime_version);
-  pconfig[i].hname = PROXY_AUTHENTICATE;
-  pconfig[i++].setheader = (&osip_message_set_proxy_authenticate);
-  pconfig[i].hname = PROXY_AUTHENTICATION_INFO;
-  pconfig[i++].setheader = (&osip_message_set_proxy_authentication_info);
-  pconfig[i].hname = PROXY_AUTHORIZATION;
-  pconfig[i++].setheader = (&osip_message_set_proxy_authorization);
-  pconfig[i].hname = RECORD_ROUTE;
-  pconfig[i++].setheader = (&osip_message_set_record_route);
-  pconfig[i].hname = ROUTE;
-  pconfig[i++].setheader = (&osip_message_set_route);
-  pconfig[i].hname = TO_SHORT;
-  pconfig[i++].setheader = (&osip_message_set_to);
-  pconfig[i].hname = TO;
-  pconfig[i++].setheader = (&osip_message_set_to);
-  pconfig[i].hname = VIA_SHORT;
-  pconfig[i++].setheader = (&osip_message_set_via);
-  pconfig[i].hname = VIA;
-  pconfig[i++].setheader = (&osip_message_set_via);
-  pconfig[i].hname = WWW_AUTHENTICATE;
-  pconfig[i++].setheader = (&osip_message_set_www_authenticate);
-
-  return 0;
-}
-
-/* search the header hname through pconfig[] tab. 
-   A quicker algorithm should be used.
-   It returns the index of the header in the __osip_message_config_t tab.
-*/
-int
-__osip_message_is_known_header (const char *hname)
-{
-  size_t length;
-  int iinf = 0;
-  int isup = NUMBER_OF_HEADERS;
-  int i = NUMBER_OF_HEADERS / 2;
-
-  length = strlen (hname);
-
-  for (;;)
-    {
-      if (i < 0 || i > NUMBER_OF_HEADERS - 1)
-	return -1;
-
-      if ((length == strlen (pconfig[i].hname))
-	  && osip_strncasecmp (hname, (const char *) pconfig[i].hname,
-			       length) == 0)
-	return i;
-
-      if (iinf == isup)
-	return -1;		/* not found */
-      if (iinf == isup - 1)
-	{
-	  if ((i < NUMBER_OF_HEADERS - 1)
-	      && (length == strlen (pconfig[i + 1].hname))
-	      && osip_strncasecmp (hname,
-				   (const char *) pconfig[i + 1].hname,
-				   length) == 0)
-	    return i + 1;
-	  else
-	    return -1;
-/* Unreachable code??
-	  if ((i > 0) && (length == strlen (pconfig[i - 1].hname))
-	      && osip_strncasecmp (hname,
-			  (const char *) pconfig[i - 1].hname, length) == 0)
-	    return i - 1;
-	  else
-	    return -1;
-*/
-	}
-      if (0 < osip_strncasecmp (hname,
-				(const char *) pconfig[i].hname, length))
-	{
-	  /* if this is true, search further */
-	  iinf = i;
-	  if (i == i + (isup - i) / 2)
-	    i++;
-	  else
-	    i = i + (isup - i) / 2;
-	}
-      else
-	{
-	  isup = i;
-	  if (i == i - (i - iinf) / 2)
-	    i--;
-	  else
-	    i = i - (i - iinf) / 2;
-	}
-    }				/* end of (while (1)) */
-  return -1;
 }
 
 #endif

@@ -113,16 +113,14 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
       callid->host = (char *) osip_malloc (end - host);
       if (callid->host == NULL)
 	return -1;
-      osip_strncpy (callid->host, host + 1, end - host - 1);
-      osip_clrspace (callid->host);
+      osip_clrncpy (callid->host, host + 1, end - host - 1);
     }
   if (host - hvalue + 1 < 2)
     return -1;
   callid->number = (char *) osip_malloc (host - hvalue + 1);
   if (callid->number == NULL)
     return -1;
-  osip_strncpy (callid->number, hvalue, host - hvalue);
-  osip_clrspace (callid->number);
+  osip_clrncpy (callid->number, hvalue, host - hvalue);
 
   return 0;			/* ok */
 }

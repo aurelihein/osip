@@ -114,8 +114,7 @@ osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
     (char *) osip_malloc (osip_call_info_params - hvalue + 1);
   if (call_info->element == NULL)
     return -1;
-  osip_strncpy (call_info->element, hvalue, osip_call_info_params - hvalue);
-  osip_clrspace (call_info->element);
+  osip_clrncpy (call_info->element, hvalue, osip_call_info_params - hvalue);
 
   return 0;
 }

@@ -133,8 +133,7 @@ osip_content_type_parse (osip_content_type_t * content_type,
   content_type->type = (char *) osip_malloc (subtype - hvalue + 1);
   if (content_type->type == NULL)
     return -1;
-  osip_strncpy (content_type->type, hvalue, subtype - hvalue);
-  osip_clrspace (content_type->type);
+  osip_clrncpy (content_type->type, hvalue, subtype - hvalue);
 
   if (osip_content_type_params - subtype < 2)
     return -1;
@@ -142,9 +141,8 @@ osip_content_type_parse (osip_content_type_t * content_type,
     (char *) osip_malloc (osip_content_type_params - subtype);
   if (content_type->subtype == NULL)
     return -1;
-  osip_strncpy (content_type->subtype, subtype + 1,
+  osip_clrncpy (content_type->subtype, subtype + 1,
 		osip_content_type_params - subtype - 1);
-  osip_clrspace (content_type->subtype);
 
   return 0;
 }

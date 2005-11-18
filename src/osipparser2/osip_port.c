@@ -1050,3 +1050,101 @@ void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line )
 }
 
 #endif
+
+
+// ---For better performance---
+// Calculates a hash value for the given string
+unsigned long osip_hash( const char* str )
+{
+  unsigned long hash = 5381;
+  int c;
+
+  while (c = *str++)
+      hash = ((hash << 5) + hash) + c; 
+
+  return hash;  
+}
+
+// ---For better performance---
+// Appends src-string to dst-string.
+//
+// This was introduced to replace the 
+// inefficient constructions like:
+//
+//   osip_strncpy (tmp, src, strlen(src) );
+//   tmp = tmp + strlen (src);
+//
+// This function returns a pointer to the
+// end of the destination string
+//
+// Pre: src is null terminated
+char* osip_str_append( char* dst, const char* src )
+{
+  while( *src != '\0' )
+  {
+    *dst = *src;
+    src++;
+    dst++;
+  }
+  *dst = '\0';
+  return dst;
+}
+
+// ---For better performance---
+// Same as above, only this time we know the length
+char* osip_strn_append( char* dst, const char* src, size_t len )
+{
+  memmove( (void*)dst, (void*)src, len );
+  dst += len;
+  *dst = '\0';
+  return dst;
+}
+
+
+// ---For better performance---
+// This is to replace this construction:
+//    osip_strncpy (  dest, source, length);
+//    osip_clrspace ( dest );
+//
+char* osip_clrncpy( char* dst, const char *src, size_t len)
+{
+  const char *pbeg;
+  const char *pend;
+  char* p;
+  size_t spaceless_length;
+
+  if ( src == NULL ) 
+    return NULL;
+
+  // find the start of relevant text
+  pbeg = src;
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
+    pbeg++;
+
+
+  // find the end of relevant text
+  pend = src + len - 1;
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
+  {
+    pend--;
+    if (pend < pbeg)
+	  {
+	    *dst = '\0';
+	    return dst;
+	  }
+  }
+
+  // if pend == pbeg there is only one char to copy
+  spaceless_length = pend - pbeg + 1; // excluding any '\0'
+  memmove (dst, pbeg, spaceless_length);
+  p = dst + spaceless_length;
+
+  // terminate the string and pad dest with zeros until len
+  do {
+    *p = '\0';
+    p++;
+    spaceless_length++;
+  } while ( spaceless_length < len );
+  
+  return dst;
+}

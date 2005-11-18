@@ -85,8 +85,7 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
     }
 
   requesturi = (char *) osip_malloc (p1 - p2);
-  osip_strncpy (requesturi, p2 + 1, (p1 - p2 - 1));
-  osip_clrspace (requesturi);
+  osip_clrncpy (requesturi, p2 + 1, (p1 - p2 - 1));
 
   osip_uri_init (&(dest->req_uri));
   i = osip_uri_parse (dest->req_uri, requesturi);
@@ -442,13 +441,8 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
   char *quote2;			/* second quuote of a pair of quotes */
   size_t   hname_len;
 
-  beg = hvalue;
-  end = NULL;
-  ptr = hvalue;
-
-#ifndef DONOTLOWERCASEHEADERS
+  /* Find header based upon lowercase comparison */
   osip_tolower (hname);
-#endif
 
   if (hvalue == NULL)
     {
@@ -458,27 +452,28 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
       return 0;
     }
 
+  ptr = hvalue;
   comma = strchr (ptr, ',');
 
   hname_len = strlen(hname);
 
   if (comma == NULL
-      || (hname_len == 4 && osip_strncasecmp (hname, "date", 4) == 0)
-      || (hname_len == 2 && osip_strncasecmp (hname, "to", 2) == 0)
-      || (hname_len == 4 && osip_strncasecmp (hname, "from", 4) == 0)
-      || (hname_len == 7 && osip_strncasecmp (hname, "call-id", 7) == 0)
-      || (hname_len == 4 && osip_strncasecmp (hname, "cseq", 4) == 0)
-      || (hname_len == 7 && osip_strncasecmp (hname, "subject", 7) == 0)
-      || (hname_len == 7 && osip_strncasecmp (hname, "expires", 7) == 0)
-      || (hname_len == 6 && osip_strncasecmp (hname, "server", 6) == 0)
-      || (hname_len == 10 && osip_strncasecmp (hname, "user-agent", 10) == 0)
-      || (hname_len == 16 && osip_strncasecmp (hname, "www-authenticate", 16) == 0)
-      || (hname_len == 19 && osip_strncasecmp (hname, "authentication-info", 19) == 0)
-      || (hname_len == 18 && osip_strncasecmp (hname, "proxy-authenticate", 18) == 0)
-      || (hname_len == 19 && osip_strncasecmp (hname, "proxy-authorization", 19) == 0)
-      || (hname_len == 25 && osip_strncasecmp (hname, "proxy-authentication-info", 25) == 0)
-      || (hname_len == 12 && osip_strncasecmp (hname, "organization", 12) == 0)
-      || (hname_len == 13 && osip_strncasecmp (hname, "authorization", 13) == 0))
+    || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
+    || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
+    || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
+    || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
+    || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
+    || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
+    || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
+    || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
+    || (hname_len == 10 && strncmp (hname, "user-agent", 10) == 0)
+    || (hname_len == 16 && strncmp (hname, "www-authenticate", 16) == 0)
+    || (hname_len == 19 && strncmp (hname, "authentication-info", 19) == 0)
+    || (hname_len == 18 && strncmp (hname, "proxy-authenticate", 18) == 0)
+    || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
+    || (hname_len == 25 && strncmp (hname, "proxy-authentication-info", 25) == 0)
+    || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
+    || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
     /* or hname is a TEXT-UTF8-TRIM and may     */
@@ -491,6 +486,8 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
       return 0;
     }
 
+  beg = hvalue;
+  end = NULL;
   quote2 = NULL;
   while (comma != NULL)
     {
@@ -578,8 +575,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	  if (end - beg + 1 < 2)
 	    return -1;
 	  avalue = (char *) osip_malloc (end - beg + 1);
-	  osip_strncpy (avalue, beg, end - beg);
-	  osip_clrspace (avalue);
+      osip_clrncpy (avalue, beg, end - beg);
 	  /* really store the header in the sip structure */
 	  i = osip_message_set__header (sip, hname, avalue);
 	  osip_free (avalue);
@@ -665,8 +661,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  return -1;
 	}
       hname = (char *) osip_malloc (colon_index - start_of_header + 1);
-      osip_strncpy (hname, start_of_header, colon_index - start_of_header);
-      osip_clrspace (hname);
+    osip_clrncpy (hname, start_of_header, colon_index - start_of_header);
 
       {
 	const char *end;
@@ -682,8 +677,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	else
 	  {
 	    hvalue = (char *) osip_malloc ((end) - colon_index+1);
-	    osip_strncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
-	    osip_clrspace (hvalue);
+        osip_clrncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
 	  }
       }
 
