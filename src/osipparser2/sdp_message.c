@@ -351,7 +351,7 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
 #ifdef FIREFLY_BUG_SUPPORT
   if (tmp[0]==' ')
     {
-      sdp->o_username = strdup("firefly");
+      sdp->o_username = osip_strdup("firefly");
       tmp++;
     }
   else
@@ -435,7 +435,7 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
 #ifdef FIREFLY_BUG_SUPPORT
   if (crlf == equal + 1)
     {
-      sdp->s_name = strdup(" ");
+      sdp->s_name = osip_strdup(" ");
       if (crlf[1] == '\n')
 	*next = crlf + 2;
       else
