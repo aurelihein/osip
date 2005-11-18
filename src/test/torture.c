@@ -100,7 +100,6 @@ main (int argc, char **argv)
 {
   int success = 1;
 
-  int i;
   int verbose = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
   int clone = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
   int binary = 0;
