@@ -68,7 +68,7 @@ int
 osip_content_length_parse (osip_content_length_t * content_length,
 			   const char *hvalue)
 {
-  int len;
+  size_t len;
   if (hvalue==NULL)
     return -1;
   len = strlen (hvalue);
