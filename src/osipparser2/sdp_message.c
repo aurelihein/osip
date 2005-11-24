@@ -19,6 +19,7 @@
 
 #include <osipparser2/osip_const.h>
 #include <osipparser2/sdp_message.h>
+#include <osipparser2/osip_message.h>
 #include <osipparser2/osip_port.h>
 
 #include <stdio.h>
@@ -1903,7 +1904,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   /* if (sdp->s_name == NULL)
      return -1; */
 
-  size = 4000;
+  size = BODY_MESSAGE_MAX_SIZE;
   tmp = (char *) osip_malloc (size);
   string = tmp;
 
