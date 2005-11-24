@@ -111,7 +111,7 @@ osip_content_type_parse (osip_content_type_t * content_type,
      ^          ^
    */
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0; /* It's valid to add empty Accept header! */
+    return 0;			/* It's valid to add empty Accept header! */
 
   subtype = strchr (hvalue, '/');
   osip_content_type_params = strchr (hvalue, ';');

@@ -55,53 +55,53 @@ extern "C"
  */
   struct osip_message
   {
-    char *sip_version;                /**< SIP version (SIP request only) */
-    osip_uri_t *req_uri;              /**< Request-Uri (SIP request only) */
-    char *sip_method;                 /**< METHOD (SIP request only) */
+    char *sip_version;		      /**< SIP version (SIP request only) */
+    osip_uri_t *req_uri;	      /**< Request-Uri (SIP request only) */
+    char *sip_method;		      /**< METHOD (SIP request only) */
 
-    int status_code;                  /**< Status Code (SIP answer only) */
-    char *reason_phrase;              /**< Reason Phrase (SIP answer only) */
+    int status_code;		      /**< Status Code (SIP answer only) */
+    char *reason_phrase;	      /**< Reason Phrase (SIP answer only) */
 
-    osip_list_t *accepts;             /**< Accept headers */
+    osip_list_t *accepts;	      /**< Accept headers */
     osip_list_t *accept_encodings;    /**< Accept-Encoding headers */
     osip_list_t *accept_languages;    /**< Accept-Language headers */
-    osip_list_t *alert_infos;         /**< Alert-Info headers */
-    osip_list_t *allows;              /**< Allows headers */
+    osip_list_t *alert_infos;	      /**< Alert-Info headers */
+    osip_list_t *allows;	      /**< Allows headers */
     osip_list_t *authentication_infos;/**< authentication_info headers */
     osip_list_t *authorizations;      /**< Authorizations headers */
-    osip_call_id_t *call_id;          /**< Call-ID header */
-    osip_list_t *call_infos;          /**< Call-Infos header */
-    osip_list_t *contacts;            /**< Contacts headers */
+    osip_call_id_t *call_id;	      /**< Call-ID header */
+    osip_list_t *call_infos;	      /**< Call-Infos header */
+    osip_list_t *contacts;	      /**< Contacts headers */
     osip_list_t *content_dispositions;/**< Content-Dispositions headers */
     osip_list_t *content_encodings;   /**< Content-Encodings headers */
     osip_content_length_t *content_length;   /**< Content-Length header */
-    osip_content_type_t *content_type;       /**< Content-Type header */
-    osip_cseq_t *cseq;                /**< CSeq header */
-    osip_list_t *error_infos;         /**< Error-Info headers */
-    osip_from_t *from;                /**< From header */
+    osip_content_type_t *content_type;	     /**< Content-Type header */
+    osip_cseq_t *cseq;		      /**< CSeq header */
+    osip_list_t *error_infos;	      /**< Error-Info headers */
+    osip_from_t *from;		      /**< From header */
     osip_mime_version_t *mime_version;/**< Mime-Version header */
     osip_list_t *proxy_authenticates; /**< Proxy-Authenticate headers */
     osip_list_t *proxy_authentication_infos; /**< P-Authentication-Info headers */
     osip_list_t *proxy_authorizations;/**< Proxy-authorization headers */
-    osip_list_t *record_routes;       /**< Record-Route headers */
-    osip_list_t *routes;              /**< Route headers */
-    osip_to_t *to;                    /**< To header */
-    osip_list_t *vias;                /**< Vias headers */
+    osip_list_t *record_routes;	      /**< Record-Route headers */
+    osip_list_t *routes;	      /**< Route headers */
+    osip_to_t *to;		      /**< To header */
+    osip_list_t *vias;		      /**< Vias headers */
     osip_list_t *www_authenticates;   /**< WWW-Authenticate headers */
 
-    osip_list_t *headers;             /**< Other headers */
+    osip_list_t *headers;	      /**< Other headers */
 
-    osip_list_t *bodies;              /**< List of attachements */
+    osip_list_t *bodies;	      /**< List of attachements */
 
     /*
        1: structure and buffer "message" are identical.
        2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
      */
-    int message_property;             /**@internal */
-    char *message;                    /**@internal */
-    size_t message_length;            /**@internal */
+    int message_property;	      /**@internal */
+    char *message;		      /**@internal */
+    size_t message_length;	      /**@internal */
 
-    void *application_data;           /**can be used by upper layer*/
+    void *application_data;	      /**can be used by upper layer*/
   };
 
 #ifndef SIP_MESSAGE_MAX_LENGTH
@@ -134,21 +134,24 @@ extern "C"
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-  int osip_message_parse (osip_message_t * sip, const char *buf, size_t length);
+  int osip_message_parse (osip_message_t * sip, const char *buf,
+			  size_t length);
 /**
  * Parse a message/sipfrag part and store it in an osip_message_t element.
  * @param sip The resulting element.
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-  int osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length);
+  int osip_message_parse_sipfrag (osip_message_t * sip, const char *buf,
+				  size_t length);
 /**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
  */
-  int osip_message_to_str (osip_message_t * sip, char **dest, size_t *message_length);
+  int osip_message_to_str (osip_message_t * sip, char **dest,
+			   size_t * message_length);
 /**
  * Get a string representation of a message/sipfrag part
  * stored in an osip_message_t element.
@@ -156,7 +159,8 @@ extern "C"
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
  */
-  int osip_message_to_str_sipfrag (osip_message_t * sip, char **dest, size_t *message_length);
+  int osip_message_to_str_sipfrag (osip_message_t * sip, char **dest,
+				   size_t * message_length);
 /**
  * Clone a osip_message_t element.
  * @param sip The element to clone.

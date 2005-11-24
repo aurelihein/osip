@@ -32,9 +32,9 @@ static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
  * Anyway, this mechanism improves the search time (from binary seach (log(n)) to 1).
  */
 
-#define HASH_TABLE_SIZE 150                 /* set this to the hash table size, 150 is the first size
-                                               where no conflicts occur                               */
-static int hdr_ref_table[HASH_TABLE_SIZE];  /* the hashtable contains indices to the pconfig table    */
+#define HASH_TABLE_SIZE 150	/* set this to the hash table size, 150 is the first size
+				   where no conflicts occur                               */
+static int hdr_ref_table[HASH_TABLE_SIZE];	/* the hashtable contains indices to the pconfig table    */
 
 /*
   list of compact header:
@@ -50,7 +50,8 @@ static int hdr_ref_table[HASH_TABLE_SIZE];  /* the hashtable contains indices to
   v: Via   => ok
 */
 /* This method must be called before using the parser */
-int parser_init (void)
+int
+parser_init (void)
 {
   int i = 0;
 
@@ -124,51 +125,51 @@ int parser_init (void)
   /* build up hash table for fast header lookup */
 
   /* initialize the table */
-  for ( i = 0; i < HASH_TABLE_SIZE; i++ )
-  {
-    hdr_ref_table[i] = -1; /* -1 -> no entry */
-  }
-
-  for ( i=0; i < NUMBER_OF_HEADERS; i++ )
-  {
-    unsigned long hash;
-    /* calculate hash value using lower case */
-    /* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
-    hash = osip_hash( pconfig[i].hname );
-    hash = hash % HASH_TABLE_SIZE;
-
-    if ( hdr_ref_table[hash] == -1 )
+  for (i = 0; i < HASH_TABLE_SIZE; i++)
     {
-      /* store reference(index) to pconfig table */
-      hdr_ref_table[hash] = i;
+      hdr_ref_table[i] = -1;	/* -1 -> no entry */
     }
-    else
+
+  for (i = 0; i < NUMBER_OF_HEADERS; i++)
     {
-      /* oops, conflict!-> change the hash table or use another hash function size */
-      return -1;
+      unsigned long hash;
+      /* calculate hash value using lower case */
+      /* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
+      hash = osip_hash (pconfig[i].hname);
+      hash = hash % HASH_TABLE_SIZE;
+
+      if (hdr_ref_table[hash] == -1)
+	{
+	  /* store reference(index) to pconfig table */
+	  hdr_ref_table[hash] = i;
+	}
+      else
+	{
+	  /* oops, conflict!-> change the hash table or use another hash function size */
+	  return -1;
+	}
     }
-  }
 
   return 0;
 }
 
 /* improved look-up mechanism
    precondition: hname is all lowercase */
-int __osip_message_is_known_header (const char *hname)
+int
+__osip_message_is_known_header (const char *hname)
 {
   unsigned long hash;
   int result = -1;
 
   int index;
-  hash = osip_hash( hname );
+  hash = osip_hash (hname);
   hash = hash % HASH_TABLE_SIZE;
   index = hdr_ref_table[hash];
 
-  if ( (index != -1) &&
-       (0 == strcmp(pconfig[index].hname, hname)) )
-  {
-    result = index;
-  }
+  if ((index != -1) && (0 == strcmp (pconfig[index].hname, hname)))
+    {
+      result = index;
+    }
 
   return result;
 }

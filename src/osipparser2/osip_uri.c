@@ -170,8 +170,8 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
 
   if (host == NULL)
     host = username;
-  else if (username[1] == '@') /* username is empty */
-    host = username+1;
+  else if (username[1] == '@')	/* username is empty */
+    host = username + 1;
   else
     /* username exists */
     {
@@ -556,7 +556,7 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 
   len = strlen (scheme) + 1 + strlen (url->host) + 5;
   if (url->username != NULL)
-    len = len + (strlen (url->username) * 3) + 1;    /* count escaped char */
+    len = len + (strlen (url->username) * 3) + 1;	/* count escaped char */
   if (url->password != NULL)
     len = len + (strlen (url->password) * 3) + 1;
   if (url->port != NULL)
@@ -848,17 +848,18 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
   size_t pname_len;
   osip_uri_param_t *u_param;
   *url_param = NULL;
-  if (pname==NULL)
+  if (pname == NULL)
     return -1;
-  pname_len = strlen(pname);
-  if (pname_len<=0)
+  pname_len = strlen (pname);
+  if (pname_len <= 0)
     return -1;
   while (!osip_list_eol (params, pos))
     {
       size_t len;
       u_param = (osip_uri_param_t *) osip_list_get (params, pos);
-      len = strlen(u_param->gname);
-      if (pname_len == len && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0)
+      len = strlen (u_param->gname);
+      if (pname_len == len
+	  && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0)
 	{
 	  *url_param = u_param;
 	  return 0;
@@ -1011,19 +1012,19 @@ __osip_uri_unescape (char *string)
 	  if (sscanf (ptr + 1, "%02X", &hex) == 1)
 	    {
 	      in = (unsigned char) hex;
-              if (*(ptr+2) &&
-                  ((*(ptr+2) >= '0' && *(ptr+2) <= '9') ||
-                   (*(ptr+2) >= 'a' && *(ptr+2) <= 'f') ||
-                   (*(ptr+2) >= 'A' && *(ptr+2) <= 'F')))
-                {
-                  alloc -= 2;
-                  ptr += 2;
-                }
-              else
-                {
-                  alloc -= 1;
-                  ptr += 1;
-                }
+	      if (*(ptr + 2) &&
+		  ((*(ptr + 2) >= '0' && *(ptr + 2) <= '9') ||
+		   (*(ptr + 2) >= 'a' && *(ptr + 2) <= 'f') ||
+		   (*(ptr + 2) >= 'A' && *(ptr + 2) <= 'F')))
+		{
+		  alloc -= 2;
+		  ptr += 2;
+		}
+	      else
+		{
+		  alloc -= 1;
+		  ptr += 1;
+		}
 	    }
 	}
 

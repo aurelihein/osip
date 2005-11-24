@@ -31,8 +31,7 @@ static int msg_headers_parse (osip_message_t * sip,
 			      const char *start_of_header, const char **body);
 static int msg_osip_body_parse (osip_message_t * sip,
 				const char *start_of_buf,
-				const char **next_body,
-				size_t length);
+				const char **next_body, size_t length);
 
 
 static int
@@ -54,7 +53,7 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   p2 = strchr (buf, ' ');
   if (p2 == NULL)
     return -1;
-  if (*(p2+1) == '\0' || *(p2+2) == '\0' )
+  if (*(p2 + 1) == '\0' || *(p2 + 2) == '\0')
     return -1;
   if (p2 - buf == 0)
     {
@@ -68,18 +67,18 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
 
   /* The second token is a sip-url or a uri: */
   p1 = strchr (p2 + 2, ' ');	/* no space allowed inside sip-url */
-  if (p1==NULL)
+  if (p1 == NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "Uncompliant request-uri\n"));
-      osip_free(dest->sip_method);
+      osip_free (dest->sip_method);
       dest->sip_method = NULL;
       return -1;
     }
   if (p1 - p2 < 2)
     {
-      osip_free(dest->sip_method);
+      osip_free (dest->sip_method);
       dest->sip_method = NULL;
       return -1;
     }
@@ -92,9 +91,9 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
   osip_free (requesturi);
   if (i != 0)
     {
-      osip_free(dest->sip_method);
+      osip_free (dest->sip_method);
       dest->sip_method = NULL;
-      osip_uri_free(dest->req_uri);
+      osip_uri_free (dest->req_uri);
       dest->req_uri = NULL;
       return -1;
     }
@@ -112,18 +111,18 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
 	    OSIP_TRACE (osip_trace
 			(__FILE__, __LINE__, OSIP_ERROR, NULL,
 			 "No crlf found\n"));
-	    osip_free(dest->sip_method);
+	    osip_free (dest->sip_method);
 	    dest->sip_method = NULL;
-	    osip_uri_free(dest->req_uri);
+	    osip_uri_free (dest->req_uri);
 	    dest->req_uri = NULL;
 	    return -1;
 	  }
       }
     if (hp - p1 < 2)
       {
-	osip_free(dest->sip_method);
+	osip_free (dest->sip_method);
 	dest->sip_method = NULL;
-	osip_uri_free(dest->req_uri);
+	osip_uri_free (dest->req_uri);
 	dest->req_uri = NULL;
 	return -1;
       }
@@ -131,11 +130,11 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
     dest->sip_version = (char *) osip_malloc (hp - p1);
     osip_strncpy (dest->sip_version, p1 + 1, (hp - p1 - 1));
 
-    if (0!=osip_strcasecmp(dest->sip_version, "SIP/2.0"))
+    if (0 != osip_strcasecmp (dest->sip_version, "SIP/2.0"))
       {
- 	OSIP_TRACE (osip_trace
- 		    (__FILE__, __LINE__, OSIP_ERROR, NULL,
- 		     "Wrong version number\n"));
+	OSIP_TRACE (osip_trace
+		    (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		     "Wrong version number\n"));
       }
 
     hp++;
@@ -165,9 +164,9 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
   osip_strncpy (dest->sip_version, *headers, statuscode - (*headers));
 
   reasonphrase = strchr (statuscode + 1, ' ');
-  if (reasonphrase==NULL)
+  if (reasonphrase == NULL)
     {
-      osip_free(dest->sip_version);
+      osip_free (dest->sip_version);
       dest->sip_version = NULL;
       return -1;
     }
@@ -179,7 +178,7 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
       return -1;
     }
 
-  if (dest->status_code==0)
+  if (dest->status_code == 0)
     return -1;
 
   {
@@ -229,17 +228,17 @@ __osip_find_next_occurence (const char *str, const char *buf,
   if ((NULL == str) || (NULL == buf))
     return -1;
   /* TODO? we may prefer strcasestr instead of strstr? */
-  for (i=0;i<1000;i++)
+  for (i = 0; i < 1000; i++)
     {
       *index_of_str = strstr (buf, str);
       if (NULL == (*index_of_str))
 	{
 	  /* if '\0' (when binary data is used) is located before the separator,
 	     then we have to continue searching */
-	  const char *ptr = buf + strlen(buf);
-	  if (end_of_buf-ptr>0)
+	  const char *ptr = buf + strlen (buf);
+	  if (end_of_buf - ptr > 0)
 	    {
-	      buf = ptr+1;
+	      buf = ptr + 1;
 	      continue;
 	    }
 	  return -1;
@@ -439,7 +438,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
   char *end;			/* end of a header */
   char *quote1;			/* first quote of a pair of quotes   */
   char *quote2;			/* second quuote of a pair of quotes */
-  size_t   hname_len;
+  size_t hname_len;
 
   /* Find header based upon lowercase comparison */
   osip_tolower (hname);
@@ -455,25 +454,26 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
   ptr = hvalue;
   comma = strchr (ptr, ',');
 
-  hname_len = strlen(hname);
+  hname_len = strlen (hname);
 
   if (comma == NULL
-    || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
-    || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
-    || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
-    || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
-    || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
-    || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
-    || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
-    || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
-    || (hname_len == 10 && strncmp (hname, "user-agent", 10) == 0)
-    || (hname_len == 16 && strncmp (hname, "www-authenticate", 16) == 0)
-    || (hname_len == 19 && strncmp (hname, "authentication-info", 19) == 0)
-    || (hname_len == 18 && strncmp (hname, "proxy-authenticate", 18) == 0)
-    || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
-    || (hname_len == 25 && strncmp (hname, "proxy-authentication-info", 25) == 0)
-    || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
-    || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
+      || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
+      || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
+      || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
+      || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
+      || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
+      || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
+      || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
+      || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
+      || (hname_len == 10 && strncmp (hname, "user-agent", 10) == 0)
+      || (hname_len == 16 && strncmp (hname, "www-authenticate", 16) == 0)
+      || (hname_len == 19 && strncmp (hname, "authentication-info", 19) == 0)
+      || (hname_len == 18 && strncmp (hname, "proxy-authenticate", 18) == 0)
+      || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
+      || (hname_len == 25
+	  && strncmp (hname, "proxy-authentication-info", 25) == 0)
+      || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
+      || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
     /* or hname is a TEXT-UTF8-TRIM and may     */
@@ -506,7 +506,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	     within quotes! */
 	  end = comma;
 
-	  if (quote1 != NULL && quote1>comma)
+	  if (quote1 != NULL && quote1 > comma)
 	    {
 	      /* comma may be within the quotes */
 	      /* ,<sip:usera@host.example.com>;methods=\"INVITE,BYE,OPTIONS,ACK,CANCEL\",<sip:userb@host.blah.com> */
@@ -519,24 +519,24 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	      tmp_comma = strchr (comma + 1, ',');
 	      while (1)
 		{
-		  if (tmp_comma<tmp_quote1)
-		    break; /* ok (before to quotes) */
-		  if (tmp_comma<tmp_quote2)
+		  if (tmp_comma < tmp_quote1)
+		    break;	/* ok (before to quotes) */
+		  if (tmp_comma < tmp_quote2)
 		    {
 		      tmp_comma = strchr (tmp_quote2 + 1, ',');
 		    }
 		  tmp_quote1 = __osip_quote_find (tmp_quote2 + 1);
-		  if (tmp_quote1==NULL)
+		  if (tmp_quote1 == NULL)
 		    break;
 		  tmp_quote2 = __osip_quote_find (tmp_quote1 + 1);
-		  if (tmp_quote2==NULL)
-		    break; /* probably a malformed message? */
+		  if (tmp_quote2 == NULL)
+		    break;	/* probably a malformed message? */
 		}
-	      comma = tmp_comma; /* this one is not enclosed within quotes */
+	      comma = tmp_comma;	/* this one is not enclosed within quotes */
 	    }
 	  else
 	    comma = strchr (comma + 1, ',');
-	  if (comma!=NULL)
+	  if (comma != NULL)
 	    ptr = comma + 1;
 
 	}
@@ -557,7 +557,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	      if (strlen (beg) < 2)
 		return 0;	/* empty header */
 #else
-	      if (beg[0]=='\0' || beg[1]=='\0')
+	      if (beg[0] == '\0' || beg[1] == '\0')
 		return 0;	/* empty header */
 #endif
 	      osip_clrspace (beg);
@@ -575,7 +575,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	  if (end - beg + 1 < 2)
 	    return -1;
 	  avalue = (char *) osip_malloc (end - beg + 1);
-      osip_clrncpy (avalue, beg, end - beg);
+	  osip_clrncpy (avalue, beg, end - beg);
 	  /* really store the header in the sip structure */
 	  i = osip_message_set__header (sip, hname, avalue);
 	  osip_free (avalue);
@@ -590,7 +590,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname,
 	      if (strlen (beg) < 2)
 		return 0;	/* empty header */
 #else
-	      if (beg[0]=='\0' || beg[1]=='\0')
+	      if (beg[0] == '\0' || beg[1] == '\0')
 		return 0;	/* empty header */
 #endif
 	      osip_clrspace (beg);
@@ -661,7 +661,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  return -1;
 	}
       hname = (char *) osip_malloc (colon_index - start_of_header + 1);
-    osip_clrncpy (hname, start_of_header, colon_index - start_of_header);
+      osip_clrncpy (hname, start_of_header, colon_index - start_of_header);
 
       {
 	const char *end;
@@ -676,8 +676,8 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
 	  hvalue = NULL;	/* some headers (subject) can be empty */
 	else
 	  {
-	    hvalue = (char *) osip_malloc ((end) - colon_index+1);
-        osip_clrncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
+	    hvalue = (char *) osip_malloc ((end) - colon_index + 1);
+	    osip_clrncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
 	  }
       }
 
@@ -688,7 +688,8 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
       i = osip_message_set_multiple_header (sip, hname, hvalue);
 
       osip_free (hname);
-      if (hvalue!=NULL) osip_free (hvalue);
+      if (hvalue != NULL)
+	osip_free (hvalue);
       if (i == -1)
 	{
 	  OSIP_TRACE (osip_trace
@@ -723,14 +724,14 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   osip_generic_param_t *ct_param;
 
   if (sip->content_type == NULL
-      ||sip->content_type->type==NULL
-      ||sip->content_type->subtype==NULL)
-    return 0;		/* no body is attached */
-  
-  if (0!=osip_strcasecmp(sip->content_type->type, "multipart"))
+      || sip->content_type->type == NULL
+      || sip->content_type->subtype == NULL)
+    return 0;			/* no body is attached */
+
+  if (0 != osip_strcasecmp (sip->content_type->type, "multipart"))
     {
       size_t osip_body_len;
-      
+
       if (start_of_buf[0] == '\0')
 	return -1;		/* final CRLF is missing */
       /* get rid of the first CRLF */
@@ -744,24 +745,24 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       else if ('\n' == start_of_buf[0])
 	start_of_body = start_of_buf + 1;
       else
-	return -1;	/* message does not end with CRLFCRLF, CRCR or LFLF */
-      
+	return -1;		/* message does not end with CRLFCRLF, CRCR or LFLF */
+
       /* update length (without CRLFCRLF */
-      length = length-(start_of_body-start_of_buf); /* fixed 24 08 2004 */
-      if (length<=0)
+      length = length - (start_of_body - start_of_buf);	/* fixed 24 08 2004 */
+      if (length <= 0)
 	return -1;
-      
+
       if (sip->content_length != NULL)
 	osip_body_len = osip_atoi (sip->content_length->value);
       else
 	{
 	  /* if content_length does not exist, set it. */
 	  char tmp[16];
-	  
+
 	  /* case where content-length is missing but the
-		 body only contains non-binary data */
-	  if (0==osip_strcasecmp(sip->content_type->type, "application")
-	      && 0==osip_strcasecmp(sip->content_type->subtype,"sdp"))
+	     body only contains non-binary data */
+	  if (0 == osip_strcasecmp (sip->content_type->type, "application")
+	      && 0 == osip_strcasecmp (sip->content_type->subtype, "sdp"))
 	    {
 	      osip_body_len = strlen (start_of_body);
 	      sprintf (tmp, "%i", osip_body_len);
@@ -769,14 +770,16 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	      if (i != 0)
 		return -1;
 	    }
-	  else return -1; /* Content-type may be non binary data */
+	  else
+	    return -1;		/* Content-type may be non binary data */
 	}
-      
-      if (length<osip_body_len)
+
+      if (length < osip_body_len)
 	{
 	  OSIP_TRACE (osip_trace
 		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-		       "Message was not receieved enterely. length=%i osip_body_len=%i\n",length, osip_body_len));
+		       "Message was not receieved enterely. length=%i osip_body_len=%i\n",
+		       length, osip_body_len));
 	  return -1;
 	}
 
@@ -785,8 +788,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       if (tmp == NULL)
 	return -1;
       memcpy (tmp, start_of_body, end_of_body - start_of_body);
-      tmp[end_of_body - start_of_body]='\0';
-      
+      tmp[end_of_body - start_of_body] = '\0';
+
       i = osip_message_set_body (sip, tmp, end_of_body - start_of_body);
       osip_free (tmp);
       if (i != 0)
@@ -808,10 +811,10 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   {
     const char *boundary_prefix = "\n--";
 
-    size_t len = strlen(ct_param->gvalue);
-    sep_boundary = (char *) osip_malloc (len + sizeof(boundary_prefix));
+    size_t len = strlen (ct_param->gvalue);
+    sep_boundary = (char *) osip_malloc (len + sizeof (boundary_prefix));
     sprintf (sep_boundary, boundary_prefix);
-    if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len-1] == '"')
+    if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len - 1] == '"')
       strncat (sep_boundary, ct_param->gvalue + 1, len - 2);
     else
       strncat (sep_boundary, ct_param->gvalue, len);
@@ -822,7 +825,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
   *next_body = NULL;
   start_of_body = start_of_buf;
 
-  end_of_buf = start_of_buf+length;
+  end_of_buf = start_of_buf + length;
 
   for (;;)
     {
@@ -855,7 +858,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       body_len = end_of_body - start_of_body;
 
       /* Skip CR before end boundary. */
-      if (*(end_of_body-1) == '\r')
+      if (*(end_of_body - 1) == '\r')
 	body_len--;
 
       tmp = osip_malloc (body_len + 2);
@@ -865,8 +868,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 	  return -1;
 	}
       memcpy (tmp, start_of_body, body_len);
-      tmp[body_len]='\0';
-      
+      tmp[body_len] = '\0';
+
       i = osip_message_set_body_mime (sip, tmp, body_len);
       osip_free (tmp);
       if (i == -1)
@@ -892,23 +895,24 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
 /* osip_message_t *sip is filled while analysing buf */
 static int
-_osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int sipfrag)
+_osip_message_parse (osip_message_t * sip, const char *buf, size_t length,
+		     int sipfrag)
 {
   int i;
   const char *next_header_index;
   char *tmp;
   char *beg;
   tmp = osip_malloc (length + 2);
-  if (tmp==NULL)
+  if (tmp == NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "Could not allocate memory.\n"));
       return -1;
     }
-  beg=tmp;
-  memcpy (tmp, buf, length); /* may contain binary data */
-  tmp[length]='\0';
+  beg = tmp;
+  memcpy (tmp, buf, length);	/* may contain binary data */
+  tmp[length] = '\0';
   osip_util_replace_all_lws (tmp);
   /* parse request or status line */
   i = __osip_message_startline_parse (sip, tmp, &next_header_index);
@@ -917,7 +921,7 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int s
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "Could not parse start line of message.\n"));
-      osip_free(beg);
+      osip_free (beg);
       return -1;
     }
   tmp = (char *) next_header_index;
@@ -929,23 +933,24 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int s
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		   "error in msg_headers_parse()\n"));
-      osip_free(beg);
+      osip_free (beg);
       return -1;
     }
   tmp = (char *) next_header_index;
 
   /* this is a *very* simple test... (which handle most cases...) */
-  if (tmp[0]=='\0' || tmp[1]=='\0' || tmp[2]=='\0')
+  if (tmp[0] == '\0' || tmp[1] == '\0' || tmp[2] == '\0')
     {
       /* this is mantory in the oSIP stack */
       if (sip->content_length == NULL)
 	osip_message_set_content_length (sip, "0");
-      osip_free(beg);
+      osip_free (beg);
       return 0;			/* no body found */
     }
 
-  i = msg_osip_body_parse (sip, tmp, &next_header_index, length-(tmp-beg));
-  osip_free(beg);
+  i =
+    msg_osip_body_parse (sip, tmp, &next_header_index, length - (tmp - beg));
+  osip_free (beg);
   if (i == -1)
     {
       OSIP_TRACE (osip_trace
@@ -964,13 +969,14 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int s
 int
 osip_message_parse (osip_message_t * sip, const char *buf, size_t length)
 {
-  return _osip_message_parse(sip, buf, length, 0);
+  return _osip_message_parse (sip, buf, length, 0);
 }
 
 int
-osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length)
+osip_message_parse_sipfrag (osip_message_t * sip, const char *buf,
+			    size_t length)
 {
-  return _osip_message_parse(sip, buf, length, 1);
+  return _osip_message_parse (sip, buf, length, 1);
 }
 
 
@@ -999,7 +1005,7 @@ osip_message_fix_last_via_header (osip_message_t * request,
       if (rport->gvalue == NULL)
 	{
 	  rport->gvalue = (char *) osip_malloc (9);
-#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)   
+#if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)
 	  _snprintf (rport->gvalue, 8, "%i", port);
 #else
 	  snprintf (rport->gvalue, 8, "%i", port);

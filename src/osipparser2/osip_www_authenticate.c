@@ -34,7 +34,7 @@ osip_www_authenticate_init (osip_www_authenticate_t ** dest)
     osip_malloc (sizeof (osip_www_authenticate_t));
   if (*dest == NULL)
     return -1;
-  memset(*dest, 0, sizeof(osip_www_authenticate_t));
+  memset (*dest, 0, sizeof (osip_www_authenticate_t));
   return 0;
 }
 
@@ -89,9 +89,9 @@ __osip_quoted_string_set (const char *name, const char *str,
       const char *quote2;
       const char *tmp;
       const char *hack = strchr (str, '=');
-      
+
       if (hack == NULL)
-        return -1;
+	return -1;
 
       while (' ' == *(hack - 1))	/* get rid of extra spaces */
 	hack--;
@@ -532,42 +532,42 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa,
     return -1;
   *dest = tmp;
 
-  tmp = osip_str_append(tmp, wwwa->auth_type);
+  tmp = osip_str_append (tmp, wwwa->auth_type);
 
   if (wwwa->realm != NULL)
     {
-      tmp = osip_strn_append(tmp, " realm=", 7);
-      tmp = osip_str_append(tmp, wwwa->realm);
+      tmp = osip_strn_append (tmp, " realm=", 7);
+      tmp = osip_str_append (tmp, wwwa->realm);
     }
   if (wwwa->domain != NULL)
     {
-      tmp = osip_strn_append(tmp, ", domain=", 9);
-      tmp = osip_str_append(tmp, wwwa->domain);
+      tmp = osip_strn_append (tmp, ", domain=", 9);
+      tmp = osip_str_append (tmp, wwwa->domain);
     }
   if (wwwa->nonce != NULL)
     {
-      tmp = osip_strn_append(tmp, ", nonce=", 8);
-      tmp = osip_str_append(tmp, wwwa->nonce);
+      tmp = osip_strn_append (tmp, ", nonce=", 8);
+      tmp = osip_str_append (tmp, wwwa->nonce);
     }
   if (wwwa->opaque != NULL)
     {
-      tmp = osip_strn_append(tmp, ", opaque=", 9);
-      tmp = osip_str_append(tmp, wwwa->opaque);
+      tmp = osip_strn_append (tmp, ", opaque=", 9);
+      tmp = osip_str_append (tmp, wwwa->opaque);
     }
   if (wwwa->stale != NULL)
     {
-      tmp = osip_strn_append(tmp, ", stale=", 8);
-      tmp = osip_str_append(tmp, wwwa->stale);
+      tmp = osip_strn_append (tmp, ", stale=", 8);
+      tmp = osip_str_append (tmp, wwwa->stale);
     }
   if (wwwa->algorithm != NULL)
     {
-      tmp = osip_strn_append(tmp, ", algorithm=", 12);
-      tmp = osip_str_append(tmp, wwwa->algorithm);
+      tmp = osip_strn_append (tmp, ", algorithm=", 12);
+      tmp = osip_str_append (tmp, wwwa->algorithm);
     }
   if (wwwa->qop_options != NULL)
     {
-      tmp = osip_strn_append(tmp, ", qop=", 6);
-      tmp = osip_str_append(tmp, wwwa->qop_options);
+      tmp = osip_strn_append (tmp, ", qop=", 6);
+      tmp = osip_str_append (tmp, wwwa->qop_options);
     }
 
   if (wwwa->realm == NULL)

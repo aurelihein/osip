@@ -30,18 +30,20 @@
 /* OUTPUT: osip_message_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-osip_message_set_proxy_authentication_info (osip_message_t * sip, const char *hvalue)
+osip_message_set_proxy_authentication_info (osip_message_t * sip,
+					    const char *hvalue)
 {
   osip_proxy_authentication_info_t *proxy_authentication_info;
   int i;
 
-  if (hvalue==NULL || hvalue[0]=='\0')
+  if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
   i = osip_proxy_authentication_info_init (&(proxy_authentication_info));
   if (i != 0)
     return -1;
-  i = osip_proxy_authentication_info_parse (proxy_authentication_info, hvalue);
+  i =
+    osip_proxy_authentication_info_parse (proxy_authentication_info, hvalue);
   if (i != 0)
     {
       osip_proxy_authentication_info_free (proxy_authentication_info);
@@ -49,7 +51,8 @@ osip_message_set_proxy_authentication_info (osip_message_t * sip, const char *hv
     }
   sip->message_property = 2;
 
-  osip_list_add (sip->proxy_authentication_infos, proxy_authentication_info, -1);
+  osip_list_add (sip->proxy_authentication_infos, proxy_authentication_info,
+		 -1);
   return 0;
 }
 
@@ -59,8 +62,10 @@ osip_message_set_proxy_authentication_info (osip_message_t * sip, const char *hv
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_proxy_authentication_info (const osip_message_t * sip, int pos,
-			   osip_proxy_authentication_info_t ** dest)
+osip_message_get_proxy_authentication_info (const osip_message_t * sip,
+					    int pos,
+					    osip_proxy_authentication_info_t
+					    ** dest)
 {
   osip_proxy_authentication_info_t *proxy_authentication_info;
 

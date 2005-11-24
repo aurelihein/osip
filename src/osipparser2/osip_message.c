@@ -33,9 +33,9 @@ int
 osip_message_init (osip_message_t ** sip)
 {
   *sip = (osip_message_t *) osip_malloc (sizeof (osip_message_t));
-  if (*sip==NULL)
+  if (*sip == NULL)
     return -1;
-  memset(*sip, 0, sizeof(osip_message_t));
+  memset (*sip, 0, sizeof (osip_message_t));
 
   (*sip)->accepts = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->accepts);
@@ -50,7 +50,8 @@ osip_message_init (osip_message_t ** sip)
   osip_list_init ((*sip)->alert_infos);
   (*sip)->allows = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->allows);
-  (*sip)->authentication_infos = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  (*sip)->authentication_infos =
+    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->authentication_infos);
   (*sip)->authorizations = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->authorizations);
@@ -77,7 +78,7 @@ osip_message_init (osip_message_t ** sip)
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->proxy_authenticates);
   (*sip)->proxy_authentication_infos =
-	(osip_list_t *) osip_malloc (sizeof (osip_list_t));
+    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*sip)->proxy_authentication_infos);
   (*sip)->proxy_authorizations =
     (osip_list_t *) osip_malloc (sizeof (osip_list_t));
@@ -219,7 +220,10 @@ osip_message_free (osip_message_t * sip)
 
     while (!osip_list_eol (sip->authentication_infos, pos))
       {
-	al = (osip_authentication_info_t *) osip_list_get (sip->authentication_infos, pos);
+	al =
+	  (osip_authentication_info_t *) osip_list_get (sip->
+							authentication_infos,
+							pos);
 	osip_list_remove (sip->authentication_infos, pos);
 	osip_authentication_info_free (al);
       }
@@ -327,7 +331,10 @@ osip_message_free (osip_message_t * sip)
 
     while (!osip_list_eol (sip->proxy_authentication_infos, pos))
       {
-	al = (osip_proxy_authentication_info_t *) osip_list_get (sip->proxy_authentication_infos, pos);
+	al =
+	  (osip_proxy_authentication_info_t *) osip_list_get (sip->
+							      proxy_authentication_infos,
+							      pos);
 	osip_list_remove (sip->proxy_authentication_infos, pos);
 	osip_proxy_authentication_info_free (al);
       }
@@ -541,8 +548,12 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
     while (!osip_list_eol (sip->authentication_infos, pos))
       {
 	authentication_info =
-	  (osip_authentication_info_t *) osip_list_get (sip->authentication_infos, pos);
-	i = osip_authentication_info_clone (authentication_info, &authentication_info2);
+	  (osip_authentication_info_t *) osip_list_get (sip->
+							authentication_infos,
+							pos);
+	i =
+	  osip_authentication_info_clone (authentication_info,
+					  &authentication_info2);
 	if (i != 0)
 	  goto mc_error1;
 	osip_list_add (copy->authentication_infos, authentication_info2, -1);
@@ -695,12 +706,16 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
     while (!osip_list_eol (sip->proxy_authentication_infos, pos))
       {
 	proxy_authentication_info =
-	  (osip_proxy_authentication_info_t *) osip_list_get (sip->proxy_authentication_infos, pos);
+	  (osip_proxy_authentication_info_t *) osip_list_get (sip->
+							      proxy_authentication_infos,
+							      pos);
 	i =
-	  osip_proxy_authentication_info_clone (proxy_authentication_info, &proxy_authentication_info2);
+	  osip_proxy_authentication_info_clone (proxy_authentication_info,
+						&proxy_authentication_info2);
 	if (i != 0)
 	  goto mc_error1;
-	osip_list_add (copy->proxy_authentication_infos, proxy_authentication_info2, -1);
+	osip_list_add (copy->proxy_authentication_infos,
+		       proxy_authentication_info2, -1);
 	pos++;
       }
   }

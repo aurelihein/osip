@@ -75,8 +75,7 @@ osip_message_get_accept (const osip_message_t * sip, int pos,
 /* INPUT : osip_content_type_t *content_type | content_type header.   */
 /* returns null on error. */
 int
-osip_accept_to_str (const osip_accept_t * accept,
-		    char **dest)
+osip_accept_to_str (const osip_accept_t * accept, char **dest)
 {
   char *buf;
   char *tmp;
@@ -90,8 +89,8 @@ osip_accept_to_str (const osip_accept_t * accept,
     {
       /* Empty header ! */
       buf = (char *) osip_malloc (2);
-      buf[0]=' ';
-      buf[1]='\0';
+      buf[0] = ' ';
+      buf[1] = '\0';
       *dest = buf;
       return 0;
     }
@@ -122,8 +121,7 @@ osip_accept_to_str (const osip_accept_t * accept,
 	size_t tmp_len;
 
 	u_param =
-	  (osip_generic_param_t *) osip_list_get (accept->gen_params,
-						  pos);
+	  (osip_generic_param_t *) osip_list_get (accept->gen_params, pos);
 	if (u_param->gvalue == NULL)
 	  {
 	    osip_free (buf);
@@ -145,4 +143,3 @@ osip_accept_to_str (const osip_accept_t * accept,
   *dest = buf;
   return 0;
 }
-

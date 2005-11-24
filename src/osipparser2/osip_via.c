@@ -102,7 +102,7 @@ osip_via_init (osip_via_t ** via)
   if (*via == NULL)
     return -1;
 
-  memset(*via, 0, sizeof(osip_via_t));
+  memset (*via, 0, sizeof (osip_via_t));
 
   (*via)->via_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   if ((*via)->via_params == NULL)

@@ -1024,7 +1024,8 @@ osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
 				  osip_strdup (config->c_addr_multicast_ttl),
 				  osip_strdup (config->c_addr_multicast_int));
 
-  i = sdp_message_t_time_descr_add (*sdp, osip_strdup("0"), osip_strdup("0"));
+  i =
+    sdp_message_t_time_descr_add (*sdp, osip_strdup ("0"), osip_strdup ("0"));
   if (i != 0)
     return -1;
 

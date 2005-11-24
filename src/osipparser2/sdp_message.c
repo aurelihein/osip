@@ -292,7 +292,7 @@ sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
 
   if (equal == buf)
     return ERR_DISCARD;
-  
+
   /* check if header is "v" */
   if (equal[-1] != 'v')
     return ERR_DISCARD;
@@ -350,9 +350,9 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
 
   /* useranme can contain any char (ascii) except "space" and CRLF */
 #ifdef FIREFLY_BUG_SUPPORT
-  if (tmp[0]==' ')
+  if (tmp[0] == ' ')
     {
-      sdp->o_username = osip_strdup("firefly");
+      sdp->o_username = osip_strdup ("firefly");
       tmp++;
     }
   else
@@ -436,7 +436,7 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
 #ifdef FIREFLY_BUG_SUPPORT
   if (crlf == equal + 1)
     {
-      sdp->s_name = osip_strdup(" ");
+      sdp->s_name = osip_strdup (" ");
       if (crlf[1] == '\n')
 	*next = crlf + 2;
       else
@@ -1972,7 +1972,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 			       &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;
@@ -1988,7 +1988,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       i = sdp_append_bandwidth (string, size, tmp, header, &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;
@@ -2006,7 +2006,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       i = sdp_append_time_descr (string, size, tmp, header, &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;
@@ -2028,7 +2028,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       i = sdp_append_key (string, size, tmp, sdp->k_key, &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;
@@ -2045,7 +2045,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       i = sdp_append_attribute (string, size, tmp, header, &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;
@@ -2063,7 +2063,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       i = sdp_append_media (string, size, tmp, header, &next_tmp);
       if (i != 0)
 	{
-	  osip_free(string);
+	  osip_free (string);
 	  return -1;
 	}
       tmp = next_tmp;

@@ -52,7 +52,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
       osip_header_free (h);
       return -1;
     }
-  osip_clrncpy (h->hname, hname, strlen(hname));
+  osip_clrncpy (h->hname, hname, strlen (hname));
 
   if (hvalue != NULL)
     {				/* some headers can be null ("subject:") */
@@ -62,7 +62,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
 	  osip_header_free (h);
 	  return -1;
 	}
-      osip_clrncpy (h->hvalue, hvalue, strlen(hvalue) );
+      osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
     }
   else
     h->hvalue = NULL;
@@ -97,7 +97,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
       osip_header_free (h);
       return -1;
     }
-  osip_clrncpy (h->hname, hname,strlen(hname));
+  osip_clrncpy (h->hname, hname, strlen (hname));
 
   if (hvalue != NULL)
     {				/* some headers can be null ("subject:") */
@@ -107,7 +107,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
 	  osip_header_free (h);
 	  return -1;
 	}
-      osip_clrncpy (h->hvalue, hvalue, strlen(hvalue));
+      osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
     }
   else
     h->hvalue = NULL;
@@ -210,7 +210,7 @@ osip_header_to_str (const osip_header_t * header, char **dest)
     sprintf (*dest, "%s: ", header->hname);
 
   if (*dest[0] > 'a' && *dest[0] < 'z')
-    *dest[0] = (*dest[0]-32);
+    *dest[0] = (*dest[0] - 32);
   return 0;
 }
 

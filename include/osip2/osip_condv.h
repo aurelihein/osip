@@ -63,11 +63,11 @@ extern "C"
  * timespec structure
  * @struct timespec
  */
-struct timespec
-{
-  long tv_sec;
-  long tv_nsec;
-};
+  struct timespec
+  {
+    long tv_sec;
+    long tv_nsec;
+  };
 #endif
 #endif
 

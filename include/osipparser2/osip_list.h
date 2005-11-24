@@ -60,7 +60,7 @@ extern "C"
   struct __node
   {
     void *next;			/**< next __node_t containing element */
-    void *element;              /**< element in Current node */
+    void *element;		/**< element in Current node */
   };
 #endif
 
@@ -71,10 +71,11 @@ extern "C"
   typedef struct osip_list osip_list_t;
 
 /* added by bennewit@cs.tu-berlin.de */
-  typedef struct {
-    __node_t * actual;
-    __node_t ** prev;
-    osip_list_t * li;
+  typedef struct
+  {
+    __node_t *actual;
+    __node_t **prev;
+    osip_list_t *li;
     int pos;
   } osip_list_iterator_t;
 
@@ -85,8 +86,8 @@ extern "C"
   struct osip_list
   {
 
-    int nb_elt;         /**< Number of element in the list */
-    __node_t *node;     /**< Next node containing element  */
+    int nb_elt;		/**< Number of element in the list */
+    __node_t *node;	/**< Next node containing element  */
 
   };
 
@@ -147,11 +148,11 @@ extern "C"
   int osip_list_remove (osip_list_t * li, int pos);
 
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_get_first( osip_list_t * li, osip_list_iterator_t * it );
+  void *osip_list_get_first (osip_list_t * li, osip_list_iterator_t * it);
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_get_next( osip_list_iterator_t * it );
+  void *osip_list_get_next (osip_list_iterator_t * it);
 /* added by bennewit@cs.tu-berlin.de */
-  void * osip_list_iterator_remove( osip_list_iterator_t * it );
+  void *osip_list_iterator_remove (osip_list_iterator_t * it);
 
 #ifdef __cplusplus
 }

@@ -119,10 +119,13 @@ osip_transaction_init (osip_transaction_t ** transaction,
   int i;
   time_t now;
 
-  *transaction=NULL;
-  if (request==NULL)  return -1;
-  if (request->call_id==NULL)  return -1;
-  if (request->call_id->number==NULL)  return -1;
+  *transaction = NULL;
+  if (request == NULL)
+    return -1;
+  if (request->call_id == NULL)
+    return -1;
+  if (request->call_id->number == NULL)
+    return -1;
 
   OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
@@ -231,7 +234,7 @@ ti_error_2:
   osip_via_free ((*transaction)->topvia);
 ti_error_1:
   osip_free (*transaction);
-  *transaction=NULL;
+  *transaction = NULL;
   return -1;
 }
 
@@ -278,8 +281,8 @@ osip_transaction_free2 (osip_transaction_t * transaction)
   if (transaction == NULL)
     return -1;
   if (transaction->orig_request != NULL
-      &&transaction->orig_request->call_id!=NULL
-      &&transaction->orig_request->call_id->number!=NULL)
+      && transaction->orig_request->call_id != NULL
+      && transaction->orig_request->call_id->number != NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_INFO2, NULL,

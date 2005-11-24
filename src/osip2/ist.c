@@ -48,8 +48,8 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") !=0
-	&& osip_strcasecmp (proto, "SCTP") !=0)
+	&& osip_strcasecmp (proto, "TLS") != 0
+	&& osip_strcasecmp (proto, "SCTP") != 0)
       {				/* for other reliable protocol than TCP, the timer
 				   must be desactived by the external application */
 	(*ist)->timer_g_length = DEFAULT_T1;
@@ -88,7 +88,8 @@ __osip_ist_free (osip_ist_t * ist)
 }
 
 osip_event_t *
-__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
+__osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state,
+			       int transactionid)
 {
   struct timeval now;
   osip_gettimeofday (&now, NULL);
@@ -144,4 +145,3 @@ __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state,
     }
   return NULL;
 }
-

@@ -273,7 +273,7 @@ test_sdp_message (char *msg, int verbose)
   sdp_message_t *sdp;
   char *result;
   int i;
-  
+
   sdp_message_init (&sdp);
   if (sdp_message_parse (sdp, msg) != 0)
     {
@@ -283,7 +283,7 @@ test_sdp_message (char *msg, int verbose)
       return 2;
     }
 
-      
+
   i = sdp_message_to_str (sdp, &result);
   test_accessor_get_api (sdp, verbose);
   if (i == -1)
@@ -307,22 +307,21 @@ test_sdp_message (char *msg, int verbose)
 	fprintf (stdout, "result equals msg!!\n");
     }
   osip_free (result);
-  
+
 
   {
     osip_negotiation_ctx_t *context;
     sdp_message_t *dest;
     sdp_message_t *sdp2;
-    
+
     i = osip_negotiation_ctx_init (&context);
-    i = osip_negotiation_ctx_set_mycontext (context,
-					    (void *) ua_context);
-    
+    i = osip_negotiation_ctx_set_mycontext (context, (void *) ua_context);
+
     osip_negotiation_sdp_build_offer (osip_negotiation,
 				      context, &sdp2,
 				      ua_context->m_audio_port,
 				      ua_context->m_video_port);
-    if (i!=0)
+    if (i != 0)
       {
 	sdp_message_free (sdp2);
 	if (verbose)
@@ -331,7 +330,7 @@ test_sdp_message (char *msg, int verbose)
       }
 
     i = sdp_message_to_str (sdp2, &result);
-    if (i!=0)
+    if (i != 0)
       {
 	sdp_message_free (sdp2);
 	if (verbose)
@@ -343,7 +342,7 @@ test_sdp_message (char *msg, int verbose)
 
     osip_negotiation_sdp_message_put_on_hold (sdp);
     i = sdp_message_to_str (sdp2, &result);
-    if (i!=0)
+    if (i != 0)
       {
 	sdp_message_free (sdp2);
 	if (verbose)
@@ -353,9 +352,9 @@ test_sdp_message (char *msg, int verbose)
 
     if (verbose)
       fprintf (stdout, "Here is the offer on hold:\n%s\n", result);
-    osip_free(result);
+    osip_free (result);
     sdp_message_free (sdp2);
-    
+
     i = osip_negotiation_ctx_set_remote_sdp (context, sdp);
     if (i != 0)
       {
@@ -366,17 +365,16 @@ test_sdp_message (char *msg, int verbose)
       }
 
     {
-      int success=4;
+      int success = 4;
       if (verbose)
 	fprintf (stdout, "Trying to execute a SIP negotiation:\n");
       i =
-	osip_negotiation_ctx_execute_negotiation
-	(osip_negotiation, context);
+	osip_negotiation_ctx_execute_negotiation (osip_negotiation, context);
       if (verbose)
 	fprintf (stdout, "return code: %i\n", i);
       if (i == 200)
 	{
-	  success=0;
+	  success = 0;
 	  dest = osip_negotiation_ctx_get_local_sdp (context);
 	  if (verbose)
 	    fprintf (stdout, "SDP answer:\n");
@@ -396,8 +394,8 @@ test_sdp_message (char *msg, int verbose)
     }
   }
   sdp_message_free (sdp);
-  
-  return 4; /* negotiation failed */
+
+  return 4;			/* negotiation failed */
 }
 
 int
@@ -439,7 +437,7 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
 	printf ("i_info:         |%s|\n", sdp_message_i_info_get (sdp, -1));
       if (sdp_message_u_uri_get (sdp))
 	printf ("u_uri:          |%s|\n", sdp_message_u_uri_get (sdp));
-      
+
       i = 0;
       do
 	{
@@ -458,7 +456,7 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
 	  i++;
 	}
       while (tmp != NULL);
-      
+
       k = 0;
       tmp = sdp_message_c_nettype_get (sdp, -1, k);
       tmp2 = sdp_message_c_addrtype_get (sdp, -1, k);
@@ -486,7 +484,7 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
 	  k++;
 	}
       while (tmp != NULL);
-      
+
       k = 0;
       do
 	{
@@ -508,19 +506,20 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
 	  k++;
 	}
       while (tmp != NULL);
-      
+
       /* TODO r */
-      
+
       if (sdp_message_z_adjustments_get (sdp) != NULL)
-	printf ("z_adjustments:  |%s|\n", sdp_message_z_adjustments_get (sdp));
-      
+	printf ("z_adjustments:  |%s|\n",
+		sdp_message_z_adjustments_get (sdp));
+
       tmp = sdp_message_k_keytype_get (sdp, -1);
       tmp2 = sdp_message_k_keydata_get (sdp, -1);
       if (tmp != NULL && tmp2 != NULL)
 	printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
       else if (tmp != NULL)
 	printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
-      
+
       k = 0;
       do
 	{
@@ -533,11 +532,11 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
 	  k++;
 	}
       while (tmp != NULL);
-      
+
       i = 0;
       while (!sdp_message_endof_media (sdp, i))
 	{
-	  
+
 	  tmp = sdp_message_m_media_get (sdp, i);
 	  tmp2 = sdp_message_m_port_get (sdp, i);
 	  tmp3 = sdp_message_m_number_of_port_get (sdp, i);

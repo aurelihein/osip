@@ -60,8 +60,8 @@ extern "C"
   struct osip_negotiation_ctx
   {
     void *mycontext;		/**< User Defined Pointer */
-    sdp_message_t *remote;      /**< Remote SDP offer     */
-    sdp_message_t *local;       /**< generated SDP answer */
+    sdp_message_t *remote;	/**< Remote SDP offer     */
+    sdp_message_t *local;	/**< generated SDP answer */
   };
 
 /**
@@ -141,22 +141,22 @@ extern "C"
   struct osip_negotiation
   {
 
-    char *o_username;               /**< username */
-    char *o_session_id;             /**< session identifier */
-    char *o_session_version;        /**< session version */
-    char *o_nettype;                /**< Network Type */
-    char *o_addrtype;               /**< Address type */
-    char *o_addr;                   /**< Address */
+    char *o_username;		    /**< username */
+    char *o_session_id;		    /**< session identifier */
+    char *o_session_version;	    /**< session version */
+    char *o_nettype;		    /**< Network Type */
+    char *o_addrtype;		    /**< Address type */
+    char *o_addr;		    /**< Address */
 
-    char *c_nettype;                /**< Network Type */
-    char *c_addrtype;               /**< Address Type */
-    char *c_addr;                   /**< Address */
-    char *c_addr_multicast_ttl;     /**< TTL value for multicast address  */
-    char *c_addr_multicast_int;     /**< Nb of address for multicast */
+    char *c_nettype;		    /**< Network Type */
+    char *c_addrtype;		    /**< Address Type */
+    char *c_addr;		    /**< Address */
+    char *c_addr_multicast_ttl;	    /**< TTL value for multicast address  */
+    char *c_addr_multicast_int;	    /**< Nb of address for multicast */
 
-    osip_list_t *audio_codec;       /**< supported audio codec */
-    osip_list_t *video_codec;       /**< supported video codec */
-    osip_list_t *other_codec;       /**< supported application */
+    osip_list_t *audio_codec;	    /**< supported audio codec */
+    osip_list_t *video_codec;	    /**< supported video codec */
+    osip_list_t *other_codec;	    /**< supported application */
 
     int (*fcn_set_info) (void *, sdp_message_t *);   /**< callback for info */
     int (*fcn_set_uri) (void *, sdp_message_t *);    /**< callback for uri */
@@ -167,9 +167,9 @@ extern "C"
     int (*fcn_accept_audio_codec) (void *, char *, char *, int, char *); /**< callback to accept audio codec during negotiation */
     int (*fcn_accept_video_codec) (void *, char *, char *, int, char *); /**< callback to accept video codec during negotiation */
     int (*fcn_accept_other_codec) (void *, char *, char *, char *, char *); /**< callback to accept application during negotiation */
-    char *(*fcn_get_audio_port) (void *, int);   /**< get port for audio stream */
-    char *(*fcn_get_video_port) (void *, int);   /**< get port for video stream */
-    char *(*fcn_get_other_port) (void *, int);   /**< get port for app stream */
+    char *(*fcn_get_audio_port) (void *, int);	 /**< get port for audio stream */
+    char *(*fcn_get_video_port) (void *, int);	 /**< get port for video stream */
+    char *(*fcn_get_other_port) (void *, int);	 /**< get port for app stream */
 
   };
 

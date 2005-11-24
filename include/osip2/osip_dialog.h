@@ -62,20 +62,20 @@ extern "C"
  */
   struct osip_dialog
   {
-    char *call_id;                       /**< Call-ID*/
-    char *local_tag;                     /**< local tag */
-    char *remote_tag;                    /**< remote tag */
-    osip_list_t *route_set;              /**< route set */
-    int local_cseq;                      /**< last local cseq */
-    int remote_cseq;                     /**< last remote cseq*/
-    osip_to_t *remote_uri;               /**< remote_uri */
-    osip_from_t *local_uri;              /**< local_uri */
-    osip_contact_t *remote_contact_uri;  /**< remote contact_uri */
-    int secure;                          /**< use secure transport layer */
+    char *call_id;			 /**< Call-ID*/
+    char *local_tag;			 /**< local tag */
+    char *remote_tag;			 /**< remote tag */
+    osip_list_t *route_set;		 /**< route set */
+    int local_cseq;			 /**< last local cseq */
+    int remote_cseq;			 /**< last remote cseq*/
+    osip_to_t *remote_uri;		 /**< remote_uri */
+    osip_from_t *local_uri;		 /**< local_uri */
+    osip_contact_t *remote_contact_uri;	 /**< remote contact_uri */
+    int secure;				 /**< use secure transport layer */
 
-    osip_dialog_type_t type;             /**< type of dialog (CALLEE or CALLER) */
-    state_t state;                       /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
-    void *your_instance;                 /**< for application data reference */
+    osip_dialog_type_t type;		 /**< type of dialog (CALLEE or CALLER) */
+    state_t state;			 /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+    void *your_instance;		 /**< for application data reference */
   };
 
 /**
@@ -84,7 +84,7 @@ extern "C"
  * @param instance The application instance
  */
 #define osip_dialog_set_instance(dialog,instance) (dialog)->your_instance = (void*)(instance)
-  
+
 /**
  * Retrieve application instance from dialog
  * @param dialog The osip dialog
@@ -114,7 +114,8 @@ extern "C"
  * @param local_cseq The local cseq
  */
   int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
-						   osip_message_t *next_request,
+						   osip_message_t *
+						   next_request,
 						   int local_cseq);
 
 /**

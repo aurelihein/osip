@@ -28,7 +28,7 @@ void
 osip_dialog_set_state (osip_dialog_t * dialog, state_t state)
 {
   if (dialog == NULL)
-    return ;
+    return;
   dialog->state = state;
 }
 
@@ -71,9 +71,7 @@ osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
 {
   if (dialog == NULL)
     return -1;
-  if (invite == NULL ||
-      invite->cseq == NULL ||
-      invite->cseq->number == NULL)
+  if (invite == NULL || invite->cseq == NULL || invite->cseq->number == NULL)
     return -1;
 
   dialog->remote_cseq = osip_atoi (invite->cseq->number);
@@ -131,11 +129,11 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
 	  if (i != 0)
 	    return -1;
 #ifdef OSIP_FUTURE_FIX_2_3
-      osip_list_add (dialog->route_set, rr2, 0);
+	  osip_list_add (dialog->route_set, rr2, 0);
 #else
-      osip_list_add (dialog->route_set, rr2, -1);
+	  osip_list_add (dialog->route_set, rr2, -1);
 #endif
-      pos++;
+	  pos++;
 	}
     }
 
@@ -157,7 +155,7 @@ osip_dialog_update_tag_as_uac (osip_dialog_t * dialog,
     return -1;
 
   i = osip_to_get_tag (response->to, &tag);
-  if (i != 0 || tag==NULL || tag->gvalue==NULL)
+  if (i != 0 || tag == NULL || tag->gvalue == NULL)
     {
       OSIP_TRACE (osip_trace
 		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -179,25 +177,25 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
 
   if (dlg == NULL)
     return -1;
-  if (answer == NULL || answer->call_id==NULL ||
-      answer->from==NULL || answer->to==NULL)
+  if (answer == NULL || answer->call_id == NULL ||
+      answer->from == NULL || answer->to == NULL)
     return -1;
 
   OSIP_TRACE (osip_trace
 	      (__FILE__, __LINE__, OSIP_WARNING, NULL,
 	       "Using this method is discouraged. See source code explanations!\n"));
   /*
-    When starting a new transaction and when receiving several answers,
-    you must be prepared to receive several answers from different sources.
-    (because of forking).
+     When starting a new transaction and when receiving several answers,
+     you must be prepared to receive several answers from different sources.
+     (because of forking).
 
-    Because some UAs are not compliant (a to tag is missing!), this method
-    may match the wrong dialog when a dialog has been created with an empty
-    tag in the To header.
+     Because some UAs are not compliant (a to tag is missing!), this method
+     may match the wrong dialog when a dialog has been created with an empty
+     tag in the To header.
 
-    Personnaly, I would recommend to discard 1xx>=101 answers without To tags!
-    Just my own feelings.
-  */
+     Personnaly, I would recommend to discard 1xx>=101 answers without To tags!
+     Just my own feelings.
+   */
   osip_call_id_to_str (answer->call_id, &tmp);
   if (0 != strcmp (dlg->call_id, tmp))
     {
@@ -263,8 +261,8 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
 
   if (dlg == NULL)
     return -1;
-  if (request == NULL || request->call_id==NULL ||
-      request->from==NULL || request->to==NULL)
+  if (request == NULL || request->call_id == NULL ||
+      request->from == NULL || request->to == NULL)
     return -1;
 
   osip_call_id_to_str (request->call_id, &tmp);

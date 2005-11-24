@@ -111,7 +111,8 @@ extern "C"
  * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
-  int osip_rfc3264_add_audio_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos);
+  int osip_rfc3264_add_audio_media (struct osip_rfc3264 *config,
+				    sdp_media_t * med, int pos);
 
 /**
  * Remove a media in the configuration.
@@ -126,7 +127,8 @@ extern "C"
  * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
-  int osip_rfc3264_add_t38_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos);
+  int osip_rfc3264_add_t38_media (struct osip_rfc3264 *config,
+				  sdp_media_t * med, int pos);
 
 /**
  * Remove a media (for T.38) in the configuration.
@@ -141,7 +143,8 @@ extern "C"
  * @param med The media element to add.
  * @param pos The index of the media element to add.
  */
-  int osip_rfc3264_add_video_media (struct osip_rfc3264 *config, sdp_media_t *med, int pos);
+  int osip_rfc3264_add_video_media (struct osip_rfc3264 *config,
+				    sdp_media_t * med, int pos);
 
 /**
  * Remove a media in the configuration.
@@ -155,8 +158,8 @@ extern "C"
  * Search for support of a special codec.
  * @param config The element to work on.
  */
-  sdp_media_t *osip_rfc3264_find_audio (struct osip_rfc3264 *config, char *payload,
-					char *rtpmap);
+  sdp_media_t *osip_rfc3264_find_audio (struct osip_rfc3264 *config,
+					char *payload, char *rtpmap);
 
 /**
  * Search for support of a special codec.
@@ -164,22 +167,24 @@ extern "C"
  * @param payload The payload to find.
  * @param rtpmap The rtpmap for the payload.
  */
-  sdp_media_t *osip_rfc3264_find_video (struct osip_rfc3264 *config, char *payload,
-					char *rtpmap);
+  sdp_media_t *osip_rfc3264_find_video (struct osip_rfc3264 *config,
+					char *payload, char *rtpmap);
 
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
  * @param payload The payload to find.
  */
-  sdp_media_t *osip_rfc3264_find_t38 (struct osip_rfc3264 *config, char *payload);
+  sdp_media_t *osip_rfc3264_find_t38 (struct osip_rfc3264 *config,
+				      char *payload);
 
 /**
  * Search for support of a special codec.
  * @param config The element to work on.
  * @param payload The payload to find.
  */
-  sdp_media_t *osip_rfc3264_find_app (struct osip_rfc3264 *config, char *payload);
+  sdp_media_t *osip_rfc3264_find_app (struct osip_rfc3264 *config,
+				      char *payload);
 
 /**
  * Compare remote sdp packet against local supported media.
@@ -193,13 +198,12 @@ extern "C"
  * @param app_tab The local list of media supported by both side.
  * @param pos_media The position of the media line to match.
  */
-  int osip_rfc3264_match(struct osip_rfc3264 *config,
-			 sdp_message_t *remote_sdp,
-			 sdp_media_t *audio_tab[],
-			 sdp_media_t *video_tab[],
-			 sdp_media_t *t38_tab[],
-			 sdp_media_t *app_tab[],
-			 int pos_media);
+  int osip_rfc3264_match (struct osip_rfc3264 *config,
+			  sdp_message_t * remote_sdp,
+			  sdp_media_t * audio_tab[],
+			  sdp_media_t * video_tab[],
+			  sdp_media_t * t38_tab[],
+			  sdp_media_t * app_tab[], int pos_media);
 
 /**
  * Compare remote sdp packet against local supported media for audio.
@@ -208,10 +212,10 @@ extern "C"
  * @param remote_med The remote Media SDP line.
  * @param audio_tab The local list of media supported by both side.
  */
-int osip_rfc3264_match_audio(struct osip_rfc3264 *config,
-			     sdp_message_t *remote_sdp,
-			     sdp_media_t *remote_med,
-			     sdp_media_t *audio_tab[]);
+  int osip_rfc3264_match_audio (struct osip_rfc3264 *config,
+				sdp_message_t * remote_sdp,
+				sdp_media_t * remote_med,
+				sdp_media_t * audio_tab[]);
 
 /**
  * Compare remote sdp packet against local supported media for video.
@@ -220,10 +224,10 @@ int osip_rfc3264_match_audio(struct osip_rfc3264 *config,
  * @param remote_med The remote Media SDP line.
  * @param video_tab The local list of media supported by both side.
  */
-int osip_rfc3264_match_video(struct osip_rfc3264 *config,
-			     sdp_message_t *remote_sdp,
-			     sdp_media_t *remote_med,
-			     sdp_media_t *video_tab[]);
+  int osip_rfc3264_match_video (struct osip_rfc3264 *config,
+				sdp_message_t * remote_sdp,
+				sdp_media_t * remote_med,
+				sdp_media_t * video_tab[]);
 
 /**
  * Compare remote sdp packet against local supported media for t38.
@@ -232,10 +236,10 @@ int osip_rfc3264_match_video(struct osip_rfc3264 *config,
  * @param remote_med The remote Media SDP line.
  * @param t38_tab The local list of media supported by both side.
  */
-int osip_rfc3264_match_t38(struct osip_rfc3264 *config,
-			   sdp_message_t *remote_sdp,
-			   sdp_media_t *remote_med,
-			   sdp_media_t *t38_tab[]);
+  int osip_rfc3264_match_t38 (struct osip_rfc3264 *config,
+			      sdp_message_t * remote_sdp,
+			      sdp_media_t * remote_med,
+			      sdp_media_t * t38_tab[]);
 
 /**
  * Compare remote sdp packet against local supported media for application.
@@ -244,10 +248,10 @@ int osip_rfc3264_match_t38(struct osip_rfc3264 *config,
  * @param remote_med The remote Media SDP line.
  * @param app_tab The local list of media supported by both side.
  */
-int osip_rfc3264_match_app(struct osip_rfc3264 *config,
-			   sdp_message_t *remote_sdp,
-			   sdp_media_t *remote_med,
-			   sdp_media_t *app_tab[]);
+  int osip_rfc3264_match_app (struct osip_rfc3264 *config,
+			      sdp_message_t * remote_sdp,
+			      sdp_media_t * remote_med,
+			      sdp_media_t * app_tab[]);
 
 
 /**
@@ -257,9 +261,9 @@ int osip_rfc3264_match_app(struct osip_rfc3264 *config,
  * @param local_sdp The local SDP packet to prepare.
  * @param length The local SDP packet's length.
  */
-int osip_rfc3264_prepare_answer(struct osip_rfc3264 *config,
-				sdp_message_t *remote_sdp,
-				char *local_sdp, int length);
+  int osip_rfc3264_prepare_answer (struct osip_rfc3264 *config,
+				   sdp_message_t * remote_sdp,
+				   char *local_sdp, int length);
 
 /**
  * Agree to support a specific codec.
@@ -272,12 +276,11 @@ int osip_rfc3264_prepare_answer(struct osip_rfc3264 *config,
  * @param med One of the media returned by osip_rfc3264_match.
  * @param mline The position of the media line to complete.
  */
-int
-osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
-			     sdp_message_t *remote_sdp,
-			     sdp_message_t *local_sdp,
-			     sdp_media_t *med,
-			     int mline);
+  int
+    osip_rfc3264_complete_answer (struct osip_rfc3264 *config,
+				  sdp_message_t * remote_sdp,
+				  sdp_message_t * local_sdp,
+				  sdp_media_t * med, int mline);
 
 /**
  * Agree to support a specific codec.
@@ -289,10 +292,10 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
  * @param remote_sdp The remote SDP packet.
  * @param local_sdp The local SDP packet to prepare.
  */
-  int osip_rfc3264_accept_codec(struct osip_rfc3264 *config,
-				sdp_media_t *med,
-				sdp_message_t *remote_sdp,
-				sdp_message_t *local_sdp);
+  int osip_rfc3264_accept_codec (struct osip_rfc3264 *config,
+				 sdp_media_t * med,
+				 sdp_message_t * remote_sdp,
+				 sdp_message_t * local_sdp);
 
 
 /**
@@ -300,7 +303,7 @@ osip_rfc3264_complete_answer(struct osip_rfc3264 *config,
  *
  * @param config The element to work on.
  */
-  int __osip_rfc3264_print_codecs(struct osip_rfc3264 *config);
+  int __osip_rfc3264_print_codecs (struct osip_rfc3264 *config);
 
 
 #ifdef __cplusplus

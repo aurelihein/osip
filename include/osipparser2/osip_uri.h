@@ -170,11 +170,11 @@ extern "C"
  */
   struct osip_uri
   {
-    char *scheme;              /**< Uri Scheme (sip or sips) */
-    char *username;            /**< Username */
-    char *password;            /**< Password */
-    char *host;                /**< Domain */
-    char *port;                /**< Port number */
+    char *scheme;	       /**< Uri Scheme (sip or sips) */
+    char *username;	       /**< Username */
+    char *password;	       /**< Password */
+    char *host;		       /**< Domain */
+    char *port;		       /**< Port number */
     osip_list_t *url_params;   /**< Uri parameters */
     osip_list_t *url_headers;  /**< Uri headers */
 

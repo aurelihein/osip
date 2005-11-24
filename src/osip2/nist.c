@@ -49,8 +49,8 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") !=0
-	&& osip_strcasecmp (proto, "SCTP") !=0)
+	&& osip_strcasecmp (proto, "TLS") != 0
+	&& osip_strcasecmp (proto, "SCTP") != 0)
       {
 	(*nist)->timer_j_length = 64 * DEFAULT_T1;
 	(*nist)->timer_j_start.tv_sec = -1;	/* not started */
@@ -85,7 +85,8 @@ __osip_nist_free (osip_nist_t * nist)
 
 
 osip_event_t *
-__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transactionid)
+__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
+				int transactionid)
 {
   struct timeval now;
   osip_gettimeofday (&now, NULL);
@@ -101,4 +102,3 @@ __osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transacti
     }
   return NULL;
 }
-

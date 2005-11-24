@@ -39,16 +39,16 @@ usage ()
 }
 
 static int
-read_binary(char **msg, int *len, FILE *torture_file)
+read_binary (char **msg, int *len, FILE * torture_file)
 {
   *msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
 
   *len = fread (*msg, 1, 100000, torture_file);
-  return ferror(torture_file) ? -1 : 0;
+  return ferror (torture_file) ? -1 : 0;
 }
 
 static char *
-read_text (int num, FILE *torture_file)
+read_text (int num, FILE * torture_file)
 {
   char *marker;
   char *tmp;
@@ -80,7 +80,7 @@ read_text (int num, FILE *torture_file)
     {
       fprintf (stderr,
 	       "Error! The message's number you specified does not exist\n");
-      return NULL;			/* end of file detected! */
+      return NULL;		/* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -136,15 +136,15 @@ main (int argc, char **argv)
 
   if (binary)
     {
-      if (read_binary(&msg, &len, torture_file) < 0)
+      if (read_binary (&msg, &len, torture_file) < 0)
 	return -1;
     }
   else
     {
-      msg = read_text(atoi(argv[2]), torture_file);
+      msg = read_text (atoi (argv[2]), torture_file);
       if (!msg)
 	return -1;
-      len = strlen(msg);
+      len = strlen (msg);
     }
 
   success = test_message (msg, len, verbose, clone);
@@ -206,7 +206,7 @@ test_message (char *msg, size_t len, int verbose, int clone)
       {
 	int i;
 	size_t length;
-	osip_message_force_update(sip);
+	osip_message_force_update (sip);
 	i = osip_message_to_str (sip, &result, &length);
 	if (i == -1)
 	  {
@@ -227,7 +227,7 @@ test_message (char *msg, size_t len, int verbose, int clone)
 		if (verbose)
 		  fprintf (stdout,
 			   "Trying %i sequentials calls to osip_message_clone() and osip_message_free()\n",
-			 j);
+			   j);
 		while (j != 0)
 		  {
 		    osip_message_t *copy;

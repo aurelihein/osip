@@ -228,7 +228,7 @@ osip_sem_trywait (struct osip_sem *_sem)
 struct osip_mutex *
 osip_mutex_init ()
 {
-  return (struct osip_mutex *) semMCreate (SEM_Q_FIFO|SEM_DELETE_SAFE);
+  return (struct osip_mutex *) semMCreate (SEM_Q_FIFO | SEM_DELETE_SAFE);
 }
 
 void
@@ -325,7 +325,8 @@ osip_mutex_init ()
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
   if (mut == NULL)
     return NULL;
-  if (InitializeCriticalSectionAndSpinCount (&mut->h, OSIP_CRITICALSECTION_SPIN) != 0)
+  if (InitializeCriticalSectionAndSpinCount
+      (&mut->h, OSIP_CRITICALSECTION_SPIN) != 0)
     return (struct osip_mutex *) (mut);
   osip_free (mut);
   return (NULL);
@@ -349,7 +350,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   if (mut == NULL)
     return -1;
   EnterCriticalSection (&mut->h);
-    
+
   return (0);
 }
 
@@ -359,7 +360,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
   if (mut == NULL)
     return -1;
-   LeaveCriticalSection (&mut->h);
+  LeaveCriticalSection (&mut->h);
   return (0);
 }
 #else

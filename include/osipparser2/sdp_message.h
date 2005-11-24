@@ -58,8 +58,8 @@ extern "C"
  */
   struct sdp_bandwidth
   {
-    char *b_bwtype;             /**< bandwidth type */
-    char *b_bandwidth;          /**< bandwidth value */
+    char *b_bwtype;		/**< bandwidth type */
+    char *b_bandwidth;		/**< bandwidth value */
   };
 
 /**
@@ -85,9 +85,9 @@ extern "C"
  */
   struct sdp_time_descr
   {
-    char *t_start_time;            /**< start time */
-    char *t_stop_time;             /**< stop time */
-    osip_list_t *r_repeats;        /**< repeat headers */
+    char *t_start_time;		   /**< start time */
+    char *t_stop_time;		   /**< stop time */
+    osip_list_t *r_repeats;	   /**< repeat headers */
   };
 
 /**
@@ -140,8 +140,8 @@ extern "C"
  */
   struct sdp_attribute
   {
-    char *a_att_field;          /**< attribute field */
-    char *a_att_value;	        /**< attribute value (optional) */
+    char *a_att_field;		/**< attribute field */
+    char *a_att_value;		/**< attribute value (optional) */
   };
 
 /**
@@ -168,9 +168,9 @@ extern "C"
  */
   struct sdp_connection
   {
-    char *c_nettype;             /**< Network Type */
-    char *c_addrtype;            /**< Network Address Type */
-    char *c_addr;                /**< Address */
+    char *c_nettype;		 /**< Network Type */
+    char *c_addrtype;		 /**< Network Address Type */
+    char *c_addr;		 /**< Address */
     char *c_addr_multicast_ttl;	 /**< TTL value for multicast address */
     char *c_addr_multicast_int;	 /**< Number of multicast address */
   };
@@ -198,17 +198,17 @@ extern "C"
  */
   struct sdp_media
   {
-    char *m_media;              /**< media type */
-    char *m_port;               /**< port number */
-    char *m_number_of_port;     /**< number of port */
-    char *m_proto;              /**< protocol to be used */
-    osip_list_t *m_payloads;    /**< list of payloads (as strings) */
+    char *m_media;		/**< media type */
+    char *m_port;		/**< port number */
+    char *m_number_of_port;	/**< number of port */
+    char *m_proto;		/**< protocol to be used */
+    osip_list_t *m_payloads;	/**< list of payloads (as strings) */
 
-    char *i_info;               /**< information header */
+    char *i_info;		/**< information header */
     osip_list_t *c_connections;	/**< list of sdp_connection_t * */
     osip_list_t *b_bandwidths;	/**< list of sdp_bandwidth_t * */
     osip_list_t *a_attributes;	/**< list of sdp_attribute_t * */
-    sdp_key_t *k_key;           /**< key informations */
+    sdp_key_t *k_key;		/**< key informations */
   };
 
 /**
@@ -234,23 +234,23 @@ extern "C"
  */
   struct sdp_message
   {
-    char *v_version;            /**< version header */
-    char *o_username;           /**< Username */
-    char *o_sess_id;            /**< Identifier for session */
-    char *o_sess_version;       /**< Version of session */
-    char *o_nettype;            /**< Network type */
-    char *o_addrtype;           /**< Address type */
-    char *o_addr;               /**< Address */
-    char *s_name;               /**< Subject header */
-    char *i_info;               /**< Information header */
-    char *u_uri;                /**< Uri header */
+    char *v_version;		/**< version header */
+    char *o_username;		/**< Username */
+    char *o_sess_id;		/**< Identifier for session */
+    char *o_sess_version;	/**< Version of session */
+    char *o_nettype;		/**< Network type */
+    char *o_addrtype;		/**< Address type */
+    char *o_addr;		/**< Address */
+    char *s_name;		/**< Subject header */
+    char *i_info;		/**< Information header */
+    char *u_uri;		/**< Uri header */
     osip_list_t *e_emails;	/**< list of mail address */
     osip_list_t *p_phones;	/**< list of phone numbers * */
     sdp_connection_t *c_connection;   /**< Connection information */
     osip_list_t *b_bandwidths;	/**< list of bandwidth info (sdp_bandwidth_t) */
     osip_list_t *t_descrs;	/**< list of time description (sdp_time_descr_t) */
-    char *z_adjustments;        /**< Time adjustment header */
-    sdp_key_t *k_key;           /**< Key information header */
+    char *z_adjustments;	/**< Time adjustment header */
+    sdp_key_t *k_key;		/**< Key information header */
     osip_list_t *a_attributes;	/**< list of global attributes (sdp_attribute_t) */
     osip_list_t *m_medias;	/**< list of supported media (sdp_media_t) */
   };
@@ -386,7 +386,7 @@ extern "C"
  * OBSOLETE: see sdp_message_e_email_get
  * @def sdp_e_email_get
  */
-  #define sdp_e_email_get sdp_message_e_email_get
+#define sdp_e_email_get sdp_message_e_email_get
 /**
  * Get one of the email ('e' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -579,7 +579,7 @@ extern "C"
  * @param pos_media The line number.
  * @param att_field The value to remove.
  */
-  int sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, 
+  int sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media,
 				   char *att_field);
 /**
  * delete one specific attribute fields specified by att_field.
@@ -588,8 +588,9 @@ extern "C"
  * @param att_field The value to remove.
  * @param pos_attr The index of attribute to remove.
  */
-  int sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media, 
-					    char *att_field, int pos_attr);
+  int sdp_message_a_attribute_del_at_index (sdp_message_t * sdp,
+					    int pos_media, char *att_field,
+					    int pos_attr);
  /**
  * Get one of the attribute ('a' field) of a SDP packet.
  * @param sdp The element to work on.
@@ -683,8 +684,7 @@ extern "C"
  * @param pos_media The line number.
  * @param pos The position of the payload in the media line.
  */
-  int sdp_message_m_payload_del (sdp_message_t * sdp, int pos_media,
- 				 int pos);
+  int sdp_message_m_payload_del (sdp_message_t * sdp, int pos_media, int pos);
 
 
 /** @} */

@@ -313,4 +313,3 @@ nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt)
     }
   __osip_transaction_set_state (nict, NICT_COMPLETED);
 }
-

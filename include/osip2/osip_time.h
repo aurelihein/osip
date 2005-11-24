@@ -11,11 +11,11 @@ extern "C"
 /* Common time-related functions and data types */
 
 /* struct timeval, as defined in <sys/time.h>, <winsock.h> or <winsock2.h> */
-struct timeval;
+  struct timeval;
 
 /* Time manipulation functions */
-void add_gettimeofday(struct timeval *atv,int ms);
-void min_timercmp(struct timeval *tv1,struct timeval *tv2);
+  void add_gettimeofday (struct timeval *atv, int ms);
+  void min_timercmp (struct timeval *tv1, struct timeval *tv2);
 
 /* OS-dependent */
 #if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__)
@@ -28,7 +28,7 @@ void min_timercmp(struct timeval *tv1,struct timeval *tv2);
 #define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 
 /* osip_gettimeofday() for Windows */
-int osip_gettimeofday(struct timeval *tp,void *tz);
+  int osip_gettimeofday (struct timeval *tp, void *tz);
 
 #else
 /* Operations on struct timeval */
@@ -39,10 +39,10 @@ int osip_gettimeofday(struct timeval *tp,void *tz);
 /* osip_gettimeofday() == gettimeofday() */
 #define osip_gettimeofday gettimeofday
 
-#endif /* #ifdef WIN32 */
+#endif				/* #ifdef WIN32 */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _OSIP_TIME_H_ */
+#endif				/* #ifndef _OSIP_TIME_H_ */

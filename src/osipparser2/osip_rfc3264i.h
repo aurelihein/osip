@@ -26,15 +26,15 @@
 
 #ifndef DOXYGEN
 
-  typedef struct osip_rfc3264 osip_rfc3264_t;
+typedef struct osip_rfc3264 osip_rfc3264_t;
 
-  struct osip_rfc3264
-  {
-    sdp_media_t *audio_medias[MAX_AUDIO_CODECS];
-    sdp_media_t *video_medias[MAX_VIDEO_CODECS];
-    sdp_media_t *t38_medias[MAX_T38_CODECS];
-    sdp_media_t *app_medias[MAX_APP_CODECS];
-  };
+struct osip_rfc3264
+{
+  sdp_media_t *audio_medias[MAX_AUDIO_CODECS];
+  sdp_media_t *video_medias[MAX_VIDEO_CODECS];
+  sdp_media_t *t38_medias[MAX_T38_CODECS];
+  sdp_media_t *app_medias[MAX_APP_CODECS];
+};
 
 #endif
 

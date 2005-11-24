@@ -102,9 +102,9 @@ static osip_trace_func_t *trace_func = 0;
 static unsigned int random_seed_set = 0;
 
 #ifndef WIN32
-osip_malloc_func_t  *osip_malloc_func = 0;
+osip_malloc_func_t *osip_malloc_func = 0;
 osip_realloc_func_t *osip_realloc_func = 0;
-osip_free_func_t    *osip_free_func = 0;
+osip_free_func_t *osip_free_func = 0;
 #endif
 
 #ifndef WIN32_USE_CRYPTO
@@ -120,7 +120,7 @@ osip_fallback_random_number ()
       unsigned int ticks;
 #ifdef __PALMOS__
 #	if __PALMOS__ < 0x06000000
-      SysRandom((Int32)TimGetTicks());
+      SysRandom ((Int32) TimGetTicks ());
 #	else
       struct timeval tv;
       gettimeofday (&tv, NULL);
@@ -129,31 +129,31 @@ osip_fallback_random_number ()
 #	endif
 #elif defined(WIN32)
       LARGE_INTEGER lCount;
-      QueryPerformanceCounter(&lCount);
+      QueryPerformanceCounter (&lCount);
       ticks = lCount.LowPart + lCount.HighPart;
 #elif defined(_WIN32_WCE)
-      ticks = GetTickCount();
+      ticks = GetTickCount ();
 #elif defined(__PSOS__)
 #elif defined(__VXWORKS_OS__)
       struct timespec tp;
-      clock_gettime(CLOCK_REALTIME, &tp);
-      ticks = tp.tv_sec+tp.tv_nsec;
+      clock_gettime (CLOCK_REALTIME, &tp);
+      ticks = tp.tv_sec + tp.tv_nsec;
 #else
       struct timeval tv;
       int fd;
       gettimeofday (&tv, NULL);
       ticks = tv.tv_sec + tv.tv_usec;
-      fd=open("/dev/urandom",O_RDONLY);
+      fd = open ("/dev/urandom", O_RDONLY);
       if (fd > 0)
 	{
-          unsigned int r;
+	  unsigned int r;
 	  int i;
-          for (i=0;i<512;i++)
+	  for (i = 0; i < 512; i++)
 	    {
-	      read(fd, &r, sizeof(r));
+	      read (fd, &r, sizeof (r));
 	      ticks += r;
 	    }
-	  close(fd);
+	  close (fd);
 	}
 #endif
 
@@ -251,15 +251,16 @@ void
 osip_usleep (int useconds)
 {
 #if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
-	/* This bit will work for the Protein API, but not the Palm 68K API */
-	nsecs_t nanoseconds = useconds*1000;
-	SysThreadDelay(nanoseconds, P_ABSOLUTE_TIMEOUT);
+  /* This bit will work for the Protein API, but not the Palm 68K API */
+  nsecs_t nanoseconds = useconds * 1000;
+  SysThreadDelay (nanoseconds, P_ABSOLUTE_TIMEOUT);
 #elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
-	UInt32 stoptime = TimGetTicks() + (useconds / 1000000) * SysTicksPerSecond();
-	while (stoptime > TimGetTicks())
-		/* I wish there was some type of yield function here */
-		;	
-#elif defined(WIN32) 
+  UInt32 stoptime =
+    TimGetTicks () + (useconds / 1000000) * SysTicksPerSecond ();
+  while (stoptime > TimGetTicks ())
+    /* I wish there was some type of yield function here */
+    ;
+#elif defined(WIN32)
   Sleep (useconds / 1000);
 #else
   struct timeval delay;
@@ -334,14 +335,14 @@ int
 osip_strcasecmp (const char *s1, const char *s2)
 {
 #if defined(__VXWORKS_OS__) || defined( __PSOS__)
-  while ( (*s1 != '\0') && (tolower(*s1) == tolower(*s2)) )
-  {
-    s1++;
-    s2++;
-  }
-  return (tolower(*s1) - tolower(*s2));
+  while ((*s1 != '\0') && (tolower (*s1) == tolower (*s2)))
+    {
+      s1++;
+      s2++;
+    }
+  return (tolower (*s1) - tolower (*s2));
 #elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
-  return StrCaselessCompare(s1, s2);
+  return StrCaselessCompare (s1, s2);
 #elif defined(__PALMOS__) || (!defined WIN32 && !defined _WIN32_WCE)
   return strcasecmp (s1, s2);
 #else
@@ -353,18 +354,19 @@ int
 osip_strncasecmp (const char *s1, const char *s2, size_t len)
 {
 #if defined(__VXWORKS_OS__) || defined( __PSOS__)
-  if ( len == 0 ) return 0;
-  while ( (len > 0) && (tolower(*s1) == tolower(*s2)) )
-  {
-    len--;
-    if ( (len == 0) || (*s1 == '\0') || (*s2 == '\0') )
-            break;
-    s1++;
-    s2++;
-  }
-  return tolower(*s1) - tolower(*s2);
+  if (len == 0)
+    return 0;
+  while ((len > 0) && (tolower (*s1) == tolower (*s2)))
+    {
+      len--;
+      if ((len == 0) || (*s1 == '\0') || (*s2 == '\0'))
+	break;
+      s1++;
+      s2++;
+    }
+  return tolower (*s1) - tolower (*s2);
 #elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
-  return StrNCaselessCompare(s1, s2, len);
+  return StrNCaselessCompare (s1, s2, len);
 #elif defined(__PALMOS__) || (!defined WIN32 && !defined _WIN32_WCE)
   return strncasecmp (s1, s2, len);
 #else
@@ -612,7 +614,8 @@ osip_dequote (char *s)
 /**********************************************************/
 #ifndef ENABLE_TRACE
 void
-osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func)
+osip_trace_initialize_func (osip_trace_level_t level,
+			    osip_trace_func_t * func)
 {
 }
 void
@@ -701,7 +704,8 @@ osip_trace_enable_until_level (osip_trace_level_t level)
 }
 
 void
-osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func)
+osip_trace_initialize_func (osip_trace_level_t level,
+			    osip_trace_func_t * func)
 {
   int i = 0;
   trace_func = func;
@@ -789,9 +793,9 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 
       fflush (f);
     }
-  else if (trace_func) 
+  else if (trace_func)
     {
-      trace_func(fi, li, level, chfr, ap);
+      trace_func (fi, li, level, chfr, ap);
     }
 #if defined (HAVE_SYSLOG_H)
   else if (use_syslog == 1)
@@ -873,36 +877,41 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
 #ifdef WIN32
 
 #undef osip_malloc
-void *osip_malloc(size_t size)
+void *
+osip_malloc (size_t size)
 {
-  void *ptr = malloc(size);
-  if(ptr!=NULL)
-    memset(ptr,0,size);
+  void *ptr = malloc (size);
+  if (ptr != NULL)
+    memset (ptr, 0, size);
   return ptr;
 }
 
 #undef osip_realloc
-void *osip_realloc(void *ptr, size_t size)
+void *
+osip_realloc (void *ptr, size_t size)
 {
-  return realloc(ptr, size);
+  return realloc (ptr, size);
 }
 
 #undef osip_free
-void osip_free(void *ptr)
+void
+osip_free (void *ptr)
 {
-  if (ptr==NULL) return;
-  free(ptr);
+  if (ptr == NULL)
+    return;
+  free (ptr);
 }
 
 #else
 
-void osip_set_allocators(osip_malloc_func_t  *malloc_func, 
-                         osip_realloc_func_t *realloc_func, 
-                         osip_free_func_t    *free_func)
+void
+osip_set_allocators (osip_malloc_func_t * malloc_func,
+		     osip_realloc_func_t * realloc_func,
+		     osip_free_func_t * free_func)
 {
-    osip_malloc_func = malloc_func;
-    osip_realloc_func = realloc_func;
-    osip_free_func = free_func;
+  osip_malloc_func = malloc_func;
+  osip_realloc_func = realloc_func;
+  osip_free_func = free_func;
 }
 
 #endif
@@ -911,27 +920,28 @@ void osip_set_allocators(osip_malloc_func_t  *malloc_func,
 
 typedef struct
 {
-  char* str;
-  int   max;
-  int   len;
+  char *str;
+  int max;
+  int len;
 } _context;
 
-STATUS _cb_snprintf( char* buffer, int nc, int arg );
+STATUS _cb_snprintf (char *buffer, int nc, int arg);
 
-STATUS _cb_snprintf( char* buffer, int nc, int arg )
+STATUS
+_cb_snprintf (char *buffer, int nc, int arg)
 {
-  _context *ctx = (_context*)arg;
-  
-  if( ctx->max - ctx->len - nc < 1 ) /* retain 1 pos for terminating \0 */
-  {
-    nc = ctx->max - ctx->len - 1;
-  }
- 
-  if( nc > 0 )
-  {
-    memcpy( ctx->str + ctx->len, buffer, nc );
-    ctx->len += nc;
-  }
+  _context *ctx = (_context *) arg;
+
+  if (ctx->max - ctx->len - nc < 1)	/* retain 1 pos for terminating \0 */
+    {
+      nc = ctx->max - ctx->len - 1;
+    }
+
+  if (nc > 0)
+    {
+      memcpy (ctx->str + ctx->len, buffer, nc);
+      ctx->len += nc;
+    }
 
   ctx->str[ctx->len] = '\0';
 
@@ -939,28 +949,30 @@ STATUS _cb_snprintf( char* buffer, int nc, int arg )
 }
 
 
-int osip_vsnprintf( char* buf, int max, const char *fmt, va_list ap )
+int
+osip_vsnprintf (char *buf, int max, const char *fmt, va_list ap)
 {
-  _context ctx;  
+  _context ctx;
   ctx.str = buf;
   ctx.max = max;
   ctx.len = 0;
 
-  if( fioFormatV( fmt, ap, _cb_snprintf, (int)&ctx ) != OK )
-  {
-    return -1;
-  }
+  if (fioFormatV (fmt, ap, _cb_snprintf, (int) &ctx) != OK)
+    {
+      return -1;
+    }
 
   return ctx.len;
 }
 
-int osip_snprintf( char* buf, int max, const char* fmt, ... )
+int
+osip_snprintf (char *buf, int max, const char *fmt, ...)
 {
   int retval;
   va_list ap;
-  va_start( ap, fmt );
-  retval = osip_vsnprintf( buf, max, fmt, ap );
-  va_end( ap );
+  va_start (ap, fmt);
+  retval = osip_vsnprintf (buf, max, fmt, ap);
+  va_end (ap);
   return retval;
 }
 
@@ -969,18 +981,19 @@ int osip_snprintf( char* buf, int max, const char* fmt, ... )
 
 #if defined(__PSOS__)
 
-int osip_snprintf( char* buf, int max, const char* fmt, ... )
+int
+osip_snprintf (char *buf, int max, const char *fmt, ...)
 {
   static char buffer[1024];
   int retval;
   va_list ap;
   buffer[0] = '\n';
-  va_start( ap, fmt );
-  vsprintf(&(buffer[strlen(buffer)]), fmt, ap );
-  va_end( ap );
-  retval = strlen(buffer);
-  memmove(buf,buffer,max);
-  if ( retval > max )
+  va_start (ap, fmt);
+  vsprintf (&(buffer[strlen (buffer)]), fmt, ap);
+  va_end (ap);
+  retval = strlen (buffer);
+  memmove (buf, buffer, max);
+  if (retval > max)
     return -1;
   return retval;
 }
@@ -996,56 +1009,59 @@ int osip_snprintf( char* buf, int max, const char* fmt, ... )
   have any usefull tools: in this case, use this code!
  */
 
-void* _osip_malloc( size_t size, char* file, unsigned short line )
+void *
+_osip_malloc (size_t size, char *file, unsigned short line)
 {
-  void* mem;
-  mem = osip_malloc_func( size+20 );
-  if ( mem != NULL )
-  {
-    char* s;
-    memcpy( mem, &line, 2 );
-    for ( s = file + strlen(file); s != file; s-- )
+  void *mem;
+  mem = osip_malloc_func (size + 20);
+  if (mem != NULL)
     {
-      if ( *s == '\\' || *s == '/' )
-      {
-        s++;
-        break;
-      }
+      char *s;
+      memcpy (mem, &line, 2);
+      for (s = file + strlen (file); s != file; s--)
+	{
+	  if (*s == '\\' || *s == '/')
+	    {
+	      s++;
+	      break;
+	    }
+	}
+      strncpy ((char *) mem + 2, s, 18);
+      return (void *) ((char *) mem + 20);
     }
-    strncpy( (char*)mem+2, s, 18 );
-    return (void*)((char*)mem+20);
-  }
   return NULL;
 }
 
-void  _osip_free( void* ptr )
+void
+_osip_free (void *ptr)
 {
-  if ( ptr != NULL )
-  {
-    osip_free_func( (char*)ptr-20 );
-  }
+  if (ptr != NULL)
+    {
+      osip_free_func ((char *) ptr - 20);
+    }
 }
 
-void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line )
+void *
+_osip_realloc (void *ptr, size_t size, char *file, unsigned short line)
 {
-  void* mem;
-  mem = osip_realloc_func( (char*)ptr-20, size+20 );
-  if ( mem != NULL )
-  {
-    char* s;
-    memcpy( mem, &line, 2 );
-    
-    for ( s = file + strlen(file); s != file; s-- )
+  void *mem;
+  mem = osip_realloc_func ((char *) ptr - 20, size + 20);
+  if (mem != NULL)
     {
-      if ( *s == '\\' || *s == '/' )
-      {
-        s++;
-        break;
-      }
+      char *s;
+      memcpy (mem, &line, 2);
+
+      for (s = file + strlen (file); s != file; s--)
+	{
+	  if (*s == '\\' || *s == '/')
+	    {
+	      s++;
+	      break;
+	    }
+	}
+      strncpy ((char *) mem + 2, s, 18);
+      return (char *) mem + 20;
     }
-    strncpy( (char*)mem+2, s, 18 );
-    return (char*)mem+20;
-  }
   return NULL;
 }
 
@@ -1054,15 +1070,16 @@ void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line )
 
 // ---For better performance---
 // Calculates a hash value for the given string
-unsigned long osip_hash( const char* str )
+unsigned long
+osip_hash (const char *str)
 {
   unsigned long hash = 5381;
   int c;
 
   while (c = *str++)
-      hash = ((hash << 5) + hash) + c; 
+    hash = ((hash << 5) + hash) + c;
 
-  return hash;  
+  return hash;
 }
 
 // ---For better performance---
@@ -1078,23 +1095,25 @@ unsigned long osip_hash( const char* str )
 // end of the destination string
 //
 // Pre: src is null terminated
-char* osip_str_append( char* dst, const char* src )
+char *
+osip_str_append (char *dst, const char *src)
 {
-  while( *src != '\0' )
-  {
-    *dst = *src;
-    src++;
-    dst++;
-  }
+  while (*src != '\0')
+    {
+      *dst = *src;
+      src++;
+      dst++;
+    }
   *dst = '\0';
   return dst;
 }
 
 // ---For better performance---
 // Same as above, only this time we know the length
-char* osip_strn_append( char* dst, const char* src, size_t len )
+char *
+osip_strn_append (char *dst, const char *src, size_t len)
 {
-  memmove( (void*)dst, (void*)src, len );
+  memmove ((void *) dst, (void *) src, len);
   dst += len;
   *dst = '\0';
   return dst;
@@ -1106,45 +1125,50 @@ char* osip_strn_append( char* dst, const char* src, size_t len )
 //    osip_strncpy (  dest, source, length);
 //    osip_clrspace ( dest );
 //
-char* osip_clrncpy( char* dst, const char *src, size_t len)
+char *
+osip_clrncpy (char *dst, const char *src, size_t len)
 {
   const char *pbeg;
   const char *pend;
-  char* p;
+  char *p;
   size_t spaceless_length;
 
-  if ( src == NULL ) 
+  if (src == NULL)
     return NULL;
 
   // find the start of relevant text
   pbeg = src;
-  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg)
+	 || ('\t' == *pbeg))
     pbeg++;
 
 
   // find the end of relevant text
   pend = src + len - 1;
-  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
-  {
-    pend--;
-    if (pend < pbeg)
-	  {
-	    *dst = '\0';
-	    return dst;
-	  }
-  }
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend)
+	 || ('\t' == *pend))
+    {
+      pend--;
+      if (pend < pbeg)
+	{
+	  *dst = '\0';
+	  return dst;
+	}
+    }
 
   // if pend == pbeg there is only one char to copy
-  spaceless_length = pend - pbeg + 1; // excluding any '\0'
+  spaceless_length = pend - pbeg + 1;	// excluding any '\0'
   memmove (dst, pbeg, spaceless_length);
   p = dst + spaceless_length;
 
   // terminate the string and pad dest with zeros until len
-  do {
-    *p = '\0';
-    p++;
-    spaceless_length++;
-  } while ( spaceless_length < len );
-  
+  do
+    {
+      *p = '\0';
+      p++;
+      spaceless_length++;
+    }
+  while (spaceless_length < len);
+
   return dst;
 }

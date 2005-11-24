@@ -72,8 +72,8 @@
 #define VA_START(a, f)  va_start(a, f)
 
 /* VxWorks lacks support for snprintf */
-int osip_vsnprintf( char* buf, int max, const char *fmt, va_list ap);
-int osip_snprintf(  char *buf, int max, const char *fmt, ...);
+int osip_vsnprintf (char *buf, int max, const char *fmt, va_list ap);
+int osip_snprintf (char *buf, int max, const char *fmt, ...);
 
 #define snprintf  osip_snprintf
 #define vsnprintf osip_vsnprintf
@@ -178,24 +178,25 @@ extern "C"
 
 #ifndef WIN32
 
-typedef void *osip_malloc_func_t(size_t size);
-typedef void osip_free_func_t(void *ptr);
-typedef void *osip_realloc_func_t(void *ptr, size_t size);
+  typedef void *osip_malloc_func_t (size_t size);
+  typedef void osip_free_func_t (void *ptr);
+  typedef void *osip_realloc_func_t (void *ptr, size_t size);
 
-extern osip_malloc_func_t  *osip_malloc_func;
-extern osip_realloc_func_t *osip_realloc_func;
-extern osip_free_func_t    *osip_free_func;
+  extern osip_malloc_func_t *osip_malloc_func;
+  extern osip_realloc_func_t *osip_realloc_func;
+  extern osip_free_func_t *osip_free_func;
 
-void osip_set_allocators(osip_malloc_func_t  *malloc_func, 
-                         osip_realloc_func_t *realloc_func, 
-                         osip_free_func_t    *free_func);
+  void osip_set_allocators (osip_malloc_func_t * malloc_func,
+			    osip_realloc_func_t * realloc_func,
+			    osip_free_func_t * free_func);
 
 
 #ifdef DEBUG_MEM
 
-void* _osip_malloc( size_t size, char* file, unsigned short line );
-void  _osip_free( void* ptr );
-void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line );
+  void *_osip_malloc (size_t size, char *file, unsigned short line);
+  void _osip_free (void *ptr);
+  void *_osip_realloc (void *ptr, size_t size, char *file,
+		       unsigned short line);
 
 #ifndef osip_malloc
 #define osip_malloc(S) _osip_malloc(S,__FILE__,__LINE__)
@@ -206,7 +207,7 @@ void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line );
 #ifndef osip_free
 #define osip_free(P) { if (P!=NULL) { _osip_free(P); } }
 #endif
-  
+
 #else
 
 #ifndef osip_malloc
@@ -223,9 +224,9 @@ void* _osip_realloc( void* ptr, size_t size, char* file, unsigned short line );
 
 #else
 
-void *osip_malloc(size_t size);
-void *osip_realloc(void *, size_t size);
-void osip_free(void *);
+  void *osip_malloc (size_t size);
+  void *osip_realloc (void *, size_t size);
+  void osip_free (void *);
 
 #endif
 
@@ -269,10 +270,10 @@ void osip_free(void *);
   int osip_strcasecmp (const char *s1, const char *s2);
   int osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
-  unsigned long osip_hash( const char* str );
-  char* osip_str_append( char* dst, const char* src );
-  char* osip_strn_append( char* dst, const char* src, size_t len );
-  char* osip_clrncpy( char* dst, const char* src, size_t len );
+  unsigned long osip_hash (const char *str);
+  char *osip_str_append (char *dst, const char *src);
+  char *osip_strn_append (char *dst, const char *src, size_t len);
+  char *osip_clrncpy (char *dst, const char *src, size_t len);
 
 /**************************/
 /* LOG&DEBUG support      */
@@ -304,11 +305,13 @@ void osip_free(void *);
   osip_trace_level_t;
 
 
-typedef void osip_trace_func_t(char *fi, int li, osip_trace_level_t level, char *chfr, va_list ap);
+  typedef void osip_trace_func_t (char *fi, int li, osip_trace_level_t level,
+				  char *chfr, va_list ap);
 
 /* these are defined in all cases, but are empty when oSIP is compiled
    without trace */
-  void osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t *func);
+  void osip_trace_initialize_func (osip_trace_level_t level,
+				   osip_trace_func_t * func);
   void osip_trace_initialize_syslog (osip_trace_level_t level, char *ident);
   void osip_trace_initialize (osip_trace_level_t level, FILE * file);
   void osip_trace_enable_until_level (osip_trace_level_t level);

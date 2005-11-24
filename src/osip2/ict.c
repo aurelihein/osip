@@ -53,8 +53,8 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") !=0
-	&& osip_strcasecmp (proto, "SCTP") !=0)
+	&& osip_strcasecmp (proto, "TLS") != 0
+	&& osip_strcasecmp (proto, "SCTP") != 0)
       {				/* for other reliable protocol than TCP, the timer
 				   must be desactived by the external application */
 	(*ict)->timer_a_length = DEFAULT_T1;
@@ -78,11 +78,11 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   /* for PROXY, the destination MUST be set by the application layer,
      this one may not be correct. */
   osip_message_get_route (invite, 0, &route);
-  if (route != NULL && route->url!=NULL)
+  if (route != NULL && route->url != NULL)
     {
       osip_uri_param_t *lr_param;
-      osip_uri_uparam_get_byname(route->url, "lr", &lr_param);
-      if (lr_param==NULL)
+      osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
+      if (lr_param == NULL)
 	{
 	  /* using uncompliant proxy: destination is the request-uri */
 	  route = NULL;
@@ -100,12 +100,11 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   else
     {
       int port = 5060;
-      
+
       if (invite->req_uri->port != NULL)
 	port = osip_atoi (invite->req_uri->port);
       osip_ict_set_destination ((*ict),
-				osip_strdup (invite->req_uri->host),
-				port);
+				osip_strdup (invite->req_uri->host), port);
     }
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
@@ -148,7 +147,8 @@ osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
 }
 
 osip_event_t *
-__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactionid)
+__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
+			       int transactionid)
 {
   struct timeval now;
   osip_gettimeofday (&now, NULL);
@@ -205,4 +205,3 @@ __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
     }
   return NULL;
 }
-

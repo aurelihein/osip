@@ -95,7 +95,8 @@ osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
     return NULL;
   thread->h = (HANDLE) _beginthreadex (NULL,	/* default security attr */
 				       0,	/* use default one */
-				      (unsigned (__stdcall *)(void *)) func, arg, 0, &(thread->id));
+				       (unsigned (__stdcall *) (void *)) func,
+				       arg, 0, &(thread->id));
   if (thread->h == 0)
     {
       osip_free (thread);

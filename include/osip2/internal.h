@@ -32,9 +32,10 @@
 
 #if !((defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL)))
 /* Struct timeval */
-struct timeval {
-        long    tv_sec;         /* seconds */
-        long    tv_usec;        /* and microseconds */
+struct timeval
+{
+  long tv_sec;			/* seconds */
+  long tv_usec;			/* and microseconds */
 };
 #endif
 

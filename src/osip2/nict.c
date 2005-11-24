@@ -53,8 +53,8 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") !=0
-	&& osip_strcasecmp (proto, "SCTP") !=0)
+	&& osip_strcasecmp (proto, "TLS") != 0
+	&& osip_strcasecmp (proto, "SCTP") != 0)
       {
 	(*nict)->timer_e_length = DEFAULT_T1;
 	(*nict)->timer_k_length = DEFAULT_T4;
@@ -74,11 +74,11 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
   /* for PROXY, the destination MUST be set by the application layer,
      this one may not be correct. */
   osip_message_get_route (request, 0, &route);
-  if (route != NULL && route->url!=NULL)
+  if (route != NULL && route->url != NULL)
     {
       osip_uri_param_t *lr_param;
-      osip_uri_uparam_get_byname(route->url, "lr", &lr_param);
-      if (lr_param==NULL)
+      osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
+      if (lr_param == NULL)
 	{
 	  /* using uncompliant proxy: destination is the request-uri */
 	  route = NULL;
@@ -97,12 +97,11 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
   else
     {
       int port = 5060;
-      
+
       if (request->req_uri->port != NULL)
 	port = osip_atoi (request->req_uri->port);
       osip_nict_set_destination ((*nict),
-				 osip_strdup (request->req_uri->host),
-				 port);
+				 osip_strdup (request->req_uri->host), port);
     }
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
@@ -146,7 +145,8 @@ osip_nict_set_destination (osip_nict_t * nict, char *destination, int port)
 }
 
 osip_event_t *
-__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transactionid)
+__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
+				int transactionid)
 {
   struct timeval now;
   osip_gettimeofday (&now, NULL);
@@ -200,4 +200,3 @@ __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
     }
   return NULL;
 }
-

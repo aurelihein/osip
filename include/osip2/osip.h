@@ -214,8 +214,8 @@ extern "C"
     struct timeval timer_b_start; /**@internal fire when transaction timeouts */
     int timer_d_length;		  /**@internal D >= 32s for unreliable tr (or 0) */
     struct timeval timer_d_start; /**@internal should be equal to timer H */
-    char *destination;	          /**@internal url used to send requests */
-    int port;                     /**@internal port of next hop */
+    char *destination;		  /**@internal url used to send requests */
+    int port;			  /**@internal port of next hop */
   };
 
 /**
@@ -296,9 +296,9 @@ extern "C"
 
     osip_via_t *topvia;		/**< CALL-LEG definition (Top Via) */
     osip_from_t *from;		/**< CALL-LEG definition (From)    */
-    osip_to_t *to;              /**< CALL-LEG definition (To)      */
-    osip_call_id_t *callid;     /**< CALL-LEG definition (Call-ID) */
-    osip_cseq_t *cseq;          /**< CALL-LEG definition (CSeq)    */
+    osip_to_t *to;		/**< CALL-LEG definition (To)      */
+    osip_call_id_t *callid;	/**< CALL-LEG definition (Call-ID) */
+    osip_cseq_t *cseq;		/**< CALL-LEG definition (CSeq)    */
 
     osip_message_t *orig_request;  /**< Initial request            */
     osip_message_t *last_response; /**< Last response              */
@@ -309,16 +309,16 @@ extern "C"
     time_t birth_time;		/**< birth date of transaction        */
     time_t completed_time;	/**< end   date of transaction        */
 
-    int in_socket;              /**< Optional socket for incoming message */
-    int out_socket;             /**< Optional place for outgoing message */
+    int in_socket;		/**< Optional socket for incoming message */
+    int out_socket;		/**< Optional place for outgoing message */
 
     void *config;		/**@internal transaction is managed by osip_t  */
 
-    osip_fsm_type_t ctx_type;   /**< Type of the transaction */
-    osip_ict_t *ict_context;    /**@internal */
-    osip_ist_t *ist_context;    /**@internal */
-    osip_nict_t *nict_context;  /**@internal */
-    osip_nist_t *nist_context;  /**@internal */
+    osip_fsm_type_t ctx_type;	/**< Type of the transaction */
+    osip_ict_t *ict_context;	/**@internal */
+    osip_ist_t *ist_context;	/**@internal */
+    osip_nict_t *nict_context;	/**@internal */
+    osip_nist_t *nist_context;	/**@internal */
   };
 
 
@@ -327,73 +327,73 @@ extern "C"
  */
   typedef enum osip_message_callback_type
   {
-    OSIP_ICT_INVITE_SENT = 0,               /**< INVITE MESSAGE SENT */
-    OSIP_ICT_INVITE_SENT_AGAIN,             /**< INVITE MESSAGE RETRANSMITTED */
-    OSIP_ICT_ACK_SENT,                      /**< ACK MESSAGE SENT */
-    OSIP_ICT_ACK_SENT_AGAIN,                /**< ACK MESSAGE RETRANSMITTED */
-    OSIP_ICT_STATUS_1XX_RECEIVED,           /**< 1XX FOR INVITE RECEIVED */
-    OSIP_ICT_STATUS_2XX_RECEIVED,           /**< 2XX FOR INVITE RECEIVED */
-    OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,     /**< 2XX FOR INVITE RECEIVED AGAIN */
-    OSIP_ICT_STATUS_3XX_RECEIVED,           /**< 3XX FOR INVITE RECEIVED */
-    OSIP_ICT_STATUS_4XX_RECEIVED,           /**< 4XX FOR INVITE RECEIVED */
-    OSIP_ICT_STATUS_5XX_RECEIVED,           /**< 5XX FOR INVITE RECEIVED */
-    OSIP_ICT_STATUS_6XX_RECEIVED,           /**< 6XX FOR INVITE RECEIVED */
+    OSIP_ICT_INVITE_SENT = 0,		    /**< INVITE MESSAGE SENT */
+    OSIP_ICT_INVITE_SENT_AGAIN,		    /**< INVITE MESSAGE RETRANSMITTED */
+    OSIP_ICT_ACK_SENT,			    /**< ACK MESSAGE SENT */
+    OSIP_ICT_ACK_SENT_AGAIN,		    /**< ACK MESSAGE RETRANSMITTED */
+    OSIP_ICT_STATUS_1XX_RECEIVED,	    /**< 1XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED,	    /**< 2XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_2XX_RECEIVED_AGAIN,	    /**< 2XX FOR INVITE RECEIVED AGAIN */
+    OSIP_ICT_STATUS_3XX_RECEIVED,	    /**< 3XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_4XX_RECEIVED,	    /**< 4XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_5XX_RECEIVED,	    /**< 5XX FOR INVITE RECEIVED */
+    OSIP_ICT_STATUS_6XX_RECEIVED,	    /**< 6XX FOR INVITE RECEIVED */
     OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN,  /**< RESPONSE RECEIVED AGAIN */
 
-    OSIP_IST_INVITE_RECEIVED,               /**< INVITE MESSAGE RECEIVED */
-    OSIP_IST_INVITE_RECEIVED_AGAIN,         /**< INVITE MESSAGE RECEIVED AGAN */
-    OSIP_IST_ACK_RECEIVED,                  /**< ACK MESSAGE RECEIVED */
-    OSIP_IST_ACK_RECEIVED_AGAIN,            /**< ACK MESSAGE RECEIVED AGAIN */
-    OSIP_IST_STATUS_1XX_SENT,               /**< 1XX FOR INVITE SENT */
-    OSIP_IST_STATUS_2XX_SENT,               /**< 2XX FOR INVITE SENT */
-    OSIP_IST_STATUS_2XX_SENT_AGAIN,         /**< 2XX FOR INVITE RETRANSMITTED */
-    OSIP_IST_STATUS_3XX_SENT,               /**< 3XX FOR INVITE SENT */
-    OSIP_IST_STATUS_4XX_SENT,               /**< 4XX FOR INVITE SENT */
-    OSIP_IST_STATUS_5XX_SENT,               /**< 5XX FOR INVITE SENT */
-    OSIP_IST_STATUS_6XX_SENT,               /**< 6XX FOR INVITE SENT */
-    OSIP_IST_STATUS_3456XX_SENT_AGAIN,      /**< RESPONSE RETRANSMITTED */
+    OSIP_IST_INVITE_RECEIVED,		    /**< INVITE MESSAGE RECEIVED */
+    OSIP_IST_INVITE_RECEIVED_AGAIN,	    /**< INVITE MESSAGE RECEIVED AGAN */
+    OSIP_IST_ACK_RECEIVED,		    /**< ACK MESSAGE RECEIVED */
+    OSIP_IST_ACK_RECEIVED_AGAIN,	    /**< ACK MESSAGE RECEIVED AGAIN */
+    OSIP_IST_STATUS_1XX_SENT,		    /**< 1XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT,		    /**< 2XX FOR INVITE SENT */
+    OSIP_IST_STATUS_2XX_SENT_AGAIN,	    /**< 2XX FOR INVITE RETRANSMITTED */
+    OSIP_IST_STATUS_3XX_SENT,		    /**< 3XX FOR INVITE SENT */
+    OSIP_IST_STATUS_4XX_SENT,		    /**< 4XX FOR INVITE SENT */
+    OSIP_IST_STATUS_5XX_SENT,		    /**< 5XX FOR INVITE SENT */
+    OSIP_IST_STATUS_6XX_SENT,		    /**< 6XX FOR INVITE SENT */
+    OSIP_IST_STATUS_3456XX_SENT_AGAIN,	    /**< RESPONSE RETRANSMITTED */
 
-    OSIP_NICT_REGISTER_SENT,                /**< REGISTER MESSAGE SENT */
-    OSIP_NICT_BYE_SENT,                     /**< BYE MESSAGE SENT */
-    OSIP_NICT_OPTIONS_SENT,                 /**< OPTIONS MESSAGE SENT */
-    OSIP_NICT_INFO_SENT,                    /**< INFO MESSAGE SENT */
-    OSIP_NICT_CANCEL_SENT,                  /**< CANCEL MESSAGE SENT */
-    OSIP_NICT_NOTIFY_SENT,                  /**< NOTIFY MESSAGE SENT */
-    OSIP_NICT_SUBSCRIBE_SENT,               /**< SUBSCRIBE MESSAGE SENT */
-    OSIP_NICT_UNKNOWN_REQUEST_SENT,         /**< UNKNOWN REQUEST MESSAGE SENT */
-    OSIP_NICT_REQUEST_SENT_AGAIN,           /**< REQUEST MESSAGE RETRANMITTED */
-    OSIP_NICT_STATUS_1XX_RECEIVED,          /**< 1XX FOR MESSAGE RECEIVED */
-    OSIP_NICT_STATUS_2XX_RECEIVED,          /**< 2XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_REGISTER_SENT,		    /**< REGISTER MESSAGE SENT */
+    OSIP_NICT_BYE_SENT,			    /**< BYE MESSAGE SENT */
+    OSIP_NICT_OPTIONS_SENT,		    /**< OPTIONS MESSAGE SENT */
+    OSIP_NICT_INFO_SENT,		    /**< INFO MESSAGE SENT */
+    OSIP_NICT_CANCEL_SENT,		    /**< CANCEL MESSAGE SENT */
+    OSIP_NICT_NOTIFY_SENT,		    /**< NOTIFY MESSAGE SENT */
+    OSIP_NICT_SUBSCRIBE_SENT,		    /**< SUBSCRIBE MESSAGE SENT */
+    OSIP_NICT_UNKNOWN_REQUEST_SENT,	    /**< UNKNOWN REQUEST MESSAGE SENT */
+    OSIP_NICT_REQUEST_SENT_AGAIN,	    /**< REQUEST MESSAGE RETRANMITTED */
+    OSIP_NICT_STATUS_1XX_RECEIVED,	    /**< 1XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_2XX_RECEIVED,	    /**< 2XX FOR MESSAGE RECEIVED */
     OSIP_NICT_STATUS_2XX_RECEIVED_AGAIN,    /**< 2XX FOR MESSAGE RECEIVED AGAIN */
-    OSIP_NICT_STATUS_3XX_RECEIVED,          /**< 3XX FOR MESSAGE RECEIVED */
-    OSIP_NICT_STATUS_4XX_RECEIVED,          /**< 4XX FOR MESSAGE RECEIVED */
-    OSIP_NICT_STATUS_5XX_RECEIVED,          /**< 5XX FOR MESSAGE RECEIVED */
-    OSIP_NICT_STATUS_6XX_RECEIVED,          /**< 6XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_3XX_RECEIVED,	    /**< 3XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_4XX_RECEIVED,	    /**< 4XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_5XX_RECEIVED,	    /**< 5XX FOR MESSAGE RECEIVED */
+    OSIP_NICT_STATUS_6XX_RECEIVED,	    /**< 6XX FOR MESSAGE RECEIVED */
     OSIP_NICT_STATUS_3456XX_RECEIVED_AGAIN, /**< RESPONSE RECEIVED AGAIN */
 
-    OSIP_NIST_REGISTER_RECEIVED,            /**< REGISTER RECEIVED */
-    OSIP_NIST_BYE_RECEIVED,                 /**< BYE RECEIVED */
-    OSIP_NIST_OPTIONS_RECEIVED,             /**< OPTIONS RECEIVED */
-    OSIP_NIST_INFO_RECEIVED,                /**< INFO RECEIVED */
-    OSIP_NIST_CANCEL_RECEIVED,              /**< CANCEL RECEIVED */
-    OSIP_NIST_NOTIFY_RECEIVED,              /**< NOTIFY RECEIVED */
-    OSIP_NIST_SUBSCRIBE_RECEIVED,           /**< SUBSCRIBE RECEIVED */
+    OSIP_NIST_REGISTER_RECEIVED,	    /**< REGISTER RECEIVED */
+    OSIP_NIST_BYE_RECEIVED,		    /**< BYE RECEIVED */
+    OSIP_NIST_OPTIONS_RECEIVED,		    /**< OPTIONS RECEIVED */
+    OSIP_NIST_INFO_RECEIVED,		    /**< INFO RECEIVED */
+    OSIP_NIST_CANCEL_RECEIVED,		    /**< CANCEL RECEIVED */
+    OSIP_NIST_NOTIFY_RECEIVED,		    /**< NOTIFY RECEIVED */
+    OSIP_NIST_SUBSCRIBE_RECEIVED,	    /**< SUBSCRIBE RECEIVED */
 
-    OSIP_NIST_UNKNOWN_REQUEST_RECEIVED,     /**< UNKNWON REQUEST RECEIVED */
-    OSIP_NIST_REQUEST_RECEIVED_AGAIN,       /**< UNKNWON REQUEST RECEIVED AGAIN */
-    OSIP_NIST_STATUS_1XX_SENT,              /**< 1XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_2XX_SENT,              /**< 2XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_2XX_SENT_AGAIN,        /**< 2XX FOR MESSAGE RETRANSMITTED */
-    OSIP_NIST_STATUS_3XX_SENT,              /**< 3XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_4XX_SENT,              /**< 4XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_5XX_SENT,              /**< 5XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_6XX_SENT,              /**< 6XX FOR MESSAGE SENT */
-    OSIP_NIST_STATUS_3456XX_SENT_AGAIN,     /**< RESPONSE RETRANSMITTED */
+    OSIP_NIST_UNKNOWN_REQUEST_RECEIVED,	    /**< UNKNWON REQUEST RECEIVED */
+    OSIP_NIST_REQUEST_RECEIVED_AGAIN,	    /**< UNKNWON REQUEST RECEIVED AGAIN */
+    OSIP_NIST_STATUS_1XX_SENT,		    /**< 1XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT,		    /**< 2XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_2XX_SENT_AGAIN,	    /**< 2XX FOR MESSAGE RETRANSMITTED */
+    OSIP_NIST_STATUS_3XX_SENT,		    /**< 3XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_4XX_SENT,		    /**< 4XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_5XX_SENT,		    /**< 5XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_6XX_SENT,		    /**< 6XX FOR MESSAGE SENT */
+    OSIP_NIST_STATUS_3456XX_SENT_AGAIN,	    /**< RESPONSE RETRANSMITTED */
 
-    OSIP_ICT_STATUS_TIMEOUT,                /**< TIMER B EXPIRATION: NO REMOTE ANSWER  */
-    OSIP_NICT_STATUS_TIMEOUT,               /**< TIMER F EXPIRATION: NO REMOTE ANSWER  */
+    OSIP_ICT_STATUS_TIMEOUT,		    /**< TIMER B EXPIRATION: NO REMOTE ANSWER  */
+    OSIP_NICT_STATUS_TIMEOUT,		    /**< TIMER F EXPIRATION: NO REMOTE ANSWER  */
 
-    OSIP_MESSAGE_CALLBACK_COUNT             /**< END OF ENUM */
+    OSIP_MESSAGE_CALLBACK_COUNT		    /**< END OF ENUM */
   } osip_message_callback_type_t;
 
 /**
@@ -401,12 +401,12 @@ extern "C"
  */
   typedef enum osip_kill_callback_type
   {
-    OSIP_ICT_KILL_TRANSACTION,      /**< end of Client INVITE transaction */
-    OSIP_IST_KILL_TRANSACTION,      /**< end of Server INVITE transaction */
-    OSIP_NICT_KILL_TRANSACTION,     /**< end of Client Non-INVITE transaction */
-    OSIP_NIST_KILL_TRANSACTION,     /**< end of Server Non-INVITE transaction */
+    OSIP_ICT_KILL_TRANSACTION,	    /**< end of Client INVITE transaction */
+    OSIP_IST_KILL_TRANSACTION,	    /**< end of Server INVITE transaction */
+    OSIP_NICT_KILL_TRANSACTION,	    /**< end of Client Non-INVITE transaction */
+    OSIP_NIST_KILL_TRANSACTION,	    /**< end of Server Non-INVITE transaction */
 
-    OSIP_KILL_CALLBACK_COUNT        /**< END OF ENUM */
+    OSIP_KILL_CALLBACK_COUNT	    /**< END OF ENUM */
   } osip_kill_callback_type_t;
 
 /**
@@ -415,12 +415,12 @@ extern "C"
  */
   typedef enum osip_transport_error_callback_type
   {
-    OSIP_ICT_TRANSPORT_ERROR,             /**< transport error for ICT */
-    OSIP_IST_TRANSPORT_ERROR,             /**< transport error for IST */
-    OSIP_NICT_TRANSPORT_ERROR,            /**< transport error for NICT */
-    OSIP_NIST_TRANSPORT_ERROR,            /**< transport error for NIST */
+    OSIP_ICT_TRANSPORT_ERROR,		  /**< transport error for ICT */
+    OSIP_IST_TRANSPORT_ERROR,		  /**< transport error for IST */
+    OSIP_NICT_TRANSPORT_ERROR,		  /**< transport error for NICT */
+    OSIP_NIST_TRANSPORT_ERROR,		  /**< transport error for NIST */
 
-    OSIP_TRANSPORT_ERROR_CALLBACK_COUNT   /**< END OF ENUM */
+    OSIP_TRANSPORT_ERROR_CALLBACK_COUNT	  /**< END OF ENUM */
   } osip_transport_error_callback_type_t;
 
 /**
@@ -457,14 +457,14 @@ extern "C"
   struct ixt_t
   {
     /* any ACK received that match this context will set counter to -1 */
-    struct osip_dialog *dialog; /**< related dialog */
-    osip_message_t *msg2xx;     /**< buffer to retransmit */
-    osip_message_t *ack;        /**< ack message if needed */
-    time_t start;               /**< Time of first retransmission */
-    int interval;               /**< delay between retransmission, in ms */
-    char *dest;                 /**< destination host */
-    int port;                   /**< destination port */
-    int sock;                   /**< socket to use */
+    struct osip_dialog *dialog;	/**< related dialog */
+    osip_message_t *msg2xx;	/**< buffer to retransmit */
+    osip_message_t *ack;	/**< ack message if needed */
+    time_t start;		/**< Time of first retransmission */
+    int interval;		/**< delay between retransmission, in ms */
+    char *dest;			/**< destination host */
+    int port;			/**< destination port */
+    int sock;			/**< socket to use */
     int counter;		/**< start at 7 */
   };
 
@@ -488,25 +488,25 @@ extern "C"
     void *application_context;	/**< User defined Pointer */
 
     /* list of transactions for ict, ist, nict, nist */
-    osip_list_t *osip_ict_transactions;   /**< list of ict transactions */
-    osip_list_t *osip_ist_transactions;   /**< list of ist transactions */
+    osip_list_t *osip_ict_transactions;	  /**< list of ict transactions */
+    osip_list_t *osip_ist_transactions;	  /**< list of ist transactions */
     osip_list_t *osip_nict_transactions;  /**< list of nict transactions */
     osip_list_t *osip_nist_transactions;  /**< list of nist transactions */
 
     osip_list_t *ixt_retransmissions;	 /**< list of ixt elements */
 
-    osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];        /**@internal */
+    osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];	 /**@internal */
     osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT]; /**@internal */
-    osip_transport_error_cb_t tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];  /**@internal */
+    osip_transport_error_cb_t tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];	/**@internal */
 
-    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *,
-			    int, int);  /**@internal */
+    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *, int, int);
+					/**@internal */
 
 #if defined(HAVE_DICT_DICT_H)
-    dict        *osip_ict_hastable;       /**< htable of ict transactions */
-    dict        *osip_ist_hastable;       /**< htable of ist transactions */
-    dict        *osip_nict_hastable;      /**< htable of nict transactions */
-    dict        *osip_nist_hastable;      /**< htable of nist transactions */
+    dict *osip_ict_hastable;		  /**< htable of ict transactions */
+    dict *osip_ist_hastable;		  /**< htable of ist transactions */
+    dict *osip_nict_hastable;		  /**< htable of nict transactions */
+    dict *osip_nist_hastable;		  /**< htable of nist transactions */
 #endif
   };
 
@@ -516,7 +516,8 @@ extern "C"
  * @param type The event type to hook on.
  * @param cb The method to be called upon the event.
  */
-  int osip_set_message_callback (osip_t *osip, int type, osip_message_cb_t cb);
+  int osip_set_message_callback (osip_t * osip, int type,
+				 osip_message_cb_t cb);
 
 /**
  * Set a callback for transaction operation related to the end of transactions. 
@@ -524,7 +525,7 @@ extern "C"
  * @param type The event type to hook on.
  * @param cb The method to be called upon the event.
  */
-  int osip_set_kill_transaction_callback (osip_t *osip, int type,
+  int osip_set_kill_transaction_callback (osip_t * osip, int type,
 					  osip_kill_transaction_cb_t cb);
 
 /**
@@ -533,7 +534,7 @@ extern "C"
  * @param type The event type to hook on.
  * @param cb The method to be called upon the event.
  */
-  int osip_set_transport_error_callback (osip_t *osip, int type,
+  int osip_set_transport_error_callback (osip_t * osip, int type,
 					 osip_transport_error_cb_t cb);
 
 /**
@@ -552,8 +553,8 @@ extern "C"
  */
   struct osip_event
   {
-    type_t type;             /**< Event Type */
-    int transactionid;       /**< identifier of the related osip transaction */
+    type_t type;	     /**< Event Type */
+    int transactionid;	     /**< identifier of the related osip transaction */
     osip_message_t *sip;     /**< SIP message (optional) */
   };
 
@@ -591,8 +592,7 @@ extern "C"
  * @param portnum a pointer to receive the host port.
  */
   void osip_response_get_destination (osip_message_t * response,
-				      char **address,
-				      int *portnum);
+				      char **address, int *portnum);
 /**
  * Set the host and port destination used for sending the SIP message.
  * This can be useful for an application with 'DIRECT ROOTING MODE'
@@ -858,7 +858,8 @@ extern "C"
  * @param osip The osip_t structure.
  * @param ack  The ack that has just been received.
  */
-  struct osip_dialog *osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack);
+  struct osip_dialog *osip_stop_200ok_retransmissions (osip_t * osip,
+						       osip_message_t * ack);
 
 /**
  * Stop out of fsm retransmissions (ACK or 200 Ok) associated to a given dialog.

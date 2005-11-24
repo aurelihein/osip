@@ -463,13 +463,13 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
     return -1;
   *dest = tmp;
 
-  tmp = osip_str_append (tmp, auth->auth_type );
+  tmp = osip_str_append (tmp, auth->auth_type);
 
   if (auth->username != NULL)
     {
       tmp = osip_strn_append (tmp, " username=", 10);
       /* !! username-value must be a quoted string !! */
-      tmp = osip_str_append(tmp, auth->username);
+      tmp = osip_str_append (tmp, auth->username);
     }
 
   if (auth->realm != NULL)
@@ -482,7 +482,7 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
     {
       tmp = osip_strn_append (tmp, ", nonce=", 8);
       /* !! nonce-value must be a quoted string !! */
-      tmp = osip_str_append(tmp, auth->nonce);
+      tmp = osip_str_append (tmp, auth->nonce);
     }
 
   if (auth->uri != NULL)
@@ -506,28 +506,28 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
     }
   if (auth->algorithm != NULL)
     {
-      tmp = osip_strn_append(tmp, ", algorithm=", 12);
-      tmp = osip_str_append(tmp, auth->algorithm);
+      tmp = osip_strn_append (tmp, ", algorithm=", 12);
+      tmp = osip_str_append (tmp, auth->algorithm);
     }
   if (auth->cnonce != NULL)
     {
-      tmp = osip_strn_append(tmp, ", cnonce=", 9);
-      tmp = osip_str_append(tmp, auth->cnonce);
+      tmp = osip_strn_append (tmp, ", cnonce=", 9);
+      tmp = osip_str_append (tmp, auth->cnonce);
     }
   if (auth->opaque != NULL)
     {
       tmp = osip_strn_append (tmp, ", opaque=", 9);
-      tmp = osip_str_append(tmp, auth->opaque);
+      tmp = osip_str_append (tmp, auth->opaque);
     }
   if (auth->message_qop != NULL)
     {
-      tmp = osip_strn_append(tmp, ", qop=", 6);
-      tmp = osip_str_append(tmp, auth->message_qop);
+      tmp = osip_strn_append (tmp, ", qop=", 6);
+      tmp = osip_str_append (tmp, auth->message_qop);
     }
   if (auth->nonce_count != NULL)
     {
       tmp = osip_strn_append (tmp, ", nc=", 5);
-      tmp = osip_str_append(tmp, auth->nonce_count);
+      tmp = osip_str_append (tmp, auth->nonce_count);
     }
   return 0;
 }
