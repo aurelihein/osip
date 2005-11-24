@@ -1138,8 +1138,8 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
     char *tmp = osip_malloc (15);
     char *tmp2 = osip_malloc (15);
 
-    sprintf (tmp, "%i", now);
-    sprintf (tmp2, "%i", now + 3600);
+    sprintf (tmp, "%li", now);
+    sprintf (tmp2, "%li", now + 3600);
 
     i = sdp_message_t_time_descr_add (*sdp, tmp, tmp2);
     if (i != 0)
