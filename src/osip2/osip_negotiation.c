@@ -1134,7 +1134,7 @@ __osip_negotiation_sdp_build_offer (osip_negotiation_t * config,
 				  osip_strdup (config->c_addr_multicast_int));
 
   {				/* offer-answer draft says we must copy the "t=" line */
-    int now = time (NULL);
+    time_t now = time (NULL);
     char *tmp = osip_malloc (15);
     char *tmp2 = osip_malloc (15);
 

@@ -175,7 +175,7 @@ __osip_clock_gettime (unsigned int clock_id, struct timespec *tp)
     return -1;
 
   _ftime (&time_val);
-  tp->tv_sec = time_val.time;
+  tp->tv_sec = (long)time_val.time;
   tp->tv_nsec = time_val.millitm * 1000000;
   return 0;
 }

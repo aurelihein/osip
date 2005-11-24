@@ -1779,7 +1779,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
      {
        struct timeval cmpTime;
        div_t dValue = div(ixt->interval, 1000);
-       cmpTime.tv_sec = ixt->start + dValue.quot;
+       cmpTime.tv_sec = (long)(ixt->start + dValue.quot);
        cmpTime.tv_usec = dValue.rem * 1000;
        min_timercmp(lower_tv, &cmpTime);
 
