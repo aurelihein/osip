@@ -1,10 +1,10 @@
 libosip2 (2.2.2)
+	* parser speed improvements
 	* replace mutex with critical section on windows for performance.
 	* fix a bug in the parser for empty header (also store empty Accept header)
 	* improve mime support.
 	* improve sipfrag support.
 	* add NULL checks (uris...).
-	* add libdict support (hastable for parser).
 	* patch for PSOS support.
 	
 libosip2 (2.2.1)
