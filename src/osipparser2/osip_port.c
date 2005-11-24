@@ -1068,8 +1068,8 @@ _osip_realloc (void *ptr, size_t size, char *file, unsigned short line)
 #endif
 
 
-// ---For better performance---
-// Calculates a hash value for the given string
+/* ---For better performance---
+   Calculates a hash value for the given string */
 unsigned long
 osip_hash (const char *str)
 {
@@ -1082,19 +1082,19 @@ osip_hash (const char *str)
   return hash;
 }
 
-// ---For better performance---
-// Appends src-string to dst-string.
-//
-// This was introduced to replace the 
-// inefficient constructions like:
-//
-//   osip_strncpy (tmp, src, strlen(src) );
-//   tmp = tmp + strlen (src);
-//
-// This function returns a pointer to the
-// end of the destination string
-//
-// Pre: src is null terminated
+/* ---For better performance---
+   Appends src-string to dst-string.
+   
+   This was introduced to replace the 
+   inefficient constructions like:
+   
+   osip_strncpy (tmp, src, strlen(src) );
+   tmp = tmp + strlen (src);
+   
+   This function returns a pointer to the
+   end of the destination string
+   
+   Pre: src is null terminated */
 char *
 osip_str_append (char *dst, const char *src)
 {
@@ -1108,8 +1108,8 @@ osip_str_append (char *dst, const char *src)
   return dst;
 }
 
-// ---For better performance---
-// Same as above, only this time we know the length
+/* ---For better performance---
+   Same as above, only this time we know the length */
 char *
 osip_strn_append (char *dst, const char *src, size_t len)
 {
@@ -1120,11 +1120,10 @@ osip_strn_append (char *dst, const char *src, size_t len)
 }
 
 
-// ---For better performance---
-// This is to replace this construction:
-//    osip_strncpy (  dest, source, length);
-//    osip_clrspace ( dest );
-//
+/* ---For better performance---
+   This is to replace this construction:
+   osip_strncpy (  dest, source, length);
+   osip_clrspace ( dest ); */
 char *
 osip_clrncpy (char *dst, const char *src, size_t len)
 {
@@ -1136,14 +1135,14 @@ osip_clrncpy (char *dst, const char *src, size_t len)
   if (src == NULL)
     return NULL;
 
-  // find the start of relevant text
+  /* find the start of relevant text */
   pbeg = src;
   while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg)
 	 || ('\t' == *pbeg))
     pbeg++;
 
 
-  // find the end of relevant text
+  /* find the end of relevant text */
   pend = src + len - 1;
   while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend)
 	 || ('\t' == *pend))
@@ -1156,12 +1155,12 @@ osip_clrncpy (char *dst, const char *src, size_t len)
 	}
     }
 
-  // if pend == pbeg there is only one char to copy
-  spaceless_length = pend - pbeg + 1;	// excluding any '\0'
+  /* if pend == pbeg there is only one char to copy */
+  spaceless_length = pend - pbeg + 1;	/* excluding any '\0' */
   memmove (dst, pbeg, spaceless_length);
   p = dst + spaceless_length;
 
-  // terminate the string and pad dest with zeros until len
+  /* terminate the string and pad dest with zeros until len */
   do
     {
       *p = '\0';

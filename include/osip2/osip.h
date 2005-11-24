@@ -499,7 +499,8 @@ extern "C"
     osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT]; /**@internal */
     osip_transport_error_cb_t tp_error_callbacks[OSIP_TRANSPORT_ERROR_CALLBACK_COUNT];	/**@internal */
 
-    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *, int, int);
+    int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *,
+			    int, int);
 					/**@internal */
 
 #if defined(HAVE_DICT_DICT_H)
