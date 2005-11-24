@@ -24,16 +24,14 @@
 #include "xixt.h"
 
 int
-__osip_nict_init (osip_nict_t ** nict, osip_t * osip,
-		  osip_message_t * request)
+__osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 {
   osip_route_t *route;
   int i;
   time_t now;
 
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "allocating NICT context\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NICT context\n"));
 
   *nict = (osip_nict_t *) osip_malloc (sizeof (osip_nict_t));
   if (*nict == NULL)
@@ -45,7 +43,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
     osip_via_t *via;
     char *proto;
 
-    i = osip_message_get_via (request, 0, &via);	/* get top via */
+    i = osip_message_get_via (request, 0, &via);        /* get top via */
     if (i != 0)
       goto ii_error_1;
     proto = via_get_protocol (via);
@@ -53,21 +51,20 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") != 0
-	&& osip_strcasecmp (proto, "SCTP") != 0)
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
       {
-	(*nict)->timer_e_length = DEFAULT_T1;
-	(*nict)->timer_k_length = DEFAULT_T4;
-	osip_gettimeofday (&(*nict)->timer_e_start, NULL);
-	add_gettimeofday (&(*nict)->timer_e_start, (*nict)->timer_e_length);
-	(*nict)->timer_k_start.tv_sec = -1;	/* not started */
-      }
-    else
-      {				/* reliable protocol is used: */
-	(*nict)->timer_e_length = -1;	/* E is not ACTIVE */
-	(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
-	(*nict)->timer_e_start.tv_sec = -1;
-	(*nict)->timer_k_start.tv_sec = -1;	/* not started */
+        (*nict)->timer_e_length = DEFAULT_T1;
+        (*nict)->timer_k_length = DEFAULT_T4;
+        osip_gettimeofday (&(*nict)->timer_e_start, NULL);
+        add_gettimeofday (&(*nict)->timer_e_start, (*nict)->timer_e_length);
+        (*nict)->timer_k_start.tv_sec = -1;     /* not started */
+    } else
+      {                         /* reliable protocol is used: */
+        (*nict)->timer_e_length = -1;   /* E is not ACTIVE */
+        (*nict)->timer_k_length = 0;    /* MUST do the transition immediatly */
+        (*nict)->timer_e_start.tv_sec = -1;
+        (*nict)->timer_k_start.tv_sec = -1;     /* not started */
       }
   }
 
@@ -77,12 +74,13 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
   if (route != NULL && route->url != NULL)
     {
       osip_uri_param_t *lr_param;
+
       osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
       if (lr_param == NULL)
-	{
-	  /* using uncompliant proxy: destination is the request-uri */
-	  route = NULL;
-	}
+        {
+          /* using uncompliant proxy: destination is the request-uri */
+          route = NULL;
+        }
     }
 
   if (route != NULL)
@@ -90,18 +88,16 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip,
       int port = 5060;
 
       if (route->url->port != NULL)
-	port = osip_atoi (route->url->port);
-      osip_nict_set_destination ((*nict), osip_strdup (route->url->host),
-				 port);
-    }
-  else
+        port = osip_atoi (route->url->port);
+      osip_nict_set_destination ((*nict), osip_strdup (route->url->host), port);
+  } else
     {
       int port = 5060;
 
       if (request->req_uri->port != NULL)
-	port = osip_atoi (request->req_uri->port);
+        port = osip_atoi (request->req_uri->port);
       osip_nict_set_destination ((*nict),
-				 osip_strdup (request->req_uri->host), port);
+                                 osip_strdup (request->req_uri->host), port);
     }
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
@@ -124,8 +120,7 @@ __osip_nict_free (osip_nict_t * nict)
   if (nict == NULL)
     return -1;
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "free nict ressource\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
 
   osip_free (nict->destination);
   osip_free (nict);
@@ -146,9 +141,10 @@ osip_nict_set_destination (osip_nict_t * nict, char *destination, int port)
 
 osip_event_t *
 __osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
-				int transactionid)
+                                int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (nict == NULL)
@@ -156,18 +152,19 @@ __osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
   if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
       if (nict->timer_e_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &nict->timer_e_start, >))
-	return __osip_event_new (TIMEOUT_E, transactionid);
+        return __osip_event_new (TIMEOUT_E, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
 __osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
-				int transactionid)
+                                int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (nict == NULL)
@@ -175,18 +172,19 @@ __osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
   if (state == NICT_PROCEEDING || state == NICT_TRYING)
     {
       if (nict->timer_f_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &nict->timer_f_start, >))
-	return __osip_event_new (TIMEOUT_F, transactionid);
+        return __osip_event_new (TIMEOUT_F, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
 __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
-				int transactionid)
+                                int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (nict == NULL)
@@ -194,9 +192,9 @@ __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
   if (state == NICT_COMPLETED)
     {
       if (nict->timer_k_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &nict->timer_k_start, >))
-	return __osip_event_new (TIMEOUT_K, transactionid);
+        return __osip_event_new (TIMEOUT_K, transactionid);
     }
   return NULL;
 }

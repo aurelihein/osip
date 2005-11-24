@@ -44,12 +44,12 @@ main (int argc, char **argv)
   if (froms_file == NULL)
     {
       fprintf (stdout, "Failed to open %s file.\nUsage: tfrom froms.txt\n",
-	       argv[1]);
+               argv[1]);
       exit (0);
     }
 
   a_from = (char *) osip_malloc (200);
-  res = fgets (a_from, 200, froms_file);	/* lines are under 200 */
+  res = fgets (a_from, 200, froms_file);        /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,26 +59,25 @@ main (int argc, char **argv)
       strncpy (a_from + strlen (a_from) - 1, "\0", 1);
 
       if (0 != strncmp (a_from, "#", 1))
-	{
-	  /* allocate & init from */
-	  osip_from_init (&from);
-	  printf ("=================================================\n");
-	  printf ("FROM TO PARSE: |%s|\n", a_from);
-	  errcode = osip_from_parse (from, a_from);
-	  if (errcode != -1)
-	    {
-	      if (osip_from_to_str (from, &dest) != -1)
-		{
-		  printf ("result:        |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad from format: %s\n", a_from);
-	  osip_from_free (from);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_from, 200, froms_file);	/* lines are under 200 */
+        {
+          /* allocate & init from */
+          osip_from_init (&from);
+          printf ("=================================================\n");
+          printf ("FROM TO PARSE: |%s|\n", a_from);
+          errcode = osip_from_parse (from, a_from);
+          if (errcode != -1)
+            {
+              if (osip_from_to_str (from, &dest) != -1)
+                {
+                  printf ("result:        |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad from format: %s\n", a_from);
+          osip_from_free (from);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_from, 200, froms_file);    /* lines are under 200 */
     }
   osip_free (a_from);
   return 0;

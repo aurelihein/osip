@@ -44,8 +44,8 @@ sdp_message_v_version_get (sdp_message_t * sdp)
 
 int
 sdp_message_o_origin_set (sdp_message_t * sdp, char *username, char *sess_id,
-			  char *sess_version, char *nettype, char *addrtype,
-			  char *addr)
+                          char *sess_version, char *nettype, char *addrtype,
+                          char *addr)
 {
   if (sdp == NULL)
     return -1;
@@ -216,9 +216,9 @@ sdp_message_p_phone_get (sdp_message_t * sdp, int pos)
 
 int
 sdp_message_c_connection_add (sdp_message_t * sdp, int pos_media,
-			      char *nettype, char *addrtype,
-			      char *addr, char *addr_multicast_ttl,
-			      char *addr_multicast_int)
+                              char *nettype, char *addrtype,
+                              char *addr, char *addr_multicast_ttl,
+                              char *addr_multicast_int)
 {
   int i;
   sdp_media_t *med;
@@ -254,7 +254,7 @@ sdp_message_connection_get (sdp_message_t * sdp, int pos_media, int pos)
 
   if (sdp == NULL)
     return NULL;
-  if (pos_media == -1)		/* pos is useless in this case: 1 global "c=" is allowed */
+  if (pos_media == -1)          /* pos is useless in this case: 1 global "c=" is allowed */
     return sdp->c_connection;
   med = (sdp_media_t *) osip_list_get (sdp->m_medias, pos_media);
   if (med == NULL)
@@ -293,8 +293,7 @@ sdp_message_c_addr_get (sdp_message_t * sdp, int pos_media, int pos)
 }
 
 char *
-sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media,
-				      int pos)
+sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media, int pos)
 {
   sdp_connection_t *conn = sdp_message_connection_get (sdp, pos_media, pos);
 
@@ -304,8 +303,7 @@ sdp_message_c_addr_multicast_ttl_get (sdp_message_t * sdp, int pos_media,
 }
 
 char *
-sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media,
-				      int pos)
+sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media, int pos)
 {
   sdp_connection_t *conn = sdp_message_connection_get (sdp, pos_media, pos);
 
@@ -316,7 +314,7 @@ sdp_message_c_addr_multicast_int_get (sdp_message_t * sdp, int pos_media,
 
 int
 sdp_message_b_bandwidth_add (sdp_message_t * sdp, int pos_media, char *bwtype,
-			     char *bandwidth)
+                             char *bandwidth)
 {
   int i;
   sdp_media_t *med;
@@ -420,8 +418,7 @@ sdp_message_t_stop_time_get (sdp_message_t * sdp, int pos_td)
 }
 
 int
-sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr,
-			  char *field)
+sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr, char *field)
 {
   sdp_time_descr_t *td;
 
@@ -435,8 +432,7 @@ sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr,
 }
 
 char *
-sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr,
-			  int pos_repeat)
+sdp_message_r_repeat_get (sdp_message_t * sdp, int pos_time_descr, int pos_repeat)
 {
   sdp_time_descr_t *td;
 
@@ -467,7 +463,7 @@ sdp_message_z_adjustments_get (sdp_message_t * sdp)
 
 int
 sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype,
-		       char *keydata)
+                       char *keydata)
 {
   sdp_key_t *key;
   sdp_media_t *med;
@@ -499,7 +495,7 @@ sdp_message_k_keytype_get (sdp_message_t * sdp, int pos_media)
   if (pos_media == -1)
     {
       if (sdp->k_key == NULL)
-	return NULL;
+        return NULL;
       return sdp->k_key->k_keytype;
     }
   if ((pos_media != -1) && (osip_list_size (sdp->m_medias) < pos_media + 1))
@@ -520,7 +516,7 @@ sdp_message_k_keydata_get (sdp_message_t * sdp, int pos_media)
   if (pos_media == -1)
     {
       if (sdp->k_key == NULL)
-	return NULL;
+        return NULL;
       return sdp->k_key->k_keydata;
     }
   if ((pos_media != -1) && (osip_list_size (sdp->m_medias) < pos_media + 1))
@@ -533,7 +529,7 @@ sdp_message_k_keydata_get (sdp_message_t * sdp, int pos_media)
 
 int
 sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
-			     char *att_field, char *att_value)
+                             char *att_field, char *att_value)
 {
   int i;
   sdp_media_t *med;
@@ -559,8 +555,7 @@ sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
 }
 
 int
-sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media,
-			     char *att_field)
+sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, char *att_field)
 {
   int i;
   sdp_media_t *med;
@@ -573,16 +568,15 @@ sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media,
   if (pos_media == -1)
     {
       for (i = 0; i < osip_list_size (sdp->a_attributes);)
-	{
-	  attr = osip_list_get (sdp->a_attributes, i);
-	  if (strcmp (attr->a_att_field, att_field) == 0)
-	    {
-	      osip_list_remove (sdp->a_attributes, i);
-	      sdp_attribute_free (attr);
-	    }
-	  else
-	    i++;
-	}
+        {
+          attr = osip_list_get (sdp->a_attributes, i);
+          if (strcmp (attr->a_att_field, att_field) == 0)
+            {
+              osip_list_remove (sdp->a_attributes, i);
+              sdp_attribute_free (attr);
+          } else
+            i++;
+        }
       return 0;
     }
   med = (sdp_media_t *) osip_list_get (sdp->m_medias, pos_media);
@@ -592,19 +586,18 @@ sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media,
     {
       attr = osip_list_get (med->a_attributes, i);
       if (strcmp (attr->a_att_field, att_field) == 0)
-	{
-	  osip_list_remove (med->a_attributes, i);
-	  sdp_attribute_free (attr);
-	}
-      else
-	i++;
+        {
+          osip_list_remove (med->a_attributes, i);
+          sdp_attribute_free (attr);
+      } else
+        i++;
     }
   return 0;
 }
 
 int
 sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media,
-				      char *att_field, int pos_attr)
+                                      char *att_field, int pos_attr)
 {
   int i;
   sdp_media_t *med;
@@ -617,24 +610,22 @@ sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media,
   if (pos_media == -1)
     {
       if (pos_attr == -1)
-	{
-	  for (i = 0; i < osip_list_size (sdp->a_attributes);)
-	    {
-	      attr = osip_list_get (sdp->a_attributes, i);
-	      if (strcmp (attr->a_att_field, att_field) == 0)
-		{
-		  osip_list_remove (sdp->a_attributes, i);
-		  sdp_attribute_free (attr);
-		}
-	      else
-		i++;
-	    }
-	}
-      else if ((attr = osip_list_get (sdp->a_attributes, pos_attr)) != NULL)
-	{
-	  osip_list_remove (sdp->a_attributes, pos_attr);
-	  sdp_attribute_free (attr);
-	}
+        {
+          for (i = 0; i < osip_list_size (sdp->a_attributes);)
+            {
+              attr = osip_list_get (sdp->a_attributes, i);
+              if (strcmp (attr->a_att_field, att_field) == 0)
+                {
+                  osip_list_remove (sdp->a_attributes, i);
+                  sdp_attribute_free (attr);
+              } else
+                i++;
+            }
+      } else if ((attr = osip_list_get (sdp->a_attributes, pos_attr)) != NULL)
+        {
+          osip_list_remove (sdp->a_attributes, pos_attr);
+          sdp_attribute_free (attr);
+        }
       return 0;
     }
   med = (sdp_media_t *) osip_list_get (sdp->m_medias, pos_media);
@@ -643,21 +634,19 @@ sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media,
   for (i = 0; i < osip_list_size (med->a_attributes);)
     {
       if (pos_attr == -1)
-	{
-	  attr = osip_list_get (med->a_attributes, i);
-	  if (strcmp (attr->a_att_field, att_field) == 0)
-	    {
-	      osip_list_remove (med->a_attributes, i);
-	      sdp_attribute_free (attr);
-	    }
-	  else
-	    i++;
-	}
-      else if ((attr = osip_list_get (med->a_attributes, pos_attr)) != NULL)
-	{
-	  osip_list_remove (med->a_attributes, pos_attr);
-	  sdp_attribute_free (attr);
-	}
+        {
+          attr = osip_list_get (med->a_attributes, i);
+          if (strcmp (attr->a_att_field, att_field) == 0)
+            {
+              osip_list_remove (med->a_attributes, i);
+              sdp_attribute_free (attr);
+          } else
+            i++;
+      } else if ((attr = osip_list_get (med->a_attributes, pos_attr)) != NULL)
+        {
+          osip_list_remove (med->a_attributes, pos_attr);
+          sdp_attribute_free (attr);
+        }
     }
   return 0;
 }
@@ -706,13 +695,13 @@ sdp_message_endof_media (sdp_message_t * sdp, int i)
   if (i == -1)
     return 0;
   if (!osip_list_eol (sdp->m_medias, i))
-    return 0;			/* not end of list */
-  return -1;			/* end of list */
+    return 0;                   /* not end of list */
+  return -1;                    /* end of list */
 }
 
 int
 sdp_message_m_media_add (sdp_message_t * sdp, char *media,
-			 char *port, char *number_of_port, char *proto)
+                         char *port, char *number_of_port, char *proto)
 {
   int i;
   sdp_media_t *med;

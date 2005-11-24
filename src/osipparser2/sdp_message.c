@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERR_ERROR   -1		/* bad header */
-#define ERR_DISCARD  0		/* wrong header */
-#define WF           1		/* well formed header */
+#define ERR_ERROR   -1          /* bad header */
+#define ERR_DISCARD  0          /* wrong header */
+#define WF           1          /* well formed header */
 
 static int sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next);
 static int sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next);
@@ -46,20 +46,17 @@ static int sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next);
 static int sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next);
 
 static int sdp_append_media (char *string, int size, char *tmp,
-			     sdp_media_t * media, char **next_tmp);
+                             sdp_media_t * media, char **next_tmp);
 static int sdp_append_attribute (char *string, int size, char *tmp,
-				 sdp_attribute_t * attribute,
-				 char **next_tmp);
+                                 sdp_attribute_t * attribute, char **next_tmp);
 static int sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
-			   char **next_tmp);
+                           char **next_tmp);
 static int sdp_append_time_descr (char *string, int size, char *tmp,
-				  sdp_time_descr_t * time_descr,
-				  char **next_tmp);
+                                  sdp_time_descr_t * time_descr, char **next_tmp);
 static int sdp_append_bandwidth (char *string, int size, char *tmp,
-				 sdp_bandwidth_t * bandwidth,
-				 char **next_tmp);
+                                 sdp_bandwidth_t * bandwidth, char **next_tmp);
 static int sdp_append_connection (char *string, int size, char *tmp,
-				  sdp_connection_t * conn, char **next_tmp);
+                                  sdp_connection_t * conn, char **next_tmp);
 
 int
 sdp_bandwidth_init (sdp_bandwidth_t ** b)
@@ -188,8 +185,7 @@ sdp_media_init (sdp_media_t ** media)
   (*media)->m_payloads = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*media)->m_payloads);
   (*media)->i_info = NULL;
-  (*media)->c_connections =
-    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
+  (*media)->c_connections = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*media)->c_connections);
   (*media)->b_bandwidths = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init ((*media)->b_bandwidths);
@@ -211,11 +207,11 @@ sdp_media_free (sdp_media_t * media)
   osip_list_ofchar_free (media->m_payloads);
   osip_free (media->i_info);
   osip_list_special_free (media->c_connections,
-			  (void *(*)(void *)) &sdp_connection_free);
+                          (void *(*)(void *)) &sdp_connection_free);
   osip_list_special_free (media->b_bandwidths,
-			  (void *(*)(void *)) &sdp_bandwidth_free);
+                          (void *(*)(void *)) &sdp_bandwidth_free);
   osip_list_special_free (media->a_attributes,
-			  (void *(*)(void *)) &sdp_attribute_free);
+                          (void *(*)(void *)) &sdp_attribute_free);
   sdp_key_free (media->k_key);
   osip_free (media);
 }
@@ -304,7 +300,7 @@ sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/*v=\r ?? bad header */
+    return ERR_ERROR;           /*v=\r ?? bad header */
   sdp->v_version = osip_malloc (crlf - (equal + 1) + 1);
   osip_strncpy (sdp->v_version, equal + 1, crlf - (equal + 1));
 
@@ -343,7 +339,7 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* o=\r ?? bad header */
+    return ERR_ERROR;           /* o=\r ?? bad header */
 
   tmp = equal + 1;
   /* o=username sess-id sess-version nettype addrtype addr */
@@ -354,12 +350,11 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
     {
       sdp->o_username = osip_strdup ("firefly");
       tmp++;
-    }
-  else
+  } else
     {
       i = __osip_set_next_token (&(sdp->o_username), tmp, ' ', &tmp_next);
       if (i != 0)
-	return -1;
+        return -1;
       tmp = tmp_next;
     }
 #else
@@ -396,10 +391,10 @@ sdp_message_parse_o (sdp_message_t * sdp, char *buf, char **next)
   /* addr  is "IP4" or "IP6" but will surely be extented!!! */
   i = __osip_set_next_token (&(sdp->o_addr), tmp, '\r', &tmp_next);
   if (i != 0)
-    {				/* could it be "\n" only??? rfc says to accept CR or LF instead of CRLF */
+    {                           /* could it be "\n" only??? rfc says to accept CR or LF instead of CRLF */
       i = __osip_set_next_token (&(sdp->o_addr), tmp, '\n', &tmp_next);
       if (i != 0)
-	return -1;
+        return -1;
     }
 
   if (crlf[1] == '\n')
@@ -438,14 +433,14 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
     {
       sdp->s_name = osip_strdup (" ");
       if (crlf[1] == '\n')
-	*next = crlf + 2;
+        *next = crlf + 2;
       else
-	*next = crlf + 1;
-      return WF;		/* o=\r ?? bad header */
+        *next = crlf + 1;
+      return WF;                /* o=\r ?? bad header */
     }
 #else
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* o=\r ?? bad header */
+    return ERR_ERROR;           /* o=\r ?? bad header */
 #endif
 
   /* s=text */
@@ -489,7 +484,7 @@ sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* o=\r ?? bad header */
+    return ERR_ERROR;           /* o=\r ?? bad header */
 
   /* s=text */
 
@@ -508,7 +503,7 @@ sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
   else
     {
       sdp_media_t *last_sdp_media =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
       last_sdp_media->i_info = i_info;
     }
 
@@ -544,7 +539,7 @@ sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* u=\r ?? bad header */
+    return ERR_ERROR;           /* u=\r ?? bad header */
 
   /* u=uri */
   /* we assume this is a URI */
@@ -584,7 +579,7 @@ sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* e=\r ?? bad header */
+    return ERR_ERROR;           /* e=\r ?? bad header */
 
   /* e=email */
   /* we assume this is an EMAIL-ADDRESS */
@@ -626,7 +621,7 @@ sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* p=\r ?? bad header */
+    return ERR_ERROR;           /* p=\r ?? bad header */
 
   /* e=email */
   /* we assume this is an EMAIL-ADDRESS */
@@ -671,7 +666,7 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* c=\r ?? bad header */
+    return ERR_ERROR;           /* c=\r ?? bad header */
 
   tmp = equal + 1;
   i = sdp_connection_init (&c_header);
@@ -699,69 +694,65 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
   {
     char *slash = strchr (tmp, '/');
 
-    if (slash != NULL && slash < crlf)	/* it's a multicast address! */
+    if (slash != NULL && slash < crlf)  /* it's a multicast address! */
       {
-	i = __osip_set_next_token (&(c_header->c_addr), tmp, '/', &tmp_next);
-	if (i != 0)
-	  return -1;
-	tmp = tmp_next;
-	slash = strchr (slash + 1, '/');
-	if (slash != NULL && slash < crlf)	/* optionnal integer is there! */
-	  {
-	    i =
-	      __osip_set_next_token (&(c_header->c_addr_multicast_ttl), tmp,
-				     '/', &tmp_next);
-	    if (i != 0)
-	      return -1;
-	    tmp = tmp_next;
-	    i =
-	      __osip_set_next_token (&(c_header->c_addr_multicast_int), tmp,
-				     '\r', &tmp_next);
-	    if (i != 0)
-	      {
-		i =
-		  __osip_set_next_token (&(c_header->c_addr_multicast_int),
-					 tmp, '\n', &tmp_next);
-		if (i != 0)
-		  {
-		    sdp_connection_free (c_header);
-		    return -1;
-		  }
-	      }
-	  }
-	else
-	  {
-	    i =
-	      __osip_set_next_token (&(c_header->c_addr_multicast_ttl), tmp,
-				     '\r', &tmp_next);
-	    if (i != 0)
-	      {
-		i =
-		  __osip_set_next_token (&(c_header->c_addr_multicast_ttl),
-					 tmp, '\n', &tmp_next);
-		if (i != 0)
-		  {
-		    sdp_connection_free (c_header);
-		    return -1;
-		  }
-	      }
-	  }
-      }
-    else
+        i = __osip_set_next_token (&(c_header->c_addr), tmp, '/', &tmp_next);
+        if (i != 0)
+          return -1;
+        tmp = tmp_next;
+        slash = strchr (slash + 1, '/');
+        if (slash != NULL && slash < crlf)      /* optionnal integer is there! */
+          {
+            i =
+              __osip_set_next_token (&(c_header->c_addr_multicast_ttl), tmp,
+                                     '/', &tmp_next);
+            if (i != 0)
+              return -1;
+            tmp = tmp_next;
+            i =
+              __osip_set_next_token (&(c_header->c_addr_multicast_int), tmp,
+                                     '\r', &tmp_next);
+            if (i != 0)
+              {
+                i =
+                  __osip_set_next_token (&(c_header->c_addr_multicast_int),
+                                         tmp, '\n', &tmp_next);
+                if (i != 0)
+                  {
+                    sdp_connection_free (c_header);
+                    return -1;
+                  }
+              }
+        } else
+          {
+            i =
+              __osip_set_next_token (&(c_header->c_addr_multicast_ttl), tmp,
+                                     '\r', &tmp_next);
+            if (i != 0)
+              {
+                i =
+                  __osip_set_next_token (&(c_header->c_addr_multicast_ttl),
+                                         tmp, '\n', &tmp_next);
+                if (i != 0)
+                  {
+                    sdp_connection_free (c_header);
+                    return -1;
+                  }
+              }
+          }
+    } else
       {
-	/* in this case, we have a unicast address */
-	i = __osip_set_next_token (&(c_header->c_addr), tmp, '\r', &tmp_next);
-	if (i != 0)
-	  {
-	    i =
-	      __osip_set_next_token (&(c_header->c_addr), tmp, '\n',
-				     &tmp_next);
-	    if (i != 0)
-	      {
-		sdp_connection_free (c_header);
-		return -1;
-	      }
-	  }
+        /* in this case, we have a unicast address */
+        i = __osip_set_next_token (&(c_header->c_addr), tmp, '\r', &tmp_next);
+        if (i != 0)
+          {
+            i = __osip_set_next_token (&(c_header->c_addr), tmp, '\n', &tmp_next);
+            if (i != 0)
+              {
+                sdp_connection_free (c_header);
+                return -1;
+              }
+          }
       }
   }
 
@@ -775,7 +766,7 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
   else
     {
       sdp_media_t *last_sdp_media =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
       osip_list_add (last_sdp_media->c_connections, c_header, -1);
     }
   if (crlf[1] == '\n')
@@ -814,7 +805,7 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* b=\r ?? bad header */
+    return ERR_ERROR;           /* b=\r ?? bad header */
 
   tmp = equal + 1;
   /* b = bwtype: bandwidth */
@@ -831,14 +822,12 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
   i = __osip_set_next_token (&(b_header->b_bandwidth), tmp, '\r', &tmp_next);
   if (i != 0)
     {
-      i =
-	__osip_set_next_token (&(b_header->b_bandwidth), tmp, '\n',
-			       &tmp_next);
+      i = __osip_set_next_token (&(b_header->b_bandwidth), tmp, '\n', &tmp_next);
       if (i != 0)
-	{
-	  sdp_bandwidth_free (b_header);
-	  return -1;
-	}
+        {
+          sdp_bandwidth_free (b_header);
+          return -1;
+        }
     }
 
   /* add the bandwidth at the correct place:
@@ -851,7 +840,7 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
   else
     {
       sdp_media_t *last_sdp_media =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
       osip_list_add (last_sdp_media->b_bandwidths, b_header, -1);
     }
 
@@ -891,7 +880,7 @@ sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* t=\r ?? bad header */
+    return ERR_ERROR;           /* t=\r ?? bad header */
 
   tmp = equal + 1;
   /* t = start_time stop_time */
@@ -910,14 +899,12 @@ sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next)
   i = __osip_set_next_token (&(t_header->t_stop_time), tmp, '\r', &tmp_next);
   if (i != 0)
     {
-      i =
-	__osip_set_next_token (&(t_header->t_stop_time), tmp, '\n',
-			       &tmp_next);
+      i = __osip_set_next_token (&(t_header->t_stop_time), tmp, '\n', &tmp_next);
       if (i != 0)
-	{
-	  sdp_time_descr_free (t_header);
-	  return -1;
-	}
+        {
+          sdp_time_descr_free (t_header);
+          return -1;
+        }
     }
 
   /* add the new time_description header */
@@ -953,7 +940,7 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
 
   index = osip_list_size (sdp->t_descrs);
   if (index == 0)
-    return ERR_ERROR;		/* r field can't come alone! */
+    return ERR_ERROR;           /* r field can't come alone! */
 
   crlf = equal + 1;
 
@@ -962,7 +949,7 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* r=\r ?? bad header */
+    return ERR_ERROR;           /* r=\r ?? bad header */
 
   /* r=far too complexe and somewhat useless... I don't parse it! */
   r_header = osip_malloc (crlf - (equal + 1) + 1);
@@ -1005,7 +992,7 @@ sdp_message_parse_z (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* z=\r ?? bad header */
+    return ERR_ERROR;           /* z=\r ?? bad header */
 
   /* z=somewhat useless... I don't parse it! */
   z_header = osip_malloc (crlf - (equal + 1) + 1);
@@ -1050,7 +1037,7 @@ sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* k=\r ?? bad header */
+    return ERR_ERROR;           /* k=\r ?? bad header */
 
   tmp = equal + 1;
 
@@ -1066,41 +1053,34 @@ sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
       /* att-field is alpha-numeric */
       i = __osip_set_next_token (&(k_header->k_keytype), tmp, ':', &tmp_next);
       if (i != 0)
-	{
-	  sdp_key_free (k_header);
-	  return -1;
-	}
+        {
+          sdp_key_free (k_header);
+          return -1;
+        }
       tmp = tmp_next;
 
-      i =
-	__osip_set_next_token (&(k_header->k_keydata), tmp, '\r', &tmp_next);
+      i = __osip_set_next_token (&(k_header->k_keydata), tmp, '\r', &tmp_next);
       if (i != 0)
-	{
-	  i =
-	    __osip_set_next_token (&(k_header->k_keydata), tmp, '\n',
-				   &tmp_next);
-	  if (i != 0)
-	    {
-	      sdp_key_free (k_header);
-	      return -1;
-	    }
-	}
-    }
-  else
+        {
+          i = __osip_set_next_token (&(k_header->k_keydata), tmp, '\n', &tmp_next);
+          if (i != 0)
+            {
+              sdp_key_free (k_header);
+              return -1;
+            }
+        }
+  } else
     {
-      i =
-	__osip_set_next_token (&(k_header->k_keytype), tmp, '\r', &tmp_next);
+      i = __osip_set_next_token (&(k_header->k_keytype), tmp, '\r', &tmp_next);
       if (i != 0)
-	{
-	  i =
-	    __osip_set_next_token (&(k_header->k_keytype), tmp, '\n',
-				   &tmp_next);
-	  if (i != 0)
-	    {
-	      sdp_key_free (k_header);
-	      return -1;
-	    }
-	}
+        {
+          i = __osip_set_next_token (&(k_header->k_keytype), tmp, '\n', &tmp_next);
+          if (i != 0)
+            {
+              sdp_key_free (k_header);
+              return -1;
+            }
+        }
     }
 
   /* add the key at the correct place:
@@ -1113,7 +1093,7 @@ sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
   else
     {
       sdp_media_t *last_sdp_media =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
       last_sdp_media->k_key = k_header;
     }
 
@@ -1154,7 +1134,7 @@ sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* a=\r ?? bad header */
+    return ERR_ERROR;           /* a=\r ?? bad header */
 
   tmp = equal + 1;
 
@@ -1169,47 +1149,42 @@ sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
   if ((colon != NULL) && (colon < crlf))
     {
       /* att-field is alpha-numeric */
-      i =
-	__osip_set_next_token (&(a_attribute->a_att_field), tmp, ':',
-			       &tmp_next);
+      i = __osip_set_next_token (&(a_attribute->a_att_field), tmp, ':', &tmp_next);
       if (i != 0)
-	{
-	  sdp_attribute_free (a_attribute);
-	  return -1;
-	}
+        {
+          sdp_attribute_free (a_attribute);
+          return -1;
+        }
       tmp = tmp_next;
 
       i =
-	__osip_set_next_token (&(a_attribute->a_att_value), tmp, '\r',
-			       &tmp_next);
+        __osip_set_next_token (&(a_attribute->a_att_value), tmp, '\r', &tmp_next);
       if (i != 0)
-	{
-	  i =
-	    __osip_set_next_token (&(a_attribute->a_att_value), tmp, '\n',
-				   &tmp_next);
-	  if (i != 0)
-	    {
-	      sdp_attribute_free (a_attribute);
-	      return -1;
-	    }
-	}
-    }
-  else
+        {
+          i =
+            __osip_set_next_token (&(a_attribute->a_att_value), tmp, '\n',
+                                   &tmp_next);
+          if (i != 0)
+            {
+              sdp_attribute_free (a_attribute);
+              return -1;
+            }
+        }
+  } else
     {
       i =
-	__osip_set_next_token (&(a_attribute->a_att_field), tmp, '\r',
-			       &tmp_next);
+        __osip_set_next_token (&(a_attribute->a_att_field), tmp, '\r', &tmp_next);
       if (i != 0)
-	{
-	  i =
-	    __osip_set_next_token (&(a_attribute->a_att_field), tmp, '\n',
-				   &tmp_next);
-	  if (i != 0)
-	    {
-	      sdp_attribute_free (a_attribute);
-	      return -1;
-	    }
-	}
+        {
+          i =
+            __osip_set_next_token (&(a_attribute->a_att_field), tmp, '\n',
+                                   &tmp_next);
+          if (i != 0)
+            {
+              sdp_attribute_free (a_attribute);
+              return -1;
+            }
+        }
     }
 
   /* add the attribute at the correct place:
@@ -1222,7 +1197,7 @@ sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
   else
     {
       sdp_media_t *last_sdp_media =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
       osip_list_add (last_sdp_media->a_attributes, a_attribute, -1);
     }
 
@@ -1264,7 +1239,7 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
   if (*crlf == '\0')
     return ERR_ERROR;
   if (crlf == equal + 1)
-    return ERR_ERROR;		/* a=\r ?? bad header */
+    return ERR_ERROR;           /* a=\r ?? bad header */
 
   tmp = equal + 1;
 
@@ -1285,39 +1260,37 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
 
   slash = strchr (tmp, '/');
   space = strchr (tmp, ' ');
-  if (space == NULL)		/* not possible! */
+  if (space == NULL)            /* not possible! */
     {
       sdp_media_free (m_header);
       return ERR_ERROR;
     }
   if ((slash != NULL) && (slash < space))
-    {				/* a number of port is specified! */
+    {                           /* a number of port is specified! */
       i = __osip_set_next_token (&(m_header->m_port), tmp, '/', &tmp_next);
       if (i != 0)
-	{
-	  sdp_media_free (m_header);
-	  return -1;
-	}
+        {
+          sdp_media_free (m_header);
+          return -1;
+        }
       tmp = tmp_next;
 
       i =
-	__osip_set_next_token (&(m_header->m_number_of_port), tmp, ' ',
-			       &tmp_next);
+        __osip_set_next_token (&(m_header->m_number_of_port), tmp, ' ', &tmp_next);
       if (i != 0)
-	{
-	  sdp_media_free (m_header);
-	  return -1;
-	}
+        {
+          sdp_media_free (m_header);
+          return -1;
+        }
       tmp = tmp_next;
-    }
-  else
+  } else
     {
       i = __osip_set_next_token (&(m_header->m_port), tmp, ' ', &tmp_next);
       if (i != 0)
-	{
-	  sdp_media_free (m_header);
-	  return -1;
-	}
+        {
+          sdp_media_free (m_header);
+          return -1;
+        }
       tmp = tmp_next;
     }
 
@@ -1342,36 +1315,36 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
       more_space_before_crlf = 0;
     while (more_space_before_crlf == 0)
       {
-	i = __osip_set_next_token (&str, tmp, ' ', &tmp_next);
-	if (i != 0)
-	  {
-	    sdp_media_free (m_header);
-	    return -1;
-	  }
-	tmp = tmp_next;
-	osip_list_add (m_header->m_payloads, str, -1);
+        i = __osip_set_next_token (&str, tmp, ' ', &tmp_next);
+        if (i != 0)
+          {
+            sdp_media_free (m_header);
+            return -1;
+          }
+        tmp = tmp_next;
+        osip_list_add (m_header->m_payloads, str, -1);
 
-	space = strchr (tmp + 1, ' ');
-	if (space == NULL)
-	  more_space_before_crlf = 1;
-	else if ((space != NULL) && (space > crlf))
-	  more_space_before_crlf = 1;
-	else
-	  more_space_before_crlf = 0;
+        space = strchr (tmp + 1, ' ');
+        if (space == NULL)
+          more_space_before_crlf = 1;
+        else if ((space != NULL) && (space > crlf))
+          more_space_before_crlf = 1;
+        else
+          more_space_before_crlf = 0;
       }
     if (tmp_next < crlf)
-      {				/* tmp_next is still less than clrf: no space */
-	i = __osip_set_next_token (&str, tmp, '\r', &tmp_next);
-	if (i != 0)
-	  {
-	    i = __osip_set_next_token (&str, tmp, '\n', &tmp_next);
-	    if (i != 0)
-	      {
-		sdp_media_free (m_header);
-		return -1;
-	      }
-	  }
-	osip_list_add (m_header->m_payloads, str, -1);
+      {                         /* tmp_next is still less than clrf: no space */
+        i = __osip_set_next_token (&str, tmp, '\r', &tmp_next);
+        if (i != 0)
+          {
+            i = __osip_set_next_token (&str, tmp, '\n', &tmp_next);
+            if (i != 0)
+              {
+                sdp_media_free (m_header);
+                return -1;
+              }
+          }
+        osip_list_add (m_header->m_payloads, str, -1);
       }
   }
 
@@ -1409,15 +1382,15 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
   ptr = (char *) buf;
   /* mandatory */
   i = sdp_message_parse_v (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
-  else if (0 == i)		/* header is not "v" */
+  else if (0 == i)              /* header is not "v" */
     return -1;
   ptr = next_buf;
 
   /* adtech phone use the wrong ordering and place "s" before "o" */
   i = sdp_message_parse_s (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   /* else if (0==i) header is not "s" */
   /* else ADTECH PHONE DETECTED */
@@ -1427,31 +1400,31 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 
 
   i = sdp_message_parse_o (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
-  else if (0 == i)		/* header is not "o" */
+  else if (0 == i)              /* header is not "o" */
     return -1;
   ptr = next_buf;
 
   i = sdp_message_parse_s (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
-  else if (0 == i)		/* header is not "s" */
+  else if (0 == i)              /* header is not "s" */
     /* return -1; */
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_INFO4, NULL,
-		   "The \"s\" parameter is mandatory, but this packet does not contain any! - anyway, we don't mind about it.\n"));
+                  (__FILE__, __LINE__, OSIP_INFO4, NULL,
+                   "The \"s\" parameter is mandatory, but this packet does not contain any! - anyway, we don't mind about it.\n"));
     }
   ptr = next_buf;
 
   i = sdp_message_parse_i (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   ptr = next_buf;
 
   i = sdp_message_parse_u (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   ptr = next_buf;
 
@@ -1459,30 +1432,29 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
   while (i == 1)
     {
       i = sdp_message_parse_e (sdp, ptr, &next_buf);
-      if (i == -1)		/* header is bad */
-	return -1;
+      if (i == -1)              /* header is bad */
+        return -1;
       ptr = next_buf;
     }
   i = 1;
   while (i == 1)
     {
       i = sdp_message_parse_p (sdp, ptr, &next_buf);
-      if (i == -1)		/* header is bad */
-	return -1;
+      if (i == -1)              /* header is bad */
+        return -1;
       ptr = next_buf;
     }
 
   /* rfc2327: there should be at least of email or phone number! */
-  if (osip_list_size (sdp->e_emails) == 0
-      && osip_list_size (sdp->p_phones) == 0)
+  if (osip_list_size (sdp->e_emails) == 0 && osip_list_size (sdp->p_phones) == 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_INFO4, NULL,
-		   "The rfc2327 says there should be at least an email or a phone header!- anyway, we don't mind about it.\n"));
+                  (__FILE__, __LINE__, OSIP_INFO4, NULL,
+                   "The rfc2327 says there should be at least an email or a phone header!- anyway, we don't mind about it.\n"));
     }
 
   i = sdp_message_parse_c (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   ptr = next_buf;
 
@@ -1490,31 +1462,31 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
   while (i == 1)
     {
       i = sdp_message_parse_b (sdp, ptr, &next_buf);
-      if (i == -1)		/* header is bad */
-	return -1;
+      if (i == -1)              /* header is bad */
+        return -1;
       ptr = next_buf;
     }
 
   /* 1 or more "t" header + 0 or more "r" header for each "t" header */
   i = sdp_message_parse_t (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   else if (i == ERR_DISCARD)
-    return -1;			/* t is mandatory */
+    return -1;                  /* t is mandatory */
   ptr = next_buf;
 
   if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
     return 0;
 
   i = 1;
-  while (i == 1)		/* is a "r" header */
+  while (i == 1)                /* is a "r" header */
     {
       i = sdp_message_parse_r (sdp, ptr, &next_buf);
-      if (i == -1)		/* header is bad */
-	return -1;
+      if (i == -1)              /* header is bad */
+        return -1;
       ptr = next_buf;
       if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	return 0;
+        return 0;
 
     }
 
@@ -1523,7 +1495,7 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
     int more_t_header = 1;
 
     i = sdp_message_parse_t (sdp, ptr, &next_buf);
-    if (i == -1)		/* header is bad */
+    if (i == -1)                /* header is bad */
       return -1;
     ptr = next_buf;
 
@@ -1532,39 +1504,39 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 
     while (more_t_header == 1)
       {
-	i = 1;
-	while (i == 1)		/* is a "r" header */
-	  {
-	    i = sdp_message_parse_r (sdp, ptr, &next_buf);
-	    if (i == -1)	/* header is bad */
-	      return -1;
-	    ptr = next_buf;
-	    if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	      return 0;
-	  }
+        i = 1;
+        while (i == 1)          /* is a "r" header */
+          {
+            i = sdp_message_parse_r (sdp, ptr, &next_buf);
+            if (i == -1)        /* header is bad */
+              return -1;
+            ptr = next_buf;
+            if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+              return 0;
+          }
 
-	i = sdp_message_parse_t (sdp, ptr, &next_buf);
-	if (i == -1)		/* header is bad */
-	  return -1;
-	else if (i == ERR_DISCARD)
-	  more_t_header = 0;
-	else
-	  more_t_header = 1;	/* no more "t" headers */
-	ptr = next_buf;
-	if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	  return 0;
+        i = sdp_message_parse_t (sdp, ptr, &next_buf);
+        if (i == -1)            /* header is bad */
+          return -1;
+        else if (i == ERR_DISCARD)
+          more_t_header = 0;
+        else
+          more_t_header = 1;    /* no more "t" headers */
+        ptr = next_buf;
+        if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+          return 0;
       }
   }
 
   i = sdp_message_parse_z (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   ptr = next_buf;
   if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
     return 0;
 
   i = sdp_message_parse_k (sdp, ptr, &next_buf);
-  if (i == -1)			/* header is bad */
+  if (i == -1)                  /* header is bad */
     return -1;
   ptr = next_buf;
   if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
@@ -1572,14 +1544,14 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 
   /* 0 or more "a" header */
   i = 1;
-  while (i == 1)		/* no more "a" header */
+  while (i == 1)                /* no more "a" header */
     {
       i = sdp_message_parse_a (sdp, ptr, &next_buf);
-      if (i == -1)		/* header is bad */
-	return -1;
+      if (i == -1)              /* header is bad */
+        return -1;
       ptr = next_buf;
       if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	return 0;
+        return 0;
     }
   /* 0 or more media headers */
   {
@@ -1587,58 +1559,58 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 
     while (more_m_header == 1)
       {
-	more_m_header = sdp_message_parse_m (sdp, ptr, &next_buf);
-	if (more_m_header == -1)	/* header is bad */
-	  return -1;
-	ptr = next_buf;
-	if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	  return 0;
+        more_m_header = sdp_message_parse_m (sdp, ptr, &next_buf);
+        if (more_m_header == -1)        /* header is bad */
+          return -1;
+        ptr = next_buf;
+        if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+          return 0;
 
-	i = sdp_message_parse_i (sdp, ptr, &next_buf);
-	if (i == -1)		/* header is bad */
-	  return -1;
-	ptr = next_buf;
-	if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	  return 0;
+        i = sdp_message_parse_i (sdp, ptr, &next_buf);
+        if (i == -1)            /* header is bad */
+          return -1;
+        ptr = next_buf;
+        if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+          return 0;
 
-	i = 1;
-	while (i == 1)
-	  {
-	    i = sdp_message_parse_c (sdp, ptr, &next_buf);
-	    if (i == -1)	/* header is bad */
-	      return -1;
-	    ptr = next_buf;
-	    if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	      return 0;
-	  }
+        i = 1;
+        while (i == 1)
+          {
+            i = sdp_message_parse_c (sdp, ptr, &next_buf);
+            if (i == -1)        /* header is bad */
+              return -1;
+            ptr = next_buf;
+            if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+              return 0;
+          }
 
-	i = 1;
-	while (i == 1)
-	  {
-	    i = sdp_message_parse_b (sdp, ptr, &next_buf);
-	    if (i == -1)	/* header is bad */
-	      return -1;
-	    ptr = next_buf;
-	    if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	      return 0;
-	  }
-	i = sdp_message_parse_k (sdp, ptr, &next_buf);
-	if (i == -1)		/* header is bad */
-	  return -1;
-	ptr = next_buf;
-	if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	  return 0;
-	/* 0 or more a headers */
-	i = 1;
-	while (i == 1)
-	  {
-	    i = sdp_message_parse_a (sdp, ptr, &next_buf);
-	    if (i == -1)	/* header is bad */
-	      return -1;
-	    ptr = next_buf;
-	    if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
-	      return 0;
-	  }
+        i = 1;
+        while (i == 1)
+          {
+            i = sdp_message_parse_b (sdp, ptr, &next_buf);
+            if (i == -1)        /* header is bad */
+              return -1;
+            ptr = next_buf;
+            if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+              return 0;
+          }
+        i = sdp_message_parse_k (sdp, ptr, &next_buf);
+        if (i == -1)            /* header is bad */
+          return -1;
+        ptr = next_buf;
+        if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+          return 0;
+        /* 0 or more a headers */
+        i = 1;
+        while (i == 1)
+          {
+            i = sdp_message_parse_a (sdp, ptr, &next_buf);
+            if (i == -1)        /* header is bad */
+              return -1;
+            ptr = next_buf;
+            if (*ptr == '\0' || (*ptr == '\r') || (*ptr == '\n'))
+              return 0;
+          }
       }
   }
 
@@ -1647,7 +1619,7 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 
 static int
 sdp_append_connection (char *string, int size, char *tmp,
-		       sdp_connection_t * conn, char **next_tmp)
+                       sdp_connection_t * conn, char **next_tmp)
 {
   if (conn->c_nettype == NULL)
     return -1;
@@ -1666,15 +1638,13 @@ sdp_append_connection (char *string, int size, char *tmp,
     {
       tmp = __osip_sdp_append_string (string, size, tmp, "/");
       tmp =
-	__osip_sdp_append_string (string, size, tmp,
-				  conn->c_addr_multicast_ttl);
+        __osip_sdp_append_string (string, size, tmp, conn->c_addr_multicast_ttl);
     }
   if (conn->c_addr_multicast_int != NULL)
     {
       tmp = __osip_sdp_append_string (string, size, tmp, "/");
       tmp =
-	__osip_sdp_append_string (string, size, tmp,
-				  conn->c_addr_multicast_int);
+        __osip_sdp_append_string (string, size, tmp, conn->c_addr_multicast_int);
     }
   tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
   *next_tmp = tmp;
@@ -1683,7 +1653,7 @@ sdp_append_connection (char *string, int size, char *tmp,
 
 static int
 sdp_append_bandwidth (char *string, int size, char *tmp,
-		      sdp_bandwidth_t * bandwidth, char **next_tmp)
+                      sdp_bandwidth_t * bandwidth, char **next_tmp)
 {
   if (bandwidth->b_bwtype == NULL)
     return -1;
@@ -1702,7 +1672,7 @@ sdp_append_bandwidth (char *string, int size, char *tmp,
 
 static int
 sdp_append_time_descr (char *string, int size, char *tmp,
-		       sdp_time_descr_t * time_descr, char **next_tmp)
+                       sdp_time_descr_t * time_descr, char **next_tmp)
 {
   int pos;
 
@@ -1713,8 +1683,7 @@ sdp_append_time_descr (char *string, int size, char *tmp,
 
 
   tmp = __osip_sdp_append_string (string, size, tmp, "t=");
-  tmp =
-    __osip_sdp_append_string (string, size, tmp, time_descr->t_start_time);
+  tmp = __osip_sdp_append_string (string, size, tmp, time_descr->t_start_time);
   tmp = __osip_sdp_append_string (string, size, tmp, " ");
   tmp = __osip_sdp_append_string (string, size, tmp, time_descr->t_stop_time);
 
@@ -1737,7 +1706,7 @@ sdp_append_time_descr (char *string, int size, char *tmp,
 
 static int
 sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
-		char **next_tmp)
+                char **next_tmp)
 {
   if (key->k_keytype == NULL)
     return -1;
@@ -1756,7 +1725,7 @@ sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key,
 
 static int
 sdp_append_attribute (char *string, int size, char *tmp,
-		      sdp_attribute_t * attribute, char **next_tmp)
+                      sdp_attribute_t * attribute, char **next_tmp)
 {
   if (attribute->a_att_field == NULL)
     return -1;
@@ -1766,8 +1735,7 @@ sdp_append_attribute (char *string, int size, char *tmp,
   if (attribute->a_att_value != NULL)
     {
       tmp = __osip_sdp_append_string (string, size, tmp, ":");
-      tmp =
-	__osip_sdp_append_string (string, size, tmp, attribute->a_att_value);
+      tmp = __osip_sdp_append_string (string, size, tmp, attribute->a_att_value);
     }
   tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
 
@@ -1778,7 +1746,7 @@ sdp_append_attribute (char *string, int size, char *tmp,
 /* internal facility */
 static int
 sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
-		  char **next_tmp)
+                  char **next_tmp)
 {
   int pos;
 
@@ -1796,8 +1764,7 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
   if (media->m_number_of_port != NULL)
     {
       tmp = __osip_sdp_append_string (string, size, tmp, "/");
-      tmp =
-	__osip_sdp_append_string (string, size, tmp, media->m_number_of_port);
+      tmp = __osip_sdp_append_string (string, size, tmp, media->m_number_of_port);
     }
   tmp = __osip_sdp_append_string (string, size, tmp, " ");
   tmp = __osip_sdp_append_string (string, size, tmp, media->m_proto);
@@ -1823,13 +1790,13 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
   while (!osip_list_eol (media->c_connections, pos))
     {
       sdp_connection_t *conn =
-	(sdp_connection_t *) osip_list_get (media->c_connections, pos);
+        (sdp_connection_t *) osip_list_get (media->c_connections, pos);
       char *next_tmp2;
       int i;
 
       i = sdp_append_connection (string, size, tmp, conn, &next_tmp2);
       if (i != 0)
-	return -1;
+        return -1;
       tmp = next_tmp2;
       pos++;
     }
@@ -1838,13 +1805,13 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
   while (!osip_list_eol (media->b_bandwidths, pos))
     {
       sdp_bandwidth_t *band =
-	(sdp_bandwidth_t *) osip_list_get (media->b_bandwidths, pos);
+        (sdp_bandwidth_t *) osip_list_get (media->b_bandwidths, pos);
       char *next_tmp2;
       int i;
 
       i = sdp_append_bandwidth (string, size, tmp, band, &next_tmp2);
       if (i != 0)
-	return -1;
+        return -1;
       tmp = next_tmp2;
       pos++;
     }
@@ -1856,7 +1823,7 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
 
       i = sdp_append_key (string, size, tmp, media->k_key, &next_tmp2);
       if (i != 0)
-	return -1;
+        return -1;
       tmp = next_tmp2;
     }
 
@@ -1864,13 +1831,13 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
   while (!osip_list_eol (media->a_attributes, pos))
     {
       sdp_attribute_t *attr =
-	(sdp_attribute_t *) osip_list_get (media->a_attributes, pos);
+        (sdp_attribute_t *) osip_list_get (media->a_attributes, pos);
       char *next_tmp2;
       int i;
 
       i = sdp_append_attribute (string, size, tmp, attr, &next_tmp2);
       if (i != 0)
-	return -1;
+        return -1;
       tmp = next_tmp2;
       pos++;
     }
@@ -1893,8 +1860,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   if (sdp->o_username == NULL ||
       sdp->o_sess_id == NULL ||
       sdp->o_sess_version == NULL ||
-      sdp->o_nettype == NULL || sdp->o_addrtype == NULL
-      || sdp->o_addr == NULL)
+      sdp->o_nettype == NULL || sdp->o_addrtype == NULL || sdp->o_addr == NULL)
     return -1;
 
   /* RFC says "s=" is mandatory... rfc2543 (SIP) recommends to
@@ -1967,30 +1933,28 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       char *next_tmp;
       int i;
 
-      i =
-	sdp_append_connection (string, size, tmp, sdp->c_connection,
-			       &next_tmp);
+      i = sdp_append_connection (string, size, tmp, sdp->c_connection, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
     }
   pos = 0;
   while (!osip_list_eol (sdp->b_bandwidths, pos))
     {
       sdp_bandwidth_t *header =
-	(sdp_bandwidth_t *) osip_list_get (sdp->b_bandwidths, pos);
+        (sdp_bandwidth_t *) osip_list_get (sdp->b_bandwidths, pos);
       char *next_tmp;
       int i;
 
       i = sdp_append_bandwidth (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
       pos++;
     }
@@ -1999,16 +1963,16 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   while (!osip_list_eol (sdp->t_descrs, pos))
     {
       sdp_time_descr_t *header =
-	(sdp_time_descr_t *) osip_list_get (sdp->t_descrs, pos);
+        (sdp_time_descr_t *) osip_list_get (sdp->t_descrs, pos);
       char *next_tmp;
       int i;
 
       i = sdp_append_time_descr (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
       pos++;
     }
@@ -2027,10 +1991,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
       i = sdp_append_key (string, size, tmp, sdp->k_key, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
     }
 
@@ -2038,16 +2002,16 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   while (!osip_list_eol (sdp->a_attributes, pos))
     {
       sdp_attribute_t *header =
-	(sdp_attribute_t *) osip_list_get (sdp->a_attributes, pos);
+        (sdp_attribute_t *) osip_list_get (sdp->a_attributes, pos);
       char *next_tmp;
       int i;
 
       i = sdp_append_attribute (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
       pos++;
     }
@@ -2055,17 +2019,16 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   pos = 0;
   while (!osip_list_eol (sdp->m_medias, pos))
     {
-      sdp_media_t *header =
-	(sdp_media_t *) osip_list_get (sdp->m_medias, pos);
+      sdp_media_t *header = (sdp_media_t *) osip_list_get (sdp->m_medias, pos);
       char *next_tmp;
       int i;
 
       i = sdp_append_media (string, size, tmp, header, &next_tmp);
       if (i != 0)
-	{
-	  osip_free (string);
-	  return -1;
-	}
+        {
+          osip_free (string);
+          return -1;
+        }
       tmp = next_tmp;
       pos++;
     }
@@ -2096,16 +2059,15 @@ sdp_message_free (sdp_message_t * sdp)
   sdp_connection_free (sdp->c_connection);
 
   osip_list_special_free (sdp->b_bandwidths,
-			  (void *(*)(void *)) &sdp_bandwidth_free);
+                          (void *(*)(void *)) &sdp_bandwidth_free);
 
-  osip_list_special_free (sdp->t_descrs,
-			  (void *(*)(void *)) &sdp_time_descr_free);
+  osip_list_special_free (sdp->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
 
   osip_free (sdp->z_adjustments);
   sdp_key_free (sdp->k_key);
 
   osip_list_special_free (sdp->a_attributes,
-			  (void *(*)(void *)) &sdp_attribute_free);
+                          (void *(*)(void *)) &sdp_attribute_free);
 
   osip_list_special_free (sdp->m_medias, (void *(*)(void *)) &sdp_media_free);
 

@@ -24,12 +24,12 @@ void
 add_gettimeofday (struct timeval *atv, int ms)
 {
   int m;
+
   if (ms >= 1000000)
     {
       atv->tv_usec = 0;
       m = ms / 1000;
-    }
-  else
+  } else
     {
       atv->tv_usec += ms * 1000;
       m = atv->tv_usec / 1000000;

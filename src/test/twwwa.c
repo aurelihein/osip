@@ -44,13 +44,13 @@ main (int argc, char **argv)
   if (wwwauthenticates_file == NULL)
     {
       fprintf (stdout,
-	       "Failed to open %s file.\nUsage: twwwauthenticate wwwauthenticates.txt\n",
-	       argv[1]);
+               "Failed to open %s file.\nUsage: twwwauthenticate wwwauthenticates.txt\n",
+               argv[1]);
       exit (0);
     }
 
   a_wwwauthenticate = (char *) osip_malloc (200);
-  res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);	/* lines are under 200 */
+  res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);  /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -60,27 +60,26 @@ main (int argc, char **argv)
       strncpy (a_wwwauthenticate + strlen (a_wwwauthenticate) - 1, "\0", 1);
 
       if (0 != strncmp (a_wwwauthenticate, "#", 1))
-	{
-	  /* allocate & init wwwauthenticate */
-	  osip_www_authenticate_init (&wwwauthenticate);
-	  printf ("=================================================\n");
-	  printf ("WWWAUTHENTICATE TO PARSE: |%s|\n", a_wwwauthenticate);
-	  errcode =
-	    osip_www_authenticate_parse (wwwauthenticate, a_wwwauthenticate);
-	  if (errcode != -1)
-	    {
-	      if (osip_www_authenticate_to_str (wwwauthenticate, &dest) != -1)
-		{
-		  printf ("result:                   |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad wwwauthenticate format: %s\n", a_wwwauthenticate);
-	  osip_www_authenticate_free (wwwauthenticate);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);	/* lines are under 200 */
+        {
+          /* allocate & init wwwauthenticate */
+          osip_www_authenticate_init (&wwwauthenticate);
+          printf ("=================================================\n");
+          printf ("WWWAUTHENTICATE TO PARSE: |%s|\n", a_wwwauthenticate);
+          errcode =
+            osip_www_authenticate_parse (wwwauthenticate, a_wwwauthenticate);
+          if (errcode != -1)
+            {
+              if (osip_www_authenticate_to_str (wwwauthenticate, &dest) != -1)
+                {
+                  printf ("result:                   |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad wwwauthenticate format: %s\n", a_wwwauthenticate);
+          osip_www_authenticate_free (wwwauthenticate);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_wwwauthenticate, 200, wwwauthenticates_file);      /* lines are under 200 */
     }
   osip_free (a_wwwauthenticate);
   return 0;

@@ -30,18 +30,19 @@
 #define APP_CODEC   0x08
 
 int test_add_codec (struct osip_rfc3264 *cnf, int codec_type,
-		    int payload, char *attribute);
+                    int payload, char *attribute);
 sdp_message_t *get_test_remote_message (int index, FILE * torture_file,
-					int verbose);
+                                        int verbose);
 
 int
 test_add_codec (struct osip_rfc3264 *cnf, int codec_type,
-		int payload, char *attribute)
+                int payload, char *attribute)
 {
   sdp_media_t *med;
   sdp_attribute_t *attr;
   char *tmp;
   int i;
+
   if (payload > 127)
     return -1;
   if (attribute == NULL || strlen (attribute) == 0)
@@ -66,14 +67,14 @@ test_add_codec (struct osip_rfc3264 *cnf, int codec_type,
 
   switch (codec_type)
     {
-    case AUDIO_CODEC:
-      med->m_media = strdup ("audio");
-      osip_rfc3264_add_audio_media (cnf, med, -1);
-      break;
-    case VIDEO_CODEC:
-      med->m_media = strdup ("video");
-      osip_rfc3264_add_video_media (cnf, med, -1);
-      break;
+      case AUDIO_CODEC:
+        med->m_media = strdup ("audio");
+        osip_rfc3264_add_audio_media (cnf, med, -1);
+        break;
+      case VIDEO_CODEC:
+        med->m_media = strdup ("video");
+        osip_rfc3264_add_video_media (cnf, med, -1);
+        break;
     }
 
   return 0;
@@ -94,23 +95,23 @@ get_test_remote_message (int index, FILE * torture_file, int verbose)
 
   i = 0;
   tmp = (char *) osip_malloc (500);
-  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
+  marker = fgets (tmp, 500, torture_file);      /* lines are under 500 */
   while (marker != NULL && i < index)
     {
       if (0 == strncmp (tmp, "|", 1))
-	i++;
+        i++;
       marker = fgets (tmp, 500, torture_file);
     }
 
-  msg = (char *) osip_malloc (10000);	/* msg are under 10000 */
+  msg = (char *) osip_malloc (10000);   /* msg are under 10000 */
   tmpmsg = msg;
 
   if (marker == NULL)
     {
       fprintf (stderr,
-	       "Error! The message's number you specified does not exist\n");
+               "Error! The message's number you specified does not exist\n");
       osip_free (msg);
-      return NULL;		/* end of file detected! */
+      return NULL;              /* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -140,28 +141,26 @@ main (int argc, char **argv)
 {
   struct osip_rfc3264 *cnf;
   int i;
-  int verbose = 0;		/* 0: verbose, 1 (or nothing: not verbose) */
+  int verbose = 0;              /* 0: verbose, 1 (or nothing: not verbose) */
   FILE *torture_file;
 
   if (argc > 3)
     {
       if (0 == strncmp (argv[3], "-v", 2))
-	verbose = 1;
+        verbose = 1;
       if (0 == strcmp (argv[3], "-vv"))
-	verbose = 2;
+        verbose = 2;
     }
 
-  fprintf (stdout, "test %i : ============================ \n",
-	   atoi (argv[2]));
+  fprintf (stdout, "test %i : ============================ \n", atoi (argv[2]));
 
   torture_file = fopen (argv[1], "r");
   if (torture_file == NULL)
     {
       fprintf (stderr,
-	       "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
-	       argv[0]);
-      fprintf (stdout, "test %s : ============================ FAILED\n",
-	       argv[2]);
+               "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
+               argv[0]);
+      fprintf (stdout, "test %s : ============================ FAILED\n", argv[2]);
       exit (1);
     }
 
@@ -176,8 +175,7 @@ main (int argc, char **argv)
       fprintf (stderr, "Cannot Initialize Negotiator feature.\n");
       osip_rfc3264_free (cnf);
       fclose (torture_file);
-      fprintf (stdout, "test %s : ============================ FAILED\n",
-	       argv[2]);
+      fprintf (stdout, "test %s : ============================ FAILED\n", argv[2]);
       return -1;
     }
 
@@ -216,135 +214,132 @@ main (int argc, char **argv)
     int mline;
     char *tmp = NULL;
 
-    remote_sdp =
-      get_test_remote_message (atoi (argv[2]), torture_file, verbose);
+    remote_sdp = get_test_remote_message (atoi (argv[2]), torture_file, verbose);
     if (!remote_sdp)
       {
-	fprintf (stderr, "Cannot Get remote SDP message for testing.\n");
-	osip_rfc3264_free (cnf);
-	fclose (torture_file);
-	fprintf (stdout, "test %s : ============================ FAILED\n",
-		 argv[2]);
-	return -1;
+        fprintf (stderr, "Cannot Get remote SDP message for testing.\n");
+        osip_rfc3264_free (cnf);
+        fclose (torture_file);
+        fprintf (stdout, "test %s : ============================ FAILED\n",
+                 argv[2]);
+        return -1;
       }
 
     i = osip_rfc3264_prepare_answer (cnf, remote_sdp, str_local_sdp, 8192);
     if (i != 0)
       {
-	fprintf (stderr, "Cannot Prepare local SDP answer from offer.\n");
-	osip_rfc3264_free (cnf);
-	fclose (torture_file);
-	fprintf (stdout, "test %s : ============================ FAILED\n",
-		 argv[2]);
-	return -1;
+        fprintf (stderr, "Cannot Prepare local SDP answer from offer.\n");
+        osip_rfc3264_free (cnf);
+        fclose (torture_file);
+        fprintf (stdout, "test %s : ============================ FAILED\n",
+                 argv[2]);
+        return -1;
       }
     sdp_message_init (&local_sdp);
     i = sdp_message_parse (local_sdp, str_local_sdp);
     if (i != 0)
       {
-	fprintf (stderr, "Cannot Parse uncomplete SDP answer from offer.\n");
-	sdp_message_free (local_sdp);
-	osip_rfc3264_free (cnf);
-	fclose (torture_file);
-	fprintf (stdout, "test %s : ============================ FAILED\n",
-		 argv[2]);
-	return -1;
+        fprintf (stderr, "Cannot Parse uncomplete SDP answer from offer.\n");
+        sdp_message_free (local_sdp);
+        osip_rfc3264_free (cnf);
+        fclose (torture_file);
+        fprintf (stdout, "test %s : ============================ FAILED\n",
+                 argv[2]);
+        return -1;
       }
 
     mline = 0;
     while (0 == osip_rfc3264_match (cnf, remote_sdp,
-				    audio_tab, video_tab, t38_tab, app_tab,
-				    mline))
+                                    audio_tab, video_tab, t38_tab, app_tab, mline))
       {
-	int pos;
+        int pos;
 
-	if (audio_tab[0] == NULL && video_tab[0] == NULL && t38_tab[0] == NULL
-	    && app_tab[0] == NULL)
-	  {
-	    if (verbose)
-	      fprintf (stdout,
-		       "The remote SDP does not match any local payloads.\n");
-	  }
-	else
-	  {
-	    for (pos = 0; audio_tab[pos] != NULL; pos++)
-	      {
-		int pos2 = 0;
-		sdp_media_t *med = audio_tab[pos];
-		char *str = (char *) osip_list_get (med->m_payloads, 0);
-		if (verbose == 2)
-		  fprintf (stdout, "\tm=%s %s %s %s\n",
-			   med->m_media, med->m_port, med->m_proto, str);
-		while (!osip_list_eol (med->a_attributes, pos2))
-		  {
-		    sdp_attribute_t *attr =
-		      (sdp_attribute_t *) osip_list_get (med->a_attributes,
-							 pos2);
-		    if (verbose == 2)
-		      fprintf (stdout, "\ta=%s:%s\n",
-			       attr->a_att_field, attr->a_att_value);
-		    pos2++;
-		  }
-		if (verbose == 2)
-		  fprintf (stdout, "\n");
+        if (audio_tab[0] == NULL && video_tab[0] == NULL && t38_tab[0] == NULL
+            && app_tab[0] == NULL)
+          {
+            if (verbose)
+              fprintf (stdout,
+                       "The remote SDP does not match any local payloads.\n");
+        } else
+          {
+            for (pos = 0; audio_tab[pos] != NULL; pos++)
+              {
+                int pos2 = 0;
+                sdp_media_t *med = audio_tab[pos];
+                char *str = (char *) osip_list_get (med->m_payloads, 0);
 
-		i =
-		  osip_rfc3264_complete_answer (cnf, remote_sdp, local_sdp,
-						audio_tab[pos], mline);
-		if (i != 0)
-		  {
-		    if (verbose)
-		      fprintf (stdout,
-			       "Error Adding support for codec in answer?\n");
-		  }
-		else
-		  {
-		    if (verbose == 2)
-		      fprintf (stdout,
-			       "support for codec added in answer:\n");
-		  }
-	      }
+                if (verbose == 2)
+                  fprintf (stdout, "\tm=%s %s %s %s\n",
+                           med->m_media, med->m_port, med->m_proto, str);
+                while (!osip_list_eol (med->a_attributes, pos2))
+                  {
+                    sdp_attribute_t *attr =
+                      (sdp_attribute_t *) osip_list_get (med->a_attributes,
+                                                         pos2);
 
-	    for (pos = 0; video_tab[pos] != NULL; pos++)
-	      {
-		int pos2 = 0;
-		sdp_media_t *med = video_tab[pos];
-		char *str = (char *) osip_list_get (med->m_payloads, 0);
-		if (verbose == 2)
-		  fprintf (stdout, "\tm=%s %s %s %s\n",
-			   med->m_media, med->m_port, med->m_proto, str);
-		while (!osip_list_eol (med->a_attributes, pos2))
-		  {
-		    sdp_attribute_t *attr =
-		      (sdp_attribute_t *) osip_list_get (med->a_attributes,
-							 pos2);
-		    if (verbose == 2)
-		      fprintf (stdout, "\ta=%s:%s\n",
-			       attr->a_att_field, attr->a_att_value);
-		    pos2++;
-		  }
-		if (verbose == 2)
-		  fprintf (stdout, "\n");
+                    if (verbose == 2)
+                      fprintf (stdout, "\ta=%s:%s\n",
+                               attr->a_att_field, attr->a_att_value);
+                    pos2++;
+                  }
+                if (verbose == 2)
+                  fprintf (stdout, "\n");
 
-		i =
-		  osip_rfc3264_complete_answer (cnf, remote_sdp, local_sdp,
-						video_tab[pos], mline);
-		if (i != 0)
-		  {
-		    if (verbose)
-		      fprintf (stdout,
-			       "Error Adding support for codec in answer?\n");
-		  }
-		else
-		  {
-		    if (verbose == 2)
-		      fprintf (stdout,
-			       "support for codec added in answer:\n");
-		  }
-	      }
-	  }
+                i =
+                  osip_rfc3264_complete_answer (cnf, remote_sdp, local_sdp,
+                                                audio_tab[pos], mline);
+                if (i != 0)
+                  {
+                    if (verbose)
+                      fprintf (stdout,
+                               "Error Adding support for codec in answer?\n");
+                } else
+                  {
+                    if (verbose == 2)
+                      fprintf (stdout, "support for codec added in answer:\n");
+                  }
+              }
 
-	mline++;
+            for (pos = 0; video_tab[pos] != NULL; pos++)
+              {
+                int pos2 = 0;
+                sdp_media_t *med = video_tab[pos];
+                char *str = (char *) osip_list_get (med->m_payloads, 0);
+
+                if (verbose == 2)
+                  fprintf (stdout, "\tm=%s %s %s %s\n",
+                           med->m_media, med->m_port, med->m_proto, str);
+                while (!osip_list_eol (med->a_attributes, pos2))
+                  {
+                    sdp_attribute_t *attr =
+                      (sdp_attribute_t *) osip_list_get (med->a_attributes,
+                                                         pos2);
+
+                    if (verbose == 2)
+                      fprintf (stdout, "\ta=%s:%s\n",
+                               attr->a_att_field, attr->a_att_value);
+                    pos2++;
+                  }
+                if (verbose == 2)
+                  fprintf (stdout, "\n");
+
+                i =
+                  osip_rfc3264_complete_answer (cnf, remote_sdp, local_sdp,
+                                                video_tab[pos], mline);
+                if (i != 0)
+                  {
+                    if (verbose)
+                      fprintf (stdout,
+                               "Error Adding support for codec in answer?\n");
+                } else
+                  {
+                    if (verbose == 2)
+                      fprintf (stdout, "support for codec added in answer:\n");
+                  }
+              }
+          }
+
+        mline++;
       }
 
     if (verbose)
@@ -352,14 +347,13 @@ main (int argc, char **argv)
     sdp_message_to_str (local_sdp, &tmp);
     if (tmp != NULL)
       {
-	if (verbose)
-	  fprintf (stdout, "\n%s\n", tmp);
-	free (tmp);
-      }
-    else
+        if (verbose)
+          fprintf (stdout, "\n%s\n", tmp);
+        free (tmp);
+    } else
       {
-	if (verbose)
-	  fprintf (stdout, "ERROR\n");
+        if (verbose)
+          fprintf (stdout, "ERROR\n");
       }
   }
 

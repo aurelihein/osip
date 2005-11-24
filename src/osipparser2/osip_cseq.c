@@ -77,7 +77,7 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
   cseq->number = NULL;
   cseq->method = NULL;
 
-  method = strchr (hvalue, ' ');	/* SEARCH FOR SPACE */
+  method = strchr (hvalue, ' ');        /* SEARCH FOR SPACE */
   end = hvalue + strlen (hvalue);
 
   if (method == NULL)
@@ -97,7 +97,7 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
     return -1;
   osip_clrncpy (cseq->method, method + 1, end - method);
 
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }
 
 /* returns the cseq header.            */
@@ -203,17 +203,16 @@ osip_cseq_match (osip_cseq_t * cseq1, osip_cseq_t * cseq2)
   if (0 == strcmp (cseq1->number, cseq2->number))
     {
       if (0 == strcmp (cseq2->method, "INVITE")
-	  || 0 == strcmp (cseq2->method, "ACK"))
-	{
-	  if (0 == strcmp (cseq1->method, "INVITE") ||
-	      0 == strcmp (cseq1->method, "ACK"))
-	    return 0;
-	}
-      else
-	{
-	  if (0 == strcmp (cseq1->method, cseq2->method))
-	    return 0;
-	}
+          || 0 == strcmp (cseq2->method, "ACK"))
+        {
+          if (0 == strcmp (cseq1->method, "INVITE") ||
+              0 == strcmp (cseq1->method, "ACK"))
+            return 0;
+      } else
+        {
+          if (0 == strcmp (cseq1->method, cseq2->method))
+            return 0;
+        }
     }
   return -1;
 }

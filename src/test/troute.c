@@ -44,12 +44,12 @@ main (int argc, char **argv)
   if (routes_file == NULL)
     {
       fprintf (stdout, "Failed to open %s file.\nUsage: troute routes.txt\n",
-	       argv[1]);
+               argv[1]);
       exit (0);
     }
 
   a_route = (char *) osip_malloc (200);
-  res = fgets (a_route, 200, routes_file);	/* lines are under 200 */
+  res = fgets (a_route, 200, routes_file);      /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,26 +59,25 @@ main (int argc, char **argv)
       strncpy (a_route + strlen (a_route) - 1, "\0", 1);
 
       if (0 != strncmp (a_route, "#", 1))
-	{
-	  /* allocate & init route */
-	  osip_route_init (&route);
-	  printf ("=================================================\n");
-	  printf ("ROUTE TO PARSE: |%s|\n", a_route);
-	  errcode = osip_route_parse (route, a_route);
-	  if (errcode != -1)
-	    {
-	      if (osip_route_to_str (route, &dest) != -1)
-		{
-		  printf ("result:         |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad route format: %s\n", a_route);
-	  osip_route_free (route);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_route, 200, routes_file);	/* lines are under 200 */
+        {
+          /* allocate & init route */
+          osip_route_init (&route);
+          printf ("=================================================\n");
+          printf ("ROUTE TO PARSE: |%s|\n", a_route);
+          errcode = osip_route_parse (route, a_route);
+          if (errcode != -1)
+            {
+              if (osip_route_to_str (route, &dest) != -1)
+                {
+                  printf ("result:         |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad route format: %s\n", a_route);
+          osip_route_free (route);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_route, 200, routes_file);  /* lines are under 200 */
     }
   osip_free (a_route);
   return 0;

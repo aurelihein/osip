@@ -43,8 +43,8 @@ struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
   int i;
-  osip_thread_t *thread =
-    (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+
   if (thread == NULL)
     return NULL;
 
@@ -52,8 +52,8 @@ osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
   if (i != 0)
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-		   "Error while creating a new thread\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                   "Error while creating a new thread\n"));
       return NULL;
     }
   return (struct osip_thread *) thread;
@@ -69,6 +69,7 @@ int
 osip_thread_join (struct osip_thread *_thread)
 {
   osip_thread_t *thread = (osip_thread_t *) _thread;
+
   if (thread == NULL)
     return -1;
   return pthread_join (*thread, NULL);
@@ -89,14 +90,14 @@ osip_thread_exit ()
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
-  osip_thread_t *thread =
-    (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+
   if (thread == NULL)
     return NULL;
-  thread->h = (HANDLE) _beginthreadex (NULL,	/* default security attr */
-				       0,	/* use default one */
-				       (unsigned (__stdcall *) (void *)) func,
-				       arg, 0, &(thread->id));
+  thread->h = (HANDLE) _beginthreadex (NULL,    /* default security attr */
+                                       0,       /* use default one */
+                                       (unsigned (__stdcall *) (void *)) func,
+                                       arg, 0, &(thread->id));
   if (thread->h == 0)
     {
       osip_free (thread);
@@ -117,8 +118,7 @@ osip_thread_join (struct osip_thread *_thread)
   if (i == WAIT_OBJECT_0)
     {
       /* fprintf (stdout, "thread joined!\n"); */
-    }
-  else
+  } else
     {
       /* fprintf (stdout, "ERROR!! thread joined ERROR!!\n"); */
       return -1;
@@ -148,8 +148,8 @@ osip_thread_set_priority (struct osip_thread *thread, int priority)
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
-  osip_thread_t *thread =
-    (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+
   if (thread == NULL)
     return (NULL);
   if (t_create ("sip", 150, stacksize, 0, 0, &thread->tid) != 0)
@@ -183,6 +183,7 @@ int
 osip_thread_join (struct osip_thread *_thread)
 {
   osip_thread_t *thread = (osip_thread_t *) _thread;
+
   if (thread == NULL)
     return -1;
   t_delete (thread->tid);
@@ -202,12 +203,12 @@ osip_thread_exit ()
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
-  osip_thread_t *thread =
-    (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+
   if (thread == NULL)
     return NULL;
   thread->id = taskSpawn (NULL, 5, 0, stacksize, (FUNCPTR) func, (int) arg,
-			  0, 0, 0, 0, 0, 0, 0, 0, 0);
+                          0, 0, 0, 0, 0, 0, 0, 0, 0);
   if (thread->id < 0)
     osip_free (thread);
   return (struct osip_thread *) thread;
@@ -217,6 +218,7 @@ int
 osip_thread_set_priority (struct osip_thread *_thread, int priority)
 {
   osip_thread_t *thread = (osip_thread_t *) _thread;
+
   if (thread == NULL)
     return -1;
   taskPrioritySet (thread->id, 1);
@@ -227,6 +229,7 @@ int
 osip_thread_join (struct osip_thread *_thread)
 {
   osip_thread_t *thread = (osip_thread_t *) _thread;
+
   if (thread == NULL)
     return -1;
   return taskDelete (thread->id);

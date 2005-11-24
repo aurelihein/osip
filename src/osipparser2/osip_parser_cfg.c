@@ -32,9 +32,9 @@ static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
  * Anyway, this mechanism improves the search time (from binary seach (log(n)) to 1).
  */
 
-#define HASH_TABLE_SIZE 150	/* set this to the hash table size, 150 is the first size
-				   where no conflicts occur                               */
-static int hdr_ref_table[HASH_TABLE_SIZE];	/* the hashtable contains indices to the pconfig table    */
+#define HASH_TABLE_SIZE 150     /* set this to the hash table size, 150 is the first size
+                                   where no conflicts occur                               */
+static int hdr_ref_table[HASH_TABLE_SIZE];      /* the hashtable contains indices to the pconfig table    */
 
 /*
   list of compact header:
@@ -69,7 +69,7 @@ parser_init (void)
   pconfig[i++].setheader = (&osip_message_set_authentication_info);
   pconfig[i].hname = AUTHORIZATION;
   pconfig[i++].setheader = (&osip_message_set_authorization);
-  pconfig[i].hname = CONTENT_TYPE_SHORT;	/* "l" */
+  pconfig[i].hname = CONTENT_TYPE_SHORT;        /* "l" */
   pconfig[i++].setheader = (&osip_message_set_content_type);
   pconfig[i].hname = CALL_ID;
   pconfig[i++].setheader = (&osip_message_set_call_id);
@@ -85,19 +85,19 @@ parser_init (void)
   pconfig[i++].setheader = (&osip_message_set_content_type);
   pconfig[i].hname = CSEQ;
   pconfig[i++].setheader = (&osip_message_set_cseq);
-  pconfig[i].hname = CONTENT_ENCODING_SHORT;	/* "e" */
+  pconfig[i].hname = CONTENT_ENCODING_SHORT;    /* "e" */
   pconfig[i++].setheader = (&osip_message_set_content_encoding);
   pconfig[i].hname = ERROR_INFO;
   pconfig[i++].setheader = (&osip_message_set_error_info);
-  pconfig[i].hname = FROM_SHORT;	/* "f" */
+  pconfig[i].hname = FROM_SHORT;        /* "f" */
   pconfig[i++].setheader = (&osip_message_set_from);
   pconfig[i].hname = FROM;
   pconfig[i++].setheader = (&osip_message_set_from);
-  pconfig[i].hname = CALL_ID_SHORT;	/* "i" */
+  pconfig[i].hname = CALL_ID_SHORT;     /* "i" */
   pconfig[i++].setheader = (&osip_message_set_call_id);
-  pconfig[i].hname = CONTENT_LENGTH_SHORT;	/* "l" */
+  pconfig[i].hname = CONTENT_LENGTH_SHORT;      /* "l" */
   pconfig[i++].setheader = (&osip_message_set_content_length);
-  pconfig[i].hname = CONTACT_SHORT;	/* "m" */
+  pconfig[i].hname = CONTACT_SHORT;     /* "m" */
   pconfig[i++].setheader = (&osip_message_set_contact);
   pconfig[i].hname = MIME_VERSION;
   pconfig[i++].setheader = (&osip_message_set_mime_version);
@@ -127,27 +127,27 @@ parser_init (void)
   /* initialize the table */
   for (i = 0; i < HASH_TABLE_SIZE; i++)
     {
-      hdr_ref_table[i] = -1;	/* -1 -> no entry */
+      hdr_ref_table[i] = -1;    /* -1 -> no entry */
     }
 
   for (i = 0; i < NUMBER_OF_HEADERS; i++)
     {
       unsigned long hash;
+
       /* calculate hash value using lower case */
       /* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
       hash = osip_hash (pconfig[i].hname);
       hash = hash % HASH_TABLE_SIZE;
 
       if (hdr_ref_table[hash] == -1)
-	{
-	  /* store reference(index) to pconfig table */
-	  hdr_ref_table[hash] = i;
-	}
-      else
-	{
-	  /* oops, conflict!-> change the hash table or use another hash function size */
-	  return -1;
-	}
+        {
+          /* store reference(index) to pconfig table */
+          hdr_ref_table[hash] = i;
+      } else
+        {
+          /* oops, conflict!-> change the hash table or use another hash function size */
+          return -1;
+        }
     }
 
   return 0;
@@ -162,6 +162,7 @@ __osip_message_is_known_header (const char *hname)
   int result = -1;
 
   int index;
+
   hash = osip_hash (hname);
   hash = hash % HASH_TABLE_SIZE;
   index = hdr_ref_table[hash];
@@ -298,18 +299,18 @@ static const __osip_message_config_t pconfig[133] = {
   {"", NULL},
   {AUTHORIZATION, &osip_message_set_authorization},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-									   NULL},
+                                                                           NULL},
   {RETRY_AFTER, NULL},
   {"", NULL}, {"", NULL},
   {CONTENT_DISPOSITION, NULL},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-									   NULL},
+                                                                           NULL},
   {"", NULL}, {"", NULL},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-									   NULL},
+                                                                           NULL},
   {CONTACT_SHORT, &osip_message_set_contact},
   {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"", NULL}, {"",
-									   NULL},
+                                                                           NULL},
   {"", NULL}, {"", NULL},
   {"", NULL},
   {MIME_VERSION, &osip_message_set_mime_version}
@@ -336,13 +337,13 @@ in_word_set (str, len)
       register int key = hash (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
-	{
-	  register const char *s = pconfig[key].hname;
+        {
+          register const char *s = pconfig[key].hname;
 
-	  if (*str == *s && !strcmp (str + 1, s + 1)
-	      && (pconfig[key].setheader != NULL))
-	    return key;
-	}
+          if (*str == *s && !strcmp (str + 1, s + 1)
+              && (pconfig[key].setheader != NULL))
+            return key;
+        }
     }
   return -1;
 }
@@ -350,7 +351,7 @@ in_word_set (str, len)
 int
 parser_init ()
 {
-  return 0;			/* do not need initialization when using gperf */
+  return 0;                     /* do not need initialization when using gperf */
 }
 
 int

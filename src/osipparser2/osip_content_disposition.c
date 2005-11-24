@@ -26,8 +26,7 @@
 #include "parser.h"
 
 int
-osip_message_set_content_disposition (osip_message_t * sip,
-				      const char *hvalue)
+osip_message_set_content_disposition (osip_message_t * sip, const char *hvalue)
 {
   osip_content_disposition_t *content_disposition;
   int i;
@@ -51,16 +50,15 @@ osip_message_set_content_disposition (osip_message_t * sip,
 
 int
 osip_message_get_content_disposition (const osip_message_t * sip, int pos,
-				      osip_content_disposition_t ** dest)
+                                      osip_content_disposition_t ** dest)
 {
   osip_content_disposition_t *content_disposition;
 
   *dest = NULL;
   if (osip_list_size (sip->content_dispositions) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   content_disposition =
-    (osip_content_disposition_t *) osip_list_get (sip->content_dispositions,
-						  pos);
+    (osip_content_disposition_t *) osip_list_get (sip->content_dispositions, pos);
   *dest = content_disposition;
   return pos;
 }
@@ -69,7 +67,7 @@ osip_message_get_content_disposition (const osip_message_t * sip, int pos,
 
 int
 osip_content_disposition_parse (osip_content_disposition_t * cd,
-				const char *hvalue)
+                                const char *hvalue)
 {
   const char *cd_params;
 
@@ -78,9 +76,8 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
   if (cd_params != NULL)
     {
       if (__osip_generic_param_parseall (cd->gen_params, cd_params) == -1)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     cd_params = hvalue + strlen (hvalue);
 
   if (cd_params - hvalue + 1 < 2)

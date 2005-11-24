@@ -101,7 +101,7 @@ extern "C"
  * @param abstime time to wait until
  */
   int osip_cond_timedwait (struct osip_cond *cond, struct osip_mutex *mut,
-			   const struct timespec *abstime);
+                           const struct timespec *abstime);
 
 
 #ifdef __cplusplus

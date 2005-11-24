@@ -18,7 +18,7 @@
 */
 
 #ifdef _WIN32_WCE
-#define _INC_TIME		/* for wce.h */
+#define _INC_TIME               /* for wce.h */
 #include <windows.h>
 #endif
 
@@ -118,17 +118,20 @@ osip_fallback_random_number ()
   if (!random_seed_set)
     {
       unsigned int ticks;
+
 #ifdef __PALMOS__
 #	if __PALMOS__ < 0x06000000
       SysRandom ((Int32) TimGetTicks ());
 #	else
       struct timeval tv;
+
       gettimeofday (&tv, NULL);
       srand (tv.tv_usec);
       ticks = tv.tv_sec + tv.tv_usec;
 #	endif
 #elif defined(WIN32)
       LARGE_INTEGER lCount;
+
       QueryPerformanceCounter (&lCount);
       ticks = lCount.LowPart + lCount.HighPart;
 #elif defined(_WIN32_WCE)
@@ -136,25 +139,28 @@ osip_fallback_random_number ()
 #elif defined(__PSOS__)
 #elif defined(__VXWORKS_OS__)
       struct timespec tp;
+
       clock_gettime (CLOCK_REALTIME, &tp);
       ticks = tp.tv_sec + tp.tv_nsec;
 #else
       struct timeval tv;
       int fd;
+
       gettimeofday (&tv, NULL);
       ticks = tv.tv_sec + tv.tv_usec;
       fd = open ("/dev/urandom", O_RDONLY);
       if (fd > 0)
-	{
-	  unsigned int r;
-	  int i;
-	  for (i = 0; i < 512; i++)
-	    {
-	      read (fd, &r, sizeof (r));
-	      ticks += r;
-	    }
-	  close (fd);
-	}
+        {
+          unsigned int r;
+          int i;
+
+          for (i = 0; i < 512; i++)
+            {
+              read (fd, &r, sizeof (r));
+              ticks += r;
+            }
+          close (fd);
+        }
 #endif
 
 #ifdef HAVE_LRAND48
@@ -164,7 +170,6 @@ osip_fallback_random_number ()
 #endif
       random_seed_set = 1;
     }
-
 #ifdef HAVE_LRAND48
   return lrand48 ();
 #else
@@ -182,8 +187,7 @@ osip_build_random_number ()
   unsigned int num;
 
   err =
-    CryptAcquireContext (&crypto, NULL, NULL, PROV_RSA_FULL,
-			 CRYPT_VERIFYCONTEXT);
+    CryptAcquireContext (&crypto, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
   if (err)
     {
       err = CryptGenRandom (crypto, sizeof (num), (BYTE *) & num);
@@ -207,6 +211,7 @@ osip_atoi (const char *number)
 {
 #if defined(__linux) || defined(HAVE_STRTOL)
   int i;
+
   if (number == NULL)
     return -1;
   i = strtol (number, (char **) NULL, 10);
@@ -231,7 +236,7 @@ osip_strncpy (char *dest, const char *src, size_t length)
 */
 char *
 __osip_sdp_append_string (char *string, size_t size, char *cur,
-			  char *string_osip_to_append)
+                          char *string_osip_to_append)
 {
   size_t length = strlen (string_osip_to_append);
 
@@ -241,7 +246,7 @@ __osip_sdp_append_string (char *string, size_t size, char *cur,
 
       length2 = cur - string;
       string = osip_realloc (string, size + length + 10);
-      cur = string + length2;	/* the initial allocation may have changed! */
+      cur = string + length2;   /* the initial allocation may have changed! */
     }
   osip_strncpy (cur, string_osip_to_append, length);
   return cur + strlen (cur);
@@ -253,10 +258,11 @@ osip_usleep (int useconds)
 #if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
   /* This bit will work for the Protein API, but not the Palm 68K API */
   nsecs_t nanoseconds = useconds * 1000;
+
   SysThreadDelay (nanoseconds, P_ABSOLUTE_TIMEOUT);
 #elif defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
-  UInt32 stoptime =
-    TimGetTicks () + (useconds / 1000000) * SysTicksPerSecond ();
+  UInt32 stoptime = TimGetTicks () + (useconds / 1000000) * SysTicksPerSecond ();
+
   while (stoptime > TimGetTicks ())
     /* I wish there was some type of yield function here */
     ;
@@ -271,8 +277,7 @@ osip_usleep (int useconds)
     {
       delay.tv_sec = sec;
       delay.tv_usec = 0;
-    }
-  else
+  } else
     {
       delay.tv_sec = 0;
       delay.tv_usec = useconds;
@@ -288,6 +293,7 @@ osip_strdup (const char *ch)
 {
   char *copy;
   size_t length;
+
   if (ch == NULL)
     return NULL;
   length = strlen (ch);
@@ -306,8 +312,7 @@ osip_strdup_without_quote (const char *ch)
     {
       osip_strncpy (copy, ch + 1, strlen (ch + 1));
       osip_strncpy (copy + strlen (copy) - 1, "\0", 1);
-    }
-  else
+  } else
     osip_strncpy (copy, ch, strlen (ch));
   return copy;
 }
@@ -325,7 +330,7 @@ osip_tolower (char *word)
   for (i = 0; i <= len - 1; i++)
     {
       if ('A' <= word[i] && word[i] <= 'Z')
-	word[i] = word[i] + 32;
+        word[i] = word[i] + 32;
     }
 #endif
   return 0;
@@ -360,7 +365,7 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
     {
       len--;
       if ((len == 0) || (*s1 == '\0') || (*s2 == '\0'))
-	break;
+        break;
       s1++;
       s2++;
     }
@@ -389,20 +394,18 @@ osip_clrspace (char *word)
   len = strlen (word);
 
   pbeg = word;
-  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg)
-	 || ('\t' == *pbeg))
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
     pbeg++;
 
   pend = word + len - 1;
-  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend)
-	 || ('\t' == *pend))
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
     {
       pend--;
       if (pend < pbeg)
-	{
-	  *word = '\0';
-	  return 0;
-	}
+        {
+          *word = '\0';
+          return 0;
+        }
     }
 
   /* Add terminating NULL only if we've cleared room for it */
@@ -430,28 +433,28 @@ osip_clrspace (char *word)
 int
 __osip_set_next_token (char **dest, char *buf, int end_separator, char **next)
 {
-  char *sep;			/* separator */
+  char *sep;                    /* separator */
 
   *next = NULL;
 
   sep = buf;
   while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
-	 && (*sep != '\n'))
+         && (*sep != '\n'))
     sep++;
   if ((*sep == '\r') || (*sep == '\n'))
-    {				/* we should continue normally only if this is the separator asked! */
+    {                           /* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-	return -1;
+        return -1;
     }
   if (*sep == '\0')
-    return -1;			/* value must not end with this separator! */
+    return -1;                  /* value must not end with this separator! */
   if (sep == buf)
-    return -1;			/* empty value (or several space!) */
+    return -1;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
   osip_strncpy (*dest, buf, sep - buf);
 
-  *next = sep + 1;		/* return the position right after the separator */
+  *next = sep + 1;              /* return the position right after the separator */
   return 0;
 }
 
@@ -460,30 +463,30 @@ __osip_set_next_token (char **dest, char *buf, int end_separator, char **next)
  */
 int
 __osip_set_next_token_better (char **dest, char *buf, int end_separator,
-			      int *forbidden_tab[], int size_tab, char **next)
+                              int *forbidden_tab[], int size_tab, char **next)
 {
-  char *sep;			/* separator */
+  char *sep;                    /* separator */
 
   *next = NULL;
 
   sep = buf;
   while ((*sep != end_separator) && (*sep != '\0') && (*sep != '\r')
-	 && (*sep != '\n'))
+         && (*sep != '\n'))
     sep++;
   if ((*sep == '\r') && (*sep == '\n'))
-    {				/* we should continue normally only if this is the separator asked! */
+    {                           /* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-	return -1;
+        return -1;
     }
   if (*sep == '\0')
-    return -1;			/* value must not end with this separator! */
+    return -1;                  /* value must not end with this separator! */
   if (sep == buf)
-    return -1;			/* empty value (or several space!) */
+    return -1;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
   osip_strncpy (*dest, buf, sep - buf);
 
-  *next = sep + 1;		/* return the position right after the separator */
+  *next = sep + 1;              /* return the position right after the separator */
   return 1;
 }
 #endif
@@ -496,11 +499,11 @@ __osip_quote_find (const char *qstring)
   char *quote;
 
   quote = strchr (qstring, '"');
-  if (quote == qstring)		/* the first char matches and is not escaped... */
+  if (quote == qstring)         /* the first char matches and is not escaped... */
     return quote;
 
   if (quote == NULL)
-    return NULL;		/* no quote at all... */
+    return NULL;                /* no quote at all... */
 
   /* this is now the nasty cases where '"' is escaped
      '" jonathan ros \\\""'
@@ -515,39 +518,39 @@ __osip_quote_find (const char *qstring)
 
     for (;;)
       {
-	if (0 == strncmp (quote - i, "\\", 1))
-	  i++;
-	else
-	  {
-	    if (i % 2 == 1)	/* the '"' was not escaped */
-	      return quote;
+        if (0 == strncmp (quote - i, "\\", 1))
+          i++;
+        else
+          {
+            if (i % 2 == 1)     /* the '"' was not escaped */
+              return quote;
 
-	    /* else continue with the next '"' */
-	    quote = strchr (quote + 1, '"');
-	    if (quote == NULL)
-	      return NULL;
-	    i = 1;
-	  }
-	if (quote - i == qstring - 1)
-	  /* example: "\"john"  */
-	  /* example: "\\"jack" */
-	  {
-	    /* special case where the string start with '\' */
-	    if (*qstring == '\\')
-	      i++;		/* an escape char was not counted */
-	    if (i % 2 == 0)	/* the '"' was not escaped */
-	      return quote;
-	    else
-	      {			/* else continue with the next '"' */
-		qstring = quote + 1;	/* reset qstring because
-					   (*quote+1) may be also == to '\\' */
-		quote = strchr (quote + 1, '"');
-		if (quote == NULL)
-		  return NULL;
-		i = 1;
-	      }
+            /* else continue with the next '"' */
+            quote = strchr (quote + 1, '"');
+            if (quote == NULL)
+              return NULL;
+            i = 1;
+          }
+        if (quote - i == qstring - 1)
+          /* example: "\"john"  */
+          /* example: "\\"jack" */
+          {
+            /* special case where the string start with '\' */
+            if (*qstring == '\\')
+              i++;              /* an escape char was not counted */
+            if (i % 2 == 0)     /* the '"' was not escaped */
+              return quote;
+            else
+              {                 /* else continue with the next '"' */
+                qstring = quote + 1;    /* reset qstring because
+                                           (*quote+1) may be also == to '\\' */
+                quote = strchr (quote + 1, '"');
+                if (quote == NULL)
+                  return NULL;
+                i = 1;
+              }
 
-	  }
+          }
       }
     return NULL;
   }
@@ -564,21 +567,21 @@ osip_enquote (const char *s)
   for (; *s != '\0'; s++)
     {
       switch (*s)
-	{
-	case '"':
-	case '\\':
-	case 0x7f:
-	  *t++ = '\\';
-	  *t++ = *s;
-	  break;
-	case '\n':
-	case '\r':
-	  *t++ = ' ';
-	  break;
-	default:
-	  *t++ = *s;
-	  break;
-	}
+        {
+          case '"':
+          case '\\':
+          case 0x7f:
+            *t++ = '\\';
+            *t++ = *s;
+            break;
+          case '\n':
+          case '\r':
+            *t++ = ' ';
+            break;
+          default:
+            *t++ = *s;
+            break;
+        }
     }
   *t++ = '"';
   *t++ = '\0';
@@ -601,7 +604,7 @@ osip_dequote (char *s)
   for (; *s != '\0'; s++, len--)
     {
       if (*s == '\\')
-	memmove (s, s + 1, len--);
+        memmove (s, s + 1, len--);
     }
 }
 
@@ -614,8 +617,7 @@ osip_dequote (char *s)
 /**********************************************************/
 #ifndef ENABLE_TRACE
 void
-osip_trace_initialize_func (osip_trace_level_t level,
-			    osip_trace_func_t * func)
+osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t * func)
 {
 }
 void
@@ -663,9 +665,9 @@ osip_trace_initialize (osip_trace_level_t level, FILE * file)
   while (i < END_TRACE_LEVEL)
     {
       if (i < level)
-	tracing_table[i] = LOG_TRUE;
+        tracing_table[i] = LOG_TRUE;
       else
-	tracing_table[i] = LOG_FALSE;
+        tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
@@ -674,6 +676,7 @@ void
 osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
 {
   osip_trace_level_t i = 0;
+
 #if defined (HAVE_SYSLOG_H)
   openlog (ident, LOG_CONS | LOG_PID, LOG_DAEMON);
   use_syslog = 1;
@@ -682,9 +685,9 @@ osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
   while (i < END_TRACE_LEVEL)
     {
       if (i < level)
-	tracing_table[i] = LOG_TRUE;
+        tracing_table[i] = LOG_TRUE;
       else
-	tracing_table[i] = LOG_FALSE;
+        tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
@@ -693,30 +696,31 @@ void
 osip_trace_enable_until_level (osip_trace_level_t level)
 {
   int i = 0;
+
   while (i < END_TRACE_LEVEL)
     {
       if (i < level)
-	tracing_table[i] = LOG_TRUE;
+        tracing_table[i] = LOG_TRUE;
       else
-	tracing_table[i] = LOG_FALSE;
+        tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
 
 void
-osip_trace_initialize_func (osip_trace_level_t level,
-			    osip_trace_func_t * func)
+osip_trace_initialize_func (osip_trace_level_t level, osip_trace_func_t * func)
 {
   int i = 0;
+
   trace_func = func;
 
   /* enable all lower levels */
   while (i < END_TRACE_LEVEL)
     {
       if (i < level)
-	tracing_table[i] = LOG_TRUE;
+        tracing_table[i] = LOG_TRUE;
       else
-	tracing_table[i] = LOG_FALSE;
+        tracing_table[i] = LOG_FALSE;
       i++;
     }
 }
@@ -744,15 +748,14 @@ osip_is_trace_level_activate (osip_trace_level_t level)
 #endif
 
 int
-osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
-	    ...)
+osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
 {
 #ifdef ENABLE_TRACE
   va_list ap;
 
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
   if (logfile == NULL && use_syslog == 0 && trace_func == NULL)
-    {				/* user did not initialize logger.. */
+    {                           /* user did not initialize logger.. */
       return 1;
     }
 #endif
@@ -773,27 +776,26 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
   if (f && use_syslog == 0)
     {
       if (level == OSIP_FATAL)
-	fprintf (f, "| FATAL | <%s: %i> ", fi, li);
+        fprintf (f, "| FATAL | <%s: %i> ", fi, li);
       else if (level == OSIP_BUG)
-	fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
+        fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
       else if (level == OSIP_ERROR)
-	fprintf (f, "| ERROR | <%s: %i> ", fi, li);
+        fprintf (f, "| ERROR | <%s: %i> ", fi, li);
       else if (level == OSIP_WARNING)
-	fprintf (f, "|WARNING| <%s: %i> ", fi, li);
+        fprintf (f, "|WARNING| <%s: %i> ", fi, li);
       else if (level == OSIP_INFO1)
-	fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO2)
-	fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO3)
-	fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO4)
-	fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
 
       vfprintf (f, chfr, ap);
 
       fflush (f);
-    }
-  else if (trace_func)
+  } else if (trace_func)
     {
       trace_func (fi, li, level, chfr, ap);
     }
@@ -802,41 +804,42 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
     {
       char buffer[512];
       int in = 0;
+
       memset (buffer, 0, sizeof (buffer));
       if (level == OSIP_FATAL)
-	in = snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
       else if (level == OSIP_BUG)
-	in = snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
       else if (level == OSIP_ERROR)
-	in = snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
       else if (level == OSIP_WARNING)
-	in = snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
       else if (level == OSIP_INFO1)
-	in = snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO2)
-	in = snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO3)
-	in = snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO4)
-	in = snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+        in = snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
 
       vsnprintf (buffer + in, 511 - in, chfr, ap);
       if (level == OSIP_FATAL)
-	syslog (LOG_ERR, "%s", buffer);
+        syslog (LOG_ERR, "%s", buffer);
       else if (level == OSIP_BUG)
-	syslog (LOG_ERR, "%s", buffer);
+        syslog (LOG_ERR, "%s", buffer);
       else if (level == OSIP_ERROR)
-	syslog (LOG_ERR, "%s", buffer);
+        syslog (LOG_ERR, "%s", buffer);
       else if (level == OSIP_WARNING)
-	syslog (LOG_WARNING, "%s", buffer);
+        syslog (LOG_WARNING, "%s", buffer);
       else if (level == OSIP_INFO1)
-	syslog (LOG_INFO, "%s", buffer);
+        syslog (LOG_INFO, "%s", buffer);
       else if (level == OSIP_INFO2)
-	syslog (LOG_INFO, "%s", buffer);
+        syslog (LOG_INFO, "%s", buffer);
       else if (level == OSIP_INFO3)
-	syslog (LOG_DEBUG, "%s", buffer);
+        syslog (LOG_DEBUG, "%s", buffer);
       else if (level == OSIP_INFO4)
-	syslog (LOG_DEBUG, "%s", buffer);
+        syslog (LOG_DEBUG, "%s", buffer);
     }
 #endif
 #ifdef SYSTEM_LOGGER_ENABLED
@@ -844,23 +847,24 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr,
     {
       char buffer[512];
       int in = 0;
+
       memset (buffer, 0, sizeof (buffer));
       if (level == OSIP_FATAL)
-	in = _snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
       else if (level == OSIP_BUG)
-	in = _snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
       else if (level == OSIP_ERROR)
-	in = _snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
       else if (level == OSIP_WARNING)
-	in = _snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
       else if (level == OSIP_INFO1)
-	in = _snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO2)
-	in = _snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO3)
-	in = _snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
       else if (level == OSIP_INFO4)
-	in = _snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
 
       _vsnprintf (buffer + in, 511 - in, chfr, ap);
       OutputDebugString (buffer);
@@ -881,6 +885,7 @@ void *
 osip_malloc (size_t size)
 {
   void *ptr = malloc (size);
+
   if (ptr != NULL)
     memset (ptr, 0, size);
   return ptr;
@@ -906,8 +911,8 @@ osip_free (void *ptr)
 
 void
 osip_set_allocators (osip_malloc_func_t * malloc_func,
-		     osip_realloc_func_t * realloc_func,
-		     osip_free_func_t * free_func)
+                     osip_realloc_func_t * realloc_func,
+                     osip_free_func_t * free_func)
 {
   osip_malloc_func = malloc_func;
   osip_realloc_func = realloc_func;
@@ -932,7 +937,7 @@ _cb_snprintf (char *buffer, int nc, int arg)
 {
   _context *ctx = (_context *) arg;
 
-  if (ctx->max - ctx->len - nc < 1)	/* retain 1 pos for terminating \0 */
+  if (ctx->max - ctx->len - nc < 1)     /* retain 1 pos for terminating \0 */
     {
       nc = ctx->max - ctx->len - 1;
     }
@@ -953,6 +958,7 @@ int
 osip_vsnprintf (char *buf, int max, const char *fmt, va_list ap)
 {
   _context ctx;
+
   ctx.str = buf;
   ctx.max = max;
   ctx.len = 0;
@@ -970,6 +976,7 @@ osip_snprintf (char *buf, int max, const char *fmt, ...)
 {
   int retval;
   va_list ap;
+
   va_start (ap, fmt);
   retval = osip_vsnprintf (buf, max, fmt, ap);
   va_end (ap);
@@ -987,6 +994,7 @@ osip_snprintf (char *buf, int max, const char *fmt, ...)
   static char buffer[1024];
   int retval;
   va_list ap;
+
   buffer[0] = '\n';
   va_start (ap, fmt);
   vsprintf (&(buffer[strlen (buffer)]), fmt, ap);
@@ -1013,19 +1021,21 @@ void *
 _osip_malloc (size_t size, char *file, unsigned short line)
 {
   void *mem;
+
   mem = osip_malloc_func (size + 20);
   if (mem != NULL)
     {
       char *s;
+
       memcpy (mem, &line, 2);
       for (s = file + strlen (file); s != file; s--)
-	{
-	  if (*s == '\\' || *s == '/')
-	    {
-	      s++;
-	      break;
-	    }
-	}
+        {
+          if (*s == '\\' || *s == '/')
+            {
+              s++;
+              break;
+            }
+        }
       strncpy ((char *) mem + 2, s, 18);
       return (void *) ((char *) mem + 20);
     }
@@ -1045,20 +1055,22 @@ void *
 _osip_realloc (void *ptr, size_t size, char *file, unsigned short line)
 {
   void *mem;
+
   mem = osip_realloc_func ((char *) ptr - 20, size + 20);
   if (mem != NULL)
     {
       char *s;
+
       memcpy (mem, &line, 2);
 
       for (s = file + strlen (file); s != file; s--)
-	{
-	  if (*s == '\\' || *s == '/')
-	    {
-	      s++;
-	      break;
-	    }
-	}
+        {
+          if (*s == '\\' || *s == '/')
+            {
+              s++;
+              break;
+            }
+        }
       strncpy ((char *) mem + 2, s, 18);
       return (char *) mem + 20;
     }
@@ -1137,26 +1149,24 @@ osip_clrncpy (char *dst, const char *src, size_t len)
 
   /* find the start of relevant text */
   pbeg = src;
-  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg)
-	 || ('\t' == *pbeg))
+  while ((' ' == *pbeg) || ('\r' == *pbeg) || ('\n' == *pbeg) || ('\t' == *pbeg))
     pbeg++;
 
 
   /* find the end of relevant text */
   pend = src + len - 1;
-  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend)
-	 || ('\t' == *pend))
+  while ((' ' == *pend) || ('\r' == *pend) || ('\n' == *pend) || ('\t' == *pend))
     {
       pend--;
       if (pend < pbeg)
-	{
-	  *dst = '\0';
-	  return dst;
-	}
+        {
+          *dst = '\0';
+          return dst;
+        }
     }
 
   /* if pend == pbeg there is only one char to copy */
-  spaceless_length = pend - pbeg + 1;	/* excluding any '\0' */
+  spaceless_length = pend - pbeg + 1;   /* excluding any '\0' */
   memmove (dst, pbeg, spaceless_length);
   p = dst + spaceless_length;
 

@@ -41,7 +41,7 @@ usage ()
 static int
 read_binary (char **msg, int *len, FILE * torture_file)
 {
-  *msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
+  *msg = (char *) osip_malloc (100000); /* msg are under 10000 */
 
   *len = fread (*msg, 1, 100000, torture_file);
   return ferror (torture_file) ? -1 : 0;
@@ -59,16 +59,16 @@ read_text (int num, FILE * torture_file)
 
   i = 0;
   tmp = (char *) osip_malloc (500);
-  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
+  marker = fgets (tmp, 500, torture_file);      /* lines are under 500 */
   while (marker != NULL && i < num)
     {
       if (0 == strncmp (tmp, "|", 1))
-	i++;
+        i++;
       marker = fgets (tmp, 500, torture_file);
     }
   num_test++;
 
-  msg = (char *) osip_malloc (100000);	/* msg are under 10000 */
+  msg = (char *) osip_malloc (100000);  /* msg are under 10000 */
   if (msg == NULL)
     {
       fprintf (stderr, "Error! osip_malloc failed\n");
@@ -79,8 +79,8 @@ read_text (int num, FILE * torture_file)
   if (marker == NULL)
     {
       fprintf (stderr,
-	       "Error! The message's number you specified does not exist\n");
-      return NULL;		/* end of file detected! */
+               "Error! The message's number you specified does not exist\n");
+      return NULL;              /* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -100,8 +100,8 @@ main (int argc, char **argv)
 {
   int success = 1;
 
-  int verbose = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
-  int clone = 0;		/* 1: verbose, 0 (or nothing: not verbose) */
+  int verbose = 0;              /* 1: verbose, 0 (or nothing: not verbose) */
+  int clone = 0;                /* 1: verbose, 0 (or nothing: not verbose) */
   int binary = 0;
   FILE *torture_file;
   char *msg;
@@ -111,13 +111,13 @@ main (int argc, char **argv)
   for (pos = 3; pos < argc; pos++)
     {
       if (0 == strncmp (argv[pos], "-v", 2))
-	verbose = 1;
+        verbose = 1;
       else if (0 == strncmp (argv[pos], "-c", 2))
-	clone = 1;
+        clone = 1;
       else if (0 == strncmp (argv[pos], "-b", 2))
-	binary = 1;
+        binary = 1;
       else
-	usage ();
+        usage ();
     }
 
   if (argc < 3)
@@ -137,13 +137,12 @@ main (int argc, char **argv)
   if (binary)
     {
       if (read_binary (&msg, &len, torture_file) < 0)
-	return -1;
-    }
-  else
+        return -1;
+  } else
     {
       msg = read_text (atoi (argv[2]), torture_file);
       if (!msg)
-	return -1;
+        return -1;
       len = strlen (msg);
     }
 
@@ -154,11 +153,10 @@ main (int argc, char **argv)
       fwrite (msg, 1, len, stdout);
 
       if (0 == success)
-	fprintf (stdout, "test %s : ============================ OK\n",
-		 argv[2]);
+        fprintf (stdout, "test %s : ============================ OK\n", argv[2]);
       else
-	fprintf (stdout, "test %s : ============================ FAILED\n",
-		 argv[2]);
+        fprintf (stdout, "test %s : ============================ FAILED\n",
+                 argv[2]);
     }
 
   osip_free (msg);
@@ -180,105 +178,102 @@ test_message (char *msg, size_t len, int verbose, int clone)
 
     if (verbose)
       fprintf (stdout,
-	       "Trying %i sequentials calls to osip_message_init(), osip_message_parse() and osip_message_free()\n",
-	       j);
+               "Trying %i sequentials calls to osip_message_init(), osip_message_parse() and osip_message_free()\n",
+               j);
     while (j != 0)
       {
-	j--;
-	osip_message_init (&sip);
-	if (osip_message_parse (sip, msg, len) != 0)
-	  {
-	    fprintf (stdout, "ERROR: failed while parsing!\n");
-	    osip_message_free (sip);
-	    return -1;
-	  }
-	osip_message_free (sip);
+        j--;
+        osip_message_init (&sip);
+        if (osip_message_parse (sip, msg, len) != 0)
+          {
+            fprintf (stdout, "ERROR: failed while parsing!\n");
+            osip_message_free (sip);
+            return -1;
+          }
+        osip_message_free (sip);
       }
 
     osip_message_init (&sip);
     if (osip_message_parse (sip, msg, len) != 0)
       {
-	fprintf (stdout, "ERROR: failed while parsing!\n");
-	osip_message_free (sip);
-	return -1;
-      }
-    else
+        fprintf (stdout, "ERROR: failed while parsing!\n");
+        osip_message_free (sip);
+        return -1;
+    } else
       {
-	int i;
-	size_t length;
-	osip_message_force_update (sip);
-	i = osip_message_to_str (sip, &result, &length);
-	if (i == -1)
-	  {
-	    fprintf (stdout, "ERROR: failed while printing message!\n");
-	    osip_message_free (sip);
-	    return -1;
-	  }
-	else
-	  {
-	    if (verbose)
-	      fwrite (result, 1, length, stdout);
-	    if (clone)
-	      {
-		/* create a clone of message */
-		/* int j = 10000; */
-		int j = 1;
+        int i;
+        size_t length;
 
-		if (verbose)
-		  fprintf (stdout,
-			   "Trying %i sequentials calls to osip_message_clone() and osip_message_free()\n",
-			   j);
-		while (j != 0)
-		  {
-		    osip_message_t *copy;
+        osip_message_force_update (sip);
+        i = osip_message_to_str (sip, &result, &length);
+        if (i == -1)
+          {
+            fprintf (stdout, "ERROR: failed while printing message!\n");
+            osip_message_free (sip);
+            return -1;
+        } else
+          {
+            if (verbose)
+              fwrite (result, 1, length, stdout);
+            if (clone)
+              {
+                /* create a clone of message */
+                /* int j = 10000; */
+                int j = 1;
 
-		    j--;
-		    i = osip_message_clone (sip, &copy);
-		    if (i != 0)
-		      {
-			fprintf (stdout,
-				 "ERROR: failed while creating copy of message!\n");
-		      }
-		    else
-		      {
-			char *tmp;
-			size_t length;
-			osip_message_force_update (copy);
-			i = osip_message_to_str (copy, &tmp, &length);
-			if (i != 0)
-			  {
-			    fprintf (stdout,
-				     "ERROR: failed while printing message!\n");
-			  }
-			else
-			  {
-			    if (0 == strcmp (result, tmp))
-			      {
-				if (verbose)
-				  printf
-				    ("The osip_message_clone method works perfectly\n");
-			      }
-			    else
-			      printf
-				("ERROR: The osip_message_clone method DOES NOT works\n");
-			    if (verbose)
-			      {
-				printf ("Here is the copy: \n");
-				fwrite (tmp, 1, length, stdout);
-				printf ("\n");
-			      }
+                if (verbose)
+                  fprintf (stdout,
+                           "Trying %i sequentials calls to osip_message_clone() and osip_message_free()\n",
+                           j);
+                while (j != 0)
+                  {
+                    osip_message_t *copy;
 
-			    osip_free (tmp);
-			  }
-			osip_message_free (copy);
-		      }
-		  }
-		if (verbose)
-		  fprintf (stdout, "sequentials calls: done\n");
-	      }
-	    osip_free (result);
-	  }
-	osip_message_free (sip);
+                    j--;
+                    i = osip_message_clone (sip, &copy);
+                    if (i != 0)
+                      {
+                        fprintf (stdout,
+                                 "ERROR: failed while creating copy of message!\n");
+                    } else
+                      {
+                        char *tmp;
+                        size_t length;
+
+                        osip_message_force_update (copy);
+                        i = osip_message_to_str (copy, &tmp, &length);
+                        if (i != 0)
+                          {
+                            fprintf (stdout,
+                                     "ERROR: failed while printing message!\n");
+                        } else
+                          {
+                            if (0 == strcmp (result, tmp))
+                              {
+                                if (verbose)
+                                  printf
+                                    ("The osip_message_clone method works perfectly\n");
+                            } else
+                              printf
+                                ("ERROR: The osip_message_clone method DOES NOT works\n");
+                            if (verbose)
+                              {
+                                printf ("Here is the copy: \n");
+                                fwrite (tmp, 1, length, stdout);
+                                printf ("\n");
+                              }
+
+                            osip_free (tmp);
+                          }
+                        osip_message_free (copy);
+                      }
+                  }
+                if (verbose)
+                  fprintf (stdout, "sequentials calls: done\n");
+              }
+            osip_free (result);
+          }
+        osip_message_free (sip);
       }
   }
   return 0;

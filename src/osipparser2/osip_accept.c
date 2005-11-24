@@ -59,13 +59,13 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_accept (const osip_message_t * sip, int pos,
-			 osip_accept_t ** dest)
+                         osip_accept_t ** dest)
 {
   osip_accept_t *accept;
 
   *dest = NULL;
   if (osip_list_size (sip->accepts) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   accept = (osip_accept_t *) osip_list_get (sip->accepts, pos);
   *dest = accept;
   return pos;
@@ -96,7 +96,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
     }
 
   /* try to guess a long enough length */
-  len = strlen (accept->type) + strlen (accept->subtype) + 4	/* for '/', ' ', ';' and '\0' */
+  len = strlen (accept->type) + strlen (accept->subtype) + 4    /* for '/', ' ', ';' and '\0' */
     + 10 * osip_list_size (accept->gen_params);
 
   buf = (char *) osip_malloc (len);
@@ -111,33 +111,32 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
 
 #if 0
     if (!osip_list_eol (accept->gen_params, pos))
-      {				/* needed for cannonical form! (authentication issue of rfc2543) */
-	sprintf (tmp, " ");
-	tmp++;
+      {                         /* needed for cannonical form! (authentication issue of rfc2543) */
+        sprintf (tmp, " ");
+        tmp++;
       }
 #endif
     while (!osip_list_eol (accept->gen_params, pos))
       {
-	size_t tmp_len;
+        size_t tmp_len;
 
-	u_param =
-	  (osip_generic_param_t *) osip_list_get (accept->gen_params, pos);
-	if (u_param->gvalue == NULL)
-	  {
-	    osip_free (buf);
-	    return -1;
-	  }
-	tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
-	  + strlen (u_param->gvalue) + 1;
-	if (len < tmp_len)
-	  {
-	    buf = osip_realloc (buf, tmp_len);
-	    len = tmp_len;
-	    tmp = buf + strlen (buf);
-	  }
-	sprintf (tmp, "; %s=%s", u_param->gname, u_param->gvalue);
-	tmp = tmp + strlen (tmp);
-	pos++;
+        u_param = (osip_generic_param_t *) osip_list_get (accept->gen_params, pos);
+        if (u_param->gvalue == NULL)
+          {
+            osip_free (buf);
+            return -1;
+          }
+        tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
+          + strlen (u_param->gvalue) + 1;
+        if (len < tmp_len)
+          {
+            buf = osip_realloc (buf, tmp_len);
+            len = tmp_len;
+            tmp = buf + strlen (buf);
+          }
+        sprintf (tmp, "; %s=%s", u_param->gname, u_param->gvalue);
+        tmp = tmp + strlen (tmp);
+        pos++;
       }
   }
   *dest = buf;

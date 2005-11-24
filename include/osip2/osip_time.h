@@ -39,10 +39,10 @@ extern "C"
 /* osip_gettimeofday() == gettimeofday() */
 #define osip_gettimeofday gettimeofday
 
-#endif				/* #ifdef WIN32 */
+#endif                          /* #ifdef WIN32 */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif				/* #ifndef _OSIP_TIME_H_ */
+#endif                          /* #ifndef _OSIP_TIME_H_ */

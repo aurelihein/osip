@@ -42,13 +42,12 @@ main (int argc, char **argv)
   if (callids_file == NULL)
     {
       fprintf (stdout,
-	       "Failed to open %s file.\nUsage: tcallid callids.txt\n",
-	       argv[1]);
+               "Failed to open %s file.\nUsage: tcallid callids.txt\n", argv[1]);
       exit (0);
     }
 
   a_callid = (char *) osip_malloc (200);
-  res = fgets (a_callid, 200, callids_file);	/* lines are under 200 */
+  res = fgets (a_callid, 200, callids_file);    /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -58,26 +57,25 @@ main (int argc, char **argv)
       strncpy (a_callid + strlen (a_callid) - 1, "\0", 1);
 
       if (0 != strncmp (a_callid, "#", 1))
-	{
-	  /* allocate & init callid */
-	  osip_call_id_init (&callid);
-	  printf ("=================================================\n");
-	  printf ("CALLID TO PARSE: |%s|\n", a_callid);
-	  errcode = osip_call_id_parse (callid, a_callid);
-	  if (errcode != -1)
-	    {
-	      if (osip_call_id_to_str (callid, &dest) != -1)
-		{
-		  printf ("result:        |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad callid format: %s\n", a_callid);
-	  osip_call_id_free (callid);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_callid, 200, callids_file);	/* lines are under 200 */
+        {
+          /* allocate & init callid */
+          osip_call_id_init (&callid);
+          printf ("=================================================\n");
+          printf ("CALLID TO PARSE: |%s|\n", a_callid);
+          errcode = osip_call_id_parse (callid, a_callid);
+          if (errcode != -1)
+            {
+              if (osip_call_id_to_str (callid, &dest) != -1)
+                {
+                  printf ("result:        |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad callid format: %s\n", a_callid);
+          osip_call_id_free (callid);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_callid, 200, callids_file);        /* lines are under 200 */
     }
   osip_free (a_callid);
   return 0;

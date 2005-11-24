@@ -81,15 +81,14 @@ extern "C"
  * @param name The token name.
  * @param value The token value.
  */
-  int osip_uri_param_set (osip_uri_param_t * url_param, char *name,
-			  char *value);
+  int osip_uri_param_set (osip_uri_param_t * url_param, char *name, char *value);
 /**
  * Clone a url parameter element.
  * @param url_param The element to work on.
  * @param dest The resulting new allocated element.
  */
   int osip_uri_param_clone (const osip_uri_param_t * url_param,
-			    osip_uri_param_t ** dest);
+                            osip_uri_param_t ** dest);
 #ifndef DOXYGEN
 /*
  * Free a list of a url parameter element.
@@ -111,7 +110,7 @@ extern "C"
  * @param dest A pointer on the element found.
  */
   int osip_uri_param_get_byname (osip_list_t * url_params, char *name,
-				 osip_uri_param_t ** dest);
+                                 osip_uri_param_t ** dest);
 
 /**
  * Allocate a generic parameter element.
@@ -170,11 +169,11 @@ extern "C"
  */
   struct osip_uri
   {
-    char *scheme;	       /**< Uri Scheme (sip or sips) */
-    char *username;	       /**< Username */
-    char *password;	       /**< Password */
-    char *host;		       /**< Domain */
-    char *port;		       /**< Port number */
+    char *scheme;              /**< Uri Scheme (sip or sips) */
+    char *username;            /**< Username */
+    char *password;            /**< Password */
+    char *host;                /**< Domain */
+    char *port;                /**< Port number */
     osip_list_t *url_params;   /**< Uri parameters */
     osip_list_t *url_headers;  /**< Uri headers */
 
@@ -408,10 +407,10 @@ extern "C"
 #ifndef DOXYGEN
 /* internal method */
   char *next_separator (const char *ch, int separator_osip_to_find,
-			int before_separator);
+                        int before_separator);
 
   char *__osip_uri_escape_nonascii_and_nondef (const char *string,
-					       const char *def);
+                                               const char *def);
   char *__osip_uri_escape_userinfo (const char *string);
   char *__osip_uri_escape_password (const char *string);
   char *__osip_uri_escape_uri_param (char *string);
@@ -426,4 +425,4 @@ extern "C"
 }
 #endif
 
-#endif				/*  _URLS_H_ */
+#endif                          /*  _URLS_H_ */

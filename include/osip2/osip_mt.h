@@ -61,7 +61,7 @@ extern "C"
  * @param arg A pointer on the argument given to the method 'func'.
  */
   struct osip_thread *osip_thread_create (int stacksize,
-					  void *(*func) (void *), void *arg);
+                                          void *(*func) (void *), void *arg);
 
 /**
  * Join a thread.
@@ -181,6 +181,6 @@ extern "C"
 
 /** @} */
 
-#endif				/* OSIP_MT */
+#endif                          /* OSIP_MT */
 
-#endif				/* end of _THREAD_H_ */
+#endif                          /* end of _THREAD_H_ */

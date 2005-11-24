@@ -101,7 +101,7 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
   callid->number = NULL;
   callid->host = NULL;
 
-  host = strchr (hvalue, '@');	/* SEARCH FOR '@' */
+  host = strchr (hvalue, '@');  /* SEARCH FOR '@' */
   end = hvalue + strlen (hvalue);
 
   if (host == NULL)
@@ -109,10 +109,10 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
   else
     {
       if (end - host + 1 < 2)
-	return -1;
+        return -1;
       callid->host = (char *) osip_malloc (end - host);
       if (callid->host == NULL)
-	return -1;
+        return -1;
       osip_clrncpy (callid->host, host + 1, end - host - 1);
     }
   if (host - hvalue + 1 < 2)
@@ -122,7 +122,7 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
     return -1;
   osip_clrncpy (callid->number, hvalue, host - hvalue);
 
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }
 
 /* returns the call_id as a string.          */
@@ -139,16 +139,14 @@ osip_call_id_to_str (const osip_call_id_t * callid, char **dest)
     {
       *dest = (char *) osip_malloc (strlen (callid->number) + 1);
       if (*dest == NULL)
-	return -1;
+        return -1;
       sprintf (*dest, "%s", callid->number);
-    }
-  else
+  } else
     {
       *dest =
-	(char *) osip_malloc (strlen (callid->number) +
-			      strlen (callid->host) + 2);
+        (char *) osip_malloc (strlen (callid->number) + strlen (callid->host) + 2);
       if (*dest == NULL)
-	return -1;
+        return -1;
       sprintf (*dest, "%s@%s", callid->number, callid->host);
     }
   return 0;
@@ -195,7 +193,7 @@ osip_call_id_clone (const osip_call_id_t * callid, osip_call_id_t ** dest)
     return -1;
 
   i = osip_call_id_init (&ci);
-  if (i == -1)			/* allocation failed */
+  if (i == -1)                  /* allocation failed */
     return -1;
   ci->number = osip_strdup (callid->number);
   if (callid->host != NULL)

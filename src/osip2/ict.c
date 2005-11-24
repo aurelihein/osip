@@ -31,8 +31,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   time_t now;
 
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL,
-	       "allocating ICT context\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating ICT context\n"));
 
   *ict = (osip_ict_t *) osip_malloc (sizeof (osip_ict_t));
   if (*ict == NULL)
@@ -45,7 +44,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
     osip_via_t *via;
     char *proto;
 
-    i = osip_message_get_via (invite, 0, &via);	/* get top via */
+    i = osip_message_get_via (invite, 0, &via); /* get top via */
     if (i != 0)
       goto ii_error_1;
     proto = via_get_protocol (via);
@@ -53,25 +52,24 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
       goto ii_error_1;
 
     if (osip_strcasecmp (proto, "TCP") != 0
-	&& osip_strcasecmp (proto, "TLS") != 0
-	&& osip_strcasecmp (proto, "SCTP") != 0)
-      {				/* for other reliable protocol than TCP, the timer
-				   must be desactived by the external application */
-	(*ict)->timer_a_length = DEFAULT_T1;
-	if (64 * DEFAULT_T1 < 32000)
-	  (*ict)->timer_d_length = 32000;
-	else
-	  (*ict)->timer_d_length = 64 * DEFAULT_T1;
-	osip_gettimeofday (&(*ict)->timer_a_start, NULL);
-	add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
-	(*ict)->timer_d_start.tv_sec = -1;	/* not started */
-      }
-    else
-      {				/* reliable protocol is used: */
-	(*ict)->timer_a_length = -1;	/* A is not ACTIVE */
-	(*ict)->timer_d_length = 0;	/* MUST do the transition immediatly */
-	(*ict)->timer_a_start.tv_sec = -1;	/* not started */
-	(*ict)->timer_d_start.tv_sec = -1;	/* not started */
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*ict)->timer_a_length = DEFAULT_T1;
+        if (64 * DEFAULT_T1 < 32000)
+          (*ict)->timer_d_length = 32000;
+        else
+          (*ict)->timer_d_length = 64 * DEFAULT_T1;
+        osip_gettimeofday (&(*ict)->timer_a_start, NULL);
+        add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
+        (*ict)->timer_d_start.tv_sec = -1;      /* not started */
+    } else
+      {                         /* reliable protocol is used: */
+        (*ict)->timer_a_length = -1;    /* A is not ACTIVE */
+        (*ict)->timer_d_length = 0;     /* MUST do the transition immediatly */
+        (*ict)->timer_a_start.tv_sec = -1;      /* not started */
+        (*ict)->timer_d_start.tv_sec = -1;      /* not started */
       }
   }
 
@@ -81,12 +79,13 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   if (route != NULL && route->url != NULL)
     {
       osip_uri_param_t *lr_param;
+
       osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
       if (lr_param == NULL)
-	{
-	  /* using uncompliant proxy: destination is the request-uri */
-	  route = NULL;
-	}
+        {
+          /* using uncompliant proxy: destination is the request-uri */
+          route = NULL;
+        }
     }
 
   if (route != NULL)
@@ -94,17 +93,15 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
       int port = 5060;
 
       if (route->url->port != NULL)
-	port = osip_atoi (route->url->port);
+        port = osip_atoi (route->url->port);
       osip_ict_set_destination ((*ict), osip_strdup (route->url->host), port);
-    }
-  else
+  } else
     {
       int port = 5060;
 
       if (invite->req_uri->port != NULL)
-	port = osip_atoi (invite->req_uri->port);
-      osip_ict_set_destination ((*ict),
-				osip_strdup (invite->req_uri->host), port);
+        port = osip_atoi (invite->req_uri->port);
+      osip_ict_set_destination ((*ict), osip_strdup (invite->req_uri->host), port);
     }
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;
@@ -127,7 +124,7 @@ __osip_ict_free (osip_ict_t * ict)
   if (ict == NULL)
     return -1;
   OSIP_TRACE (osip_trace
-	      (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
+              (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
 
   osip_free (ict->destination);
   osip_free (ict);
@@ -147,10 +144,10 @@ osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
 }
 
 osip_event_t *
-__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
+__osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
@@ -159,18 +156,18 @@ __osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state,
     {
       /* may need timer A */
       if (ict->timer_a_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &ict->timer_a_start, >))
-	return __osip_event_new (TIMEOUT_A, transactionid);
+        return __osip_event_new (TIMEOUT_A, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
+__osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state, int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
@@ -179,18 +176,18 @@ __osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state,
     {
       /* may need timer B */
       if (ict->timer_b_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &ict->timer_b_start, >))
-	return __osip_event_new (TIMEOUT_B, transactionid);
+        return __osip_event_new (TIMEOUT_B, transactionid);
     }
   return NULL;
 }
 
 osip_event_t *
-__osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
-			       int transactionid)
+__osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state, int transactionid)
 {
   struct timeval now;
+
   osip_gettimeofday (&now, NULL);
 
   if (ict == NULL)
@@ -199,9 +196,9 @@ __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state,
     {
       /* may need timer D */
       if (ict->timer_d_start.tv_sec == -1)
-	return NULL;
+        return NULL;
       if (osip_timercmp (&now, &ict->timer_d_start, >))
-	return __osip_event_new (TIMEOUT_D, transactionid);
+        return __osip_event_new (TIMEOUT_D, transactionid);
     }
   return NULL;
 }

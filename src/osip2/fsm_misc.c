@@ -25,13 +25,12 @@
 #include "fsm.h"
 
 static transition_t *fsm_findmethod (type_t type, state_t state,
-				     osip_statemachine_t * statemachine);
+                                     osip_statemachine_t * statemachine);
 
 /* find the transition for state and type in statemachine */
 /* return NULL; if transition is not found.               */
 static transition_t *
-fsm_findmethod (type_t type, state_t state,
-		osip_statemachine_t * statemachine)
+fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
 {
   int pos;
 
@@ -40,10 +39,9 @@ fsm_findmethod (type_t type, state_t state,
     {
       transition_t *transition;
 
-      transition =
-	(transition_t *) osip_list_get (statemachine->transitions, pos);
+      transition = (transition_t *) osip_list_get (statemachine->transitions, pos);
       if (transition->type == type && transition->state == state)
-	return transition;
+        return transition;
       pos++;
     }
   return NULL;
@@ -54,8 +52,8 @@ fsm_findmethod (type_t type, state_t state,
 /*   return -1 when event must be discarded  */
 int
 fsm_callmethod (type_t type, state_t state,
-		osip_statemachine_t * statemachine, void *sipevent,
-		void *transaction)
+                osip_statemachine_t * statemachine, void *sipevent,
+                void *transaction)
 {
   transition_t *transition;
 
@@ -63,8 +61,8 @@ fsm_callmethod (type_t type, state_t state,
   if (transition == NULL)
     {
       /* No transition found for this event */
-      return -1;		/* error */
+      return -1;                /* error */
     }
   transition->method (transaction, sipevent);
-  return 0;			/* ok */
+  return 0;                     /* ok */
 }

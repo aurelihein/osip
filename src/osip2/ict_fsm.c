@@ -40,8 +40,7 @@ __ict_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition =
-	(transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -55,8 +54,7 @@ __ict_load_fsm ()
 {
   transition_t *transition;
 
-  ict_fsm =
-    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  ict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   ict_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (ict_fsm->transitions);
 
@@ -157,14 +155,13 @@ ict_snd_invite (osip_transaction_t * ict, osip_event_t * evt)
   ict->orig_request = evt->sip;
 
   i = osip->cb_send_message (ict, evt->sip, ict->ict_context->destination,
-			     ict->ict_context->port, ict->out_socket);
+                             ict->ict_context->port, ict->out_socket);
 
   if (i == 0)
     {
       __osip_message_callback (OSIP_ICT_INVITE_SENT, ict, ict->orig_request);
       __osip_transaction_set_state (ict, ICT_CALLING);
-    }
-  else
+  } else
     {
       ict_handle_transport_error (ict, i);
     }
@@ -180,21 +177,20 @@ osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
   ict->ict_context->timer_a_length = ict->ict_context->timer_a_length * 2;
   osip_gettimeofday (&ict->ict_context->timer_a_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_a_start,
-		    ict->ict_context->timer_a_length);
+                    ict->ict_context->timer_a_length);
 
   /* retransmit REQUEST */
   i =
     osip->cb_send_message (ict, ict->orig_request,
-			   ict->ict_context->destination,
-			   ict->ict_context->port, ict->out_socket);
+                           ict->ict_context->destination,
+                           ict->ict_context->port, ict->out_socket);
   if (i != 0)
     {
       ict_handle_transport_error (ict, i);
       return;
     }
 
-  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict,
-			   ict->orig_request);
+  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict, ict->orig_request);
 }
 
 void
@@ -253,7 +249,7 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
   i = osip_from_clone (response->from, &(ack->from));
   if (i != 0)
     goto ica_error;
-  i = osip_to_clone (response->to, &(ack->to));	/* include the tag! */
+  i = osip_to_clone (response->to, &(ack->to)); /* include the tag! */
   if (i != 0)
     goto ica_error;
   i = osip_call_id_clone (response->call_id, &(ack->call_id));
@@ -298,11 +294,11 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
 
     while (!osip_list_eol (ict->orig_request->routes, pos))
       {
-	orig_route =
-	  (osip_route_t *) osip_list_get (ict->orig_request->routes, pos);
-	osip_route_clone (orig_route, &route);
-	osip_list_add (ack->routes, route, -1);
-	pos++;
+        orig_route =
+          (osip_route_t *) osip_list_get (ict->orig_request->routes, pos);
+        osip_route_clone (orig_route, &route);
+        osip_list_add (ack->routes, route, -1);
+        pos++;
       }
   }
 
@@ -328,7 +324,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
     osip_message_free (ict->last_response);
 
   ict->last_response = evt->sip;
-  if (ict->state != ICT_COMPLETED)	/* not a retransmission */
+  if (ict->state != ICT_COMPLETED)      /* not a retransmission */
     {
       /* automatic handling of ack! */
       osip_message_t *ack = ict_create_ack (ict, evt->sip);
@@ -336,63 +332,62 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
       ict->ack = ack;
 
       if (ict->ack == NULL)
-	{
-	  __osip_transaction_set_state (ict, ICT_TERMINATED);
-	  __osip_kill_transaction_callback (OSIP_ICT_KILL_TRANSACTION, ict);
-	  return;
-	}
+        {
+          __osip_transaction_set_state (ict, ICT_TERMINATED);
+          __osip_kill_transaction_callback (OSIP_ICT_KILL_TRANSACTION, ict);
+          return;
+        }
 
       /* reset ict->ict_context->destination only if
          it is not yet set. */
       if (ict->ict_context->destination == NULL)
-	{
-	  osip_message_get_route (ack, 0, &route);
-	  if (route != NULL && route->url != NULL)
-	    {
-	      osip_uri_param_t *lr_param;
-	      osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
-	      if (lr_param == NULL)
-		{
-		  /* using uncompliant proxy: destination is the request-uri */
-		  route = NULL;
-		}
-	    }
+        {
+          osip_message_get_route (ack, 0, &route);
+          if (route != NULL && route->url != NULL)
+            {
+              osip_uri_param_t *lr_param;
 
-	  if (route != NULL)
-	    {
-	      int port = 5060;
+              osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
+              if (lr_param == NULL)
+                {
+                  /* using uncompliant proxy: destination is the request-uri */
+                  route = NULL;
+                }
+            }
 
-	      if (route->url->port != NULL)
-		port = osip_atoi (route->url->port);
-	      osip_ict_set_destination (ict->ict_context,
-					osip_strdup (route->url->host), port);
-	    }
-	  else
-	    {
-	      int port = 5060;
+          if (route != NULL)
+            {
+              int port = 5060;
 
-	      if (ack->req_uri->port != NULL)
-		port = osip_atoi (ack->req_uri->port);
-	      osip_ict_set_destination (ict->ict_context,
-					osip_strdup (ack->req_uri->host),
-					port);
-	    }
-	}
+              if (route->url->port != NULL)
+                port = osip_atoi (route->url->port);
+              osip_ict_set_destination (ict->ict_context,
+                                        osip_strdup (route->url->host), port);
+          } else
+            {
+              int port = 5060;
+
+              if (ack->req_uri->port != NULL)
+                port = osip_atoi (ack->req_uri->port);
+              osip_ict_set_destination (ict->ict_context,
+                                        osip_strdup (ack->req_uri->host), port);
+            }
+        }
       i = osip->cb_send_message (ict, ack, ict->ict_context->destination,
-				 ict->ict_context->port, ict->out_socket);
+                                 ict->ict_context->port, ict->out_socket);
       if (i != 0)
-	{
-	  ict_handle_transport_error (ict, i);
-	  return;
-	}
+        {
+          ict_handle_transport_error (ict, i);
+          return;
+        }
       if (MSG_IS_STATUS_3XX (evt->sip))
-	__osip_message_callback (OSIP_ICT_STATUS_3XX_RECEIVED, ict, evt->sip);
+        __osip_message_callback (OSIP_ICT_STATUS_3XX_RECEIVED, ict, evt->sip);
       else if (MSG_IS_STATUS_4XX (evt->sip))
-	__osip_message_callback (OSIP_ICT_STATUS_4XX_RECEIVED, ict, evt->sip);
+        __osip_message_callback (OSIP_ICT_STATUS_4XX_RECEIVED, ict, evt->sip);
       else if (MSG_IS_STATUS_5XX (evt->sip))
-	__osip_message_callback (OSIP_ICT_STATUS_5XX_RECEIVED, ict, evt->sip);
+        __osip_message_callback (OSIP_ICT_STATUS_5XX_RECEIVED, ict, evt->sip);
       else
-	__osip_message_callback (OSIP_ICT_STATUS_6XX_RECEIVED, ict, evt->sip);
+        __osip_message_callback (OSIP_ICT_STATUS_6XX_RECEIVED, ict, evt->sip);
 
       __osip_message_callback (OSIP_ICT_ACK_SENT, ict, evt->sip);
     }
@@ -426,7 +421,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
   osip_gettimeofday (&ict->ict_context->timer_d_start, NULL);
   add_gettimeofday (&ict->ict_context->timer_d_start,
-		    ict->ict_context->timer_d_length);
+                    ict->ict_context->timer_d_length);
   __osip_transaction_set_state (ict, ICT_COMPLETED);
 }
 
@@ -450,20 +445,18 @@ ict_retransmit_ack (osip_transaction_t * ict, osip_event_t * evt)
   /* we should make a new ACK and send it!!! */
   /* TODO */
 
-  __osip_message_callback (OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN, ict,
-			   evt->sip);
+  __osip_message_callback (OSIP_ICT_STATUS_3456XX_RECEIVED_AGAIN, ict, evt->sip);
 
   osip_message_free (evt->sip);
 
   i = osip->cb_send_message (ict, ict->ack, ict->ict_context->destination,
-			     ict->ict_context->port, ict->out_socket);
+                             ict->ict_context->port, ict->out_socket);
 
   if (i == 0)
     {
       __osip_message_callback (OSIP_ICT_ACK_SENT_AGAIN, ict, ict->ack);
       __osip_transaction_set_state (ict, ICT_COMPLETED);
-    }
-  else
+  } else
     {
       ict_handle_transport_error (ict, i);
     }

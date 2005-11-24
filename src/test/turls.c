@@ -46,12 +46,12 @@ main (int argc, char **argv)
   if (urls_file == NULL)
     {
       fprintf (stdout, "Failed to open %s file.\nUsage: turls urls.txt\n",
-	       argv[1]);
+               argv[1]);
       exit (0);
     }
 
   a_url = (char *) osip_malloc (200);
-  res = fgets (a_url, 200, urls_file);	/* lines are under 200 */
+  res = fgets (a_url, 200, urls_file);  /* lines are under 200 */
   while (res != NULL)
     {
       int errcode;
@@ -60,27 +60,26 @@ main (int argc, char **argv)
       osip_strncpy (a_url + strlen (a_url) - 1, "\0", 1);
 
       if (0 != strncmp (a_url, "#", 1))
-	{
-	  /* allocate & init url */
-	  osip_uri_init (&url);
-	  printf ("=================================================\n");
-	  printf ("URL TO PARSE: |%s|\n", a_url);
-	  errcode = osip_uri_parse (url, a_url);
-	  if (errcode != -1)
-	    {
-	      if (osip_uri_to_str (url, &dest) != -1)
-		{
-		  printf ("result:       |%s|\n", dest);
-		  osip_uri_test_accessor_api (url);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad url format: %s\n", a_url);
-	  osip_uri_free (url);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_url, 200, urls_file);	/* lines are under 200 */
+        {
+          /* allocate & init url */
+          osip_uri_init (&url);
+          printf ("=================================================\n");
+          printf ("URL TO PARSE: |%s|\n", a_url);
+          errcode = osip_uri_parse (url, a_url);
+          if (errcode != -1)
+            {
+              if (osip_uri_to_str (url, &dest) != -1)
+                {
+                  printf ("result:       |%s|\n", dest);
+                  osip_uri_test_accessor_api (url);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad url format: %s\n", a_url);
+          osip_uri_free (url);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_url, 200, urls_file);      /* lines are under 200 */
     }
   osip_free (a_url);
   return 0;
@@ -120,12 +119,12 @@ osip_uri_test_accessor_api (osip_uri_t * url)
 
     while (!osip_list_eol (url->url_params, pos))
       {
-	u_param = (osip_uri_param_t *) osip_list_get (url->url_params, pos);
-	if (u_param->gvalue != NULL)
-	  fprintf (stdout, ";%s|=|%s|", u_param->gname, u_param->gvalue);
-	else
-	  fprintf (stdout, ";%s|", u_param->gname);
-	pos++;
+        u_param = (osip_uri_param_t *) osip_list_get (url->url_params, pos);
+        if (u_param->gvalue != NULL)
+          fprintf (stdout, ";%s|=|%s|", u_param->gname, u_param->gvalue);
+        else
+          fprintf (stdout, ";%s|", u_param->gname);
+        pos++;
       }
   }
 
@@ -137,13 +136,12 @@ osip_uri_test_accessor_api (osip_uri_t * url)
 
     while (!osip_list_eol (url->url_headers, pos))
       {
-	u_header =
-	  (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
-	if (pos == 0)
-	  fprintf (stdout, "?%s|=|%s|", u_header->gname, u_header->gvalue);
-	else
-	  fprintf (stdout, "&%s|=|%s|", u_header->gname, u_header->gvalue);
-	pos++;
+        u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+        if (pos == 0)
+          fprintf (stdout, "?%s|=|%s|", u_header->gname, u_header->gvalue);
+        else
+          fprintf (stdout, "&%s|=|%s|", u_header->gname, u_header->gvalue);
+        pos++;
       }
   }
   fprintf (stdout, "\n");

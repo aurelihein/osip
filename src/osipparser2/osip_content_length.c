@@ -27,8 +27,7 @@
 int
 osip_content_length_init (osip_content_length_t ** cl)
 {
-  *cl =
-    (osip_content_length_t *) osip_malloc (sizeof (osip_content_length_t));
+  *cl = (osip_content_length_t *) osip_malloc (sizeof (osip_content_length_t));
   if (*cl == NULL)
     return -1;
   (*cl)->value = NULL;
@@ -66,9 +65,10 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
 
 int
 osip_content_length_parse (osip_content_length_t * content_length,
-			   const char *hvalue)
+                           const char *hvalue)
 {
   size_t len;
+
   if (hvalue == NULL)
     return -1;
   len = strlen (hvalue);
@@ -115,7 +115,7 @@ osip_content_length_free (osip_content_length_t * content_length)
 
 int
 osip_content_length_clone (const osip_content_length_t * ctl,
-			   osip_content_length_t ** dest)
+                           osip_content_length_t ** dest)
 {
   int i;
   osip_content_length_t *cl;
@@ -128,7 +128,7 @@ osip_content_length_clone (const osip_content_length_t * ctl,
      if (ctl->value==NULL) return -1;
    */
   i = osip_content_length_init (&cl);
-  if (i == -1)			/* allocation failed */
+  if (i == -1)                  /* allocation failed */
     return -1;
   if (ctl->value != NULL)
     cl->value = osip_strdup (ctl->value);

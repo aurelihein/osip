@@ -38,8 +38,7 @@ __nist_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition =
-	(transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -53,8 +52,7 @@ __nist_load_fsm ()
 {
   transition_t *transition;
 
-  nist_fsm =
-    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  nist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   nist_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (nist_fsm->transitions);
 
@@ -144,107 +142,103 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
   int i;
   osip_t *osip = (osip_t *) nist->config;
 
-  if (nist->state == NIST_PRE_TRYING)	/* announce new REQUEST */
+  if (nist->state == NIST_PRE_TRYING)   /* announce new REQUEST */
     {
       /* Here we have ist->orig_request == NULL */
       nist->orig_request = evt->sip;
 
       if (MSG_IS_REGISTER (evt->sip))
-	__osip_message_callback (OSIP_NIST_REGISTER_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_REGISTER_RECEIVED, nist,
+                                 nist->orig_request);
       else if (MSG_IS_BYE (evt->sip))
-	__osip_message_callback (OSIP_NIST_BYE_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_BYE_RECEIVED, nist, nist->orig_request);
       else if (MSG_IS_OPTIONS (evt->sip))
-	__osip_message_callback (OSIP_NIST_OPTIONS_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_OPTIONS_RECEIVED, nist,
+                                 nist->orig_request);
       else if (MSG_IS_INFO (evt->sip))
-	__osip_message_callback (OSIP_NIST_INFO_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_INFO_RECEIVED, nist,
+                                 nist->orig_request);
       else if (MSG_IS_CANCEL (evt->sip))
-	__osip_message_callback (OSIP_NIST_CANCEL_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_CANCEL_RECEIVED, nist,
+                                 nist->orig_request);
       else if (MSG_IS_NOTIFY (evt->sip))
-	__osip_message_callback (OSIP_NIST_NOTIFY_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_NOTIFY_RECEIVED, nist,
+                                 nist->orig_request);
       else if (MSG_IS_SUBSCRIBE (evt->sip))
-	__osip_message_callback (OSIP_NIST_SUBSCRIBE_RECEIVED, nist,
-				 nist->orig_request);
+        __osip_message_callback (OSIP_NIST_SUBSCRIBE_RECEIVED, nist,
+                                 nist->orig_request);
       else
-	__osip_message_callback (OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, nist,
-				 nist->orig_request);
-    }
-  else				/* NIST_PROCEEDING or NIST_COMPLETED */
+        __osip_message_callback (OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, nist,
+                                 nist->orig_request);
+  } else                        /* NIST_PROCEEDING or NIST_COMPLETED */
     {
       /* delete retransmission */
       osip_message_free (evt->sip);
 
       __osip_message_callback (OSIP_NIST_REQUEST_RECEIVED_AGAIN, nist,
-			       nist->orig_request);
-      if (nist->last_response != NULL)	/* retransmit last response */
-	{
-	  osip_via_t *via;
+                               nist->orig_request);
+      if (nist->last_response != NULL)  /* retransmit last response */
+        {
+          osip_via_t *via;
 
-	  via = (osip_via_t *) osip_list_get (nist->last_response->vias, 0);
-	  if (via)
-	    {
-	      char *host;
-	      int port;
-	      osip_generic_param_t *maddr;
-	      osip_generic_param_t *received;
-	      osip_generic_param_t *rport;
-	      osip_via_param_get_byname (via, "maddr", &maddr);
-	      osip_via_param_get_byname (via, "received", &received);
-	      osip_via_param_get_byname (via, "rport", &rport);
-	      /* 1: user should not use the provided information
-	         (host and port) if they are using a reliable
-	         transport. Instead, they should use the already
-	         open socket attached to this transaction. */
-	      /* 2: check maddr and multicast usage */
-	      if (maddr != NULL)
-		host = maddr->gvalue;
-	      /* we should check if this is a multicast address and use
-	         set the "ttl" in this case. (this must be done in the
-	         UDP message (not at the SIP layer) */
-	      else if (received != NULL)
-		host = received->gvalue;
-	      else
-		host = via->host;
+          via = (osip_via_t *) osip_list_get (nist->last_response->vias, 0);
+          if (via)
+            {
+              char *host;
+              int port;
+              osip_generic_param_t *maddr;
+              osip_generic_param_t *received;
+              osip_generic_param_t *rport;
 
-	      if (rport == NULL || rport->gvalue == NULL)
-		{
-		  if (via->port != NULL)
-		    port = osip_atoi (via->port);
-		  else
-		    port = 5060;
-		}
-	      else
-		port = osip_atoi (rport->gvalue);
+              osip_via_param_get_byname (via, "maddr", &maddr);
+              osip_via_param_get_byname (via, "received", &received);
+              osip_via_param_get_byname (via, "rport", &rport);
+              /* 1: user should not use the provided information
+                 (host and port) if they are using a reliable
+                 transport. Instead, they should use the already
+                 open socket attached to this transaction. */
+              /* 2: check maddr and multicast usage */
+              if (maddr != NULL)
+                host = maddr->gvalue;
+              /* we should check if this is a multicast address and use
+                 set the "ttl" in this case. (this must be done in the
+                 UDP message (not at the SIP layer) */
+              else if (received != NULL)
+                host = received->gvalue;
+              else
+                host = via->host;
 
-	      i = osip->cb_send_message (nist, nist->last_response, host,
-					 port, nist->out_socket);
-	    }
-	  else
-	    i = -1;
-	  if (i != 0)
-	    {
-	      nist_handle_transport_error (nist, i);
-	      return;
-	    }
-	  else
-	    {
-	      if (MSG_IS_STATUS_1XX (nist->last_response))
-		__osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
-					 nist->last_response);
-	      else if (MSG_IS_STATUS_2XX (nist->last_response))
-		__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT_AGAIN,
-					 nist, nist->last_response);
-	      else
-		__osip_message_callback (OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
-					 nist, nist->last_response);
-	      return;
-	    }
-	}
+              if (rport == NULL || rport->gvalue == NULL)
+                {
+                  if (via->port != NULL)
+                    port = osip_atoi (via->port);
+                  else
+                    port = 5060;
+              } else
+                port = osip_atoi (rport->gvalue);
+
+              i = osip->cb_send_message (nist, nist->last_response, host,
+                                         port, nist->out_socket);
+          } else
+            i = -1;
+          if (i != 0)
+            {
+              nist_handle_transport_error (nist, i);
+              return;
+          } else
+            {
+              if (MSG_IS_STATUS_1XX (nist->last_response))
+                __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
+                                         nist->last_response);
+              else if (MSG_IS_STATUS_2XX (nist->last_response))
+                __osip_message_callback (OSIP_NIST_STATUS_2XX_SENT_AGAIN,
+                                         nist, nist->last_response);
+              else
+                __osip_message_callback (OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
+                                         nist, nist->last_response);
+              return;
+            }
+        }
       /* we are already in the proper state */
       return;
     }
@@ -274,6 +268,7 @@ nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
       osip_generic_param_t *maddr;
       osip_generic_param_t *received;
       osip_generic_param_t *rport;
+
       osip_via_param_get_byname (via, "maddr", &maddr);
       osip_via_param_get_byname (via, "received", &received);
       osip_via_param_get_byname (via, "rport", &rport);
@@ -283,37 +278,33 @@ nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
          open socket attached to this transaction. */
       /* 2: check maddr and multicast usage */
       if (maddr != NULL)
-	host = maddr->gvalue;
+        host = maddr->gvalue;
       /* we should check if this is a multicast address and use
          set the "ttl" in this case. (this must be done in the
          UDP message (not at the SIP layer) */
       else if (received != NULL)
-	host = received->gvalue;
+        host = received->gvalue;
       else
-	host = via->host;
+        host = via->host;
 
       if (rport == NULL || rport->gvalue == NULL)
-	{
-	  if (via->port != NULL)
-	    port = osip_atoi (via->port);
-	  else
-	    port = 5060;
-	}
-      else
-	port = osip_atoi (rport->gvalue);
+        {
+          if (via->port != NULL)
+            port = osip_atoi (via->port);
+          else
+            port = 5060;
+      } else
+        port = osip_atoi (rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
-				 port, nist->out_socket);
-    }
-  else
+                                 port, nist->out_socket);
+  } else
     i = -1;
   if (i != 0)
     {
       nist_handle_transport_error (nist, i);
       return;
-    }
-  else
-    __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
-			     nist->last_response);
+  } else
+    __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist, nist->last_response);
 
   __osip_transaction_set_state (nist, NIST_PROCEEDING);
 }
@@ -339,6 +330,7 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
       osip_generic_param_t *maddr;
       osip_generic_param_t *received;
       osip_generic_param_t *rport;
+
       osip_via_param_get_byname (via, "maddr", &maddr);
       osip_via_param_get_byname (via, "received", &received);
       osip_via_param_get_byname (via, "rport", &rport);
@@ -348,58 +340,55 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
          open socket attached to this transaction. */
       /* 2: check maddr and multicast usage */
       if (maddr != NULL)
-	host = maddr->gvalue;
+        host = maddr->gvalue;
       /* we should check if this is a multicast address and use
          set the "ttl" in this case. (this must be done in the
          UDP message (not at the SIP layer) */
       else if (received != NULL)
-	host = received->gvalue;
+        host = received->gvalue;
       else
-	host = via->host;
+        host = via->host;
 
       if (rport == NULL || rport->gvalue == NULL)
-	{
-	  if (via->port != NULL)
-	    port = osip_atoi (via->port);
-	  else
-	    port = 5060;
-	}
-      else
-	port = osip_atoi (rport->gvalue);
+        {
+          if (via->port != NULL)
+            port = osip_atoi (via->port);
+          else
+            port = 5060;
+      } else
+        port = osip_atoi (rport->gvalue);
       i = osip->cb_send_message (nist, nist->last_response, host,
-				 port, nist->out_socket);
-    }
-  else
+                                 port, nist->out_socket);
+  } else
     i = -1;
   if (i != 0)
     {
       nist_handle_transport_error (nist, i);
       return;
-    }
-  else
+  } else
     {
       if (EVT_IS_SND_STATUS_2XX (evt))
-	__osip_message_callback (OSIP_NIST_STATUS_2XX_SENT, nist,
-				 nist->last_response);
+        __osip_message_callback (OSIP_NIST_STATUS_2XX_SENT, nist,
+                                 nist->last_response);
       else if (MSG_IS_STATUS_3XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_3XX_SENT, nist,
-				 nist->last_response);
+        __osip_message_callback (OSIP_NIST_STATUS_3XX_SENT, nist,
+                                 nist->last_response);
       else if (MSG_IS_STATUS_4XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_4XX_SENT, nist,
-				 nist->last_response);
+        __osip_message_callback (OSIP_NIST_STATUS_4XX_SENT, nist,
+                                 nist->last_response);
       else if (MSG_IS_STATUS_5XX (nist->last_response))
-	__osip_message_callback (OSIP_NIST_STATUS_5XX_SENT, nist,
-				 nist->last_response);
+        __osip_message_callback (OSIP_NIST_STATUS_5XX_SENT, nist,
+                                 nist->last_response);
       else
-	__osip_message_callback (OSIP_NIST_STATUS_6XX_SENT, nist,
-				 nist->last_response);
+        __osip_message_callback (OSIP_NIST_STATUS_6XX_SENT, nist,
+                                 nist->last_response);
     }
 
-  if (nist->state != NIST_COMPLETED)	/* start J timer */
+  if (nist->state != NIST_COMPLETED)    /* start J timer */
     {
       osip_gettimeofday (&nist->nist_context->timer_j_start, NULL);
       add_gettimeofday (&nist->nist_context->timer_j_start,
-			nist->nist_context->timer_j_length);
+                        nist->nist_context->timer_j_length);
     }
 
   __osip_transaction_set_state (nist, NIST_COMPLETED);

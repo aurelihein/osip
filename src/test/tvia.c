@@ -43,13 +43,12 @@ main (int argc, char **argv)
   vias_file = fopen (argv[1], "r");
   if (vias_file == NULL)
     {
-      fprintf (stdout, "Failed to open %s file.\nUsage: tvia vias.txt\n",
-	       argv[1]);
+      fprintf (stdout, "Failed to open %s file.\nUsage: tvia vias.txt\n", argv[1]);
       exit (0);
     }
 
   a_via = (char *) osip_malloc (200);
-  res = fgets (a_via, 200, vias_file);	/* lines are under 200 */
+  res = fgets (a_via, 200, vias_file);  /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,26 +58,25 @@ main (int argc, char **argv)
       osip_strncpy (a_via + strlen (a_via) - 1, "\0", 1);
 
       if (0 != strncmp (a_via, "#", 1))
-	{
-	  /* allocate & init via */
-	  osip_via_init (&via);
-	  printf ("=================================================\n");
-	  printf ("VIA TO PARSE: |%s|\n", a_via);
-	  errcode = osip_via_parse (via, a_via);
-	  if (errcode != -1)
-	    {
-	      if (osip_via_to_str (via, &dest) != -1)
-		{
-		  printf ("result:       |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad via format: %s\n", a_via);
-	  osip_via_free (via);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_via, 200, vias_file);	/* lines are under 200 */
+        {
+          /* allocate & init via */
+          osip_via_init (&via);
+          printf ("=================================================\n");
+          printf ("VIA TO PARSE: |%s|\n", a_via);
+          errcode = osip_via_parse (via, a_via);
+          if (errcode != -1)
+            {
+              if (osip_via_to_str (via, &dest) != -1)
+                {
+                  printf ("result:       |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad via format: %s\n", a_via);
+          osip_via_free (via);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_via, 200, vias_file);      /* lines are under 200 */
     }
   osip_free (a_via);
 

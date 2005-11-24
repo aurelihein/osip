@@ -39,8 +39,8 @@ typedef struct _ua_context_t
 
   /* only one audio port is allowed at this time.. In the case, we
      receive more than one m audio line, this may fail... */
-  char *m_audio_port;		/* audio port to be used for this session */
-  char *m_video_port;		/* audio port to be used for this session */
+  char *m_audio_port;           /* audio port to be used for this session */
+  char *m_video_port;           /* audio port to be used for this session */
 
 }
 ua_context_t;
@@ -51,8 +51,8 @@ osip_negotiation_t *osip_negotiation = NULL;
 
 static int
 ua_sdp_accept_audio_codec (osip_negotiation_ctx_t * context,
-			   char *port, char *number_of_port,
-			   int audio_qty, char *payload)
+                           char *port, char *number_of_port,
+                           int audio_qty, char *payload)
 {
   /* this may come from buggy implementation who                 */
   /* propose several sdp lines while they only want 1 connection */
@@ -67,8 +67,8 @@ ua_sdp_accept_audio_codec (osip_negotiation_ctx_t * context,
 
 static int
 ua_sdp_accept_video_codec (osip_negotiation_ctx_t * context,
-			   char *port, char *number_of_port,
-			   int video_qty, char *payload)
+                           char *port, char *number_of_port,
+                           int video_qty, char *payload)
 {
   /* this may come from buggy implementation who                 */
   /* propose several sdp lines while they only want 1 connection */
@@ -82,8 +82,8 @@ ua_sdp_accept_video_codec (osip_negotiation_ctx_t * context,
 
 static int
 ua_sdp_accept_other_codec (osip_negotiation_ctx_t * context,
-			   char *type, char *port,
-			   char *number_of_port, char *payload)
+                           char *type, char *port,
+                           char *number_of_port, char *payload)
 {
   /* ... */
   return -1;
@@ -95,7 +95,7 @@ ua_sdp_get_video_port (osip_negotiation_ctx_t * context, int pos_media)
   ua_context_t *ua_con;
 
   ua_con = (ua_context_t *) context->mycontext;
-  return osip_strdup (ua_con->m_video_port);	/* this port should not be static ... */
+  return osip_strdup (ua_con->m_video_port);    /* this port should not be static ... */
   /* also, this method should be called more than once... */
   /* If there is more than one audio line, this may fail :( */
 }
@@ -106,7 +106,7 @@ ua_sdp_get_audio_port (osip_negotiation_ctx_t * context, int pos_media)
   ua_context_t *ua_con;
 
   ua_con = (ua_context_t *) context->mycontext;
-  return osip_strdup (ua_con->m_audio_port);	/* this port should not be static ... */
+  return osip_strdup (ua_con->m_audio_port);    /* this port should not be static ... */
   /* also, this method should be called more than once... */
   /* If there is more than one audio line, this may fail :( */
 }
@@ -117,7 +117,7 @@ main (int argc, char **argv)
   int success = 1;
 
   int i;
-  int verbose = 0;		/* 0: verbose, 1 (or nothing: not verbose) */
+  int verbose = 0;              /* 0: verbose, 1 (or nothing: not verbose) */
   char *marker;
   FILE *torture_file;
   char *tmp;
@@ -128,15 +128,15 @@ main (int argc, char **argv)
   if (argc > 3)
     {
       if (0 == strncmp (argv[3], "-v", 2))
-	verbose = 1;
+        verbose = 1;
     }
 
   torture_file = fopen (argv[1], "r");
   if (torture_file == NULL)
     {
       fprintf (stderr,
-	       "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
-	       argv[0]);
+               "Failed to open \"torture_sdps\" file.\nUsage: %s torture_file [-v]\n",
+               argv[0]);
       exit (1);
     }
 
@@ -153,85 +153,81 @@ main (int argc, char **argv)
       exit (-1);
     }
   osip_negotiation_set_o_username (osip_negotiation, osip_strdup ("userX"));
-  osip_negotiation_set_o_session_id (osip_negotiation,
-				     osip_strdup ("20000001"));
+  osip_negotiation_set_o_session_id (osip_negotiation, osip_strdup ("20000001"));
   osip_negotiation_set_o_session_version (osip_negotiation,
-					  osip_strdup ("20000001"));
+                                          osip_strdup ("20000001"));
   osip_negotiation_set_o_nettype (osip_negotiation, osip_strdup ("IN"));
   osip_negotiation_set_o_addrtype (osip_negotiation, osip_strdup ("IP4"));
-  osip_negotiation_set_o_addr (osip_negotiation,
-			       osip_strdup ("192.168.1.114"));
+  osip_negotiation_set_o_addr (osip_negotiation, osip_strdup ("192.168.1.114"));
 
   osip_negotiation_set_c_nettype (osip_negotiation, osip_strdup ("IN"));
   osip_negotiation_set_c_addrtype (osip_negotiation, osip_strdup ("IP4"));
-  osip_negotiation_set_c_addr (osip_negotiation,
-			       osip_strdup ("192.168.1.114"));
+  osip_negotiation_set_c_addr (osip_negotiation, osip_strdup ("192.168.1.114"));
 
   /* ALL CODEC MUST SHARE THE SAME "C=" line and proto as the media 
      will appear on the same "m" line... */
   osip_negotiation_add_support_for_audio_codec (osip_negotiation,
-						osip_strdup ("0"),
-						osip_strdup ("2"),
-						/* NULL, */
-						osip_strdup ("RTP/AVP"),
-						NULL, NULL, NULL,
-						NULL, NULL,
-						osip_strdup ("0 PCMU/8000"));
+                                                osip_strdup ("0"),
+                                                osip_strdup ("2"),
+                                                /* NULL, */
+                                                osip_strdup ("RTP/AVP"),
+                                                NULL, NULL, NULL,
+                                                NULL, NULL,
+                                                osip_strdup ("0 PCMU/8000"));
   osip_negotiation_add_support_for_audio_codec (osip_negotiation,
-						osip_strdup ("3"), NULL,
-						osip_strdup ("RTP/AVP"), NULL,
-						NULL, NULL, NULL, NULL,
-						osip_strdup ("3 GSM/8000"));
+                                                osip_strdup ("3"), NULL,
+                                                osip_strdup ("RTP/AVP"), NULL,
+                                                NULL, NULL, NULL, NULL,
+                                                osip_strdup ("3 GSM/8000"));
   osip_negotiation_add_support_for_audio_codec (osip_negotiation,
-						osip_strdup ("7"), NULL,
-						osip_strdup ("RTP/AVP"), NULL,
-						NULL, NULL, NULL, NULL,
-						osip_strdup ("7 LPC/8000"));
+                                                osip_strdup ("7"), NULL,
+                                                osip_strdup ("RTP/AVP"), NULL,
+                                                NULL, NULL, NULL, NULL,
+                                                osip_strdup ("7 LPC/8000"));
   osip_negotiation_add_support_for_audio_codec (osip_negotiation,
-						osip_strdup ("8"), NULL,
-						osip_strdup ("RTP/AVP"), NULL,
-						NULL, NULL, NULL, NULL,
-						osip_strdup ("8 PCMA/8000"));
+                                                osip_strdup ("8"), NULL,
+                                                osip_strdup ("RTP/AVP"), NULL,
+                                                NULL, NULL, NULL, NULL,
+                                                osip_strdup ("8 PCMA/8000"));
   osip_negotiation_add_support_for_video_codec (osip_negotiation,
-						osip_strdup ("31"), NULL,
-						osip_strdup ("RTP/AVP"), NULL,
-						NULL, NULL, NULL, NULL,
-						osip_strdup
-						("31 H261/90000"));
+                                                osip_strdup ("31"), NULL,
+                                                osip_strdup ("RTP/AVP"), NULL,
+                                                NULL, NULL, NULL, NULL,
+                                                osip_strdup ("31 H261/90000"));
 
   osip_negotiation_set_fcn_accept_audio_codec (osip_negotiation,
-					       &ua_sdp_accept_audio_codec);
+                                               &ua_sdp_accept_audio_codec);
   osip_negotiation_set_fcn_accept_video_codec (osip_negotiation,
-					       &ua_sdp_accept_video_codec);
+                                               &ua_sdp_accept_video_codec);
   osip_negotiation_set_fcn_accept_other_codec (osip_negotiation,
-					       &ua_sdp_accept_other_codec);
+                                               &ua_sdp_accept_other_codec);
   osip_negotiation_set_fcn_get_audio_port (osip_negotiation,
-					   &ua_sdp_get_audio_port);
+                                           &ua_sdp_get_audio_port);
   osip_negotiation_set_fcn_get_video_port (osip_negotiation,
-					   &ua_sdp_get_video_port);
+                                           &ua_sdp_get_video_port);
 
   i = 0;
   tmp = (char *) osip_malloc (500);
-  marker = fgets (tmp, 500, torture_file);	/* lines are under 500 */
+  marker = fgets (tmp, 500, torture_file);      /* lines are under 500 */
   while (marker != NULL && i < atoi (argv[2]))
     {
       if (0 == strncmp (tmp, "|", 1))
-	i++;
+        i++;
       marker = fgets (tmp, 500, torture_file);
     }
 
   num_test++;
 
-  msg = (char *) osip_malloc (10000);	/* msg are under 10000 */
+  msg = (char *) osip_malloc (10000);   /* msg are under 10000 */
   tmpmsg = msg;
 
   if (marker == NULL)
     {
       fprintf (stderr,
-	       "Error! The message's number you specified does not exist\n");
+               "Error! The message's number you specified does not exist\n");
       fclose (torture_file);
       osip_free (msg);
-      exit (1);			/* end of file detected! */
+      exit (1);                 /* end of file detected! */
     }
   /* this part reads an entire message, separator is "|" */
   /* (it is unlinkely that it will appear in messages!) */
@@ -249,11 +245,10 @@ main (int argc, char **argv)
       fprintf (stdout, "%s", msg);
 
       if (0 == test_sdp_message (msg, verbose))
-	fprintf (stdout, "test %s : ============================ OK\n",
-		 argv[2]);
+        fprintf (stdout, "test %s : ============================ OK\n", argv[2]);
       else
-	fprintf (stdout, "test %s : ============================ FAILED\n",
-		 argv[2]);
+        fprintf (stdout, "test %s : ============================ FAILED\n",
+                 argv[2]);
     }
 
   osip_free (msg);
@@ -278,7 +273,7 @@ test_sdp_message (char *msg, int verbose)
   if (sdp_message_parse (sdp, msg) != 0)
     {
       if (verbose)
-	fprintf (stdout, "ERROR: failed while parsing!\n");
+        fprintf (stdout, "ERROR: failed while parsing!\n");
       sdp_message_free (sdp);
       return 2;
     }
@@ -289,7 +284,7 @@ test_sdp_message (char *msg, int verbose)
   if (i == -1)
     {
       if (verbose)
-	fprintf (stdout, "ERROR: failed while printing message!\n");
+        fprintf (stdout, "ERROR: failed while printing message!\n");
       sdp_message_free (sdp);
       return 3;
     }
@@ -299,12 +294,12 @@ test_sdp_message (char *msg, int verbose)
   if (strlen (result) != strlen (msg))
     {
       if (verbose)
-	fprintf (stdout, "length differ from original message!\n");
+        fprintf (stdout, "length differ from original message!\n");
     }
   if (0 == strncmp (result, msg, strlen (result)))
     {
       if (verbose)
-	fprintf (stdout, "result equals msg!!\n");
+        fprintf (stdout, "result equals msg!!\n");
     }
   osip_free (result);
 
@@ -318,24 +313,24 @@ test_sdp_message (char *msg, int verbose)
     i = osip_negotiation_ctx_set_mycontext (context, (void *) ua_context);
 
     osip_negotiation_sdp_build_offer (osip_negotiation,
-				      context, &sdp2,
-				      ua_context->m_audio_port,
-				      ua_context->m_video_port);
+                                      context, &sdp2,
+                                      ua_context->m_audio_port,
+                                      ua_context->m_video_port);
     if (i != 0)
       {
-	sdp_message_free (sdp2);
-	if (verbose)
-	  fprintf (stdout, "Error: Cannot build offer\n");
-	return -1;
+        sdp_message_free (sdp2);
+        if (verbose)
+          fprintf (stdout, "Error: Cannot build offer\n");
+        return -1;
       }
 
     i = sdp_message_to_str (sdp2, &result);
     if (i != 0)
       {
-	sdp_message_free (sdp2);
-	if (verbose)
-	  fprintf (stdout, "Error: Cannot print offer\n");
-	return -1;
+        sdp_message_free (sdp2);
+        if (verbose)
+          fprintf (stdout, "Error: Cannot print offer\n");
+        return -1;
       }
 
     osip_free (result);
@@ -344,10 +339,10 @@ test_sdp_message (char *msg, int verbose)
     i = sdp_message_to_str (sdp2, &result);
     if (i != 0)
       {
-	sdp_message_free (sdp2);
-	if (verbose)
-	  fprintf (stdout, "Error: Cannot put offer on hold\n");
-	return -1;
+        sdp_message_free (sdp2);
+        if (verbose)
+          fprintf (stdout, "Error: Cannot put offer on hold\n");
+        return -1;
       }
 
     if (verbose)
@@ -358,44 +353,43 @@ test_sdp_message (char *msg, int verbose)
     i = osip_negotiation_ctx_set_remote_sdp (context, sdp);
     if (i != 0)
       {
-	if (verbose)
-	  fprintf (stdout,
-		   "Initialisation of context failed. Could not negociate\n");
-	return -1;
+        if (verbose)
+          fprintf (stdout,
+                   "Initialisation of context failed. Could not negociate\n");
+        return -1;
       }
 
     {
       int success = 4;
+
       if (verbose)
-	fprintf (stdout, "Trying to execute a SIP negotiation:\n");
-      i =
-	osip_negotiation_ctx_execute_negotiation (osip_negotiation, context);
+        fprintf (stdout, "Trying to execute a SIP negotiation:\n");
+      i = osip_negotiation_ctx_execute_negotiation (osip_negotiation, context);
       if (verbose)
-	fprintf (stdout, "return code: %i\n", i);
+        fprintf (stdout, "return code: %i\n", i);
       if (i == 200)
-	{
-	  success = 0;
-	  dest = osip_negotiation_ctx_get_local_sdp (context);
-	  if (verbose)
-	    fprintf (stdout, "SDP answer:\n");
-	  i = sdp_message_to_str (dest, &result);
-	  if (verbose)
-	    {
-	      if (i != 0)
-		fprintf (stdout,
-			 "Error found in SDP answer while printing\n");
-	      else
-		fprintf (stdout, "%s\n", result);
-	    }
-	  osip_free (result);
-	}
+        {
+          success = 0;
+          dest = osip_negotiation_ctx_get_local_sdp (context);
+          if (verbose)
+            fprintf (stdout, "SDP answer:\n");
+          i = sdp_message_to_str (dest, &result);
+          if (verbose)
+            {
+              if (i != 0)
+                fprintf (stdout, "Error found in SDP answer while printing\n");
+              else
+                fprintf (stdout, "%s\n", result);
+            }
+          osip_free (result);
+        }
       osip_negotiation_ctx_free (context);
       return success;
     }
   }
   sdp_message_free (sdp);
 
-  return 4;			/* negotiation failed */
+  return 4;                     /* negotiation failed */
 }
 
 int
@@ -418,43 +412,43 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
   if (verbose)
     {
       if (sdp_message_v_version_get (sdp))
-	printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
+        printf ("v_version:      |%s|\n", sdp_message_v_version_get (sdp));
       if (sdp_message_o_username_get (sdp))
-	printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
+        printf ("o_originator:   |%s|", sdp_message_o_username_get (sdp));
       if (sdp_message_o_sess_id_get (sdp))
-	printf (" |%s|", sdp_message_o_sess_id_get (sdp));
+        printf (" |%s|", sdp_message_o_sess_id_get (sdp));
       if (sdp_message_o_sess_version_get (sdp) != NULL)
-	printf (" |%s|", sdp_message_o_sess_version_get (sdp));
+        printf (" |%s|", sdp_message_o_sess_version_get (sdp));
       if (sdp_message_o_nettype_get (sdp))
-	printf (" |%s|", sdp_message_o_nettype_get (sdp));
+        printf (" |%s|", sdp_message_o_nettype_get (sdp));
       if (sdp_message_o_addrtype_get (sdp))
-	printf (" |%s|", sdp_message_o_addrtype_get (sdp));
+        printf (" |%s|", sdp_message_o_addrtype_get (sdp));
       if (sdp_message_o_addr_get (sdp))
-	printf (" |%s|\n", sdp_message_o_addr_get (sdp));
+        printf (" |%s|\n", sdp_message_o_addr_get (sdp));
       if (sdp_message_s_name_get (sdp))
-	printf ("s_name:         |%s|\n", sdp_message_s_name_get (sdp));
+        printf ("s_name:         |%s|\n", sdp_message_s_name_get (sdp));
       if (sdp_message_i_info_get (sdp, -1))
-	printf ("i_info:         |%s|\n", sdp_message_i_info_get (sdp, -1));
+        printf ("i_info:         |%s|\n", sdp_message_i_info_get (sdp, -1));
       if (sdp_message_u_uri_get (sdp))
-	printf ("u_uri:          |%s|\n", sdp_message_u_uri_get (sdp));
+        printf ("u_uri:          |%s|\n", sdp_message_u_uri_get (sdp));
 
       i = 0;
       do
-	{
-	  tmp = sdp_e_email_get (sdp, i);
-	  if (tmp != NULL)
-	    printf ("e_email:        |%s|\n", tmp);
-	  i++;
-	}
+        {
+          tmp = sdp_e_email_get (sdp, i);
+          if (tmp != NULL)
+            printf ("e_email:        |%s|\n", tmp);
+          i++;
+        }
       while (tmp != NULL);
       i = 0;
       do
-	{
-	  tmp = sdp_message_p_phone_get (sdp, i);
-	  if (tmp != NULL)
-	    printf ("p_phone:        |%s|\n", tmp);
-	  i++;
-	}
+        {
+          tmp = sdp_message_p_phone_get (sdp, i);
+          if (tmp != NULL)
+            printf ("p_phone:        |%s|\n", tmp);
+          i++;
+        }
       while (tmp != NULL);
 
       k = 0;
@@ -464,198 +458,197 @@ test_accessor_get_api (sdp_message_t * sdp, int verbose)
       tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, -1, k);
       tmp5 = sdp_message_c_addr_multicast_int_get (sdp, -1, k);
       if (tmp != NULL && tmp4 != NULL && tmp5 != NULL)
-	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-		tmp, tmp2, tmp3, tmp4, tmp5);
+        printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+                tmp, tmp2, tmp3, tmp4, tmp5);
       else if (tmp != NULL && tmp4 != NULL)
-	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-		tmp, tmp2, tmp3, tmp4, "(null)");
+        printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+                tmp, tmp2, tmp3, tmp4, "(null)");
       else if (tmp != NULL && tmp5 != NULL)
-	printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-		tmp, tmp2, tmp3, "(null)", tmp5);
+        printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+                tmp, tmp2, tmp3, "(null)", tmp5);
       k = 0;
       do
-	{
-	  tmp = sdp_message_b_bwtype_get (sdp, -1, k);
-	  tmp2 = sdp_message_b_bandwidth_get (sdp, -1, k);
-	  if (tmp != NULL && tmp2 != NULL)
-	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
-	  else if (tmp != NULL)
-	    printf ("b_bandwidth:    |%s|:|%s|\n", tmp, "(null)");
-	  k++;
-	}
+        {
+          tmp = sdp_message_b_bwtype_get (sdp, -1, k);
+          tmp2 = sdp_message_b_bandwidth_get (sdp, -1, k);
+          if (tmp != NULL && tmp2 != NULL)
+            printf ("b_bandwidth:    |%s|:|%s|\n", tmp, tmp2);
+          else if (tmp != NULL)
+            printf ("b_bandwidth:    |%s|:|%s|\n", tmp, "(null)");
+          k++;
+        }
       while (tmp != NULL);
 
       k = 0;
       do
-	{
-	  tmp = sdp_message_t_start_time_get (sdp, k);
-	  tmp2 = sdp_message_t_stop_time_get (sdp, k);
-	  if (tmp != NULL && tmp2 != NULL)
-	    printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
-	  else if (tmp != NULL)
-	    printf ("t_descr_time:   |%s| |%s|\n", tmp, "(null)");
-	  i = 0;
-	  do
-	    {
-	      tmp2 = sdp_message_r_repeat_get (sdp, k, i);
-	      i++;
-	      if (tmp2 != NULL)
-		printf ("r_repeat:    |%s|\n", tmp2);
-	    }
-	  while (tmp2 != NULL);
-	  k++;
-	}
+        {
+          tmp = sdp_message_t_start_time_get (sdp, k);
+          tmp2 = sdp_message_t_stop_time_get (sdp, k);
+          if (tmp != NULL && tmp2 != NULL)
+            printf ("t_descr_time:   |%s| |%s|\n", tmp, tmp2);
+          else if (tmp != NULL)
+            printf ("t_descr_time:   |%s| |%s|\n", tmp, "(null)");
+          i = 0;
+          do
+            {
+              tmp2 = sdp_message_r_repeat_get (sdp, k, i);
+              i++;
+              if (tmp2 != NULL)
+                printf ("r_repeat:    |%s|\n", tmp2);
+            }
+          while (tmp2 != NULL);
+          k++;
+        }
       while (tmp != NULL);
 
       /* TODO r */
 
       if (sdp_message_z_adjustments_get (sdp) != NULL)
-	printf ("z_adjustments:  |%s|\n",
-		sdp_message_z_adjustments_get (sdp));
+        printf ("z_adjustments:  |%s|\n", sdp_message_z_adjustments_get (sdp));
 
       tmp = sdp_message_k_keytype_get (sdp, -1);
       tmp2 = sdp_message_k_keydata_get (sdp, -1);
       if (tmp != NULL && tmp2 != NULL)
-	printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
+        printf ("k_key:          |%s|:|%s|\n", tmp, tmp2);
       else if (tmp != NULL)
-	printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
+        printf ("k_key:          |%s|:|%s|\n", tmp, "(null)");
 
       k = 0;
       do
-	{
-	  tmp = sdp_message_a_att_field_get (sdp, -1, k);
-	  tmp2 = sdp_message_a_att_value_get (sdp, -1, k);
-	  if (tmp != NULL && tmp2 != NULL)
-	    printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
-	  if (tmp != NULL)
-	    printf ("a_attribute:    |%s|:|%s|\n", tmp, "(null)");
-	  k++;
-	}
+        {
+          tmp = sdp_message_a_att_field_get (sdp, -1, k);
+          tmp2 = sdp_message_a_att_value_get (sdp, -1, k);
+          if (tmp != NULL && tmp2 != NULL)
+            printf ("a_attribute:    |%s|:|%s|\n", tmp, tmp2);
+          if (tmp != NULL)
+            printf ("a_attribute:    |%s|:|%s|\n", tmp, "(null)");
+          k++;
+        }
       while (tmp != NULL);
 
       i = 0;
       while (!sdp_message_endof_media (sdp, i))
-	{
+        {
 
-	  tmp = sdp_message_m_media_get (sdp, i);
-	  tmp2 = sdp_message_m_port_get (sdp, i);
-	  tmp3 = sdp_message_m_number_of_port_get (sdp, i);
-	  tmp4 = sdp_message_m_proto_get (sdp, i);
-	  if (tmp != NULL)
-	    printf ("m_media:        |%s|", tmp);
-	  else
-	    printf ("m_media:        |%s|", "(null)");
-	  if (tmp2 != NULL)
-	    printf (" |%s|", tmp2);
-	  else
-	    printf (" |%s|", "(null)");
-	  if (tmp3 != NULL)
-	    printf (" |%s|", tmp3);
-	  else
-	    printf (" |%s|", "(null)");
-	  if (tmp4 != NULL)
-	    printf (" |%s|", tmp4);
-	  else
-	    printf (" |%s|", "(null)");
-	  k = 0;
-	  do
-	    {
-	      tmp = sdp_message_m_payload_get (sdp, i, k);
-	      if (tmp != NULL)
-		printf (" |%s|", tmp);
-	      k++;
-	    }
-	  while (tmp != NULL);
-	  printf ("\n");
-	  k = 0;
-	  do
-	    {
-	      tmp = sdp_message_c_nettype_get (sdp, i, k);
-	      tmp2 = sdp_message_c_addrtype_get (sdp, i, k);
-	      tmp3 = sdp_message_c_addr_get (sdp, i, k);
-	      tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, i, k);
-	      tmp5 = sdp_message_c_addr_multicast_int_get (sdp, i, k);
-	      if (tmp != NULL)
-		printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
-			tmp, tmp2, tmp3, tmp4, tmp5);
-	      else
-		printf ("c_connection:   |%s|", "(null)");
-	      if (tmp2 != NULL)
-		printf (" |%s|", tmp2);
-	      else
-		printf (" |%s|", "(null)");
-	      if (tmp3 != NULL)
-		printf (" |%s|", tmp3);
-	      else
-		printf (" |%s|", "(null)");
-	      if (tmp4 != NULL)
-		printf (" |%s|", tmp4);
-	      else
-		printf (" |%s|", "(null)");
-	      if (tmp5 != NULL)
-		printf (" |%s|", tmp5);
-	      else
-		printf (" |%s|", "(null)");
-	      printf ("\n");
+          tmp = sdp_message_m_media_get (sdp, i);
+          tmp2 = sdp_message_m_port_get (sdp, i);
+          tmp3 = sdp_message_m_number_of_port_get (sdp, i);
+          tmp4 = sdp_message_m_proto_get (sdp, i);
+          if (tmp != NULL)
+            printf ("m_media:        |%s|", tmp);
+          else
+            printf ("m_media:        |%s|", "(null)");
+          if (tmp2 != NULL)
+            printf (" |%s|", tmp2);
+          else
+            printf (" |%s|", "(null)");
+          if (tmp3 != NULL)
+            printf (" |%s|", tmp3);
+          else
+            printf (" |%s|", "(null)");
+          if (tmp4 != NULL)
+            printf (" |%s|", tmp4);
+          else
+            printf (" |%s|", "(null)");
+          k = 0;
+          do
+            {
+              tmp = sdp_message_m_payload_get (sdp, i, k);
+              if (tmp != NULL)
+                printf (" |%s|", tmp);
+              k++;
+            }
+          while (tmp != NULL);
+          printf ("\n");
+          k = 0;
+          do
+            {
+              tmp = sdp_message_c_nettype_get (sdp, i, k);
+              tmp2 = sdp_message_c_addrtype_get (sdp, i, k);
+              tmp3 = sdp_message_c_addr_get (sdp, i, k);
+              tmp4 = sdp_message_c_addr_multicast_ttl_get (sdp, i, k);
+              tmp5 = sdp_message_c_addr_multicast_int_get (sdp, i, k);
+              if (tmp != NULL)
+                printf ("c_connection:   |%s| |%s| |%s| |%s| |%s|\n",
+                        tmp, tmp2, tmp3, tmp4, tmp5);
+              else
+                printf ("c_connection:   |%s|", "(null)");
+              if (tmp2 != NULL)
+                printf (" |%s|", tmp2);
+              else
+                printf (" |%s|", "(null)");
+              if (tmp3 != NULL)
+                printf (" |%s|", tmp3);
+              else
+                printf (" |%s|", "(null)");
+              if (tmp4 != NULL)
+                printf (" |%s|", tmp4);
+              else
+                printf (" |%s|", "(null)");
+              if (tmp5 != NULL)
+                printf (" |%s|", tmp5);
+              else
+                printf (" |%s|", "(null)");
+              printf ("\n");
 
-	      if (tmp != NULL)
-		k++;
-	    }
-	  while (tmp != NULL);
+              if (tmp != NULL)
+                k++;
+            }
+          while (tmp != NULL);
 
-	  k = 0;
-	  do
-	    {
-	      tmp = sdp_message_b_bwtype_get (sdp, i, k);
-	      tmp2 = sdp_message_b_bandwidth_get (sdp, i, k);
-	      if (tmp != NULL)
-		printf ("b_bandwidth:    |%s|", tmp);
-	      else
-		printf ("b_bandwidth:    |%s|", "(null)");
-	      if (tmp2 != NULL)
-		printf (":|%s|\n", tmp2);
-	      else
-		printf (":|%s|", "(null)");
-	      printf ("\n");
+          k = 0;
+          do
+            {
+              tmp = sdp_message_b_bwtype_get (sdp, i, k);
+              tmp2 = sdp_message_b_bandwidth_get (sdp, i, k);
+              if (tmp != NULL)
+                printf ("b_bandwidth:    |%s|", tmp);
+              else
+                printf ("b_bandwidth:    |%s|", "(null)");
+              if (tmp2 != NULL)
+                printf (":|%s|\n", tmp2);
+              else
+                printf (":|%s|", "(null)");
+              printf ("\n");
 
-	      k++;
-	    }
-	  while (tmp != NULL);
+              k++;
+            }
+          while (tmp != NULL);
 
 
-	  tmp = sdp_message_k_keytype_get (sdp, i);
-	  tmp2 = sdp_message_k_keydata_get (sdp, i);
-	  if (tmp != NULL)
-	    printf ("k_key:          |%s|", tmp);
-	  else
-	    printf ("k_key:          |%s|", "(null)");
-	  if (tmp2 != NULL)
-	    printf (":|%s|", tmp2);
-	  else
-	    printf (":|%s|", "(null)");
-	  printf ("\n");
+          tmp = sdp_message_k_keytype_get (sdp, i);
+          tmp2 = sdp_message_k_keydata_get (sdp, i);
+          if (tmp != NULL)
+            printf ("k_key:          |%s|", tmp);
+          else
+            printf ("k_key:          |%s|", "(null)");
+          if (tmp2 != NULL)
+            printf (":|%s|", tmp2);
+          else
+            printf (":|%s|", "(null)");
+          printf ("\n");
 
-	  k = 0;
-	  do
-	    {
-	      tmp = sdp_message_a_att_field_get (sdp, i, k);
-	      tmp2 = sdp_message_a_att_value_get (sdp, i, k);
-	      if (tmp != NULL)
-		printf ("a_attribute:    |%s|", tmp);
-	      else
-		printf ("a_attribute:    |%s|", "(null)");
-	      if (tmp2 != NULL)
-		printf (":|%s|", tmp2);
-	      else
-		printf (":|%s|", "(null)");
-	      printf ("\n");
+          k = 0;
+          do
+            {
+              tmp = sdp_message_a_att_field_get (sdp, i, k);
+              tmp2 = sdp_message_a_att_value_get (sdp, i, k);
+              if (tmp != NULL)
+                printf ("a_attribute:    |%s|", tmp);
+              else
+                printf ("a_attribute:    |%s|", "(null)");
+              if (tmp2 != NULL)
+                printf (":|%s|", tmp2);
+              else
+                printf (":|%s|", "(null)");
+              printf ("\n");
 
-	      k++;
-	    }
-	  while (tmp != NULL);
+              k++;
+            }
+          while (tmp != NULL);
 
-	  i++;
-	}
+          i++;
+        }
     }
 
   return 0;

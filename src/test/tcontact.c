@@ -43,13 +43,12 @@ main (int argc, char **argv)
   if (contacts_file == NULL)
     {
       fprintf (stdout,
-	       "Failed to open %s file.\nUsage: tcontact contacts.txt\n",
-	       argv[1]);
+               "Failed to open %s file.\nUsage: tcontact contacts.txt\n", argv[1]);
       exit (0);
     }
 
   a_contact = (char *) osip_malloc (200);
-  res = fgets (a_contact, 200, contacts_file);	/* lines are under 200 */
+  res = fgets (a_contact, 200, contacts_file);  /* lines are under 200 */
   while (res != NULL)
     {
 
@@ -59,26 +58,25 @@ main (int argc, char **argv)
       strncpy (a_contact + strlen (a_contact) - 1, "\0", 1);
 
       if (0 != strncmp (a_contact, "#", 1))
-	{
-	  /* allocate & init contact */
-	  osip_contact_init (&contact);
-	  printf ("=================================================\n");
-	  printf ("CONTACT TO PARSE: |%s|\n", a_contact);
-	  errcode = osip_contact_parse (contact, a_contact);
-	  if (errcode != -1)
-	    {
-	      if (osip_contact_to_str (contact, &dest) != -1)
-		{
-		  printf ("result:           |%s|\n", dest);
-		  osip_free (dest);
-		}
-	    }
-	  else
-	    printf ("Bad contact format: %s\n", a_contact);
-	  osip_contact_free (contact);
-	  printf ("=================================================\n");
-	}
-      res = fgets (a_contact, 200, contacts_file);	/* lines are under 200 */
+        {
+          /* allocate & init contact */
+          osip_contact_init (&contact);
+          printf ("=================================================\n");
+          printf ("CONTACT TO PARSE: |%s|\n", a_contact);
+          errcode = osip_contact_parse (contact, a_contact);
+          if (errcode != -1)
+            {
+              if (osip_contact_to_str (contact, &dest) != -1)
+                {
+                  printf ("result:           |%s|\n", dest);
+                  osip_free (dest);
+                }
+          } else
+            printf ("Bad contact format: %s\n", a_contact);
+          osip_contact_free (contact);
+          printf ("=================================================\n");
+        }
+      res = fgets (a_contact, 200, contacts_file);      /* lines are under 200 */
     }
   osip_free (a_contact);
   return 0;

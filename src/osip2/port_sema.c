@@ -51,6 +51,7 @@ void
 osip_mutex_destroy (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return;
   pthread_mutex_destroy (mut);
@@ -61,6 +62,7 @@ int
 osip_mutex_lock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   return pthread_mutex_lock (mut);
@@ -70,6 +72,7 @@ int
 osip_mutex_unlock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   return pthread_mutex_unlock (mut);
@@ -84,6 +87,7 @@ struct osip_sem *
 osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
   if (sem == NULL)
     return NULL;
 
@@ -97,6 +101,7 @@ int
 osip_sem_destroy (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return 0;
   sem_destroy (sem);
@@ -108,6 +113,7 @@ int
 osip_sem_post (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return sem_post (sem);
@@ -117,6 +123,7 @@ int
 osip_sem_wait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return sem_wait (sem);
@@ -126,6 +133,7 @@ int
 osip_sem_trywait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return sem_trywait (sem);
@@ -169,6 +177,7 @@ osip_sem_destroy (struct osip_sem *_sem)
 {
   union semun val;
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return 0;
   val.val = 0;
@@ -235,6 +244,7 @@ void
 osip_mutex_destroy (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return;
   semDelete (mut);
@@ -244,6 +254,7 @@ int
 osip_mutex_lock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   return semTake (mut, WAIT_FOREVER);
@@ -253,6 +264,7 @@ int
 osip_mutex_unlock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   return semGive (mut);
@@ -278,6 +290,7 @@ int
 osip_sem_destroy (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return 0;
   semDelete (sem->semId);
@@ -289,6 +302,7 @@ int
 osip_sem_post (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return semGive (sem->semId);
@@ -298,6 +312,7 @@ int
 osip_sem_wait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return semTake (sem->semId, WAIT_FOREVER);
@@ -307,6 +322,7 @@ int
 osip_sem_trywait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return semTake (sem->semId, NO_WAIT);
@@ -323,6 +339,7 @@ struct osip_mutex *
 osip_mutex_init ()
 {
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
+
   if (mut == NULL)
     return NULL;
   if (InitializeCriticalSectionAndSpinCount
@@ -336,6 +353,7 @@ void
 osip_mutex_destroy (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return;
   DeleteCriticalSection (&mut->h);
@@ -358,6 +376,7 @@ int
 osip_mutex_unlock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   LeaveCriticalSection (&mut->h);
@@ -369,6 +388,7 @@ struct osip_mutex *
 osip_mutex_init ()
 {
   osip_mutex_t *mut = (osip_mutex_t *) osip_malloc (sizeof (osip_mutex_t));
+
   if (mut == NULL)
     return NULL;
   if ((mut->h = CreateMutex (NULL, FALSE, NULL)) != NULL)
@@ -381,6 +401,7 @@ void
 osip_mutex_destroy (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return;
   CloseHandle (mut->h);
@@ -404,6 +425,7 @@ int
 osip_mutex_unlock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut == NULL)
     return -1;
   ReleaseMutex (mut->h);
@@ -415,6 +437,7 @@ struct osip_sem *
 osip_sem_init (unsigned int value)
 {
   osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
   if (sem == NULL)
     return NULL;
 
@@ -428,6 +451,7 @@ int
 osip_sem_destroy (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return 0;
   CloseHandle (sem->h);
@@ -439,6 +463,7 @@ int
 osip_sem_post (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   ReleaseSemaphore (sem->h, 1, NULL);
@@ -490,6 +515,7 @@ void
 osip_mutex_destroy (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut)
     {
       sm_delete (mut->id);
@@ -501,10 +527,11 @@ int
 osip_mutex_lock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut)
     {
       if (sm_p (mut->id, SM_WAIT, 0) != 0)
-	return (-1);
+        return (-1);
     }
   return (0);
 }
@@ -513,6 +540,7 @@ int
 osip_mutex_unlock (struct osip_mutex *_mut)
 {
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
   if (mut)
     {
       sm_v (mut->id);
@@ -536,6 +564,7 @@ int
 osip_sem_destroy (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return 0;
   sm_delete (sem->id);
@@ -547,6 +576,7 @@ int
 osip_sem_post (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   return (sm_v (sem->id));
@@ -556,6 +586,7 @@ int
 osip_sem_wait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   if (sm_p (sem->id, SM_WAIT, 0) != 0)
@@ -567,6 +598,7 @@ int
 osip_sem_trywait (struct osip_sem *_sem)
 {
   osip_sem_t *sem = (osip_sem_t *) _sem;
+
   if (sem == NULL)
     return -1;
   if (sm_p (sem->id, SM_NOWAIT, 0) != 0)

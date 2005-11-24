@@ -32,8 +32,7 @@
 /* OUTPUT: osip_message_t *sip | structure to save results. */
 /* returns -1 on error. */
 int
-osip_message_set_proxy_authorization (osip_message_t * sip,
-				      const char *hvalue)
+osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
 {
   osip_proxy_authorization_t *proxy_authorization;
   int i;
@@ -57,16 +56,15 @@ osip_message_set_proxy_authorization (osip_message_t * sip,
 
 int
 osip_message_get_proxy_authorization (const osip_message_t * sip, int pos,
-				      osip_proxy_authorization_t ** dest)
+                                      osip_proxy_authorization_t ** dest)
 {
   osip_proxy_authorization_t *proxy_authorization;
 
   *dest = NULL;
   if (osip_list_size (sip->proxy_authorizations) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   proxy_authorization =
-    (osip_proxy_authorization_t *) osip_list_get (sip->proxy_authorizations,
-						  pos);
+    (osip_proxy_authorization_t *) osip_list_get (sip->proxy_authorizations, pos);
   *dest = proxy_authorization;
   return pos;
 }

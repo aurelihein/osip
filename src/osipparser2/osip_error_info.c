@@ -50,13 +50,13 @@ osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_error_info (const osip_message_t * sip, int pos,
-			     osip_error_info_t ** dest)
+                             osip_error_info_t ** dest)
 {
   osip_error_info_t *error_info;
 
   *dest = NULL;
   if (osip_list_size (sip->error_infos) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   error_info = (osip_error_info_t *) osip_list_get (sip->error_infos, pos);
   *dest = error_info;
   return pos;

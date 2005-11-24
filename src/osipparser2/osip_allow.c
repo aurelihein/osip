@@ -49,14 +49,13 @@ osip_message_set_allow (osip_message_t * sip, const char *hvalue)
 }
 
 int
-osip_message_get_allow (const osip_message_t * sip, int pos,
-			osip_allow_t ** dest)
+osip_message_get_allow (const osip_message_t * sip, int pos, osip_allow_t ** dest)
 {
   osip_allow_t *allow;
 
   *dest = NULL;
   if (osip_list_size (sip->allows) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   allow = (osip_allow_t *) osip_list_get (sip->allows, pos);
   *dest = allow;
   return pos;

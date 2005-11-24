@@ -50,17 +50,16 @@ osip_fifo_add (osip_fifo_t * ff, void *el)
   if (ff->etat != plein)
     {
       /* ff->nb_elt++; */
-      osip_list_add (ff->queue, el, -1);	/* insert at end of queue */
-    }
-  else
+      osip_list_add (ff->queue, el, -1);        /* insert at end of queue */
+  } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "too much traffic in fifo.\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "too much traffic in fifo.\n"));
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return -1;		/* stack is full */
+      return -1;                /* stack is full */
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (ff->queue) >= MAX_LEN)
@@ -86,17 +85,16 @@ osip_fifo_insert (osip_fifo_t * ff, void *el)
   if (ff->etat != plein)
     {
       /* ff->nb_elt++; */
-      osip_list_add (ff->queue, el, 0);	/* insert at end of queue */
-    }
-  else
+      osip_list_add (ff->queue, el, 0); /* insert at end of queue */
+  } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_WARNING, NULL,
-		   "too much traffic in fifo.\n"));
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "too much traffic in fifo.\n"));
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return -1;		/* stack is full */
+      return -1;                /* stack is full */
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (ff->queue) >= MAX_LEN)
@@ -133,6 +131,7 @@ void *
 osip_fifo_get (osip_fifo_t * ff)
 {
   void *el = NULL;
+
 #ifdef OSIP_MT
   int i = osip_sem_wait (ff->qisempty);
 
@@ -146,16 +145,14 @@ osip_fifo_get (osip_fifo_t * ff)
       el = osip_list_get (ff->queue, 0);
       osip_list_remove (ff->queue, 0);
       /* ff->nb_elt--; */
-    }
-  else
+  } else
     {
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-		   "no element in fifo.\n"));
+                  (__FILE__, __LINE__, OSIP_ERROR, NULL, "no element in fifo.\n"));
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return 0;			/* pile vide */
+      return 0;                 /* pile vide */
     }
   /* if (ff->nb_elt <= 0) */
   if (osip_list_size (ff->queue) <= 0)
@@ -176,7 +173,7 @@ osip_fifo_tryget (osip_fifo_t * ff)
 
 #ifdef OSIP_MT
   if (0 != osip_sem_trywait (ff->qisempty))
-    {				/* no elements... */
+    {                           /* no elements... */
       return NULL;
     }
   osip_mutex_lock (ff->qislocked);
@@ -193,10 +190,9 @@ osip_fifo_tryget (osip_fifo_t * ff)
     }
 #ifdef OSIP_MT
   else
-    {				/* this case MUST never happen... */
+    {                           /* this case MUST never happen... */
       OSIP_TRACE (osip_trace
-		  (__FILE__, __LINE__, OSIP_INFO4, NULL,
-		   "no element in fifo.\n"));
+                  (__FILE__, __LINE__, OSIP_INFO4, NULL, "no element in fifo.\n"));
       osip_mutex_unlock (ff->qislocked);
       return 0;
     }

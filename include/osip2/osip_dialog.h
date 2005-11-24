@@ -62,20 +62,20 @@ extern "C"
  */
   struct osip_dialog
   {
-    char *call_id;			 /**< Call-ID*/
-    char *local_tag;			 /**< local tag */
-    char *remote_tag;			 /**< remote tag */
-    osip_list_t *route_set;		 /**< route set */
-    int local_cseq;			 /**< last local cseq */
-    int remote_cseq;			 /**< last remote cseq*/
-    osip_to_t *remote_uri;		 /**< remote_uri */
-    osip_from_t *local_uri;		 /**< local_uri */
-    osip_contact_t *remote_contact_uri;	 /**< remote contact_uri */
-    int secure;				 /**< use secure transport layer */
+    char *call_id;                       /**< Call-ID*/
+    char *local_tag;                     /**< local tag */
+    char *remote_tag;                    /**< remote tag */
+    osip_list_t *route_set;              /**< route set */
+    int local_cseq;                      /**< last local cseq */
+    int remote_cseq;                     /**< last remote cseq*/
+    osip_to_t *remote_uri;               /**< remote_uri */
+    osip_from_t *local_uri;              /**< local_uri */
+    osip_contact_t *remote_contact_uri;  /**< remote contact_uri */
+    int secure;                          /**< use secure transport layer */
 
-    osip_dialog_type_t type;		 /**< type of dialog (CALLEE or CALLER) */
-    state_t state;			 /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
-    void *your_instance;		 /**< for application data reference */
+    osip_dialog_type_t type;             /**< type of dialog (CALLEE or CALLER) */
+    state_t state;                       /**< DIALOG_EARLY || DIALOG_CONFIRMED || DIALOG_CLOSED */
+    void *your_instance;                 /**< for application data reference */
   };
 
 /**
@@ -103,8 +103,7 @@ extern "C"
  * @param dialog The element to allocate.
  * @param response The response containing the informations.
  */
-  int osip_dialog_init_as_uac (osip_dialog_t ** dialog,
-			       osip_message_t * response);
+  int osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response);
 /**
  * Allocate a osip_dialog_t element as a UAC.
  * <UL><LI>This could be used to initiate dialog with a NOTIFY coming
@@ -114,9 +113,8 @@ extern "C"
  * @param local_cseq The local cseq
  */
   int osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
-						   osip_message_t *
-						   next_request,
-						   int local_cseq);
+                                                   osip_message_t *
+                                                   next_request, int local_cseq);
 
 /**
  * Allocate a osip_dialog_t element as a UAS.
@@ -127,8 +125,7 @@ extern "C"
  * @param response The response containing other informations.
  */
   int osip_dialog_init_as_uas (osip_dialog_t ** dialog,
-			       osip_message_t * invite,
-			       osip_message_t * response);
+                               osip_message_t * invite, osip_message_t * response);
 /**
  * Free all resource in a osip_dialog_t element.
  * @param dialog The element to free.
@@ -152,7 +149,7 @@ extern "C"
  * @param invite The invite received.
  */
   int osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
-					   osip_message_t * invite);
+                                           osip_message_t * invite);
 /**
  * Update the CSeq (remote cseq) during a UAS transaction of a dialog.
  * NOTE: All INCOMING transactions MUST update the remote CSeq.
@@ -160,15 +157,14 @@ extern "C"
  * @param request The request received.
  */
   int osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
-					   osip_message_t * request);
+                                           osip_message_t * request);
 
 /**
  * Match a response received with a dialog.
  * @param dialog The element to work on.
  * @param response The response received.
  */
-  int osip_dialog_match_as_uac (osip_dialog_t * dialog,
-				osip_message_t * response);
+  int osip_dialog_match_as_uac (osip_dialog_t * dialog, osip_message_t * response);
 /**
  * Update the tag as UAC of a dialog?. (this could be needed if the 180
  * does not contains any tag, but the 200 contains one.
@@ -176,7 +172,7 @@ extern "C"
  * @param response The response received.
  */
   int osip_dialog_update_tag_as_uac (osip_dialog_t * dialog,
-				     osip_message_t * response);
+                                     osip_message_t * response);
 /**
  * Update the Route-Set as UAC of a dialog.
  * NOTE: bis-09 says that only INVITE transactions can update the route-set.
@@ -188,15 +184,14 @@ extern "C"
  * @param response The response received.
  */
   int osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
-					   osip_message_t * response);
+                                           osip_message_t * response);
 
 /**
  * Match a request (response sent?) received with a dialog.
  * @param dialog The element to work on.
  * @param request The request received.
  */
-  int osip_dialog_match_as_uas (osip_dialog_t * dialog,
-				osip_message_t * request);
+  int osip_dialog_match_as_uas (osip_dialog_t * dialog, osip_message_t * request);
 
 /**
  * @internal

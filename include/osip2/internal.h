@@ -34,8 +34,8 @@
 /* Struct timeval */
 struct timeval
 {
-  long tv_sec;			/* seconds */
-  long tv_usec;			/* and microseconds */
+  long tv_sec;                  /* seconds */
+  long tv_usec;                 /* and microseconds */
 };
 #endif
 
@@ -67,6 +67,7 @@ struct __payload
  * @param payload The payload.
  */
 int __payload_init (__payload_t ** payload);
+
 /**
  * Free a payload element.
  * @param payload The payload.

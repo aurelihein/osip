@@ -38,8 +38,7 @@ __nict_unload_fsm ()
 
   while (!osip_list_eol (statemachine->transitions, 0))
     {
-      transition =
-	(transition_t *) osip_list_get (statemachine->transitions, 0);
+      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
       osip_list_remove (statemachine->transitions, 0);
       osip_free (transition);
     }
@@ -52,8 +51,7 @@ __nict_load_fsm ()
 {
   transition_t *transition;
 
-  nict_fsm =
-    (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  nict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
   nict_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
   osip_list_init (nict_fsm->transitions);
 
@@ -172,38 +170,32 @@ nict_snd_request (osip_transaction_t * nict, osip_event_t * evt)
   nict->orig_request = evt->sip;
 
   i = osip->cb_send_message (nict, evt->sip, nict->nict_context->destination,
-			     nict->nict_context->port, nict->out_socket);
+                             nict->nict_context->port, nict->out_socket);
 
   if (i == 0)
     {
       /* invoke the right callback! */
       if (MSG_IS_REGISTER (evt->sip))
-	__osip_message_callback (OSIP_NICT_REGISTER_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_REGISTER_SENT, nict,
+                                 nict->orig_request);
       else if (MSG_IS_BYE (evt->sip))
-	__osip_message_callback (OSIP_NICT_BYE_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_BYE_SENT, nict, nict->orig_request);
       else if (MSG_IS_OPTIONS (evt->sip))
-	__osip_message_callback (OSIP_NICT_OPTIONS_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_OPTIONS_SENT, nict, nict->orig_request);
       else if (MSG_IS_INFO (evt->sip))
-	__osip_message_callback (OSIP_NICT_INFO_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_INFO_SENT, nict, nict->orig_request);
       else if (MSG_IS_CANCEL (evt->sip))
-	__osip_message_callback (OSIP_NICT_CANCEL_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_CANCEL_SENT, nict, nict->orig_request);
       else if (MSG_IS_NOTIFY (evt->sip))
-	__osip_message_callback (OSIP_NICT_NOTIFY_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_NOTIFY_SENT, nict, nict->orig_request);
       else if (MSG_IS_SUBSCRIBE (evt->sip))
-	__osip_message_callback (OSIP_NICT_SUBSCRIBE_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_SUBSCRIBE_SENT, nict,
+                                 nict->orig_request);
       else
-	__osip_message_callback (OSIP_NICT_UNKNOWN_REQUEST_SENT, nict,
-				 nict->orig_request);
+        __osip_message_callback (OSIP_NICT_UNKNOWN_REQUEST_SENT, nict,
+                                 nict->orig_request);
       __osip_transaction_set_state (nict, NICT_TRYING);
-    }
-  else
+  } else
     {
       nict_handle_transport_error (nict, i);
     }
@@ -218,29 +210,26 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
   /* reset timer */
   if (nict->state == NICT_TRYING)
     {
-      nict->nict_context->timer_e_length =
-	nict->nict_context->timer_e_length * 2;
+      nict->nict_context->timer_e_length = nict->nict_context->timer_e_length * 2;
       if (nict->nict_context->timer_e_length > 4000)
-	nict->nict_context->timer_e_length = 4000;
-    }
-  else				/* in PROCEEDING STATE, TIMER is always 4000 */
+        nict->nict_context->timer_e_length = 4000;
+  } else                        /* in PROCEEDING STATE, TIMER is always 4000 */
     nict->nict_context->timer_e_length = 4000;
 
   osip_gettimeofday (&nict->nict_context->timer_e_start, NULL);
   add_gettimeofday (&nict->nict_context->timer_e_start,
-		    nict->nict_context->timer_e_length);
+                    nict->nict_context->timer_e_length);
 
   /* retransmit REQUEST */
   i = osip->cb_send_message (nict, nict->orig_request,
-			     nict->nict_context->destination,
-			     nict->nict_context->port, nict->out_socket);
+                             nict->nict_context->destination,
+                             nict->nict_context->port, nict->out_socket);
   if (i != 0)
     {
       nict_handle_transport_error (nict, i);
       return;
     }
-  __osip_message_callback (OSIP_NICT_REQUEST_SENT_AGAIN, nict,
-			   nict->orig_request);
+  __osip_message_callback (OSIP_NICT_REQUEST_SENT_AGAIN, nict, nict->orig_request);
 }
 
 void
@@ -291,25 +280,25 @@ nict_rcv_23456xx (osip_transaction_t * nict, osip_event_t * evt)
 
   if (EVT_IS_RCV_STATUS_2XX (evt))
     __osip_message_callback (OSIP_NICT_STATUS_2XX_RECEIVED, nict,
-			     nict->last_response);
+                             nict->last_response);
   else if (MSG_IS_STATUS_3XX (nict->last_response))
     __osip_message_callback (OSIP_NICT_STATUS_3XX_RECEIVED, nict,
-			     nict->last_response);
+                             nict->last_response);
   else if (MSG_IS_STATUS_4XX (nict->last_response))
     __osip_message_callback (OSIP_NICT_STATUS_4XX_RECEIVED, nict,
-			     nict->last_response);
+                             nict->last_response);
   else if (MSG_IS_STATUS_5XX (nict->last_response))
     __osip_message_callback (OSIP_NICT_STATUS_5XX_RECEIVED, nict,
-			     nict->last_response);
+                             nict->last_response);
   else
     __osip_message_callback (OSIP_NICT_STATUS_6XX_RECEIVED, nict,
-			     nict->last_response);
+                             nict->last_response);
 
-  if (nict->state != NICT_COMPLETED)	/* reset timer K */
+  if (nict->state != NICT_COMPLETED)    /* reset timer K */
     {
       osip_gettimeofday (&nict->nict_context->timer_k_start, NULL);
       add_gettimeofday (&nict->nict_context->timer_k_start,
-			nict->nict_context->timer_k_length);
+                        nict->nict_context->timer_k_length);
     }
   __osip_transaction_set_state (nict, NICT_COMPLETED);
 }

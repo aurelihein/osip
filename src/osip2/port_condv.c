@@ -45,6 +45,7 @@ struct osip_cond *
 osip_cond_init ()
 {
   osip_cond_t *cond = (osip_cond_t *) osip_malloc (sizeof (osip_cond_t));
+
   if (cond && (pthread_cond_init (&cond->cv, NULL) == 0))
     {
       return (struct osip_cond *) (cond);
@@ -86,12 +87,12 @@ osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 
 int
 osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
-		     const struct timespec *abstime)
+                     const struct timespec *abstime)
 {
   if (!_cond)
     return -1;
   return pthread_cond_timedwait (&_cond->cv, (pthread_mutex_t *) _mut,
-				 (const struct timespec *) abstime);
+                                 (const struct timespec *) abstime);
 }
 
 #endif
@@ -106,9 +107,10 @@ struct osip_cond *
 osip_cond_init ()
 {
   osip_cond_t *cond = (osip_cond_t *) osip_malloc (sizeof (osip_cond_t));
+
   if (cond && (cond->mut = osip_mutex_init ()) != NULL)
     {
-      cond->sem = osip_sem_init (0);	/* initially locked */
+      cond->sem = osip_sem_init (0);    /* initially locked */
       return (struct osip_cond *) (cond);
     }
   osip_free (cond);
@@ -204,7 +206,7 @@ _delta_time (const struct timespec *start, const struct timespec *end)
 
 int
 osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
-		     const struct timespec *abstime)
+                     const struct timespec *abstime)
 {
   DWORD dwRet;
   struct timespec now;
@@ -226,7 +228,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
 
   timeout_ms = _delta_time (&now, abstime);
   if (timeout_ms <= 0)
-    return 1;			/* ETIMEDOUT; */
+    return 1;                   /* ETIMEDOUT; */
 
   if (osip_mutex_unlock (_mut))
     return -1;
@@ -238,15 +240,15 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
 
   switch (dwRet)
     {
-    case WAIT_OBJECT_0:
-      return 0;
-      break;
-    case WAIT_TIMEOUT:
-      return 1;			/* ETIMEDOUT; */
-      break;
-    default:
-      return -1;
-      break;
+      case WAIT_OBJECT_0:
+        return 0;
+        break;
+      case WAIT_TIMEOUT:
+        return 1;               /* ETIMEDOUT; */
+        break;
+      default:
+        return -1;
+        break;
     }
 }
 #endif
@@ -260,6 +262,7 @@ struct osip_cond *
 osip_cond_init ()
 {
   osip_cond_t *cond = (osip_cond_t *) osip_malloc (sizeof (osip_cond_t));
+
   if ((cond->sem = osip_sem_init (0)) != NULL)
     {
       return (struct osip_cond *) (cond);
@@ -290,6 +293,7 @@ osip_cond_signal (struct osip_cond *_cond)
 _cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut, int ticks)
 {
   int ret;
+
   if (osip_mutex_unlock (_mut) != 0)
     {
       return -1;
@@ -299,23 +303,23 @@ _cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut, int ticks)
   if (ret != OK)
     {
       switch (errno)
-	{
-	case S_objLib_OBJ_ID_ERROR:
-	  /* fall through */
-	case S_objLib_OBJ_UNAVAILABLE:
-	  /* fall through */
+        {
+          case S_objLib_OBJ_ID_ERROR:
+            /* fall through */
+          case S_objLib_OBJ_UNAVAILABLE:
+            /* fall through */
 #if 0
-	case S_intLib_NOT_ISR_CALLABLE:
+          case S_intLib_NOT_ISR_CALLABLE:
 #endif
-	  ret = -1;
-	  break;
-	case S_objLib_OBJ_TIMEOUT:
-	  ret = 1;
-	  break;
-	default:		/* vxworks has bugs */
-	  ret = 1;
-	  break;
-	}
+            ret = -1;
+            break;
+          case S_objLib_OBJ_TIMEOUT:
+            ret = 1;
+            break;
+          default:             /* vxworks has bugs */
+            ret = 1;
+            break;
+        }
     }
 
   if (osip_mutex_lock (_mut))
@@ -333,13 +337,14 @@ osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 
 int
 osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
-		     const struct timespec *abstime)
+                     const struct timespec *abstime)
 {
   int rate = sysClkRateGet ();
   struct timespec now;
   long sec, nsec;
   int ticks;
   SEM_ID sem;
+
   if (_cond == NULL)
     return -1;
 
@@ -361,7 +366,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
       nsec += 1000000000;
     }
   if (nsec < 0)
-    return 1;			/*ETIMEDOUT; */
+    return 1;                   /*ETIMEDOUT; */
   ticks = (sec * rate) + (nsec / 1000 * rate / 1000000);
 
   return _cond_wait (_cond, _mut, ticks);

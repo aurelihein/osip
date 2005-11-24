@@ -51,13 +51,13 @@ osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
 
 int
 osip_message_get_accept_language (const osip_message_t * sip, int pos,
-				  osip_accept_language_t ** dest)
+                                  osip_accept_language_t ** dest)
 {
   osip_accept_language_t *accept_language;
 
   *dest = NULL;
   if (osip_list_size (sip->accept_languages) <= pos)
-    return -1;			/* does not exist */
+    return -1;                  /* does not exist */
   accept_language =
     (osip_accept_language_t *) osip_list_get (sip->accept_languages, pos);
   *dest = accept_language;
