@@ -1,10 +1,10 @@
 
 SUBDIRS = res
 
-EXTRA_DIST = tst tst_sdp tst_rfc3264 CHECK
+EXTRA_DIST = tst CHECK
 
 if COMPILE_TESTS
-noinst_PROGRAMS = torture_rfc3264 torture_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
+noinst_PROGRAMS = torture_test turl tfrom tto tcontact tvia tcallid tcontentt trecordr troute twwwa
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/src/osipparser2
 AM_CFLAGS = $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
@@ -40,12 +40,6 @@ tvia_LDADD = $(PARSER_LIB) $(EXTRA_LIB) $(top_builddir)/src/osipparser2/libosipp
 tcallid_SOURCES =  tcallid.c
 tcallid_LDADD = $(PARSER_LIB) $(EXTRA_LIB) $(top_builddir)/src/osipparser2/libosipparser2.la 
 
-#torture_sdp_test_SOURCES =  torture_sdp.c
-#torture_sdp_test_LDADD = $(PARSER_LIB) $(FSM_LIB) $(EXTRA_LIB) $(top_builddir)/src/osipparser2/libosipparser2.la $(top_builddir)/src/osip2/libosip2.la 
-
-torture_rfc3264_SOURCES =  torture_rfc3264.c
-torture_rfc3264_LDADD = $(PARSER_LIB) $(EXTRA_LIB) $(top_builddir)/src/osipparser2/libosipparser2.la 
-
 torture_test_SOURCES =  torture.c
 torture_test_LDADD = $(PARSER_LIB) $(EXTRA_LIB) $(top_builddir)/src/osipparser2/libosipparser2.la 
 
@@ -56,7 +50,6 @@ check:
 	@echo " ****** starting tests! ********"
 	@echo " *******************************"
 	@./$(top_srcdir)/src/test/tst ./$(top_srcdir)/src/test/res -c
-	@./$(top_srcdir)/src/test/tst_rfc3264 ./$(top_srcdir)/src/test/res/torture_sdps -v -c > ./osipsdp-chk.log 2>&1
 
 	@echo ""
 	@echo "In case you have a doubt, send the generated"

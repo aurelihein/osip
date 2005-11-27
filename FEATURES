@@ -12,10 +12,7 @@ The minimal common required features for any SIP Agent
 provided by osip are describe below.
 
 However, some extra facilities oriented towards SIP End-Points
-are provided. Some are considered usefull and stable such as the
-dialog management API. One features is particularly not flexible
-such as the SDP negotiation facility and you should consider
-implementing your own. If you still want 
+are provided.
 
        SIP parser:
        ==========
@@ -147,16 +144,13 @@ allow you to build a structure described in the rfc3261 (Section
 received requests with a particular SIP call or to build a new
 request within a particular SIP call.
 
-An old feature has been implemented in osip: a SDP negotiator.
-I advise you to not use this old facility which is not powerfull
-often uncompliant and not flexible enough. It's also quite
-unreadable and poorly written (by me!). I'll delete it anyway in
-future version of osip. I have warned you...
+*** An old feature has been implemented in osip: a SDP negotiator.
+*** I advise you to not use this old facility which is not powerfull
+*** often uncompliant and not flexible enough. It's also quite
+*** unreadable and poorly written (by me!). I'll delete it anyway in
+*** future version of osip. I have warned you...
 
-However, I'm building a new SDP negotiator (osip_rfc3264.h).
-While not being fully ready, I hope to get it completed by the
-end of year 2004. It's promising work and I hope it will be 
-enough flexible to fit any applications. Time will tell.
+   ->>> UPDATE 27/11/2005: the SDP negotiator have been removed
 
 oSIP finaly contains a MD5 implementation (osip_md5.h) which
 you'll find usefull when implementing SIP Digest authentication.
