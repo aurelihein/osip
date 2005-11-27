@@ -1,3 +1,6 @@
+libosip2 (2.2.3)
+	* remove SDP negotiation (much better to do it in your applications)
+	
 libosip2 (2.2.2)
 	* parser speed improvements
 	* replace mutex with critical section on windows for performance.
