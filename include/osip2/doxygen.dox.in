@@ -59,7 +59,7 @@
 
 /**
  * @defgroup osip2_sdp The SDP modules
- * @brief SDP API and negotiator.
+ * @brief SDP API.
  *
  * XXX
  */
