@@ -32,8 +32,15 @@ static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
  * Anyway, this mechanism improves the search time (from binary seach (log(n)) to 1).
  */
 
-#define HASH_TABLE_SIZE 150     /* set this to the hash table size, 150 is the first size
-                                   where no conflicts occur                               */
+#ifndef HASH_TABLE_SIZE
+#ifdef __amd64__
+#define HASH_TABLE_SIZE 450
+#else
+#define HASH_TABLE_SIZE 150     /* set this to the hash table size, 150 is the
+				   first size where no conflicts occur */
+#endif
+#endif
+
 static int hdr_ref_table[HASH_TABLE_SIZE];      /* the hashtable contains indices to the pconfig table    */
 
 /*
@@ -146,7 +153,11 @@ parser_init (void)
       } else
         {
           /* oops, conflict!-> change the hash table or use another hash function size */
-          return -1;
+	  
+	  OSIP_TRACE (osip_trace
+		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
+		       "conflict with current hashtable size\n"));
+	  return -1;
         }
     }
 
