@@ -1,4 +1,5 @@
 libosip2 (2.2.3)
+	* fix 64-bit (amd64) issue with hash.
 	* remove SDP negotiation (much better to do it in your applications)
 	
 libosip2 (2.2.2)
