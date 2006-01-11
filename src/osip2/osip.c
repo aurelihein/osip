@@ -157,7 +157,7 @@ osip_ixt_unlock (osip_t * osip)
 void
 osip_add_ixt (osip_t * osip, ixt_t * ixt)
 {
-  /* ajout dans la liste de osip_t->ixt */
+  /* add in list osip_t->ixt */
   osip_ixt_lock (osip);
   osip_list_add (osip->ixt_retransmissions, (void *) ixt, 0);
   osip_ixt_unlock (osip);
@@ -196,9 +196,10 @@ ixt_init (ixt_t ** ixt)
   pixt->dialog = NULL;
   pixt->msg2xx = NULL;
   pixt->ack = NULL;
-  pixt->start = time (NULL);
-  pixt->interval = 500;
-  pixt->counter = 7;
+  pixt->interval = DEFAULT_T1;
+  osip_gettimeofday(&pixt->start, NULL);
+  add_gettimeofday(&pixt->start, pixt->interval+10);
+  pixt->counter = 10;
   pixt->dest = NULL;
   pixt->port = 5060;
   pixt->sock = -1;
@@ -295,12 +296,14 @@ osip_stop_retransmissions_from_dialog (osip_t * osip, osip_dialog_t * dialog)
 }
 
 void
-ixt_retransmit (osip_t * osip, ixt_t * ixt, time_t current)
+ixt_retransmit (osip_t * osip, ixt_t * ixt, struct timeval *current)
 {
-  if ((current - ixt->start) * 1000 > ixt->interval)
+  if (osip_timercmp(current, &ixt->start, >))
     {
       ixt->interval = ixt->interval * 2;
-      ixt->start = current;
+      if (ixt->interval > 4000)
+         ixt->interval = 4000;
+      add_gettimeofday (&ixt->start, ixt->interval);
       if (ixt->ack != NULL)
         osip->cb_send_message (NULL, ixt->ack, ixt->dest, ixt->port, ixt->sock);
       else if (ixt->msg2xx != NULL)
@@ -313,15 +316,16 @@ void
 osip_retransmissions_execute (osip_t * osip)
 {
   int i;
-  time_t current;
   ixt_t *ixt;
+  struct timeval current;
 
-  current = time (NULL);
+  osip_gettimeofday (&current, NULL);
+
   osip_ixt_lock (osip);
   for (i = 0; !osip_list_eol (osip->ixt_retransmissions, i); i++)
     {
       ixt = (ixt_t *) osip_list_get (osip->ixt_retransmissions, i);
-      ixt_retransmit (osip, ixt, current);
+      ixt_retransmit (osip, ixt, &current);
       if (ixt->counter == 0)
         {
           /* remove it */
@@ -1808,12 +1812,16 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
     ixt = (ixt_t *) osip_list_get_first (osip->ixt_retransmissions, &iterator);
     while (osip_list_iterator_has_elem (iterator))
       {
-        struct timeval cmpTime;
-        div_t dValue = div (ixt->interval, 1000);
-
-        cmpTime.tv_sec = (long) (ixt->start + dValue.quot);
-        cmpTime.tv_usec = dValue.rem * 1000;
-        min_timercmp (lower_tv, &cmpTime);
+        min_timercmp (lower_tv, &ixt->start);
+	if (osip_timercmp (&now, lower_tv, >))
+	  {
+	    lower_tv->tv_sec = 0;
+	    lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+	    osip_mutex_unlock (nist_fastmutex);
+#endif
+	    return;
+	  }
 
         ixt = (ixt_t *) osip_list_get_next (&iterator);
       }

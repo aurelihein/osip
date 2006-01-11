@@ -460,7 +460,7 @@ extern "C"
     struct osip_dialog *dialog; /**< related dialog */
     osip_message_t *msg2xx;     /**< buffer to retransmit */
     osip_message_t *ack;        /**< ack message if needed */
-    time_t start;               /**< Time of first retransmission */
+    struct timeval start;       /**< Time of first retransmission */
     int interval;               /**< delay between retransmission, in ms */
     char *dest;                 /**< destination host */
     int port;                   /**< destination port */
