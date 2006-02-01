@@ -600,6 +600,9 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
   if (b_origrequest != NULL && b_request != NULL)
     /* case where both request contains a branch */
     {
+      if ( ! b_origrequest->gvalue ) return -1;
+      if ( ! b_request->gvalue )     return -1;
+
       length_br = strlen (b_origrequest->gvalue);
       length_br2 = strlen (b_request->gvalue);
       if (length_br != length_br2)
