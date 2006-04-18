@@ -1,3 +1,9 @@
+libosip2 (2.2.3-1) unstable; urgency=low
+ * fix 64-bit (amd64) issue with hash.
+ * remove SDP negotiation (much better to do it in your applications)
+
+ -- Aymeric MOIZARD <jack@atosc.org>  Tue, 18 Apr 2006 13:04:32 +0100
+
 libosip2 (2.2.2-1) unstable; urgency=low
  * parser speed improvements
  * replace mutex with critical section on windows for performance.
