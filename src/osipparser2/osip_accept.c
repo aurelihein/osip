@@ -52,7 +52,7 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
 
-  osip_list_add (sip->accepts, accept, -1);
+  osip_list_add (&sip->accepts, accept, -1);
   return 0;
 }
 
@@ -64,9 +64,9 @@ osip_message_get_accept (const osip_message_t * sip, int pos,
   osip_accept_t *accept;
 
   *dest = NULL;
-  if (osip_list_size (sip->accepts) <= pos)
+  if (osip_list_size (&sip->accepts) <= pos)
     return -1;                  /* does not exist */
-  accept = (osip_accept_t *) osip_list_get (sip->accepts, pos);
+  accept = (osip_accept_t *) osip_list_get (&sip->accepts, pos);
   *dest = accept;
   return pos;
 }
@@ -97,7 +97,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
 
   /* try to guess a long enough length */
   len = strlen (accept->type) + strlen (accept->subtype) + 4    /* for '/', ' ', ';' and '\0' */
-    + 10 * osip_list_size (accept->gen_params);
+    + 10 * osip_list_size (&accept->gen_params);
 
   buf = (char *) osip_malloc (len);
   tmp = buf;
@@ -110,17 +110,17 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
     osip_generic_param_t *u_param;
 
 #if 0
-    if (!osip_list_eol (accept->gen_params, pos))
+    if (!osip_list_eol (&accept->gen_params, pos))
       {                         /* needed for cannonical form! (authentication issue of rfc2543) */
         sprintf (tmp, " ");
         tmp++;
       }
 #endif
-    while (!osip_list_eol (accept->gen_params, pos))
+    while (!osip_list_eol (&accept->gen_params, pos))
       {
         size_t tmp_len;
 
-        u_param = (osip_generic_param_t *) osip_list_get (accept->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&accept->gen_params, pos);
         if (u_param->gvalue == NULL)
           {
             osip_free (buf);

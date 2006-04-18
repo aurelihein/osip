@@ -61,7 +61,7 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
   if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
-  if (sip == NULL || sip->authorizations == NULL)
+  if (sip == NULL)
     return -1;
   i = osip_authorization_init (&authorization);
   if (i != 0)
@@ -73,7 +73,7 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->authorizations, authorization, -1);
+  osip_list_add (&sip->authorizations, authorization, -1);
   return 0;
 }
 
@@ -250,10 +250,10 @@ osip_message_get_authorization (const osip_message_t * sip, int pos,
   osip_authorization_t *authorization;
 
   *dest = NULL;
-  if (osip_list_size (sip->authorizations) <= pos)
+  if (osip_list_size (&sip->authorizations) <= pos)
     return -1;                  /* does not exist */
   authorization =
-    (osip_authorization_t *) osip_list_get (sip->authorizations, pos);
+    (osip_authorization_t *) osip_list_get (&sip->authorizations, pos);
   *dest = authorization;
   return pos;
 }

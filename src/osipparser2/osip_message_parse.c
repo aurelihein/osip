@@ -787,7 +787,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
     }
 
   /* find the boundary */
-  i = osip_generic_param_get_byname (sip->content_type->gen_params,
+  i = osip_generic_param_get_byname (&sip->content_type->gen_params,
                                      "boundary", &ct_param);
   if (i != 0)
     return -1;
@@ -984,7 +984,7 @@ osip_message_fix_last_via_header (osip_message_t * request,
   if (MSG_IS_RESPONSE (request))
     return 0;                   /* Don't fix Via header */
 
-  via = osip_list_get (request->vias, 0);
+  via = osip_list_get (&request->vias, 0);
   if (via == NULL || via->host == NULL)
     /* Hey, we could build it? */
     return -1;

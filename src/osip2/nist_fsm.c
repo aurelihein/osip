@@ -181,7 +181,7 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
         {
           osip_via_t *via;
 
-          via = (osip_via_t *) osip_list_get (nist->last_response->vias, 0);
+          via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
           if (via)
             {
               char *host;
@@ -260,7 +260,7 @@ nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
     }
   nist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (nist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
   if (via)
     {
       char *host;
@@ -322,7 +322,7 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
     }
   nist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (nist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
   if (via)
     {
       char *host;

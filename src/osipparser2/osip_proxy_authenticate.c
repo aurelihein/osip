@@ -48,7 +48,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->proxy_authenticates, proxy_authenticate, -1);
+  osip_list_add (&sip->proxy_authenticates, proxy_authenticate, -1);
   return 0;
 }
 
@@ -64,11 +64,11 @@ osip_message_get_proxy_authenticate (const osip_message_t * sip, int pos,
   osip_proxy_authenticate_t *proxy_authenticate;
 
   *dest = NULL;
-  if (osip_list_size (sip->proxy_authenticates) <= pos)
+  if (osip_list_size (&sip->proxy_authenticates) <= pos)
     return -1;                  /* does not exist */
 
   proxy_authenticate = (osip_proxy_authenticate_t *)
-    osip_list_get (sip->proxy_authenticates, pos);
+    osip_list_get (&sip->proxy_authenticates, pos);
 
   *dest = proxy_authenticate;
   return pos;

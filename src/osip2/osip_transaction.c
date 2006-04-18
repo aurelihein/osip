@@ -142,7 +142,7 @@ osip_transaction_init (osip_transaction_t ** transaction,
   (*transaction)->transactionid = transactionid;
   transactionid++;
 
-  topvia = osip_list_get (request->vias, 0);
+  topvia = osip_list_get (&request->vias, 0);
   if (topvia == NULL)
     goto ti_error_1;
 
@@ -480,7 +480,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
       response == NULL || response->cseq == NULL || response->cseq->method == NULL)
     return -1;
 
-  topvia_response = osip_list_get (response->vias, 0);
+  topvia_response = osip_list_get (&response->vias, 0);
   if (topvia_response == NULL)
     {
       OSIP_TRACE (osip_trace
@@ -575,7 +575,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
       request == NULL || request->cseq == NULL || request->cseq->method == NULL)
     return -1;
 
-  topvia_request = osip_list_get (request->vias, 0);
+  topvia_request = osip_list_get (&request->vias, 0);
   if (topvia_request == NULL)
     {
       OSIP_TRACE (osip_trace

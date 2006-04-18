@@ -73,7 +73,7 @@ osip_message_set_body (osip_message_t * sip, const char *buf, size_t length)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->bodies, body, -1);
+  osip_list_add (&sip->bodies, body, -1);
   return 0;
 }
 
@@ -138,9 +138,9 @@ osip_message_get_body (const osip_message_t * sip, int pos, osip_body_t ** dest)
   osip_body_t *body;
 
   *dest = NULL;
-  if (osip_list_size (sip->bodies) <= pos)
+  if (osip_list_size (&sip->bodies) <= pos)
     return -1;                  /* does not exist */
-  body = (osip_body_t *) osip_list_get (sip->bodies, pos);
+  body = (osip_body_t *) osip_list_get (&sip->bodies, pos);
   *dest = body;
   return pos;
 }
@@ -212,7 +212,7 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf, size_t length
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->bodies, body, -1);
+  osip_list_add (&sip->bodies, body, -1);
   return 0;
 }
 

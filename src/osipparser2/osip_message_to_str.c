@@ -493,7 +493,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
 
   i =
-    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->vias,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, &sip->vias,
                                  "Via: ", 5,
                                  ((int (*)(void *, char **))
                                   &osip_via_to_str), &next);
@@ -507,7 +507,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->record_routes, "Record-Route: ", 14,
+                                 &sip->record_routes, "Record-Route: ", 14,
                                  ((int (*)(void *, char **))
                                   &osip_record_route_to_str), &next);
   if (i != 0)
@@ -519,7 +519,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   message = next;
 
   i =
-    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->routes,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, &sip->routes,
                                  "Route: ", 7,
                                  ((int (*)(void *, char **))
                                   &osip_route_to_str), &next);
@@ -577,7 +577,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   message = next;
 
   i =
-    strcat_headers_one_per_line (dest, &malloc_size, &message, sip->contacts,
+    strcat_headers_one_per_line (dest, &malloc_size, &message, &sip->contacts,
                                  "Contact: ", 9,
                                  ((int (*)(void *, char **))
                                   &osip_contact_to_str), &next);
@@ -590,7 +590,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   message = next;
 
   i = strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                   sip->authorizations, "Authorization: ", 15,
+                                   &sip->authorizations, "Authorization: ", 15,
                                    ((int (*)(void *, char **))
                                     &osip_authorization_to_str), &next);
   if (i != 0)
@@ -603,7 +603,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->www_authenticates, "WWW-Authenticate: ",
+                                 &sip->www_authenticates, "WWW-Authenticate: ",
                                  18,
                                  ((int (*)(void *, char **))
                                   &osip_www_authenticate_to_str), &next);
@@ -617,7 +617,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->proxy_authenticates,
+                                 &sip->proxy_authenticates,
                                  "Proxy-Authenticate: ", 20,
                                  ((int (*)(void *, char **))
                                   &osip_www_authenticate_to_str), &next);
@@ -631,7 +631,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->proxy_authorizations,
+                                 &sip->proxy_authorizations,
                                  "Proxy-Authorization: ", 21,
                                  ((int (*)(void *, char **))
                                   &osip_authorization_to_str), &next);
@@ -644,12 +644,12 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   message = next;
 
   pos = 0;
-  while (!osip_list_eol (sip->headers, pos))
+  while (!osip_list_eol (&sip->headers, pos))
     {
       osip_header_t *header;
       size_t header_len = 0;
 
-      header = (osip_header_t *) osip_list_get (sip->headers, pos);
+      header = (osip_header_t *) osip_list_get (&sip->headers, pos);
       i = osip_header_to_str (header, &tmp);
       if (i == -1)
         {
@@ -672,7 +672,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
 
   i =
-    strcat_headers_all_on_one_line (dest, &malloc_size, &message, sip->allows,
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, &sip->allows,
                                     "Allow: ", 7,
                                     ((int (*)(void *, char **))
                                      &osip_content_length_to_str), &next);
@@ -698,7 +698,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_all_on_one_line (dest, &malloc_size, &message,
-                                    sip->content_encodings,
+                                    &sip->content_encodings,
                                     "Content-Encoding: ", 18,
                                     ((int (*)(void *, char **))
                                      &osip_content_length_to_str), &next);
@@ -724,7 +724,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->call_infos, "Call-Info: ", 11,
+                                 &sip->call_infos, "Call-Info: ", 11,
                                  ((int (*)(void *, char **))
                                   &osip_call_info_to_str), &next);
   if (i != 0)
@@ -737,7 +737,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->alert_infos, "Alert-Info: ", 12,
+                                 &sip->alert_infos, "Alert-Info: ", 12,
                                  ((int (*)(void *, char **))
                                   &osip_call_info_to_str), &next);
   if (i != 0)
@@ -750,7 +750,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->error_infos, "Error-Info: ", 12,
+                                 &sip->error_infos, "Error-Info: ", 12,
                                  ((int (*)(void *, char **))
                                   &osip_call_info_to_str), &next);
   if (i != 0)
@@ -763,7 +763,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_all_on_one_line (dest, &malloc_size, &message,
-                                    sip->accepts, "Accept: ", 8,
+                                    &sip->accepts, "Accept: ", 8,
                                     ((int (*)(void *, char **))
                                      &osip_accept_to_str), &next);
   if (i != 0)
@@ -776,7 +776,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_all_on_one_line (dest, &malloc_size, &message,
-                                    sip->accept_encodings,
+                                    &sip->accept_encodings,
                                     "Accept-Encoding: ", 17,
                                     ((int (*)(void *, char **))
                                      &osip_accept_encoding_to_str), &next);
@@ -790,7 +790,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_all_on_one_line (dest, &malloc_size, &message,
-                                    sip->accept_languages,
+                                    &sip->accept_languages,
                                     "Accept-Language: ", 17,
                                     ((int (*)(void *, char **))
                                      &osip_accept_encoding_to_str), &next);
@@ -804,7 +804,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->authentication_infos,
+                                 &sip->authentication_infos,
                                  "Authentication-Info: ", 21,
                                  ((int (*)(void *, char **))
                                   &osip_authentication_info_to_str), &next);
@@ -818,7 +818,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
-                                 sip->proxy_authentication_infos,
+                                 &sip->proxy_authentication_infos,
                                  "Proxy-Authentication-Info: ", 27,
                                  ((int (*)(void *, char **))
                                   &osip_authentication_info_to_str), &next);
@@ -837,7 +837,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   if (_osip_message_realloc (&message, dest, 16, &malloc_size) < 0)
     return -1;
 
-  if (sipfrag && osip_list_eol (sip->bodies, 0))
+  if (sipfrag && osip_list_eol (&sip->bodies, 0))
     {
       /* end of headers */
       osip_strncpy (message, CRLF, 2);
@@ -871,7 +871,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
      }
      else
      { */
-  if (osip_list_eol (sip->bodies, 0))   /* no body */
+  if (osip_list_eol (&sip->bodies, 0))   /* no body */
     message = osip_strn_append (message, "0", 1);
   else
     {
@@ -897,7 +897,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
   start_of_bodies = message;
   total_length = start_of_bodies - *dest;
 
-  if (osip_list_eol (sip->bodies, 0))
+  if (osip_list_eol (&sip->bodies, 0))
     {
       /* same remark as at the beginning of the method */
       sip->message_property = 1;
@@ -916,7 +916,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       osip_generic_param_t *ct_param = NULL;
 
       /* find the boundary */
-      i = osip_generic_param_get_byname (sip->content_type->gen_params,
+      i = osip_generic_param_get_byname (&sip->content_type->gen_params,
                                          "boundary", &ct_param);
       if ((i >= 0) && ct_param && ct_param->gvalue)
         {
@@ -942,12 +942,12 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
 
   pos = 0;
-  while (!osip_list_eol (sip->bodies, pos))
+  while (!osip_list_eol (&sip->bodies, pos))
     {
       osip_body_t *body;
       size_t body_length;
 
-      body = (osip_body_t *) osip_list_get (sip->bodies, pos);
+      body = (osip_body_t *) osip_list_get (&sip->bodies, pos);
 
       if (boundary)
         {

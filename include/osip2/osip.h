@@ -488,12 +488,12 @@ extern "C"
     void *application_context;  /**< User defined Pointer */
 
     /* list of transactions for ict, ist, nict, nist */
-    osip_list_t *osip_ict_transactions;   /**< list of ict transactions */
-    osip_list_t *osip_ist_transactions;   /**< list of ist transactions */
-    osip_list_t *osip_nict_transactions;  /**< list of nict transactions */
-    osip_list_t *osip_nist_transactions;  /**< list of nist transactions */
+    osip_list_t osip_ict_transactions;   /**< list of ict transactions */
+    osip_list_t osip_ist_transactions;   /**< list of ist transactions */
+    osip_list_t osip_nict_transactions;  /**< list of nict transactions */
+    osip_list_t osip_nist_transactions;  /**< list of nist transactions */
 
-    osip_list_t *ixt_retransmissions;    /**< list of ixt elements */
+    osip_list_t ixt_retransmissions;    /**< list of ixt elements */
 
     osip_message_cb_t msg_callbacks[OSIP_MESSAGE_CALLBACK_COUNT];        /**@internal */
     osip_kill_transaction_cb_t kill_callbacks[OSIP_KILL_CALLBACK_COUNT]; /**@internal */

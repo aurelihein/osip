@@ -280,7 +280,7 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
     if (orig_via == NULL)
       goto ica_error;
     osip_via_clone (orig_via, &via);
-    osip_list_add (ack->vias, via, -1);
+    osip_list_add (&ack->vias, via, -1);
   }
 
   /* ack MUST contains the ROUTE headers field from the original request */
@@ -292,12 +292,12 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
     osip_route_t *route;
     osip_route_t *orig_route;
 
-    while (!osip_list_eol (ict->orig_request->routes, pos))
+    while (!osip_list_eol (&ict->orig_request->routes, pos))
       {
         orig_route =
-          (osip_route_t *) osip_list_get (ict->orig_request->routes, pos);
+          (osip_route_t *) osip_list_get (&ict->orig_request->routes, pos);
         osip_route_clone (orig_route, &route);
-        osip_list_add (ack->routes, route, -1);
+        osip_list_add (&ack->routes, route, -1);
         pos++;
       }
   }

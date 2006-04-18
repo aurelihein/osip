@@ -37,14 +37,7 @@ osip_content_type_init (osip_content_type_t ** content_type)
   (*content_type)->type = NULL;
   (*content_type)->subtype = NULL;
 
-  (*content_type)->gen_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*content_type)->gen_params == NULL)
-    {
-      osip_free (*content_type);
-      *content_type = NULL;
-      return -1;
-    }
-  osip_list_init ((*content_type)->gen_params);
+  osip_list_init (&(*content_type)->gen_params);
 
   return 0;
 }
@@ -119,7 +112,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
 
   if (osip_content_type_params != NULL)
     {
-      if (__osip_generic_param_parseall (content_type->gen_params,
+      if (__osip_generic_param_parseall (&content_type->gen_params,
                                          osip_content_type_params) == -1)
         return -1;
   } else
@@ -162,7 +155,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
 
   /* try to guess a long enough length */
   len = strlen (content_type->type) + strlen (content_type->subtype) + 4        /* for '/', ' ', ';' and '\0' */
-    + 10 * osip_list_size (content_type->gen_params);
+    + 10 * osip_list_size (&content_type->gen_params);
 
   buf = (char *) osip_malloc (len);
   tmp = buf;
@@ -181,12 +174,12 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
         tmp++;
       }
 #endif
-    while (!osip_list_eol (content_type->gen_params, pos))
+    while (!osip_list_eol (&content_type->gen_params, pos))
       {
         size_t tmp_len;
 
         u_param =
-          (osip_generic_param_t *) osip_list_get (content_type->gen_params, pos);
+          (osip_generic_param_t *) osip_list_get (&content_type->gen_params, pos);
         if (u_param->gvalue == NULL)
           {
             osip_free (buf);
@@ -220,11 +213,10 @@ osip_content_type_free (osip_content_type_t * content_type)
   osip_free (content_type->type);
   osip_free (content_type->subtype);
 
-  osip_generic_param_freelist (content_type->gen_params);
+  osip_generic_param_freelist (&content_type->gen_params);
 
   content_type->type = NULL;
   content_type->subtype = NULL;
-  content_type->gen_params = NULL;
 
   osip_free (content_type);
 }
@@ -253,9 +245,9 @@ osip_content_type_clone (const osip_content_type_t * ctt,
     osip_generic_param_t *u_param;
     osip_generic_param_t *dest_param;
 
-    while (!osip_list_eol (ctt->gen_params, pos))
+    while (!osip_list_eol (&ctt->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&ctt->gen_params, pos);
         i = osip_generic_param_clone (u_param, &dest_param);
         if (i != 0)
           {
@@ -263,7 +255,7 @@ osip_content_type_clone (const osip_content_type_t * ctt,
             osip_free (ct);
             return -1;
           }
-        osip_list_add (ct->gen_params, dest_param, -1);
+        osip_list_add (&ct->gen_params, dest_param, -1);
         pos++;
       }
   }

@@ -53,7 +53,7 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->record_routes, record_route, -1);
+  osip_list_add (&sip->record_routes, record_route, -1);
   return 0;
 }
 
@@ -67,9 +67,9 @@ osip_message_get_record_route (const osip_message_t * sip, int pos,
   osip_record_route_t *record_route;
 
   *dest = NULL;
-  if (osip_list_size (sip->record_routes) <= pos)
+  if (osip_list_size (&sip->record_routes) <= pos)
     return -1;                  /* does not exist */
-  record_route = (osip_record_route_t *) osip_list_get (sip->record_routes, pos);
+  record_route = (osip_record_route_t *) osip_list_get (&sip->record_routes, pos);
   *dest = record_route;
   return pos;
 }
@@ -124,10 +124,10 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
     size_t plen;
     char *tmp;
 
-    while (!osip_list_eol (record_route->gen_params, pos))
+    while (!osip_list_eol (&record_route->gen_params, pos))
       {
         u_param =
-          (osip_generic_param_t *) osip_list_get (record_route->gen_params, pos);
+          (osip_generic_param_t *) osip_list_get (&record_route->gen_params, pos);
 
         if (u_param->gvalue == NULL)
           plen = strlen (u_param->gname) + 2;

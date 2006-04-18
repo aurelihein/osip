@@ -48,7 +48,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->vias, via, -1);
+  osip_list_add (&sip->vias, via, -1);
   return 0;
 }
 
@@ -72,7 +72,7 @@ osip_message_append_via (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->vias, via, 0);
+  osip_list_add (&sip->vias, via, 0);
   return 0;
 }
 
@@ -87,9 +87,9 @@ osip_message_get_via (const osip_message_t * sip, int pos, osip_via_t ** dest)
   *dest = NULL;
   if (sip == NULL)
     return -1;
-  if (osip_list_size (sip->vias) <= pos)
+  if (osip_list_size (&sip->vias) <= pos)
     return -1;
-  *dest = (osip_via_t *) osip_list_get (sip->vias, pos);
+  *dest = (osip_via_t *) osip_list_get (&sip->vias, pos);
 
   return pos;
 }
@@ -104,14 +104,7 @@ osip_via_init (osip_via_t ** via)
 
   memset (*via, 0, sizeof (osip_via_t));
 
-  (*via)->via_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*via)->via_params == NULL)
-    {
-      osip_free (*via);
-      *via = NULL;
-      return -1;
-    }
-  osip_list_init ((*via)->via_params);
+  osip_list_init (&(*via)->via_params);
 
   return 0;
 }
@@ -126,7 +119,7 @@ osip_via_free (osip_via_t * via)
   osip_free (via->host);
   osip_free (via->port);
   osip_free (via->comment);
-  osip_generic_param_freelist (via->via_params);
+  osip_generic_param_freelist (&via->via_params);
 
   osip_free (via);
 }
@@ -217,7 +210,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
       if (tmp == NULL)
         return -1;
       osip_strncpy (tmp, via_params, comment - via_params);
-      __osip_generic_param_parseall (via->via_params, tmp);
+      __osip_generic_param_parseall (&via->via_params, tmp);
       osip_free (tmp);
     }
 
@@ -320,9 +313,9 @@ osip_via_to_str (const osip_via_t * via, char **dest)
     int pos = 0;
     osip_generic_param_t *u_param;
 
-    while (!osip_list_eol (via->via_params, pos))
+    while (!osip_list_eol (&via->via_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (via->via_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&via->via_params, pos);
 
         if (u_param->gvalue == NULL)
           plen = strlen (u_param->gname) + 2;
@@ -454,16 +447,16 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
     osip_generic_param_t *u_param;
     osip_generic_param_t *dest_param;
 
-    while (!osip_list_eol (via->via_params, pos))
+    while (!osip_list_eol (&via->via_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (via->via_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&via->via_params, pos);
         i = osip_generic_param_clone (u_param, &dest_param);
         if (i != 0)
           {
             osip_via_free (vi);
             return -1;
           }
-        osip_list_add (vi->via_params, dest_param, -1);
+        osip_list_add (&vi->via_params, dest_param, -1);
         pos++;
       }
   }

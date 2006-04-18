@@ -44,7 +44,7 @@ osip_message_set_alert_info (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->alert_infos, alert_info, -1);
+  osip_list_add (&sip->alert_infos, alert_info, -1);
   return 0;
 }
 
@@ -55,9 +55,9 @@ osip_message_get_alert_info (const osip_message_t * sip, int pos,
   osip_alert_info_t *alert_info;
 
   *dest = NULL;
-  if (osip_list_size (sip->alert_infos) <= pos)
+  if (osip_list_size (&sip->alert_infos) <= pos)
     return -1;                  /* does not exist */
-  alert_info = (osip_alert_info_t *) osip_list_get (sip->alert_infos, pos);
+  alert_info = (osip_alert_info_t *) osip_list_get (&sip->alert_infos, pos);
   *dest = alert_info;
   return pos;
 }

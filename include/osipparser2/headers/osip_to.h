@@ -108,27 +108,27 @@ extern "C"
  * @param name The token name to search.
  * @param dest A pointer on the element found.
  */
-#define osip_to_param_get_byname(header,name,dest) osip_generic_param_get_byname((header)->gen_params,name,dest)
+#define osip_to_param_get_byname(header,name,dest) osip_generic_param_get_byname((&(header)->gen_params),name,dest)
 /**
  * Allocate and add a generic parameter element in a list.
  * @param header The element to work on.
  * @param name The token name.
  * @param value The token value.
  */
-#define osip_to_param_add(header,name,value) osip_generic_param_add((header)->gen_params,name,value)
+#define osip_to_param_add(header,name,value) osip_generic_param_add((&(header)->gen_params),name,value)
 
 /**
  * Allocate and add a tag parameter element in a list.
  * @param header The element to work on.
  * @param value The token value.
  */
-#define osip_to_set_tag(header,value) osip_generic_param_add((header)->gen_params, osip_strdup("tag"),value)
+#define osip_to_set_tag(header,value) osip_generic_param_add((&(header)->gen_params), osip_strdup("tag"),value)
 /**
  * Find a tag parameter in a To element.
  * @param header The element to work on.
  * @param dest A pointer on the element found.
  */
-#define osip_to_get_tag(header,dest) osip_generic_param_get_byname((header)->gen_params, "tag",dest)
+#define osip_to_get_tag(header,dest) osip_generic_param_get_byname((&(header)->gen_params), "tag",dest)
 
 #ifndef DOXYGEN			/* avoid DOXYGEN warning */
 /* Compare the username, host and tag part of the two froms */

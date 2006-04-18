@@ -50,7 +50,7 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
   if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
-  if (sip == NULL || sip->www_authenticates == NULL)
+  if (sip == NULL)
     return -1;
   i = osip_www_authenticate_init (&www_authenticate);
   if (i != 0)
@@ -62,7 +62,7 @@ osip_message_set_www_authenticate (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->www_authenticates, www_authenticate, -1);
+  osip_list_add (&sip->www_authenticates, www_authenticate, -1);
   return 0;
 }
 
@@ -370,11 +370,11 @@ osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
   osip_www_authenticate_t *www_authenticate;
 
   *dest = NULL;
-  if (osip_list_size (sip->www_authenticates) <= pos)
+  if (osip_list_size (&sip->www_authenticates) <= pos)
     return -1;                  /* does not exist */
 
   www_authenticate =
-    (osip_www_authenticate_t *) osip_list_get (sip->www_authenticates, pos);
+    (osip_www_authenticate_t *) osip_list_get (&sip->www_authenticates, pos);
 
   *dest = www_authenticate;
   return pos;

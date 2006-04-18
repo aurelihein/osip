@@ -47,7 +47,6 @@ osip_list_special_free (osip_list_t * li, void *(*free_func) (void *))
       if (free_func != NULL)
         free_func (element);
     }
-  osip_free (li);
 }
 
 void
@@ -64,7 +63,6 @@ osip_list_ofchar_free (osip_list_t * li)
       osip_list_remove (li, pos);
       osip_free (chain);
     }
-  osip_free (li);
 }
 
 int

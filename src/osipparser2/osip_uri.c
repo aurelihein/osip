@@ -38,24 +38,9 @@ osip_uri_init (osip_uri_t ** url)
   (*url)->host = NULL;
   (*url)->port = NULL;
 
-  (*url)->url_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*url)->url_params == NULL)
-    {
-      osip_free (*url);
-      *url = NULL;
-      return -1;
-    }
-  osip_list_init ((*url)->url_params);
+  osip_list_init (&(*url)->url_params);
 
-  (*url)->url_headers = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*url)->url_headers == NULL)
-    {
-      osip_free ((*url)->url_params);
-      osip_free (*url);
-      *url = NULL;
-      return -1;
-    }
-  osip_list_init ((*url)->url_headers);
+  osip_list_init (&(*url)->url_headers);
 
   (*url)->string = NULL;
   return 0;
@@ -603,12 +588,12 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
     int pos = 0;
     osip_uri_param_t *u_param;
 
-    while (!osip_list_eol (url->url_params, pos))
+    while (!osip_list_eol (&url->url_params, pos))
       {
         char *tmp1;
         char *tmp2 = NULL;
 
-        u_param = (osip_uri_param_t *) osip_list_get (url->url_params, pos);
+        u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
 
         tmp1 = __osip_uri_escape_uri_param (u_param->gname);
         if (u_param->gvalue == NULL)
@@ -638,12 +623,12 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
     int pos = 0;
     osip_uri_header_t *u_header;
 
-    while (!osip_list_eol (url->url_headers, pos))
+    while (!osip_list_eol (&url->url_headers, pos))
       {
         char *tmp1;
         char *tmp2;
 
-        u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+        u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
         tmp1 = __osip_uri_escape_header_param (u_header->gname);
         tmp2 = __osip_uri_escape_header_param (u_header->gvalue);
 
@@ -686,18 +671,17 @@ osip_uri_free (osip_uri_t * url)
   osip_free (url->host);
   osip_free (url->port);
 
-  osip_uri_param_freelist (url->url_params);
+  osip_uri_param_freelist (&url->url_params);
 
   {
     osip_uri_header_t *u_header;
 
-    while (!osip_list_eol (url->url_headers, pos))
+    while (!osip_list_eol (&url->url_headers, pos))
       {
-        u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
-        osip_list_remove (url->url_headers, pos);
+        u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
+        osip_list_remove (&url->url_headers, pos);
         osip_uri_header_free (u_header);
       }
-    osip_free (url->url_headers);
   }
 
   osip_free (url->string);
@@ -738,13 +722,13 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
     osip_uri_param_t *u_param;
     osip_uri_param_t *dest_param;
 
-    while (!osip_list_eol (url->url_params, pos))
+    while (!osip_list_eol (&url->url_params, pos))
       {
-        u_param = (osip_uri_param_t *) osip_list_get (url->url_params, pos);
+        u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
         i = osip_uri_param_clone (u_param, &dest_param);
         if (i != 0)
           return -1;
-        osip_list_add (ur->url_params, dest_param, -1);
+        osip_list_add (&ur->url_params, dest_param, -1);
         pos++;
       }
   }
@@ -753,13 +737,13 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
     osip_uri_param_t *u_param;
     osip_uri_param_t *dest_param;
 
-    while (!osip_list_eol (url->url_headers, pos))
+    while (!osip_list_eol (&url->url_headers, pos))
       {
-        u_param = (osip_uri_param_t *) osip_list_get (url->url_headers, pos);
+        u_param = (osip_uri_param_t *) osip_list_get (&url->url_headers, pos);
         i = osip_uri_param_clone (u_param, &dest_param);
         if (i != 0)
           return -1;
-        osip_list_add (ur->url_headers, dest_param, -1);
+        osip_list_add (&ur->url_headers, dest_param, -1);
         pos++;
       }
   }
@@ -827,7 +811,6 @@ osip_uri_param_freelist (osip_list_t * params)
       osip_list_remove (params, 0);
       osip_uri_param_free (u_param);
     }
-  osip_free (params);
 }
 
 int

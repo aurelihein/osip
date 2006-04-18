@@ -70,7 +70,7 @@ extern "C"
     struct osip_mutex *qislocked;  /**@internal */
     struct osip_sem *qisempty;     /**@internal */
 #endif
-    osip_list_t *queue;            /**< list of nodes containing elements */
+    osip_list_t queue;             /**< list of nodes containing elements */
     int nb_elt;                    /**< nb of elements */
     osip_fifo_etat etat;           /**@internal state of the fifo */
   };

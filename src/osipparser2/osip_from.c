@@ -81,13 +81,7 @@ osip_from_init (osip_from_t ** from)
   (*from)->displayname = NULL;
   (*from)->url = NULL;
 
-  (*from)->gen_params = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*from)->gen_params == NULL)
-    {
-      osip_free (*from);
-      *from = NULL;
-    }
-  osip_list_init ((*from)->gen_params);
+  osip_list_init (&(*from)->gen_params);
 
   return 0;
 }
@@ -105,7 +99,7 @@ osip_from_free (osip_from_t * from)
     }
   osip_free (from->displayname);
 
-  osip_generic_param_freelist (from->gen_params);
+  osip_generic_param_freelist (&from->gen_params);
 
   osip_free (from);
 }
@@ -230,7 +224,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
     }
 
   if (gen_params != NULL)       /* now we are sure a param exist */
-    if (__osip_generic_param_parseall (from->gen_params, gen_params) == -1)
+    if (__osip_generic_param_parseall (&from->gen_params, gen_params) == -1)
       {
         return -1;
       }
@@ -304,9 +298,9 @@ osip_from_to_str (const osip_from_t * from, char **dest)
     size_t plen;
     char *tmp;
 
-    while (!osip_list_eol (from->gen_params, pos))
+    while (!osip_list_eol (&from->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (from->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
 
         if (u_param->gvalue == NULL)
           plen = strlen (u_param->gname) + 2;
@@ -361,9 +355,9 @@ osip_from_param_get (osip_from_t * from, int pos, osip_generic_param_t ** fparam
   *fparam = NULL;
   if (from == NULL)
     return -1;
-  if (osip_list_size (from->gen_params) <= pos)
+  if (osip_list_size (&from->gen_params) <= pos)
     return -1;                  /* does not exist */
-  *fparam = (osip_generic_param_t *) osip_list_get (from->gen_params, pos);
+  *fparam = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
   return pos;
 }
 
@@ -398,16 +392,16 @@ osip_from_clone (const osip_from_t * from, osip_from_t ** dest)
     osip_generic_param_t *u_param;
     osip_generic_param_t *dest_param;
 
-    while (!osip_list_eol (from->gen_params, pos))
+    while (!osip_list_eol (&from->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (from->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
         i = osip_generic_param_clone (u_param, &dest_param);
         if (i != 0)
           {
             osip_from_free (fr);
             return -1;
           }
-        osip_list_add (fr->gen_params, dest_param, -1);
+        osip_list_add (&fr->gen_params, dest_param, -1);
         pos++;
       }
   }
@@ -451,9 +445,9 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
     int pos = 0;
     osip_generic_param_t *u_param;
 
-    while (!osip_list_eol (from1->gen_params, pos))
+    while (!osip_list_eol (&from1->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (from1->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&from1->gen_params, pos);
         if (0 == strncmp (u_param->gname, "tag", 3))
           {
             tag1 = u_param->gvalue;
@@ -466,9 +460,9 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
     int pos = 0;
     osip_generic_param_t *u_param;
 
-    while (!osip_list_eol (from2->gen_params, pos))
+    while (!osip_list_eol (&from2->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (from2->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&from2->gen_params, pos);
         if (0 == strncmp (u_param->gname, "tag", 3))
           {
             tag2 = u_param->gvalue;

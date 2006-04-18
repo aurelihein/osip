@@ -217,22 +217,6 @@ extern "C"
   int osip_message_get_contact (const osip_message_t * sip, int pos,
                                 osip_contact_t ** dest);
 /**
- * Set the Content-disposition header.
- * @param sip The element to work on.
- * @param hvalue The string describing the element.
- */
-  int osip_message_set_content_disposition (osip_message_t * sip,
-                                            const char *hvalue);
-/**
- * Get one Content-disposition header.
- * @param sip The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the header found.
- */
-  int osip_message_get_content_disposition (const osip_message_t * sip,
-                                            int pos,
-                                            osip_content_disposition_t ** dest);
-/**
  * Set the Content-encoding header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.

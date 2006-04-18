@@ -1,3 +1,9 @@
+libosip2 (3.0.0)
+	* Modification of the Application Binary Interface (ABI)
+	  to decrease number of allocations.
+	  Changes: osip_message_t/osip_dialog_t/sdp_message_t/osip_fifo_t
+	* save route headers in the same order (CALLER or CALLER) in dialogs.
+	
 libosip2 (2.2.3)
 	* fix 64-bit (amd64) issue with hash.
 	* remove SDP negotiation (much better to do it in your applications)

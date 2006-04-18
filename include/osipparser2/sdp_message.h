@@ -87,7 +87,7 @@ extern "C"
   {
     char *t_start_time;            /**< start time */
     char *t_stop_time;             /**< stop time */
-    osip_list_t *r_repeats;        /**< repeat headers */
+    osip_list_t r_repeats;        /**< repeat headers */
   };
 
 /**
@@ -202,12 +202,12 @@ extern "C"
     char *m_port;               /**< port number */
     char *m_number_of_port;     /**< number of port */
     char *m_proto;              /**< protocol to be used */
-    osip_list_t *m_payloads;    /**< list of payloads (as strings) */
+    osip_list_t m_payloads;    /**< list of payloads (as strings) */
 
     char *i_info;               /**< information header */
-    osip_list_t *c_connections; /**< list of sdp_connection_t * */
-    osip_list_t *b_bandwidths;  /**< list of sdp_bandwidth_t * */
-    osip_list_t *a_attributes;  /**< list of sdp_attribute_t * */
+    osip_list_t c_connections; /**< list of sdp_connection_t * */
+    osip_list_t b_bandwidths;  /**< list of sdp_bandwidth_t * */
+    osip_list_t a_attributes;  /**< list of sdp_attribute_t * */
     sdp_key_t *k_key;           /**< key informations */
   };
 
@@ -244,15 +244,15 @@ extern "C"
     char *s_name;               /**< Subject header */
     char *i_info;               /**< Information header */
     char *u_uri;                /**< Uri header */
-    osip_list_t *e_emails;      /**< list of mail address */
-    osip_list_t *p_phones;      /**< list of phone numbers * */
+    osip_list_t e_emails;      /**< list of mail address */
+    osip_list_t p_phones;      /**< list of phone numbers * */
     sdp_connection_t *c_connection;   /**< Connection information */
-    osip_list_t *b_bandwidths;  /**< list of bandwidth info (sdp_bandwidth_t) */
-    osip_list_t *t_descrs;      /**< list of time description (sdp_time_descr_t) */
+    osip_list_t b_bandwidths;  /**< list of bandwidth info (sdp_bandwidth_t) */
+    osip_list_t t_descrs;      /**< list of time description (sdp_time_descr_t) */
     char *z_adjustments;        /**< Time adjustment header */
     sdp_key_t *k_key;           /**< Key information header */
-    osip_list_t *a_attributes;  /**< list of global attributes (sdp_attribute_t) */
-    osip_list_t *m_medias;      /**< list of supported media (sdp_media_t) */
+    osip_list_t a_attributes;  /**< list of global attributes (sdp_attribute_t) */
+    osip_list_t m_medias;      /**< list of supported media (sdp_media_t) */
   };
 
 

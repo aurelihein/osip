@@ -66,7 +66,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
   } else
     h->hvalue = NULL;
   sip->message_property = 2;
-  osip_list_add (sip->headers, h, -1);
+  osip_list_add (&sip->headers, h, -1);
   return 0;                     /* ok */
 }
 
@@ -110,7 +110,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
   } else
     h->hvalue = NULL;
   sip->message_property = 2;
-  osip_list_add (sip->headers, h, 0);
+  osip_list_add (&sip->headers, h, 0);
   return 0;                     /* ok */
 }
 
@@ -123,9 +123,9 @@ osip_message_get_header (const osip_message_t * sip, int pos,
                          osip_header_t ** dest)
 {
   *dest = NULL;
-  if (osip_list_size (sip->headers) <= pos)
+  if (osip_list_size (&sip->headers) <= pos)
     return -1;                  /* NULL */
-  *dest = (osip_header_t *) osip_list_get (sip->headers, pos);
+  *dest = (osip_header_t *) osip_list_get (&sip->headers, pos);
   return 0;
 }
 
@@ -143,11 +143,11 @@ osip_message_header_get_byname (const osip_message_t * sip, const char *hname,
 
   *dest = NULL;
   i = pos;
-  if (osip_list_size (sip->headers) <= pos)
+  if (osip_list_size (&sip->headers) <= pos)
     return -1;                  /* NULL */
-  while (osip_list_size (sip->headers) > i)
+  while (osip_list_size (&sip->headers) > i)
     {
-      tmp = (osip_header_t *) osip_list_get (sip->headers, i);
+      tmp = (osip_header_t *) osip_list_get (&sip->headers, i);
       if (osip_strcasecmp (tmp->hname, hname) == 0)
         {
           *dest = tmp;

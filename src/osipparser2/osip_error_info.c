@@ -44,7 +44,7 @@ osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->error_infos, error_info, -1);
+  osip_list_add (&sip->error_infos, error_info, -1);
   return 0;
 }
 
@@ -55,9 +55,9 @@ osip_message_get_error_info (const osip_message_t * sip, int pos,
   osip_error_info_t *error_info;
 
   *dest = NULL;
-  if (osip_list_size (sip->error_infos) <= pos)
+  if (osip_list_size (&sip->error_infos) <= pos)
     return -1;                  /* does not exist */
-  error_info = (osip_error_info_t *) osip_list_get (sip->error_infos, pos);
+  error_info = (osip_error_info_t *) osip_list_get (&sip->error_infos, pos);
   *dest = error_info;
   return pos;
 }

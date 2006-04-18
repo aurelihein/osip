@@ -55,7 +55,7 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
   if (hvalue == NULL || hvalue[0] == '\0')
     return 0;
 
-  if (sip == NULL || sip->authentication_infos == NULL)
+  if (sip == NULL)
     return -1;
   i = osip_authentication_info_init (&authentication_info);
   if (i != 0)
@@ -68,7 +68,7 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
 
-  osip_list_add (sip->authentication_infos, authentication_info, -1);
+  osip_list_add (&sip->authentication_infos, authentication_info, -1);
   return 0;
 }
 
@@ -181,11 +181,11 @@ osip_message_get_authentication_info (const osip_message_t * sip, int pos,
   osip_authentication_info_t *authentication_info;
 
   *dest = NULL;
-  if (osip_list_size (sip->authentication_infos) <= pos)
+  if (osip_list_size (&sip->authentication_infos) <= pos)
     return -1;                  /* does not exist */
 
   authentication_info =
-    (osip_authentication_info_t *) osip_list_get (sip->authentication_infos, pos);
+    (osip_authentication_info_t *) osip_list_get (&sip->authentication_infos, pos);
 
   *dest = authentication_info;
   return pos;

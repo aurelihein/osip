@@ -50,7 +50,7 @@ osip_message_set_proxy_authentication_info (osip_message_t * sip,
     }
   sip->message_property = 2;
 
-  osip_list_add (sip->proxy_authentication_infos, proxy_authentication_info, -1);
+  osip_list_add (&sip->proxy_authentication_infos, proxy_authentication_info, -1);
   return 0;
 }
 
@@ -68,11 +68,11 @@ osip_message_get_proxy_authentication_info (const osip_message_t * sip,
   osip_proxy_authentication_info_t *proxy_authentication_info;
 
   *dest = NULL;
-  if (osip_list_size (sip->proxy_authentication_infos) <= pos)
+  if (osip_list_size (&sip->proxy_authentication_infos) <= pos)
     return -1;                  /* does not exist */
 
   proxy_authentication_info = (osip_proxy_authentication_info_t *)
-    osip_list_get (sip->proxy_authentication_infos, pos);
+    osip_list_get (&sip->proxy_authentication_infos, pos);
 
   *dest = proxy_authentication_info;
   return pos;

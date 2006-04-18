@@ -65,7 +65,7 @@ extern "C"
     char *call_id;                       /**< Call-ID*/
     char *local_tag;                     /**< local tag */
     char *remote_tag;                    /**< remote tag */
-    osip_list_t *route_set;              /**< route set */
+    osip_list_t route_set;              /**< route set */
     int local_cseq;                      /**< last local cseq */
     int remote_cseq;                     /**< last remote cseq*/
     osip_to_t *remote_uri;               /**< remote_uri */

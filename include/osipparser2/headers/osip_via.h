@@ -51,7 +51,7 @@
     char *host;                 /**< Host where to send answers */
     char *port;                 /**< Port where to send answers */
     char *comment;              /**< Comments about SIP Agent */
-    osip_list_t *via_params;    /**< Via parameters */
+    osip_list_t via_params;     /**< Via parameters */
   };
 
 #ifdef __cplusplus
@@ -157,31 +157,31 @@ extern "C"
  * Allocate and add a hidden parameter element in a list.
  * @param header The element to work on.
  */
-#define osip_via_set_hidden(header)    osip_generic_param_add((header)->via_params,osip_strdup("hidden"),NULL)
+#define osip_via_set_hidden(header)    osip_generic_param_add((&(header)->via_params),osip_strdup("hidden"),NULL)
 /**
  * Allocate and add a ttl parameter element in a list.
  * @param header The element to work on.
  * @param value The token value.
  */
-#define osip_via_set_ttl(header,value)   osip_generic_param_add((header)->via_params,osip_strdup("ttl"),value)
+#define osip_via_set_ttl(header,value)   osip_generic_param_add((&(header)->via_params),osip_strdup("ttl"),value)
 /**
  * Allocate and add a maddr parameter element in a list.
  * @param header The element to work on.
  * @param value The token value.
  */
-#define osip_via_set_maddr(header,value)   osip_generic_param_add((header)->via_params,osip_strdup("maddr"),value)
+#define osip_via_set_maddr(header,value)   osip_generic_param_add((&(header)->via_params),osip_strdup("maddr"),value)
 /**
  * Allocate and add a received parameter element in a list.
  * @param header The element to work on.
  * @param value The token value.
  */
-#define osip_via_set_received(header,value) osip_generic_param_add((header)->via_params,osip_strdup("received"),value)
+#define osip_via_set_received(header,value) osip_generic_param_add((&(header)->via_params),osip_strdup("received"),value)
 /**
  * Allocate and add a branch parameter element in a list.
  * @param header The element to work on.
  * @param value The token value.
  */
-#define osip_via_set_branch(header,value)  osip_generic_param_add((header)->via_params,osip_strdup("branch"),value)
+#define osip_via_set_branch(header,value)  osip_generic_param_add((&(header)->via_params),osip_strdup("branch"),value)
 
 /**
  * Allocate and add a generic parameter element in a list.
@@ -189,14 +189,14 @@ extern "C"
  * @param name The token name.
  * @param value The token value.
  */
-#define osip_via_param_add(header,name,value)      osip_generic_param_add((header)->via_params,name,value)
+#define osip_via_param_add(header,name,value)      osip_generic_param_add((&(header)->via_params),name,value)
 /**
  * Find a header parameter in a Via element.
  * @param header The element to work on.
  * @param name The token name to search.
  * @param dest A pointer on the element found.
  */
-#define osip_via_param_get_byname(header,name,dest) osip_generic_param_get_byname((header)->via_params,name,dest)
+#define osip_via_param_get_byname(header,name,dest) osip_generic_param_get_byname((&(header)->via_params),name,dest)
 
 /**
  * Check if the Via headers match.

@@ -48,7 +48,7 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->accept_encodings, accept_encoding, -1);
+  osip_list_add (&sip->accept_encodings, accept_encoding, -1);
   return 0;
 }
 
@@ -59,10 +59,10 @@ osip_message_get_accept_encoding (const osip_message_t * sip, int pos,
   osip_accept_encoding_t *accept_encoding;
 
   *dest = NULL;
-  if (osip_list_size (sip->accept_encodings) <= pos)
+  if (osip_list_size (&sip->accept_encodings) <= pos)
     return -1;                  /* does not exist */
   accept_encoding =
-    (osip_accept_encoding_t *) osip_list_get (sip->accept_encodings, pos);
+    (osip_accept_encoding_t *) osip_list_get (&sip->accept_encodings, pos);
   *dest = accept_encoding;
   return pos;
 }
@@ -76,15 +76,7 @@ osip_accept_encoding_init (osip_accept_encoding_t ** accept_encoding)
     return -1;
   (*accept_encoding)->element = NULL;
 
-  (*accept_encoding)->gen_params =
-    (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*accept_encoding)->gen_params == NULL)
-    {
-      osip_free (*accept_encoding);
-      *accept_encoding = NULL;
-      return -1;
-    }
-  osip_list_init ((*accept_encoding)->gen_params);
+  osip_list_init (&(*accept_encoding)->gen_params);
 
   return 0;
 }
@@ -99,7 +91,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
 
   if (osip_accept_encoding_params != NULL)
     {
-      if (__osip_generic_param_parseall (accept_encoding->gen_params,
+      if (__osip_generic_param_parseall (&accept_encoding->gen_params,
                                          osip_accept_encoding_params) == -1)
         return -1;
   } else
@@ -143,10 +135,10 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
     size_t plen;
     osip_generic_param_t *u_param;
 
-    while (!osip_list_eol (accept_encoding->gen_params, pos))
+    while (!osip_list_eol (&accept_encoding->gen_params, pos))
       {
         u_param =
-          (osip_generic_param_t *) osip_list_get (accept_encoding->gen_params,
+          (osip_generic_param_t *) osip_list_get (&accept_encoding->gen_params,
                                                   pos);
         if (u_param->gvalue == NULL)
           plen = strlen (u_param->gname) + 2;
@@ -176,10 +168,9 @@ osip_accept_encoding_free (osip_accept_encoding_t * accept_encoding)
     return;
   osip_free (accept_encoding->element);
 
-  osip_generic_param_freelist (accept_encoding->gen_params);
+  osip_generic_param_freelist (&accept_encoding->gen_params);
 
   accept_encoding->element = NULL;
-  accept_encoding->gen_params = NULL;
   osip_free (accept_encoding);
 }
 
@@ -210,16 +201,16 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
     osip_generic_param_t *u_param;
     osip_generic_param_t *dest_param;
 
-    while (!osip_list_eol (ctt->gen_params, pos))
+    while (!osip_list_eol (&ctt->gen_params, pos))
       {
-        u_param = (osip_generic_param_t *) osip_list_get (ctt->gen_params, pos);
+        u_param = (osip_generic_param_t *) osip_list_get (&ctt->gen_params, pos);
         i = osip_generic_param_clone (u_param, &dest_param);
         if (i != 0)
           {
             osip_accept_encoding_free (ct);
             return -1;
           }
-        osip_list_add (ct->gen_params, dest_param, -1);
+        osip_list_add (&ct->gen_params, dest_param, -1);
         pos++;
       }
   }

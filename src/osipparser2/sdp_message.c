@@ -87,8 +87,7 @@ sdp_time_descr_init (sdp_time_descr_t ** td)
     return -1;
   (*td)->t_start_time = NULL;
   (*td)->t_stop_time = NULL;
-  (*td)->r_repeats = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*td)->r_repeats);
+  osip_list_init (&(*td)->r_repeats);
   return 0;
 }
 
@@ -99,7 +98,7 @@ sdp_time_descr_free (sdp_time_descr_t * td)
     return;
   osip_free (td->t_start_time);
   osip_free (td->t_stop_time);
-  osip_list_ofchar_free (td->r_repeats);
+  osip_list_ofchar_free (&td->r_repeats);
   osip_free (td);
 }
 
@@ -182,15 +181,11 @@ sdp_media_init (sdp_media_t ** media)
   (*media)->m_port = NULL;
   (*media)->m_number_of_port = NULL;
   (*media)->m_proto = NULL;
-  (*media)->m_payloads = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*media)->m_payloads);
+  osip_list_init (&(*media)->m_payloads);
   (*media)->i_info = NULL;
-  (*media)->c_connections = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*media)->c_connections);
-  (*media)->b_bandwidths = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*media)->b_bandwidths);
-  (*media)->a_attributes = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*media)->a_attributes);
+  osip_list_init (&(*media)->c_connections);
+  osip_list_init (&(*media)->b_bandwidths);
+  osip_list_init (&(*media)->a_attributes);
   (*media)->k_key = NULL;
   return 0;
 }
@@ -204,13 +199,13 @@ sdp_media_free (sdp_media_t * media)
   osip_free (media->m_port);
   osip_free (media->m_number_of_port);
   osip_free (media->m_proto);
-  osip_list_ofchar_free (media->m_payloads);
+  osip_list_ofchar_free (&media->m_payloads);
   osip_free (media->i_info);
-  osip_list_special_free (media->c_connections,
+  osip_list_special_free (&media->c_connections,
                           (void *(*)(void *)) &sdp_connection_free);
-  osip_list_special_free (media->b_bandwidths,
+  osip_list_special_free (&media->b_bandwidths,
                           (void *(*)(void *)) &sdp_bandwidth_free);
-  osip_list_special_free (media->a_attributes,
+  osip_list_special_free (&media->a_attributes,
                           (void *(*)(void *)) &sdp_attribute_free);
   sdp_key_free (media->k_key);
   osip_free (media);
@@ -235,40 +230,22 @@ sdp_message_init (sdp_message_t ** sdp)
   (*sdp)->i_info = NULL;
   (*sdp)->u_uri = NULL;
 
-  (*sdp)->e_emails = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->e_emails == NULL)
-    return -1;
-  osip_list_init ((*sdp)->e_emails);
+  osip_list_init (&(*sdp)->e_emails);
 
-  (*sdp)->p_phones = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->p_phones == NULL)
-    return -1;
-  osip_list_init ((*sdp)->p_phones);
+  osip_list_init (&(*sdp)->p_phones);
 
   (*sdp)->c_connection = NULL;
 
-  (*sdp)->b_bandwidths = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->b_bandwidths == NULL)
-    return -1;
-  osip_list_init ((*sdp)->b_bandwidths);
+  osip_list_init (&(*sdp)->b_bandwidths);
 
-  (*sdp)->t_descrs = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->t_descrs == NULL)
-    return -1;
-  osip_list_init ((*sdp)->t_descrs);
+  osip_list_init (&(*sdp)->t_descrs);
 
   (*sdp)->z_adjustments = NULL;
   (*sdp)->k_key = NULL;
 
-  (*sdp)->a_attributes = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->a_attributes == NULL)
-    return -1;
-  osip_list_init ((*sdp)->a_attributes);
+  osip_list_init (&(*sdp)->a_attributes);
 
-  (*sdp)->m_medias = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  if ((*sdp)->m_medias == NULL)
-    return -1;
-  osip_list_init ((*sdp)->m_medias);
+  osip_list_init (&(*sdp)->m_medias);
   return 0;
 }
 
@@ -497,13 +474,13 @@ sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
      if there is no media line yet, then the "b=" is the
      global one.
    */
-  i = osip_list_size (sdp->m_medias);
+  i = osip_list_size (&sdp->m_medias);
   if (i == 0)
     sdp->i_info = i_info;
   else
     {
       sdp_media_t *last_sdp_media =
-        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (&sdp->m_medias, i - 1);
       last_sdp_media->i_info = i_info;
     }
 
@@ -586,7 +563,7 @@ sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
   e_email = osip_malloc (crlf - (equal + 1) + 1);
   osip_strncpy (e_email, equal + 1, crlf - (equal + 1));
 
-  osip_list_add (sdp->e_emails, e_email, -1);
+  osip_list_add (&sdp->e_emails, e_email, -1);
 
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -628,7 +605,7 @@ sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next)
   p_phone = osip_malloc (crlf - (equal + 1) + 1);
   osip_strncpy (p_phone, equal + 1, crlf - (equal + 1));
 
-  osip_list_add (sdp->p_phones, p_phone, -1);
+  osip_list_add (&sdp->p_phones, p_phone, -1);
 
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -760,14 +737,14 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
      if there is no media line yet, then the "c=" is the
      global one.
    */
-  i = osip_list_size (sdp->m_medias);
+  i = osip_list_size (&sdp->m_medias);
   if (i == 0)
     sdp->c_connection = c_header;
   else
     {
       sdp_media_t *last_sdp_media =
-        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
-      osip_list_add (last_sdp_media->c_connections, c_header, -1);
+        (sdp_media_t *) osip_list_get (&sdp->m_medias, i - 1);
+      osip_list_add (&last_sdp_media->c_connections, c_header, -1);
     }
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -834,14 +811,14 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
      if there is no media line yet, then the "b=" is the
      global one.
    */
-  i = osip_list_size (sdp->m_medias);
+  i = osip_list_size (&sdp->m_medias);
   if (i == 0)
-    osip_list_add (sdp->b_bandwidths, b_header, -1);
+    osip_list_add (&sdp->b_bandwidths, b_header, -1);
   else
     {
       sdp_media_t *last_sdp_media =
-        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
-      osip_list_add (last_sdp_media->b_bandwidths, b_header, -1);
+        (sdp_media_t *) osip_list_get (&sdp->m_medias, i - 1);
+      osip_list_add (&last_sdp_media->b_bandwidths, b_header, -1);
     }
 
   if (crlf[1] == '\n')
@@ -908,7 +885,7 @@ sdp_message_parse_t (sdp_message_t * sdp, char *buf, char **next)
     }
 
   /* add the new time_description header */
-  osip_list_add (sdp->t_descrs, t_header, -1);
+  osip_list_add (&sdp->t_descrs, t_header, -1);
 
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -938,7 +915,7 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
   if (equal[-1] != 'r')
     return ERR_DISCARD;
 
-  index = osip_list_size (sdp->t_descrs);
+  index = osip_list_size (&sdp->t_descrs);
   if (index == 0)
     return ERR_ERROR;           /* r field can't come alone! */
 
@@ -956,8 +933,8 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
   osip_strncpy (r_header, equal + 1, crlf - (equal + 1));
 
   /* r field carry information for the last "t" field */
-  t_descr = (sdp_time_descr_t *) osip_list_get (sdp->t_descrs, index - 1);
-  osip_list_add (t_descr->r_repeats, r_header, -1);
+  t_descr = (sdp_time_descr_t *) osip_list_get (&sdp->t_descrs, index - 1);
+  osip_list_add (&t_descr->r_repeats, r_header, -1);
 
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -1087,13 +1064,13 @@ sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next)
      if there is no media line yet, then the "k=" is the
      global one.
    */
-  i = osip_list_size (sdp->m_medias);
+  i = osip_list_size (&sdp->m_medias);
   if (i == 0)
     sdp->k_key = k_header;
   else
     {
       sdp_media_t *last_sdp_media =
-        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
+        (sdp_media_t *) osip_list_get (&sdp->m_medias, i - 1);
       last_sdp_media->k_key = k_header;
     }
 
@@ -1191,14 +1168,14 @@ sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next)
      if there is no media line yet, then the "a=" is the
      global one.
    */
-  i = osip_list_size (sdp->m_medias);
+  i = osip_list_size (&sdp->m_medias);
   if (i == 0)
-    osip_list_add (sdp->a_attributes, a_attribute, -1);
+    osip_list_add (&sdp->a_attributes, a_attribute, -1);
   else
     {
       sdp_media_t *last_sdp_media =
-        (sdp_media_t *) osip_list_get (sdp->m_medias, i - 1);
-      osip_list_add (last_sdp_media->a_attributes, a_attribute, -1);
+        (sdp_media_t *) osip_list_get (&sdp->m_medias, i - 1);
+      osip_list_add (&last_sdp_media->a_attributes, a_attribute, -1);
     }
 
   if (crlf[1] == '\n')
@@ -1322,7 +1299,7 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
             return -1;
           }
         tmp = tmp_next;
-        osip_list_add (m_header->m_payloads, str, -1);
+        osip_list_add (&m_header->m_payloads, str, -1);
 
         space = strchr (tmp + 1, ' ');
         if (space == NULL)
@@ -1344,11 +1321,11 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
                 return -1;
               }
           }
-        osip_list_add (m_header->m_payloads, str, -1);
+        osip_list_add (&m_header->m_payloads, str, -1);
       }
   }
 
-  osip_list_add (sdp->m_medias, m_header, -1);
+  osip_list_add (&sdp->m_medias, m_header, -1);
 
   if (crlf[1] == '\n')
     *next = crlf + 2;
@@ -1446,7 +1423,7 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
     }
 
   /* rfc2327: there should be at least of email or phone number! */
-  if (osip_list_size (sdp->e_emails) == 0 && osip_list_size (sdp->p_phones) == 0)
+  if (osip_list_size (&sdp->e_emails) == 0 && osip_list_size (&sdp->p_phones) == 0)
     {
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_INFO4, NULL,
@@ -1690,9 +1667,9 @@ sdp_append_time_descr (char *string, int size, char *tmp,
   tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
 
   pos = 0;
-  while (!osip_list_eol (time_descr->r_repeats, pos))
+  while (!osip_list_eol (&time_descr->r_repeats, pos))
     {
-      char *str = (char *) osip_list_get (time_descr->r_repeats, pos);
+      char *str = (char *) osip_list_get (&time_descr->r_repeats, pos);
 
       tmp = __osip_sdp_append_string (string, size, tmp, "r=");
       tmp = __osip_sdp_append_string (string, size, tmp, str);
@@ -1769,9 +1746,9 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
   tmp = __osip_sdp_append_string (string, size, tmp, " ");
   tmp = __osip_sdp_append_string (string, size, tmp, media->m_proto);
   pos = 0;
-  while (!osip_list_eol (media->m_payloads, pos))
+  while (!osip_list_eol (&media->m_payloads, pos))
     {
-      char *str = (char *) osip_list_get (media->m_payloads, pos);
+      char *str = (char *) osip_list_get (&media->m_payloads, pos);
 
       tmp = __osip_sdp_append_string (string, size, tmp, " ");
       tmp = __osip_sdp_append_string (string, size, tmp, str);
@@ -1787,10 +1764,10 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
     }
 
   pos = 0;
-  while (!osip_list_eol (media->c_connections, pos))
+  while (!osip_list_eol (&media->c_connections, pos))
     {
       sdp_connection_t *conn =
-        (sdp_connection_t *) osip_list_get (media->c_connections, pos);
+        (sdp_connection_t *) osip_list_get (&media->c_connections, pos);
       char *next_tmp2;
       int i;
 
@@ -1802,10 +1779,10 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
     }
 
   pos = 0;
-  while (!osip_list_eol (media->b_bandwidths, pos))
+  while (!osip_list_eol (&media->b_bandwidths, pos))
     {
       sdp_bandwidth_t *band =
-        (sdp_bandwidth_t *) osip_list_get (media->b_bandwidths, pos);
+        (sdp_bandwidth_t *) osip_list_get (&media->b_bandwidths, pos);
       char *next_tmp2;
       int i;
 
@@ -1828,10 +1805,10 @@ sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media,
     }
 
   pos = 0;
-  while (!osip_list_eol (media->a_attributes, pos))
+  while (!osip_list_eol (&media->a_attributes, pos))
     {
       sdp_attribute_t *attr =
-        (sdp_attribute_t *) osip_list_get (media->a_attributes, pos);
+        (sdp_attribute_t *) osip_list_get (&media->a_attributes, pos);
       char *next_tmp2;
       int i;
 
@@ -1909,9 +1886,9 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
     }
   pos = 0;
-  while (!osip_list_eol (sdp->e_emails, pos))
+  while (!osip_list_eol (&sdp->e_emails, pos))
     {
-      char *email = (char *) osip_list_get (sdp->e_emails, pos);
+      char *email = (char *) osip_list_get (&sdp->e_emails, pos);
 
       tmp = __osip_sdp_append_string (string, size, tmp, "e=");
       tmp = __osip_sdp_append_string (string, size, tmp, email);
@@ -1919,9 +1896,9 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       pos++;
     }
   pos = 0;
-  while (!osip_list_eol (sdp->p_phones, pos))
+  while (!osip_list_eol (&sdp->p_phones, pos))
     {
-      char *phone = (char *) osip_list_get (sdp->p_phones, pos);
+      char *phone = (char *) osip_list_get (&sdp->p_phones, pos);
 
       tmp = __osip_sdp_append_string (string, size, tmp, "p=");
       tmp = __osip_sdp_append_string (string, size, tmp, phone);
@@ -1942,10 +1919,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
       tmp = next_tmp;
     }
   pos = 0;
-  while (!osip_list_eol (sdp->b_bandwidths, pos))
+  while (!osip_list_eol (&sdp->b_bandwidths, pos))
     {
       sdp_bandwidth_t *header =
-        (sdp_bandwidth_t *) osip_list_get (sdp->b_bandwidths, pos);
+        (sdp_bandwidth_t *) osip_list_get (&sdp->b_bandwidths, pos);
       char *next_tmp;
       int i;
 
@@ -1960,10 +1937,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     }
 
   pos = 0;
-  while (!osip_list_eol (sdp->t_descrs, pos))
+  while (!osip_list_eol (&sdp->t_descrs, pos))
     {
       sdp_time_descr_t *header =
-        (sdp_time_descr_t *) osip_list_get (sdp->t_descrs, pos);
+        (sdp_time_descr_t *) osip_list_get (&sdp->t_descrs, pos);
       char *next_tmp;
       int i;
 
@@ -1999,10 +1976,10 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     }
 
   pos = 0;
-  while (!osip_list_eol (sdp->a_attributes, pos))
+  while (!osip_list_eol (&sdp->a_attributes, pos))
     {
       sdp_attribute_t *header =
-        (sdp_attribute_t *) osip_list_get (sdp->a_attributes, pos);
+        (sdp_attribute_t *) osip_list_get (&sdp->a_attributes, pos);
       char *next_tmp;
       int i;
 
@@ -2017,9 +1994,9 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     }
 
   pos = 0;
-  while (!osip_list_eol (sdp->m_medias, pos))
+  while (!osip_list_eol (&sdp->m_medias, pos))
     {
-      sdp_media_t *header = (sdp_media_t *) osip_list_get (sdp->m_medias, pos);
+      sdp_media_t *header = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos);
       char *next_tmp;
       int i;
 
@@ -2052,24 +2029,24 @@ sdp_message_free (sdp_message_t * sdp)
   osip_free (sdp->i_info);
   osip_free (sdp->u_uri);
 
-  osip_list_ofchar_free (sdp->e_emails);
+  osip_list_ofchar_free (&sdp->e_emails);
 
-  osip_list_ofchar_free (sdp->p_phones);
+  osip_list_ofchar_free (&sdp->p_phones);
 
   sdp_connection_free (sdp->c_connection);
 
-  osip_list_special_free (sdp->b_bandwidths,
+  osip_list_special_free (&sdp->b_bandwidths,
                           (void *(*)(void *)) &sdp_bandwidth_free);
 
-  osip_list_special_free (sdp->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+  osip_list_special_free (&sdp->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
 
   osip_free (sdp->z_adjustments);
   sdp_key_free (sdp->k_key);
 
-  osip_list_special_free (sdp->a_attributes,
+  osip_list_special_free (&sdp->a_attributes,
                           (void *(*)(void *)) &sdp_attribute_free);
 
-  osip_list_special_free (sdp->m_medias, (void *(*)(void *)) &sdp_media_free);
+  osip_list_special_free (&sdp->m_medias, (void *(*)(void *)) &sdp_media_free);
 
   osip_free (sdp);
 }

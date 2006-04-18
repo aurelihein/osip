@@ -161,7 +161,12 @@ main (int argc, char **argv)
 
   osip_free (msg);
   fclose (torture_file);
-
+#ifdef __linux
+  if (success)
+    exit(EXIT_FAILURE);
+  else
+    exit(EXIT_SUCCESS);
+#endif
   return success;
 }
 

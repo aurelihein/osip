@@ -62,36 +62,35 @@ extern "C"
     int status_code;                  /**< Status Code (SIP answer only) */
     char *reason_phrase;              /**< Reason Phrase (SIP answer only) */
 
-    osip_list_t *accepts;             /**< Accept headers */
-    osip_list_t *accept_encodings;    /**< Accept-Encoding headers */
-    osip_list_t *accept_languages;    /**< Accept-Language headers */
-    osip_list_t *alert_infos;         /**< Alert-Info headers */
-    osip_list_t *allows;              /**< Allows headers */
-    osip_list_t *authentication_infos;/**< authentication_info headers */
-    osip_list_t *authorizations;      /**< Authorizations headers */
+    osip_list_t accepts;             /**< Accept headers */
+    osip_list_t accept_encodings;    /**< Accept-Encoding headers */
+    osip_list_t accept_languages;    /**< Accept-Language headers */
+    osip_list_t alert_infos;         /**< Alert-Info headers */
+    osip_list_t allows;              /**< Allows headers */
+    osip_list_t authentication_infos;/**< authentication_info headers */
+    osip_list_t authorizations;      /**< Authorizations headers */
     osip_call_id_t *call_id;          /**< Call-ID header */
-    osip_list_t *call_infos;          /**< Call-Infos header */
-    osip_list_t *contacts;            /**< Contacts headers */
-    osip_list_t *content_dispositions;/**< Content-Dispositions headers */
-    osip_list_t *content_encodings;   /**< Content-Encodings headers */
+    osip_list_t call_infos;          /**< Call-Infos header */
+    osip_list_t contacts;            /**< Contacts headers */
+    osip_list_t content_encodings;   /**< Content-Encodings headers */
     osip_content_length_t *content_length;   /**< Content-Length header */
     osip_content_type_t *content_type;       /**< Content-Type header */
     osip_cseq_t *cseq;                /**< CSeq header */
-    osip_list_t *error_infos;         /**< Error-Info headers */
+    osip_list_t error_infos;         /**< Error-Info headers */
     osip_from_t *from;                /**< From header */
     osip_mime_version_t *mime_version;/**< Mime-Version header */
-    osip_list_t *proxy_authenticates; /**< Proxy-Authenticate headers */
-    osip_list_t *proxy_authentication_infos; /**< P-Authentication-Info headers */
-    osip_list_t *proxy_authorizations;/**< Proxy-authorization headers */
-    osip_list_t *record_routes;       /**< Record-Route headers */
-    osip_list_t *routes;              /**< Route headers */
+    osip_list_t proxy_authenticates; /**< Proxy-Authenticate headers */
+    osip_list_t proxy_authentication_infos; /**< P-Authentication-Info headers */
+    osip_list_t proxy_authorizations;/**< Proxy-authorization headers */
+    osip_list_t record_routes;       /**< Record-Route headers */
+    osip_list_t routes;              /**< Route headers */
     osip_to_t *to;                    /**< To header */
-    osip_list_t *vias;                /**< Vias headers */
-    osip_list_t *www_authenticates;   /**< WWW-Authenticate headers */
+    osip_list_t vias;                /**< Vias headers */
+    osip_list_t www_authenticates;   /**< WWW-Authenticate headers */
 
-    osip_list_t *headers;             /**< Other headers */
+    osip_list_t headers;             /**< Other headers */
 
-    osip_list_t *bodies;              /**< List of attachements */
+    osip_list_t bodies;              /**< List of attachements */
 
     /*
        1: structure and buffer "message" are identical.

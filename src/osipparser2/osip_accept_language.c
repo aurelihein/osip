@@ -45,7 +45,7 @@ osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->accept_languages, accept_language, -1);
+  osip_list_add (&sip->accept_languages, accept_language, -1);
   return 0;
 }
 
@@ -56,10 +56,10 @@ osip_message_get_accept_language (const osip_message_t * sip, int pos,
   osip_accept_language_t *accept_language;
 
   *dest = NULL;
-  if (osip_list_size (sip->accept_languages) <= pos)
+  if (osip_list_size (&sip->accept_languages) <= pos)
     return -1;                  /* does not exist */
   accept_language =
-    (osip_accept_language_t *) osip_list_get (sip->accept_languages, pos);
+    (osip_accept_language_t *) osip_list_get (&sip->accept_languages, pos);
   *dest = accept_language;
   return pos;
 }

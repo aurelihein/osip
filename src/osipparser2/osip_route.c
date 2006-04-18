@@ -57,7 +57,7 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->routes, route, -1);
+  osip_list_add (&sip->routes, route, -1);
   return 0;
 }
 
@@ -70,9 +70,9 @@ osip_message_get_route (const osip_message_t * sip, int pos, osip_route_t ** des
   osip_route_t *route;
 
   *dest = NULL;
-  if (osip_list_size (sip->routes) <= pos)
+  if (osip_list_size (&sip->routes) <= pos)
     return -1;                  /* does not exist */
-  route = (osip_route_t *) osip_list_get (sip->routes, pos);
+  route = (osip_route_t *) osip_list_get (&sip->routes, pos);
   *dest = route;
   return pos;
 }

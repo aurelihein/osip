@@ -25,45 +25,6 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
-int
-osip_message_set_content_disposition (osip_message_t * sip, const char *hvalue)
-{
-  osip_content_disposition_t *content_disposition;
-  int i;
-
-  if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
-
-  i = osip_content_disposition_init (&content_disposition);
-  if (i != 0)
-    return -1;
-  i = osip_content_disposition_parse (content_disposition, hvalue);
-  if (i != 0)
-    {
-      osip_content_disposition_free (content_disposition);
-      return -1;
-    }
-  sip->message_property = 2;
-  osip_list_add (sip->content_dispositions, content_disposition, -1);
-  return 0;
-}
-
-int
-osip_message_get_content_disposition (const osip_message_t * sip, int pos,
-                                      osip_content_disposition_t ** dest)
-{
-  osip_content_disposition_t *content_disposition;
-
-  *dest = NULL;
-  if (osip_list_size (sip->content_dispositions) <= pos)
-    return -1;                  /* does not exist */
-  content_disposition =
-    (osip_content_disposition_t *) osip_list_get (sip->content_dispositions, pos);
-  *dest = content_disposition;
-  return pos;
-}
-
-
 
 int
 osip_content_disposition_parse (osip_content_disposition_t * cd,
@@ -75,7 +36,7 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
 
   if (cd_params != NULL)
     {
-      if (__osip_generic_param_parseall (cd->gen_params, cd_params) == -1)
+      if (__osip_generic_param_parseall (&cd->gen_params, cd_params) == -1)
         return -1;
   } else
     cd_params = hvalue + strlen (hvalue);

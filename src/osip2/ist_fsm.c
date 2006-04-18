@@ -155,11 +155,11 @@ ist_create_resp_100 (osip_transaction_t * ist, osip_message_t * request)
     osip_via_t *via;
     osip_via_t *orig_via;
 
-    while (!osip_list_eol (ist->orig_request->vias, pos))
+    while (!osip_list_eol (&ist->orig_request->vias, pos))
       {
-        orig_via = (osip_via_t *) osip_list_get (ist->orig_request->vias, pos);
+        orig_via = (osip_via_t *) osip_list_get (&ist->orig_request->vias, pos);
         osip_via_clone (orig_via, &via);
-        osip_list_add (resp_100->vias, via, -1);
+        osip_list_add (&resp_100->vias, via, -1);
         pos++;
       }
   }
@@ -207,7 +207,7 @@ ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
         {
           osip_via_t *via;
 
-          via = (osip_via_t *) osip_list_get (ist->last_response->vias, 0);
+          via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
           if (via)
             {
               char *host;
@@ -286,7 +286,7 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
                     ist->ist_context->timer_g_length);
 
   /* retransmit RESPONSE */
-  via = (osip_via_t *) osip_list_get (ist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
   if (via)
     {
       char *host;
@@ -368,7 +368,7 @@ ist_snd_1xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (ist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
   if (via)
     {
       char *host;
@@ -432,7 +432,7 @@ ist_snd_2xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (ist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
   if (via)
     {
       char *host;
@@ -497,7 +497,7 @@ ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (ist->last_response->vias, 0);
+  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
   if (via)
     {
       char *host;

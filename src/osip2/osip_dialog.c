@@ -44,7 +44,7 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
   if (invite == NULL)
     return -1;
 
-  if (osip_list_eol (invite->contacts, 0))
+  if (osip_list_eol (&invite->contacts, 0))
     {
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -56,7 +56,7 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
           osip_contact_free (dialog->remote_contact_uri);
         }
       dialog->remote_contact_uri = NULL;
-      contact = osip_list_get (invite->contacts, 0);
+      contact = osip_list_get (&invite->contacts, 0);
       i = osip_contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
         return -1;
@@ -90,7 +90,7 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
   if (response == NULL)
     return -1;
 
-  if (osip_list_eol (response->contacts, 0))
+  if (osip_list_eol (&response->contacts, 0))
     {                           /* no contact header in response? */
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -104,31 +104,27 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
           osip_contact_free (dialog->remote_contact_uri);
         }
       dialog->remote_contact_uri = NULL;
-      contact = osip_list_get (response->contacts, 0);
+      contact = osip_list_get (&response->contacts, 0);
       i = osip_contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
         return -1;
     }
 
-  if (dialog->state == DIALOG_EARLY && osip_list_size (dialog->route_set) == 0)
+  if (dialog->state == DIALOG_EARLY && osip_list_size (&dialog->route_set) == 0)
     {                           /* update the route set */
       int pos = 0;
 
-      while (!osip_list_eol (response->record_routes, pos))
+      while (!osip_list_eol (&response->record_routes, pos))
         {
           osip_record_route_t *rr;
           osip_record_route_t *rr2;
 
           rr =
-            (osip_record_route_t *) osip_list_get (response->record_routes, pos);
+            (osip_record_route_t *) osip_list_get (&response->record_routes, pos);
           i = osip_record_route_clone (rr, &rr2);
           if (i != 0)
             return -1;
-#ifdef OSIP_FUTURE_FIX_2_3
-          osip_list_add (dialog->route_set, rr2, 0);
-#else
-          osip_list_add (dialog->route_set, rr2, -1);
-#endif
+          osip_list_add (&dialog->route_set, rr2, 0);
           pos++;
         }
     }
@@ -353,24 +349,19 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   } else
     (*dialog)->remote_tag = osip_strdup (tag->gvalue);
 
-  (*dialog)->route_set = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*dialog)->route_set);
+  osip_list_init (&(*dialog)->route_set);
 
   pos = 0;
-  while (!osip_list_eol (response->record_routes, pos))
+  while (!osip_list_eol (&response->record_routes, pos))
     {
       osip_record_route_t *rr;
       osip_record_route_t *rr2;
 
-      rr = (osip_record_route_t *) osip_list_get (response->record_routes, pos);
+      rr = (osip_record_route_t *) osip_list_get (&response->record_routes, pos);
       i = osip_record_route_clone (rr, &rr2);
       if (i != 0)
         goto diau_error_2;
-#ifdef OSIP_FUTURE_FIX_2_3
-      osip_list_add ((*dialog)->route_set, rr2, 0);
-#else
-      osip_list_add ((*dialog)->route_set, rr2, -1);
-#endif
+      osip_list_add (&(*dialog)->route_set, rr2, 0);
       pos++;
     }
 
@@ -388,9 +379,9 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   {
     osip_contact_t *contact;
 
-    if (!osip_list_eol (response->contacts, 0))
+    if (!osip_list_eol (&response->contacts, 0))
       {
-        contact = osip_list_get (response->contacts, 0);
+        contact = osip_list_get (&response->contacts, 0);
         i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
         if (i != 0)
           goto diau_error_5;
@@ -412,7 +403,7 @@ diau_error_4:
   osip_from_free ((*dialog)->remote_uri);
 diau_error_3:
 diau_error_2:
-  osip_list_special_free ((*dialog)->route_set,
+  osip_list_special_free (&(*dialog)->route_set,
                           (void *(*)(void *)) &osip_record_route_free);
   osip_free ((*dialog)->remote_tag);
   osip_free ((*dialog)->local_tag);
@@ -470,8 +461,7 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   } else
     (*dialog)->remote_tag = osip_strdup (tag->gvalue);
 
-  (*dialog)->route_set = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*dialog)->route_set);
+  osip_list_init (&(*dialog)->route_set);
 
   (*dialog)->local_cseq = local_cseq;   /* -1 osip_atoi (xxx->cseq->number); */
   (*dialog)->remote_cseq = osip_atoi (next_request->cseq->number);
@@ -487,9 +477,9 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   {
     osip_contact_t *contact;
 
-    if (!osip_list_eol (next_request->contacts, 0))
+    if (!osip_list_eol (&next_request->contacts, 0))
       {
-        contact = osip_list_get (next_request->contacts, 0);
+        contact = osip_list_get (&next_request->contacts, 0);
         i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
         if (i != 0)
           goto diau_error_5;
@@ -565,20 +555,19 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   } else
     (*dialog)->remote_tag = osip_strdup (tag->gvalue);
 
-  (*dialog)->route_set = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init ((*dialog)->route_set);
+  osip_list_init (&(*dialog)->route_set);
 
   pos = 0;
-  while (!osip_list_eol (response->record_routes, pos))
+  while (!osip_list_eol (&response->record_routes, pos))
     {
       osip_record_route_t *rr;
       osip_record_route_t *rr2;
 
-      rr = (osip_record_route_t *) osip_list_get (response->record_routes, pos);
+      rr = (osip_record_route_t *) osip_list_get (&response->record_routes, pos);
       i = osip_record_route_clone (rr, &rr2);
       if (i != 0)
         goto diau_error_2;
-      osip_list_add ((*dialog)->route_set, rr2, -1);
+      osip_list_add (&(*dialog)->route_set, rr2, -1);
       pos++;
     }
 
@@ -599,9 +588,9 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   {
     osip_contact_t *contact;
 
-    if (!osip_list_eol (invite->contacts, 0))
+    if (!osip_list_eol (&invite->contacts, 0))
       {
-        contact = osip_list_get (invite->contacts, 0);
+        contact = osip_list_get (&invite->contacts, 0);
         i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
         if (i != 0)
           goto diau_error_5;
@@ -623,7 +612,7 @@ diau_error_4:
   osip_from_free ((*dialog)->remote_uri);
 diau_error_3:
 diau_error_2:
-  osip_list_special_free ((*dialog)->route_set,
+  osip_list_special_free (&(*dialog)->route_set,
                           (void *(*)(void *)) &osip_record_route_free);
   osip_free ((*dialog)->remote_tag);
   osip_free ((*dialog)->local_tag);
@@ -646,7 +635,7 @@ osip_dialog_free (osip_dialog_t * dialog)
   osip_contact_free (dialog->remote_contact_uri);
   osip_from_free (dialog->local_uri);
   osip_to_free (dialog->remote_uri);
-  osip_list_special_free (dialog->route_set,
+  osip_list_special_free (&dialog->route_set,
                           (void *(*)(void *)) &osip_record_route_free);
   osip_free (dialog->remote_tag);
   osip_free (dialog->local_tag);

@@ -47,7 +47,7 @@
   struct osip_call_info
   {
     char *element;              /**< Call-Info main value */
-    osip_list_t *gen_params;    /**< Parameters for Call-Info header */
+    osip_list_t gen_params;     /**< Parameters for Call-Info header */
   };
 
 #ifdef __cplusplus

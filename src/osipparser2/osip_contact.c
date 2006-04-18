@@ -48,7 +48,7 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->contacts, contact, -1);
+  osip_list_add (&sip->contacts, contact, -1);
   return 0;                     /* ok */
 }
 
@@ -87,9 +87,9 @@ osip_message_get_contact (const osip_message_t * sip, int pos,
   *dest = NULL;
   if (sip == NULL)
     return -1;
-  if (osip_list_size (sip->contacts) <= pos)
+  if (osip_list_size (&sip->contacts) <= pos)
     return -1;                  /* does not exist */
-  *dest = (osip_contact_t *) osip_list_get (sip->contacts, pos);
+  *dest = (osip_contact_t *) osip_list_get (&sip->contacts, pos);
   return pos;
 }
 

@@ -117,9 +117,9 @@ osip_uri_test_accessor_api (osip_uri_t * url)
     int pos = 0;
     osip_uri_param_t *u_param;
 
-    while (!osip_list_eol (url->url_params, pos))
+    while (!osip_list_eol (&url->url_params, pos))
       {
-        u_param = (osip_uri_param_t *) osip_list_get (url->url_params, pos);
+        u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
         if (u_param->gvalue != NULL)
           fprintf (stdout, ";%s|=|%s|", u_param->gname, u_param->gvalue);
         else
@@ -134,9 +134,9 @@ osip_uri_test_accessor_api (osip_uri_t * url)
     int pos = 0;
     osip_uri_header_t *u_header;
 
-    while (!osip_list_eol (url->url_headers, pos))
+    while (!osip_list_eol (&url->url_headers, pos))
       {
-        u_header = (osip_uri_header_t *) osip_list_get (url->url_headers, pos);
+        u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
         if (pos == 0)
           fprintf (stdout, "?%s|=|%s|", u_header->gname, u_header->gvalue);
         else

@@ -50,7 +50,7 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->proxy_authorizations, proxy_authorization, -1);
+  osip_list_add (&sip->proxy_authorizations, proxy_authorization, -1);
   return 0;
 }
 
@@ -61,10 +61,10 @@ osip_message_get_proxy_authorization (const osip_message_t * sip, int pos,
   osip_proxy_authorization_t *proxy_authorization;
 
   *dest = NULL;
-  if (osip_list_size (sip->proxy_authorizations) <= pos)
+  if (osip_list_size (&sip->proxy_authorizations) <= pos)
     return -1;                  /* does not exist */
   proxy_authorization =
-    (osip_proxy_authorization_t *) osip_list_get (sip->proxy_authorizations, pos);
+    (osip_proxy_authorization_t *) osip_list_get (&sip->proxy_authorizations, pos);
   *dest = proxy_authorization;
   return pos;
 }

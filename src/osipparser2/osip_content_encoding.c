@@ -47,7 +47,7 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
       return -1;
     }
   sip->message_property = 2;
-  osip_list_add (sip->content_encodings, content_encoding, -1);
+  osip_list_add (&sip->content_encodings, content_encoding, -1);
   return 0;
 }
 
@@ -58,9 +58,9 @@ osip_message_get_content_encoding (const osip_message_t * sip, int pos,
   osip_content_encoding_t *ce;
 
   *dest = NULL;
-  if (osip_list_size (sip->content_encodings) <= pos)
+  if (osip_list_size (&sip->content_encodings) <= pos)
     return -1;                  /* does not exist */
-  ce = (osip_content_encoding_t *) osip_list_get (sip->content_encodings, pos);
+  ce = (osip_content_encoding_t *) osip_list_get (&sip->content_encodings, pos);
   *dest = ce;
   return pos;
 }
