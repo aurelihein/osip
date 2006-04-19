@@ -51,7 +51,32 @@ min_timercmp (struct timeval *tv1, struct timeval *tv2)
     }
 }
 
-#if !defined(__PALMOS__) && (defined(WIN32) || defined(_WIN32_WCE))
+#if !defined(__PALMOS__) && defined(_WIN32_WCE)
+
+#include <time.h>
+
+int
+osip_gettimeofday (struct timeval *tp, void *tz)
+{
+  DWORD timemillis = GetTickCount();
+  tp->tv_sec  = timemillis/1000;
+  tp->tv_usec = (timemillis - (tp->tv_sec*1000)) * 1000;
+  return 0;
+}
+
+time_t
+time (time_t *t)
+{
+    DWORD timemillis = GetTickCount();
+	if (timemillis>0)
+	{
+		if (t!=NULL)
+			*t = timemillis/1000;
+	}
+	return timemillis/1000;
+}
+
+#elif !defined(__PALMOS__) && defined(WIN32))
 
 #include <time.h>
 #include <sys/timeb.h>

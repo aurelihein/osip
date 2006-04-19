@@ -98,7 +98,11 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
 #endif
 
 
-#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+#if defined(_WIN32_WCE)
+
+#endif
+
+#if defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32)
 
 #include <sys/types.h>
 #include <sys/timeb.h>

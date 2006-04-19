@@ -27,7 +27,9 @@
 #endif
 
 #include <stdio.h>
+#ifndef _WIN32_WCE
 #include <errno.h>
+#endif
 
 /**
  * @file osip_mt.h

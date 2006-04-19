@@ -26,7 +26,7 @@
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 #  if defined _WIN32_WCE
-#    include <winbase.h>
+//#    include <winbase.h>
 #    define _beginthreadex	CreateThread
 #    define	_endthreadex	ExitThread
 #  elif defined WIN32

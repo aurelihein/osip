@@ -33,6 +33,19 @@
 #	define HAVE_TIME_H 1
 #	define HAVE_STDARG_H 1
 
+#elif defined _WIN32_WCE
+
+#define STDC_HEADERS 1
+#define HAVE_CTYPE_H 1
+#define HAVE_STRING_H 1
+#define HAVE_TIME_H 1
+#define HAVE_STDARG_H 1
+
+//#define strnicmp	_strnicmp
+//#define stricmp		_stricmp
+#define snprintf  _snprintf
+#define EBUSY           16
+
 #elif defined(WIN32)
 
 #define STDC_HEADERS 1
@@ -42,23 +55,13 @@
 #define HAVE_TIME_H 1
 #define HAVE_STDARG_H 1
 
+#define snprintf _snprintf
+
 /* use win32 crypto routines for random number generation */
 /* only use for vs .net (compiler v. 1300) or greater */
 #if _MSC_VER >= 1300
 #define WIN32_USE_CRYPTO 1
 #endif
-
-#elif defined _WIN32_WCE
-
-#define STDC_HEADERS 1
-#define HAVE_CTYPE_H 1
-#define HAVE_STRING_H 1
-#define HAVE_TIME_H 1
-#define HAVE_STDARG_H 1
-
-#define strnicmp	_strnicmp
-#define stricmp		_stricmp
-#define EBUSY           16
 
 #endif
 
@@ -176,7 +179,7 @@ extern "C"
 /* MALLOC redirections    */
 /**************************/
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_WIN32_WCE)
 
   typedef void *osip_malloc_func_t (size_t size);
   typedef void osip_free_func_t (void *ptr);

@@ -10,6 +10,16 @@ extern "C"
 
 /* Common time-related functions and data types */
 
+#if defined(_WIN32_WCE)
+struct _timeb {
+  time_t time;
+  unsigned short millitm;
+  short timezone;
+  short dstflag;
+};
+
+#endif
+
 /* struct timeval, as defined in <sys/time.h>, <winsock.h> or <winsock2.h> */
   struct timeval;
 

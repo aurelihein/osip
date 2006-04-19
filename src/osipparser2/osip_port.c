@@ -101,7 +101,7 @@ static osip_trace_func_t *trace_func = 0;
 
 static unsigned int random_seed_set = 0;
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_WIN32_WCE)
 osip_malloc_func_t *osip_malloc_func = 0;
 osip_realloc_func_t *osip_realloc_func = 0;
 osip_free_func_t *osip_free_func = 0;
@@ -320,7 +320,8 @@ osip_strdup_without_quote (const char *ch)
 int
 osip_tolower (char *word)
 {
-#ifdef HAVE_CTYPE_H
+#if defined(HAVE_CTYPE_H) && !defined (_WIN32_WCE)
+
   for (; *word; word++)
     *word = (char) tolower (*word);
 #else
@@ -878,7 +879,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 
 
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32_WCE)
 
 #undef osip_malloc
 void *
