@@ -76,7 +76,7 @@ time (time_t *t)
 	return timemillis/1000;
 }
 
-#elif !defined(__PALMOS__) && defined(WIN32))
+#elif !defined(__PALMOS__) && defined(WIN32)
 
 #include <time.h>
 #include <sys/timeb.h>

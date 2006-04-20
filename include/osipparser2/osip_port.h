@@ -41,8 +41,6 @@
 #define HAVE_TIME_H 1
 #define HAVE_STDARG_H 1
 
-//#define strnicmp	_strnicmp
-//#define stricmp		_stricmp
 #define snprintf  _snprintf
 #define EBUSY           16
 
