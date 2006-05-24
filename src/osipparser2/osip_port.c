@@ -1086,7 +1086,7 @@ _osip_realloc (void *ptr, size_t size, char *file, unsigned short line)
 unsigned long
 osip_hash (const char *str)
 {
-  unsigned long hash = 5381;
+  unsigned int hash = 5381;
   int c;
 
   while (c = *str++)

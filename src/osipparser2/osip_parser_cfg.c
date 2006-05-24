@@ -32,7 +32,7 @@ static __osip_message_config_t pconfig[NUMBER_OF_HEADERS];
 
 #ifndef HASH_TABLE_SIZE
 #ifdef __amd64__
-#define HASH_TABLE_SIZE 450
+#define HASH_TABLE_SIZE 150
 #else
 #define HASH_TABLE_SIZE 150     /* set this to the hash table size, 150 is the
 				   first size where no conflicts occur */
@@ -136,7 +136,7 @@ parser_init (void)
 
   for (i = 0; i < NUMBER_OF_HEADERS; i++)
     {
-      unsigned long hash;
+      unsigned int hash;
 
       /* calculate hash value using lower case */
       /* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
@@ -166,7 +166,7 @@ parser_init (void)
 int
 __osip_message_is_known_header (const char *hname)
 {
-  unsigned long hash;
+  unsigned int hash;
   int result = -1;
 
   int index;
