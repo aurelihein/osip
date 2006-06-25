@@ -1444,6 +1444,13 @@ osip_ict_execute (osip_t * osip)
       return 0;
     }
   array = osip_malloc (sizeof (void *) * len);
+  if (array==NULL)
+    {
+#ifdef OSIP_MT
+      osip_mutex_unlock (ict_fastmutex);
+#endif
+      return 0;
+    }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
                                                 &iterator);
@@ -1500,6 +1507,13 @@ osip_ist_execute (osip_t * osip)
       return 0;
     }
   array = osip_malloc (sizeof (void *) * len);
+  if (array==NULL)
+    {
+#ifdef OSIP_MT
+      osip_mutex_unlock (ist_fastmutex);
+#endif
+      return 0;
+    }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
                                                 &iterator);
@@ -1557,6 +1571,13 @@ osip_nict_execute (osip_t * osip)
       return 0;
     }
   array = osip_malloc (sizeof (void *) * len);
+  if (array==NULL)
+    {
+#ifdef OSIP_MT
+      osip_mutex_unlock (nict_fastmutex);
+#endif
+      return 0;
+    }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
                                                 &iterator);
@@ -1613,6 +1634,13 @@ osip_nist_execute (osip_t * osip)
       return 0;
     }
   array = osip_malloc (sizeof (void *) * len);
+  if (array==NULL)
+    {
+#ifdef OSIP_MT
+      osip_mutex_unlock (nist_fastmutex);
+#endif
+      return 0;
+    }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,
                                                 &iterator);
