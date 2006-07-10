@@ -1,4 +1,5 @@
 libosip2 (3.0.0)
+	* Fix buffer overrun in url.
 	* Modification of the Application Binary Interface (ABI)
 	  to decrease number of allocations.
 	  Changes: osip_message_t/osip_dialog_t/sdp_message_t/osip_fifo_t

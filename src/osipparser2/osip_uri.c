@@ -982,7 +982,7 @@ __osip_uri_unescape (char *string)
       if ('%' == in)
         {
           /* encoded part */
-          if (sscanf (ptr + 1, "%02X", &hex) == 1)
+          if (alloc > 2 && sscanf (ptr + 1, "%02X", &hex) == 1)
             {
               in = (unsigned char) hex;
               if (*(ptr + 2) &&
@@ -997,6 +997,10 @@ __osip_uri_unescape (char *string)
                   alloc -= 1;
                   ptr += 1;
                 }
+            }
+          else
+            {
+              break;
             }
         }
 
