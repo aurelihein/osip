@@ -654,13 +654,19 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
   /* nettype is "IN" and will be extended */
   i = __osip_set_next_token (&(c_header->c_nettype), tmp, ' ', &tmp_next);
   if (i != 0)
-    return -1;
+    {
+      sdp_connection_free (c_header);
+      return -1;
+    }
   tmp = tmp_next;
 
   /* nettype is "IP4" or "IP6" and will be extended */
   i = __osip_set_next_token (&(c_header->c_addrtype), tmp, ' ', &tmp_next);
   if (i != 0)
-    return -1;
+    {
+      sdp_connection_free (c_header);
+      return -1;
+    }
   tmp = tmp_next;
 
   /* there we have a multicast or unicast address */
@@ -675,7 +681,10 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
       {
         i = __osip_set_next_token (&(c_header->c_addr), tmp, '/', &tmp_next);
         if (i != 0)
-          return -1;
+	  {
+	    sdp_connection_free (c_header);
+	    return -1;
+	  }
         tmp = tmp_next;
         slash = strchr (slash + 1, '/');
         if (slash != NULL && slash < crlf)      /* optionnal integer is there! */
@@ -684,7 +693,10 @@ sdp_message_parse_c (sdp_message_t * sdp, char *buf, char **next)
               __osip_set_next_token (&(c_header->c_addr_multicast_ttl), tmp,
                                      '/', &tmp_next);
             if (i != 0)
-              return -1;
+	      {
+		sdp_connection_free (c_header);
+		return -1;
+	      }
             tmp = tmp_next;
             i =
               __osip_set_next_token (&(c_header->c_addr_multicast_int), tmp,
