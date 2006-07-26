@@ -420,6 +420,15 @@ osip_transaction_get_destination (osip_transaction_t * transaction, char **ip,
 }
 
 int
+osip_transaction_set_srv_record(osip_transaction_t *transaction, osip_srv_record_t *record)
+{
+	if (transaction==NULL)
+		return -1;
+	memcpy(&transaction->record, record, sizeof(osip_srv_record_t));
+	return 0;
+}
+
+int
 osip_transaction_set_your_instance (osip_transaction_t * transaction,
                                     void *instance)
 {

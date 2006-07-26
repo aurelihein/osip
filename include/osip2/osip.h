@@ -278,6 +278,41 @@ extern "C"
   };
 
 /**
+ * Structure for SRV record entry.
+ * @var osip_srv_entry_t
+ */
+  typedef struct osip_srv_entry osip_srv_entry_t;
+
+/**
+ * Structure for SRV record entry.
+ * @struct osip_srv_entry
+ */
+
+  struct osip_srv_entry {
+    char srv[512];
+    int priority;
+    int weight;
+    int rweight;
+    int port;
+  };
+
+/**
+ * Structure for SRV record.
+ * @var osip_srv_record_t
+ */
+  typedef struct osip_srv_record osip_srv_record_t;
+
+/**
+ * Structure for SRV record entry.
+ * @struct osip_srv_record
+ */
+  struct osip_srv_record {
+    char name[512];
+    char protocol[64];
+    struct osip_srv_entry srventry[10];
+  };
+
+/**
  * Structure for transaction handling.
  * @var osip_transaction_t
  */
@@ -319,6 +354,8 @@ extern "C"
     osip_ist_t *ist_context;    /**@internal */
     osip_nict_t *nict_context;  /**@internal */
     osip_nist_t *nist_context;  /**@internal */
+
+	osip_srv_record_t record;   /**@internal */
   };
 
 
@@ -661,6 +698,14 @@ extern "C"
   int osip_transaction_get_destination (osip_transaction_t * transaction,
                                         char **ip, int *port);
 
+
+/**
+ * Set SRV lookup information to be used by state machine.
+ *
+ * @param transaction The element to work on.
+ * @param record The SRV lookup results for this transaction.
+ */
+  int osip_transaction_set_srv_record(osip_transaction_t *transaction, osip_srv_record_t *record);
 
 /**
  * Set the socket for incoming message.
