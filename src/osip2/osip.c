@@ -1829,7 +1829,7 @@ osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
 	    lower_tv->tv_sec = 0;
 	    lower_tv->tv_usec = 0;
 #ifdef OSIP_MT
-	    osip_mutex_unlock (nist_fastmutex);
+	    osip_mutex_unlock (ixt_fastmutex);
 #endif
 	    return;
 	  }
