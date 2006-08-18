@@ -264,8 +264,8 @@ osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
       if (osip_dialog_match_as_uas (ixt->dialog, ack) == 0)
         {
           osip_list_remove (&osip->ixt_retransmissions, i);
-          ixt_free (ixt);
           dialog = ixt->dialog;
+          ixt_free (ixt);
           break;
         }
     }
