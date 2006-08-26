@@ -194,6 +194,11 @@ nict_snd_request (osip_transaction_t * nict, osip_event_t * evt)
       else
         __osip_message_callback (OSIP_NICT_UNKNOWN_REQUEST_SENT, nict,
                                  nict->orig_request);
+      if (nict->nict_context->timer_e_length > 0) {
+        osip_gettimeofday (&nict->nict_context->timer_e_start, NULL);
+        add_gettimeofday (&nict->nict_context->timer_e_start,
+			  nict->nict_context->timer_e_length);
+      }
       __osip_transaction_set_state (nict, NICT_TRYING);
   } else
     {

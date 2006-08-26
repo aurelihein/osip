@@ -56,8 +56,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
       {
         (*nict)->timer_e_length = DEFAULT_T1;
         (*nict)->timer_k_length = DEFAULT_T4;
-        osip_gettimeofday (&(*nict)->timer_e_start, NULL);
-        add_gettimeofday (&(*nict)->timer_e_start, (*nict)->timer_e_length);
+        (*nict)->timer_e_start.tv_sec = -1;
         (*nict)->timer_k_start.tv_sec = -1;     /* not started */
     } else
       {                         /* reliable protocol is used: */

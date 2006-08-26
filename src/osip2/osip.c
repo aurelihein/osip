@@ -170,7 +170,7 @@ osip_remove_ixt (osip_t * osip, ixt_t * ixt)
   int found = 0;
   ixt_t *tmp;
 
-  /* ajout dans la liste de osip_t->ixt */
+  /* add in list osip_t->ixt */
   osip_ixt_lock (osip);
   for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++)
     {
