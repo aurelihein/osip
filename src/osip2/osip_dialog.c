@@ -145,6 +145,14 @@ osip_dialog_update_tag_as_uac (osip_dialog_t * dialog, osip_message_t * response
   if (response == NULL || response->to == NULL)
     return -1;
 
+  if (dialog->remote_tag!=NULL)
+    {
+      OSIP_TRACE (osip_trace
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
+                   "This dialog already have a remote tag: it can't be changed!\n"));
+      return -1;
+    }
+
   i = osip_to_get_tag (response->to, &tag);
   if (i != 0 || tag == NULL || tag->gvalue == NULL)
     {
