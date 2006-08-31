@@ -31,7 +31,7 @@ typedef struct osip_statemachine osip_statemachine_t;
 
 struct osip_statemachine
 {
-  osip_list_t *transitions;
+  struct _transition_t *transitions;
 };
 
 /**
@@ -65,13 +65,16 @@ osip_statemachine_t *__ist_get_fsm (void);
 osip_statemachine_t *__nict_get_fsm (void);
 osip_statemachine_t *__nist_get_fsm (void);
 
-typedef struct _transition_t
+typedef struct _transition_t transition_t;
+
+struct _transition_t
 {
   state_t state;
   type_t type;
   void (*method) (void *, void *);
-}
-transition_t;
+  struct _transition_t *next;
+  struct _transition_t *parent;
+};
 
 int fsm_callmethod (type_t type, state_t state,
                     osip_statemachine_t * statemachine,

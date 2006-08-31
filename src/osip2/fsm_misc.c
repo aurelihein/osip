@@ -32,21 +32,14 @@ static transition_t *fsm_findmethod (type_t type, state_t state,
 static transition_t *
 fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
 {
-  int pos;
-
-  pos = 0;
-  while (!osip_list_eol (statemachine->transitions, pos))
+  transition_t *transition;
+  for (transition = statemachine->transitions; transition != NULL; transition = transition->next)
     {
-      transition_t *transition;
-
-      transition = (transition_t *) osip_list_get (statemachine->transitions, pos);
       if (transition->type == type && transition->state == state)
         return transition;
-      pos++;
     }
   return NULL;
 }
-
 
 /* call the right execution method.          */
 /*   return -1 when event must be discarded  */

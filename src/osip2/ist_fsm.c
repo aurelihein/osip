@@ -36,12 +36,12 @@ __ist_unload_fsm ()
   transition_t *transition;
   osip_statemachine_t *statemachine = __ist_get_fsm ();
 
-  while (!osip_list_eol (statemachine->transitions, 0))
+  for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
     {
-      transition = (transition_t *) osip_list_get (statemachine->transitions, 0);
-      osip_list_remove (statemachine->transitions, 0);
+      REMOVE_ELEMENT(statemachine->transitions, transition);
       osip_free (transition);
     }
+
   osip_free (statemachine->transitions);
   osip_free (statemachine);
 }
@@ -53,74 +53,73 @@ __ist_load_fsm ()
   transition_t *transition;
 
   ist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
-  ist_fsm->transitions = (osip_list_t *) osip_malloc (sizeof (osip_list_t));
-  osip_list_init (ist_fsm->transitions);
+  ist_fsm->transitions = NULL;
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_PRE_PROCEEDING;
   transition->type = RCV_REQINVITE;
   transition->method = (void (*)(void *, void *)) &ist_rcv_invite;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_PROCEEDING;
   transition->type = RCV_REQINVITE;
   transition->method = (void (*)(void *, void *)) &ist_rcv_invite;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_COMPLETED;
   transition->type = RCV_REQINVITE;
   transition->method = (void (*)(void *, void *)) &ist_rcv_invite;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_COMPLETED;
   transition->type = TIMEOUT_G;
   transition->method = (void (*)(void *, void *)) &osip_ist_timeout_g_event;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_COMPLETED;
   transition->type = TIMEOUT_H;
   transition->method = (void (*)(void *, void *)) &osip_ist_timeout_h_event;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_PROCEEDING;
   transition->type = SND_STATUS_1XX;
   transition->method = (void (*)(void *, void *)) &ist_snd_1xx;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_PROCEEDING;
   transition->type = SND_STATUS_2XX;
   transition->method = (void (*)(void *, void *)) &ist_snd_2xx;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_PROCEEDING;
   transition->type = SND_STATUS_3456XX;
   transition->method = (void (*)(void *, void *)) &ist_snd_3456xx;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_COMPLETED;
   transition->type = RCV_REQACK;
   transition->method = (void (*)(void *, void *)) &ist_rcv_ack;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_CONFIRMED;
   transition->type = RCV_REQACK;
   transition->method = (void (*)(void *, void *)) &ist_rcv_ack;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = IST_CONFIRMED;
   transition->type = TIMEOUT_I;
   transition->method = (void (*)(void *, void *)) &osip_ist_timeout_i_event;
-  osip_list_add (ist_fsm->transitions, transition, -1);
+  ADD_ELEMENT (ist_fsm->transitions, transition);
 
 }
 
