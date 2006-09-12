@@ -805,7 +805,10 @@ sdp_message_parse_b (sdp_message_t * sdp, char *buf, char **next)
   /* bwtype is alpha-numeric */
   i = __osip_set_next_token (&(b_header->b_bwtype), tmp, ':', &tmp_next);
   if (i != 0)
-    return -1;
+    {
+      sdp_bandwidth_free (b_header);
+      return -1;
+    }
   tmp = tmp_next;
 
   i = __osip_set_next_token (&(b_header->b_bandwidth), tmp, '\r', &tmp_next);

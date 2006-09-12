@@ -354,7 +354,7 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
                 }
             }
 
-          if (route != NULL)
+          if (route != NULL && route->url != NULL)
             {
               int port = 5060;
 

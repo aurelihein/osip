@@ -630,10 +630,18 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 
         u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
         tmp1 = __osip_uri_escape_header_param (u_header->gname);
+
+        if (tmp1 == NULL)
+          {
+            osip_free (buf);
+            return -1;
+          }
+
         tmp2 = __osip_uri_escape_header_param (u_header->gvalue);
 
-        if (tmp1 == NULL || tmp2 == NULL)
+        if (tmp2 == NULL)
           {
+            osip_free (tmp1);
             osip_free (buf);
             return -1;
           }
@@ -727,7 +735,10 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
         u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
         i = osip_uri_param_clone (u_param, &dest_param);
         if (i != 0)
-          return -1;
+	  {
+	    osip_uri_free(ur);
+	    return -1;
+	  }
         osip_list_add (&ur->url_params, dest_param, -1);
         pos++;
       }
@@ -742,7 +753,10 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
         u_param = (osip_uri_param_t *) osip_list_get (&url->url_headers, pos);
         i = osip_uri_param_clone (u_param, &dest_param);
         if (i != 0)
-          return -1;
+	  {
+	    osip_uri_free(ur);
+	    return -1;
+	  }
         osip_list_add (&ur->url_headers, dest_param, -1);
         pos++;
       }

@@ -172,13 +172,15 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
       if ((displayname != NULL) && (url != NULL))
         {                       /* displayname IS A quoted-string (not a '*token') */
           const char *first;
-          const char *second;
+          const char *second=NULL;
 
           /* search for quotes */
           first = __osip_quote_find (hvalue);
-          second = __osip_quote_find (first + 1);
+          if (first == NULL)
+            return -1;          /* missing quote */
+	  second = __osip_quote_find (first + 1);
           if (second == NULL)
-            return -1;          /* if there is only 1 quote: failure */
+            return -1;          /* missing quote */
           if ((first > url))
             return -1;
 
@@ -588,7 +590,10 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
     }
   pname = (char *) osip_malloc (equal - params);
   if (pname == NULL)
-    return -1;
+    {
+      osip_free (pvalue);
+      return -1;
+    }
   osip_strncpy (pname, params + 1, equal - params - 1);
 
   osip_generic_param_add (gen_params, pname, pvalue);

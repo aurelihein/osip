@@ -249,7 +249,10 @@ osip_body_parse_header (osip_body_t * body,
       osip_clrncpy (hname, start_of_line, colon_index - start_of_line);
 
       if ((end_of_line - 2) - colon_index < 2)
-        return -1;
+	{
+          osip_free (hname);
+          return -1;
+	}
       hvalue = (char *) osip_malloc ((end_of_line - 2) - colon_index);
       if (hvalue == NULL)
         {

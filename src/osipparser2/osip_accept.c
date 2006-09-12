@@ -79,13 +79,19 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
 {
   char *buf;
   char *tmp;
-  size_t len;
+  size_t len = 0;
 
   *dest = NULL;
   if (accept == NULL)
     return -1;
 
-  if ((accept->type == NULL) && (accept->subtype == NULL))
+  if (accept->type != NULL)
+    len += strlen (accept->type);
+
+  if (accept->subtype != NULL)
+    len += strlen (accept->subtype);
+
+  if (len == 0)
     {
       /* Empty header ! */
       buf = (char *) osip_malloc (2);
@@ -96,7 +102,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
     }
 
   /* try to guess a long enough length */
-  len = strlen (accept->type) + strlen (accept->subtype) + 4    /* for '/', ' ', ';' and '\0' */
+  len += 4    /* for '/', ' ', ';' and '\0' */
     + 10 * osip_list_size (&accept->gen_params);
 
   buf = (char *) osip_malloc (len);

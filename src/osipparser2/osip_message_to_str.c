@@ -661,8 +661,11 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       header_len = strlen (tmp);
 
       if (_osip_message_realloc (&message, dest, header_len + 3, &malloc_size) < 0)
-        return -1;
-
+	{
+	  osip_free (tmp);
+          *dest = NULL;
+	  return -1;
+	}
 
       message = osip_str_append (message, tmp);
       osip_free (tmp);

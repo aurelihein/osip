@@ -646,6 +646,5 @@ osip_authorization_clone (const osip_authorization_t * auth,
 
 ac_error:
   osip_authorization_free (au);
-  osip_free (au);
   return -1;
 }

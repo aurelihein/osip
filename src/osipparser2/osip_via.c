@@ -210,7 +210,12 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
       if (tmp == NULL)
         return -1;
       osip_strncpy (tmp, via_params, comment - via_params);
-      __osip_generic_param_parseall (&via->via_params, tmp);
+      if (__osip_generic_param_parseall (&via->via_params, tmp))
+        {
+          osip_free (tmp);
+          return -1;
+        }
+
       osip_free (tmp);
     }
 
