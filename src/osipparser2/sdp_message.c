@@ -1286,8 +1286,17 @@ sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next)
   i = __osip_set_next_token (&(m_header->m_proto), tmp, ' ', &tmp_next);
   if (i != 0)
     {
-      sdp_media_free (m_header);
-      return -1;
+      /* a few stack don't add SPACE after m_proto when rejecting all payloads */
+        i = __osip_set_next_token (&(m_header->m_proto), tmp, '\r', &tmp_next);
+        if (i != 0)
+          {
+            i = __osip_set_next_token (&(m_header->m_proto), tmp, '\n', &tmp_next);
+            if (i != 0)
+              {
+		sdp_media_free (m_header);
+		return -1;
+	      }
+	}
     }
   tmp = tmp_next;
 
