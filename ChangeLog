@@ -1,5 +1,5 @@
 libosip2 (3.0.0)
-	* Fix memory leak in sdp_message.
+	* Fix memory leaks (not likely to happen).
 	* Fix buffer overrun in url.
 	* Modification of the Application Binary Interface (ABI)
 	  to decrease number of allocations.
