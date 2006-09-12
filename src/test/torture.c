@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include <osipparser2/osip_parser.h>
+#include <osipparser2/sdp_message.h>
 #include <osip2/internal.h>
 
 int test_message (char *msg, size_t len, int verbose, int clone);
@@ -208,6 +209,28 @@ test_message (char *msg, size_t len, int verbose, int clone)
       {
         int i;
         size_t length;
+#if 0
+	sdp_message_t *sdp;
+	osip_body_t *oldbody;
+	int pos;
+	
+	pos = 0;
+	while (!osip_list_eol (&sip->bodies, pos))
+	  {
+	    oldbody = (osip_body_t *) osip_list_get (&sip->bodies, pos);
+	    pos++;
+	    sdp_message_init (&sdp);
+	    i = sdp_message_parse (sdp, oldbody->body);
+	    if (i != 0)
+	      {
+		fprintf (stdout, "ERROR: Bad SDP!\n");
+	      }
+	    else
+	      fprintf (stdout, "SUCCESS: Correct SDP!\n");
+	    sdp_message_free (sdp);
+	    sdp = NULL;
+	  }
+#endif	
 
         osip_message_force_update (sip);
         i = osip_message_to_str (sip, &result, &length);
