@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.72 $)dnl
+AC_REVISION($Revision: 1.73 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -363,5 +363,6 @@ debian/Makefile
 platform/Makefile
 platform/rpm/Makefile
 platform/vsnet/Makefile
+platform/wince/Makefile
 include/osip2/doxygen.dox)
 

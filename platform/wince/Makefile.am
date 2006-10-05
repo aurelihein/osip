@@ -1,3 +1,2 @@
-EXTRA_DIST = osip2.vcw \
-osip2.vcp osipparser2.vcp
+EXTRA_DIST = osip2.vcproj osipparser2.vcproj
 
