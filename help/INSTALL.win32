@@ -1,18 +1,31 @@
-Install process for Windows.
 
-Supported:
- W2000   ( <- developpement platform )
- XP
- NT4
- W98
+Install process for wince.
+_________________________
+
+latest tested:
+libosip2-3.0.1
+Windows XP.
+
+Installing Required Tools
+-------------------------
+
+You should install all programs required for windows dev.
+Among them, you need:
+
+Visual Studio .NET 2003 (or 2005)
 
 
-The makefiles are given for VC++6.0.
+Downloading Required Library
+----------------------------
+1.  oSIP    
+Donwload Latest tested version: 3.0.1
 
+Compiling
+---------
 
-1) Open and build osipparser2.dsw and osip2.dsw
-   in the ./libosip-0.X.X/platform/windows/
-   directory with Visual Studio C++ 6.0.
+Create a new project file and add the 2 existing projects:
 
-2) For more advanced users: libosip can be compiled with cygwin!
+   platform/vsnet/osipparser2.vcproj
+   platform/vsnet/osip2.vcproj
+
 
