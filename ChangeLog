@@ -1,4 +1,6 @@
-libosip2 (3.0.0)
+libosip2 (3.0.1)
+	* add Windows CE support with Visual Studio 2005
+	  (WM5.0,PocketPC 2003/2005, Smartphone)
 	* Fix memory leaks (not likely to happen).
 	* Fix buffer overrun in url.
 	* Modification of the Application Binary Interface (ABI)
