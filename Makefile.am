@@ -13,7 +13,9 @@ upload: dist
 	@echo "building files for upload in ftp://ftp-upload.gnu.org/incoming/ftp";
 	@echo "building: $(PACKAGE)-$(VERSION).tar.gz.sig";
 	gpg -b $(PACKAGE)-$(VERSION).tar.gz
-	echo "directory: osip" > $(PACKAGE)-$(VERSION).tar.gz.directive
+	echo "directory: version: 1.1" > $(PACKAGE)-$(VERSION).tar.gz.directive
+	echo "directory: osip" >> $(PACKAGE)-$(VERSION).tar.gz.directive
+	echo "filename: $(PACKAGE)-$(VERSION).tar.gz" >> $(PACKAGE)-$(VERSION).tar.gz.directive
 	@echo "building: $(PACKAGE)-$(VERSION).tar.gz.directive.asc";
 	gpg --clearsign $(PACKAGE)-$(VERSION).tar.gz.directive
 
