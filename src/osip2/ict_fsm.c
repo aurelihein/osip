@@ -364,12 +364,21 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
                                         osip_strdup (route->url->host), port);
           } else
             {
-              int port = 5060;
-
-              if (ack->req_uri->port != NULL)
-                port = osip_atoi (ack->req_uri->port);
-              osip_ict_set_destination (ict->ict_context,
-                                        osip_strdup (ack->req_uri->host), port);
+	      int port = 5060;
+	      /* search for maddr parameter */
+	      osip_uri_param_t *maddr_param = NULL;
+	      
+	      port = 5060;
+	      if (ack->req_uri->port != NULL)
+		port = osip_atoi (ack->req_uri->port);
+	      
+	      osip_uri_uparam_get_byname (ack->req_uri, "maddr", &maddr_param);
+	      if (maddr_param!=NULL && maddr_param->gvalue!=NULL)
+		osip_ict_set_destination (ict->ict_context,
+					  osip_strdup (maddr_param->gvalue), port);
+	      else
+		osip_ict_set_destination (ict->ict_context,
+					  osip_strdup (ack->req_uri->host), port);
             }
         }
       i = osip->cb_send_message (ict, ack, ict->ict_context->destination,

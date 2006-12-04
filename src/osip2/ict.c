@@ -98,10 +98,18 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   } else
     {
       int port = 5060;
+      /* search for maddr parameter */
+      osip_uri_param_t *maddr_param = NULL;
 
+      port = 5060;
       if (invite->req_uri->port != NULL)
         port = osip_atoi (invite->req_uri->port);
-      osip_ict_set_destination ((*ict), osip_strdup (invite->req_uri->host), port);
+
+      osip_uri_uparam_get_byname (invite->req_uri, "maddr", &maddr_param);
+      if (maddr_param!=NULL && maddr_param->gvalue!=NULL)
+	osip_ict_set_destination ((*ict), osip_strdup (maddr_param->gvalue), port);
+      else
+	osip_ict_set_destination ((*ict), osip_strdup (invite->req_uri->host), port);
     }
 
   (*ict)->timer_b_length = 64 * DEFAULT_T1;

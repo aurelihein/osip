@@ -92,11 +92,20 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
   } else
     {
       int port = 5060;
-
+      /* search for maddr parameter */
+      osip_uri_param_t *maddr_param = NULL;
+      
+      port = 5060;
       if (request->req_uri->port != NULL)
         port = osip_atoi (request->req_uri->port);
-      osip_nict_set_destination ((*nict),
-                                 osip_strdup (request->req_uri->host), port);
+      
+      osip_uri_uparam_get_byname (request->req_uri, "maddr", &maddr_param);
+      if (maddr_param!=NULL && maddr_param->gvalue!=NULL)
+	osip_nict_set_destination ((*nict),
+				   osip_strdup (maddr_param->gvalue), port);
+      else
+	osip_nict_set_destination ((*nict),
+				   osip_strdup (request->req_uri->host), port);
     }
 
   (*nict)->timer_f_length = 64 * DEFAULT_T1;
