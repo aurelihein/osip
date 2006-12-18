@@ -110,6 +110,13 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
         return -1;
     }
 
+  if (dialog->state == DIALOG_EARLY && osip_list_size (&dialog->route_set) > 0)
+    {
+      osip_list_special_free (&dialog->route_set,
+			      (void *(*)(void *)) &osip_record_route_free);
+      osip_list_init (&dialog->route_set);
+    }
+
   if (dialog->state == DIALOG_EARLY && osip_list_size (&dialog->route_set) == 0)
     {                           /* update the route set */
       int pos = 0;
