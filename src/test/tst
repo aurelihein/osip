@@ -34,29 +34,29 @@ done
 echo "checked well formed messages:   $i"
 echo "errors                      :   $nok"
 
-ok=0
-nok=0
-
-i=0
-while [ $i -lt 9 ]
-do
-set +x
-   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip-malformed$i 0 $1
-   ./torture_test $1/sip-malformed$i 0 $2
-   if [ "$?" -eq 0 ]; then
-       echo "checking sip$i : passed";
-       ok=`expr $ok + 1`;
-   else
-       echo "checking sip$i : failed";
-       nok=`expr $nok + 1`
-   fi;
-
-   i=`expr $i + 1`
-
-done
-
-echo "checked malformed messages:   $i"
-echo "errors                    :   $ok"
+#ok=0
+#nok=0
+#
+#i=0
+#while [ $i -lt 9 ]
+#do
+#set +x
+#   #mpatrol -C -S -L -d --list -p --use-debug ./torture_test ./res/sip-malformed$i 0 $1
+#   ./torture_test $1/sip-malformed$i 0 $2
+#   if [ "$?" -eq 0 ]; then
+#       echo "checking sip$i : passed";
+#       ok=`expr $ok + 1`;
+#   else
+#       echo "checking sip$i : failed";
+#       nok=`expr $nok + 1`
+#   fi;
+#
+#   i=`expr $i + 1`
+#
+#done
+#
+#echo "checked malformed messages:   $i"
+#echo "errors                    :   $ok"
 
 
 

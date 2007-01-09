@@ -402,21 +402,16 @@ osip_message_set__header (osip_message_t * sip, const char *hname,
 
       ret = __osip_message_call_method (my_index, sip, hvalue);
       if (ret == -1)
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                       "Could not set header: \"%s\" %s\n", hname, hvalue));
-          return -1;
-        }
+	return -1;
       return 0;
     }
   /* unknownheader */
   if (osip_message_set_header (sip, hname, hvalue) == -1)
     {
       OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+                  (__FILE__, __LINE__, OSIP_WARNING, NULL,
                    "Could not set unknown header\n"));
-      return -1;
+      return 0;
     }
 
   return 0;
