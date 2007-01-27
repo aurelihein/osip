@@ -2065,6 +2065,7 @@ __osip_kill_transaction_callback (int type, osip_transaction_t * tr)
                    "invalid callback type %d\n", type));
       return;
     }
+  tr->completed_time = time (NULL);
   if (config->kill_callbacks[type] == NULL)
     return;
   config->kill_callbacks[type] (type, tr);
