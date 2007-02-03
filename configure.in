@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.74 $)dnl
+AC_REVISION($Revision: 1.75 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -11,11 +11,11 @@ dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=3
 OSIP_MINOR_VERSION=0
-OSIP_MICRO_VERSION=1
+OSIP_MICRO_VERSION=2
 
 SONAME_MAJOR_VERSION=4
 SONAME_MINOR_VERSION=0
-SONAME_MICRO_VERSION=0
+SONAME_MICRO_VERSION=1
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
