@@ -49,8 +49,8 @@ extern "C"
 
 #define MAX_LEN 1000
   typedef enum
-  { ok, plein, vide }
-  osip_fifo_etat;
+  { osip_ok, osip_full, osip_empty }
+  osip_fifo_state;
 
 #endif
 
@@ -72,7 +72,7 @@ extern "C"
 #endif
     osip_list_t queue;             /**< list of nodes containing elements */
     int nb_elt;                    /**< nb of elements */
-    osip_fifo_etat etat;           /**@internal state of the fifo */
+    osip_fifo_state state;           /**@internal state of the fifo */
   };
 
 /**

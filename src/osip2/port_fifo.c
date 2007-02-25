@@ -36,7 +36,7 @@ osip_fifo_init (osip_fifo_t * ff)
 #endif
   osip_list_init (&ff->queue);
   /* ff->nb_elt = 0; */
-  ff->etat = vide;
+  ff->state = osip_empty;
 }
 
 int
@@ -46,7 +46,7 @@ osip_fifo_add (osip_fifo_t * ff, void *el)
   osip_mutex_lock (ff->qislocked);
 #endif
 
-  if (ff->etat != plein)
+  if (ff->state != osip_full)
     {
       /* ff->nb_elt++; */
       osip_list_add (&ff->queue, el, -1);        /* insert at end of queue */
@@ -62,9 +62,9 @@ osip_fifo_add (osip_fifo_t * ff, void *el)
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (&ff->queue) >= MAX_LEN)
-    ff->etat = plein;
+    ff->state = osip_full;
   else
-    ff->etat = ok;
+    ff->state = osip_ok;
 
 #ifdef OSIP_MT
   osip_sem_post (ff->qisempty);
@@ -81,7 +81,7 @@ osip_fifo_insert (osip_fifo_t * ff, void *el)
   osip_mutex_lock (ff->qislocked);
 #endif
 
-  if (ff->etat != plein)
+  if (ff->state != osip_full)
     {
       /* ff->nb_elt++; */
       osip_list_add (&ff->queue, el, 0); /* insert at end of queue */
@@ -97,9 +97,9 @@ osip_fifo_insert (osip_fifo_t * ff, void *el)
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (&ff->queue) >= MAX_LEN)
-    ff->etat = plein;
+    ff->state = osip_full;
   else
-    ff->etat = ok;
+    ff->state = osip_ok;
 
 #ifdef OSIP_MT
   osip_sem_post (ff->qisempty);
@@ -139,7 +139,7 @@ osip_fifo_get (osip_fifo_t * ff)
   osip_mutex_lock (ff->qislocked);
 #endif
 
-  if (ff->etat != vide)
+  if (ff->state != osip_empty)
     {
       el = osip_list_get (&ff->queue, 0);
       osip_list_remove (&ff->queue, 0);
@@ -155,9 +155,9 @@ osip_fifo_get (osip_fifo_t * ff)
     }
   /* if (ff->nb_elt <= 0) */
   if (osip_list_size (&ff->queue) <= 0)
-    ff->etat = vide;
+    ff->state = osip_empty;
   else
-    ff->etat = ok;
+    ff->state = osip_ok;
 
 #ifdef OSIP_MT
   osip_mutex_unlock (ff->qislocked);
@@ -177,11 +177,11 @@ osip_fifo_tryget (osip_fifo_t * ff)
     }
   osip_mutex_lock (ff->qislocked);
 #else
-  if (ff->etat == vide)
+  if (ff->state == osip_empty)
     return NULL;
 #endif
 
-  if (ff->etat != vide)
+  if (ff->state != osip_empty)
     {
       el = osip_list_get (&ff->queue, 0);
       osip_list_remove (&ff->queue, 0);
@@ -199,9 +199,9 @@ osip_fifo_tryget (osip_fifo_t * ff)
 
   /* if (ff->nb_elt <= 0) */
   if (osip_list_size (&ff->queue) <= 0)
-    ff->etat = vide;
+    ff->state = osip_empty;
   else
-    ff->etat = ok;
+    ff->state = osip_ok;
 
 #ifdef OSIP_MT
   osip_mutex_unlock (ff->qislocked);
