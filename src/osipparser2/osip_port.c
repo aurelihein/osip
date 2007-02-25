@@ -1092,7 +1092,7 @@ osip_hash (const char *str)
   while (c = *str++)
     hash = ((hash << 5) + hash) + c;
 
-  return hash;
+  return hash & 0xFFFFFFFFu;
 }
 
 /* ---For better performance---
