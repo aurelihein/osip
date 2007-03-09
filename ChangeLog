@@ -1,4 +1,5 @@
 libosip2 (3.0.2)
+	* initial support for ucos.
 	* fix to ignore broken optionnal header when parsing.
 	
 libosip2 (3.0.1)
