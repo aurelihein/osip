@@ -25,6 +25,11 @@
 
 #include <stdio.h>
 
+#if defined(__arc__)
+#include "includes_api.h"
+#include "os_cfg_pub.h"
+#endif
+
 #if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
 #	define STDC_HEADERS 1
 #	define HAVE_CTYPE_H 1

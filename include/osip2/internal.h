@@ -92,6 +92,11 @@ void __payload_free (__payload_t * payload);
 /* - Win32: Pthreads for Win32 (http://sources.redhat.com/pthreads-win32). */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTHREAD_H) || defined(HAVE_PTH_PTHREAD_H) || \
 	defined(HAVE_PTHREAD_WIN32)
+#if defined(__arc__)
+#include <ucos_ii_api.h>
+#endif
+
+
 #include <pthread.h>
 typedef pthread_t osip_thread_t;
 #endif
@@ -134,7 +139,7 @@ osip_thread_t;
 /* Is there any semaphore implementation available? */
 #if !defined(HAVE_SEMAPHORE_H) && !defined(HAVE_SYS_SEM_H) && \
     !defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
-    !defined(__PSOS__) && !defined(__VXWORKS_OS__)
+    !defined(__PSOS__) && !defined(__VXWORKS_OS__) && !defined(__arc__)
 #error No semaphore implementation found
 #endif
 
