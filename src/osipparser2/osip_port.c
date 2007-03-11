@@ -22,6 +22,10 @@
 #include <windows.h>
 #endif
 
+#if defined(__arc__)
+#undef HAVE_SYSLOG_H
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
