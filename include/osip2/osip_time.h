@@ -55,7 +55,11 @@ struct _timeb {
 #define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 
 /* osip_gettimeofday() for Windows */
+#if defined(__arc__)
+#define osip_gettimeofday gettimeofday
+#else
   int osip_gettimeofday (struct timeval *tp, void *tz);
+#endif
 
 #else
 /* Operations on struct timeval */

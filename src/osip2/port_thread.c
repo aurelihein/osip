@@ -77,7 +77,9 @@ osip_thread_join (struct osip_thread *_thread)
 void
 osip_thread_exit ()
 {
+#if !defined(__arc__)
   pthread_exit (NULL);
+#endif
 }
 
 #endif

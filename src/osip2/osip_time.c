@@ -93,3 +93,21 @@ osip_gettimeofday (struct timeval *tp, void *tz)
 }
 
 #endif
+
+#if defined(__arc__)
+
+time_t
+time (time_t *t)
+{
+  struct timeval now;
+
+  osip_gettimeofday (&now, NULL);
+  
+  if (t!=NULL)
+    {
+      *t = now.tv_sec;
+    }
+  return now.tv_sec;
+}
+
+#endif
