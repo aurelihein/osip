@@ -22,9 +22,6 @@
 #include <windows.h>
 #endif
 
-#if defined(__arc__)
-#undef HAVE_SYSLOG_H
-#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -85,7 +82,7 @@
 #  include <unistd.h>
 #endif
 
-#if defined (HAVE_SYSLOG_H)
+#if defined (HAVE_SYSLOG_H) && !defined(__arc__)
 #  include <syslog.h>
 #endif
 
@@ -682,7 +679,7 @@ osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
 {
   osip_trace_level_t i = 0;
 
-#if defined (HAVE_SYSLOG_H)
+#if defined (HAVE_SYSLOG_H) && !defined(__arc__)
   openlog (ident, LOG_CONS | LOG_PID, LOG_DAEMON);
   use_syslog = 1;
 #endif
@@ -804,7 +801,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
     {
       trace_func (fi, li, level, chfr, ap);
     }
-#if defined (HAVE_SYSLOG_H)
+#if defined (HAVE_SYSLOG_H) && !defined(__arc__)
   else if (use_syslog == 1)
     {
       char buffer[512];
