@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.75 $)dnl
+AC_REVISION($Revision: 1.76 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -117,7 +117,7 @@ dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
   if test "x$enable_pthread" = "xyes"; then
     SIP_FSM_FLAGS="-DOSIP_MT -DHAVE_PTHREAD"
-    FSM_LIB="-lpthread"
+    dnl FSM_LIB="-lpthread"
   else
     SIP_FSM_FLAGS="-DOSIP_MT"
     ACX_PTHREAD()
@@ -159,6 +159,13 @@ case $OS in
      ;;
   *)
      ;;
+esac
+
+case $host_cpu in
+  arc*)
+    ;;
+  *)
+    ;;
 esac
 
 if test "x$enable_hashtable" = "xyes"; then
