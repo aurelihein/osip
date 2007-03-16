@@ -82,87 +82,135 @@ extern "C"
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_accept (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_accept(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Accept",value)
+#endif
 /**
  * Get one Accept header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_accept (const osip_message_t * sip, int pos,
                                osip_accept_t ** dest);
+#else
+#define osip_message_get_accept(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"accept",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Accept-encoding header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_accept_encoding(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Accept-Encoding",value)
+#endif
 /**
  * Get one Accept-encoding header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_accept_encoding (const osip_message_t * sip, int pos,
                                         osip_accept_encoding_t ** dest);
+#else
+#define osip_message_get_accept_encoding(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"accept-encoding",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Accept-language header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_accept_language (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_accept_language(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Accept-Language",value)
+#endif
 /**
- * Get one Accept header.
+ * Get one Accept-Language header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_accept_language (const osip_message_t * sip, int pos,
                                         osip_accept_language_t ** dest);
+#else
+#define osip_message_get_accept_language(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"accept-language",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Alert-info header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_alert_info (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_alert_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Alert-Info",value)
+#endif
 /**
  * Get one Alert-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_alert_info (const osip_message_t * sip, int pos,
                                    osip_alert_info_t ** dest);
+#else
+#define osip_message_get_alert_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"alert-info",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Allow header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_allow (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_allow(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Allow",value)
+#endif
 /**
  * Get one Allow header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_allow (const osip_message_t * sip, int pos,
                               osip_allow_t ** dest);
+#else
+#define osip_message_get_allow(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"allow",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Authentication-info header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_authentication_info (osip_message_t * sip,
                                             const char *hvalue);
+#else
+#define osip_message_set_authentication_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Authentication-Info",value)
+#endif
 /**
  * Get one Authentication-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_authentication_info (const osip_message_t * sip,
                                             int pos,
                                             osip_authentication_info_t ** dest);
+#else
+#define osip_message_get_authentication_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"authentication-info",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Authorization header.
  * @param sip The element to work on.
@@ -193,15 +241,23 @@ extern "C"
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_call_info (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_call_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Call-Info",value)
+#endif
 /**
  * Get one Call-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_call_info (const osip_message_t * sip, int pos,
                                   osip_call_info_t ** dest);
+#else
+#define osip_message_get_call_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"call-info",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Contact header.
  * @param sip The element to work on.
@@ -221,15 +277,23 @@ extern "C"
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_content_encoding(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Content-Encoding",value)
+#endif
 /**
  * Get one Content-encoding header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_content_encoding (const osip_message_t * sip, int pos,
                                          osip_content_encoding_t ** dest);
+#else
+#define osip_message_get_content_encoding(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"content-encoding",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Content-length header.
  * @param sip The element to work on.
@@ -269,15 +333,23 @@ extern "C"
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_error_info (osip_message_t * sip, const char *hvalue);
+#else
+#define osip_message_set_error_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Error-Info",value)
+#endif
 /**
  * Get one Error-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_error_info (const osip_message_t * sip, int pos,
                                    osip_error_info_t ** dest);
+#else
+#define osip_message_get_error_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"error-info",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the From header.
  * @param sip The element to work on.
@@ -337,18 +409,26 @@ extern "C"
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
+#ifndef MINISIZE
   int osip_message_set_proxy_authentication_info (osip_message_t * sip,
                                                   const char *hvalue);
+#else
+#define osip_message_set_proxy_authentication_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Proxy-Authentication-Info",value)
+#endif
 /**
  * Get the Proxy-authentication-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISIZE
   int osip_message_get_proxy_authentication_info (const osip_message_t * sip,
                                                   int pos,
                                                   osip_proxy_authentication_info_t
                                                   ** dest);
+#else
+#define osip_message_get_proxy_authentication_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"proxy-authentication-info",pos,(osip_header_t **)dest)
+#endif
 /**
  * Set the Record-Route header.
  * @param sip The element to work on.
