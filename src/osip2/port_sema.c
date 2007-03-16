@@ -80,7 +80,93 @@ osip_mutex_unlock (struct osip_mutex *_mut)
 
 #endif
 
-#if (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
+#if defined(__arc__)
+
+/* Counting Semaphore is initialized to value */
+struct osip_sem *
+osip_sem_init (unsigned int value)
+{
+  osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
+  if (sem == NULL)
+    return NULL;
+
+  sem->_sem_counter=0;
+  sem->_sem_mutex=osip_mutex_init ();
+  if (sem->_sem_mutex!=NULL)
+    return (struct osip_sem *) sem;
+  osip_free (sem);
+  return NULL;
+}
+
+int
+osip_sem_destroy (struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    return 0;
+  osip_mutex_destroy(sem->_sem_mutex);
+  osip_free (sem);
+  return 0;
+}
+
+int
+osip_sem_post (struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    return -1;
+  osip_mutex_lock(sem->_sem_mutex);
+  sem->_sem_counter++;
+  osip_mutex_unlock(sem->_sem_mutex);
+  return 0;
+}
+
+int
+osip_sem_wait (struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    return -1;
+
+  /* poor emulation... */
+  while (1)
+    {
+      osip_mutex_lock(sem->_sem_mutex);
+      if (sem->_sem_counter>0)
+	{
+	  sem->_sem_counter--;
+	  osip_mutex_unlock(sem->_sem_mutex);
+	  return 0;
+	}
+      osip_mutex_unlock(sem->_sem_mutex);
+      osip_usleep(1000);
+    }
+  return -1;
+}
+
+int
+osip_sem_trywait (struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    return -1;
+  osip_mutex_lock(sem->_sem_mutex);
+  if (sem->_sem_counter>0)
+    {
+      sem->_sem_counter--;
+      osip_mutex_unlock(sem->_sem_mutex);
+      return 0;
+    }
+  osip_mutex_unlock(sem->_sem_mutex);
+  return -1;
+}
+
+#elif (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
 
 /* Counting Semaphore is initialized to value */
 struct osip_sem *
