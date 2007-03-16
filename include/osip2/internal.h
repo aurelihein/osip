@@ -155,7 +155,17 @@ typedef pthread_mutex_t osip_mutex_t;
 #include <synch.h>
 #endif
 
-#if (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
+#if defined(__arc__)
+
+typedef struct
+{
+  int _sem_counter;
+  struct osip_mutex *_sem_mutex;
+} sem_t;
+
+typedef sem_t osip_sem_t;
+
+#elif (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
 #include <semaphore.h>
 #ifdef __sun__
 #undef getdate
