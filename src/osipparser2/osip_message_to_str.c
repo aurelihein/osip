@@ -674,11 +674,10 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       pos++;
     }
 
-  i =
-    strcat_headers_all_on_one_line (dest, &malloc_size, &message, &sip->allows,
-                                    "Allow: ", 7,
-                                    ((int (*)(void *, char **))
-                                     &osip_content_length_to_str), &next);
+  i = strcat_simple_header (dest, &malloc_size, &message,
+                            sip->content_type, "Content-Type: ", 14,
+                            ((int (*)(void *, char **))
+                             &osip_content_type_to_str), &next);
   if (i != 0)
     {
       osip_free (*dest);
@@ -687,10 +686,12 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
   message = next;
 
-  i = strcat_simple_header (dest, &malloc_size, &message,
-                            sip->content_type, "Content-Type: ", 14,
-                            ((int (*)(void *, char **))
-                             &osip_content_type_to_str), &next);
+#ifndef MINISIZE
+  i =
+    strcat_headers_all_on_one_line (dest, &malloc_size, &message, &sip->allows,
+                                    "Allow: ", 7,
+                                    ((int (*)(void *, char **))
+                                     &osip_content_length_to_str), &next);
   if (i != 0)
     {
       osip_free (*dest);
@@ -713,6 +714,8 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
   message = next;
 
+#endif
+
   i = strcat_simple_header (dest, &malloc_size, &message,
                             sip->mime_version, "Mime-Version: ", 14,
                             ((int (*)(void *, char **))
@@ -725,6 +728,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
   message = next;
 
+#ifndef MINISIZE
   i =
     strcat_headers_one_per_line (dest, &malloc_size, &message,
                                  &sip->call_infos, "Call-Info: ", 11,
@@ -833,6 +837,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     }
   message = next;
 
+#endif
 
   /* we have to create the body before adding the contentlength */
   /* add enough lenght for "Content-Length: " */

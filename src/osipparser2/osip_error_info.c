@@ -25,6 +25,8 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
+
 int
 osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
 {
@@ -61,3 +63,5 @@ osip_message_get_error_info (const osip_message_t * sip, int pos,
   *dest = error_info;
   return pos;
 }
+
+#endif

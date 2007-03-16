@@ -25,6 +25,7 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
 
 int
 osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
@@ -63,3 +64,5 @@ osip_message_get_accept_language (const osip_message_t * sip, int pos,
   *dest = accept_language;
   return pos;
 }
+
+#endif

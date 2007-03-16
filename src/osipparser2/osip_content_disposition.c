@@ -25,6 +25,7 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
 
 int
 osip_content_disposition_parse (osip_content_disposition_t * cd,
@@ -50,3 +51,5 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
 
   return 0;
 }
+
+#endif

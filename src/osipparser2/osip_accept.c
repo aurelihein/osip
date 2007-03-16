@@ -24,7 +24,7 @@
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 
-
+#ifndef MINISIZE
 
 /* adds the accept header to message.              */
 /* INPUT : char *hvalue | value of header.    */
@@ -35,11 +35,6 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
 {
   osip_accept_t *accept;
   int i;
-
-#if 0
-  if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
-#endif
 
   i = accept_init (&accept);
   if (i != 0)
@@ -148,3 +143,5 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
   *dest = buf;
   return 0;
 }
+
+#endif

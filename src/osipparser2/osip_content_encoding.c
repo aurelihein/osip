@@ -25,6 +25,8 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
+
 /* content-Encoding = token
    token possible values are gzip,compress,deflate
 */
@@ -64,3 +66,5 @@ osip_message_get_content_encoding (const osip_message_t * sip, int pos,
   *dest = ce;
   return pos;
 }
+
+#endif

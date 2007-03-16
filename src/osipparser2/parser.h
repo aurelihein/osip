@@ -23,7 +23,11 @@
 
 #ifndef DOXYGEN
 
+#ifndef MINISIZE
 #define NUMBER_OF_HEADERS 33
+#else
+#define NUMBER_OF_HEADERS 22
+#endif
 
 /* internal type for parser's config */
 typedef struct ___osip_message_config_t

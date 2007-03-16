@@ -25,6 +25,8 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
+
 int
 osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
 {
@@ -227,3 +229,5 @@ osip_call_info_set_uri (osip_call_info_t * ae, char *uri)
 {
   ae->element = uri;
 }
+
+#endif

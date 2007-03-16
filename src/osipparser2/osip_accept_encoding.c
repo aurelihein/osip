@@ -25,6 +25,7 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
 
 /* Accept-Encoding = token
    token possible values are gzip,compress,deflate,identity
@@ -230,3 +231,5 @@ osip_accept_encoding_set_element (osip_accept_encoding_t * ae, char *element)
 {
   ae->element = element;
 }
+
+#endif

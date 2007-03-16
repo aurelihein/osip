@@ -62,25 +62,35 @@ extern "C"
     int status_code;                  /**< Status Code (SIP answer only) */
     char *reason_phrase;              /**< Reason Phrase (SIP answer only) */
 
+#ifndef MINISIZE
     osip_list_t accepts;             /**< Accept headers */
     osip_list_t accept_encodings;    /**< Accept-Encoding headers */
     osip_list_t accept_languages;    /**< Accept-Language headers */
     osip_list_t alert_infos;         /**< Alert-Info headers */
     osip_list_t allows;              /**< Allows headers */
     osip_list_t authentication_infos;/**< authentication_info headers */
+#endif
     osip_list_t authorizations;      /**< Authorizations headers */
     osip_call_id_t *call_id;          /**< Call-ID header */
+#ifndef MINISIZE
     osip_list_t call_infos;          /**< Call-Infos header */
+#endif
     osip_list_t contacts;            /**< Contacts headers */
+#ifndef MINISIZE
     osip_list_t content_encodings;   /**< Content-Encodings headers */
+#endif
     osip_content_length_t *content_length;   /**< Content-Length header */
     osip_content_type_t *content_type;       /**< Content-Type header */
     osip_cseq_t *cseq;                /**< CSeq header */
+#ifndef MINISIZE
     osip_list_t error_infos;         /**< Error-Info headers */
+#endif
     osip_from_t *from;                /**< From header */
     osip_mime_version_t *mime_version;/**< Mime-Version header */
     osip_list_t proxy_authenticates; /**< Proxy-Authenticate headers */
+#ifndef MINISIZE
     osip_list_t proxy_authentication_infos; /**< P-Authentication-Info headers */
+#endif
     osip_list_t proxy_authorizations;/**< Proxy-authorization headers */
     osip_list_t record_routes;       /**< Record-Route headers */
     osip_list_t routes;              /**< Route headers */

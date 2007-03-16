@@ -25,6 +25,8 @@
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 
+#ifndef MINISIZE
+
 /* fills the proxy-authentication_info header of message.               */
 /* INPUT :  char *hvalue | value of header.   */
 /* OUTPUT: osip_message_t *sip | structure to save results. */
@@ -77,3 +79,5 @@ osip_message_get_proxy_authentication_info (const osip_message_t * sip,
   *dest = proxy_authentication_info;
   return pos;
 }
+
+#endif

@@ -59,6 +59,7 @@ parser_init (void)
 {
   int i = 0;
 
+#ifndef MINISIZE
   pconfig[i].hname = ACCEPT;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_accept);
@@ -77,6 +78,7 @@ parser_init (void)
   pconfig[i].hname = AUTHENTICATION_INFO;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_authentication_info);
+#endif
   pconfig[i].hname = AUTHORIZATION;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_authorization);
@@ -86,15 +88,19 @@ parser_init (void)
   pconfig[i].hname = CALL_ID;
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_call_id);
+#ifndef MINISIZE
   pconfig[i].hname = CALL_INFO;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_call_info);
+#endif
   pconfig[i].hname = CONTACT;
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_contact);
+#ifndef MINISIZE
   pconfig[i].hname = CONTENT_ENCODING;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_content_encoding);
+#endif
   pconfig[i].hname = CONTENT_LENGTH;
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_content_length);
@@ -104,12 +110,14 @@ parser_init (void)
   pconfig[i].hname = CSEQ;
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_cseq);
+#ifndef MINISIZE
   pconfig[i].hname = CONTENT_ENCODING_SHORT;    /* "e" */
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_content_encoding);
   pconfig[i].hname = ERROR_INFO;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_error_info);
+#endif
   pconfig[i].hname = FROM_SHORT;        /* "f" */
   pconfig[i].ignored_when_invalid = 0;
   pconfig[i++].setheader = (&osip_message_set_from);
@@ -131,9 +139,11 @@ parser_init (void)
   pconfig[i].hname = PROXY_AUTHENTICATE;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_proxy_authenticate);
+#ifndef MINISIZE
   pconfig[i].hname = PROXY_AUTHENTICATION_INFO;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_proxy_authentication_info);
+#endif
   pconfig[i].hname = PROXY_AUTHORIZATION;
   pconfig[i].ignored_when_invalid = 1;
   pconfig[i++].setheader = (&osip_message_set_proxy_authorization);

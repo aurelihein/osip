@@ -25,6 +25,8 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
+
 int
 osip_message_set_allow (osip_message_t * sip, const char *hvalue)
 {
@@ -60,3 +62,5 @@ osip_message_get_allow (const osip_message_t * sip, int pos, osip_allow_t ** des
   *dest = allow;
   return pos;
 }
+
+#endif

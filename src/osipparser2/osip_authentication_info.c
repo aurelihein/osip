@@ -26,6 +26,8 @@
 #include <osipparser2/osip_parser.h>
 #include "parser.h"
 
+#ifndef MINISIZE
+
 int
 osip_authentication_info_init (osip_authentication_info_t ** dest)
 {
@@ -386,3 +388,5 @@ osip_authentication_info_clone (const osip_authentication_info_t * ainfo,
   *dest = wa;
   return 0;
 }
+
+#endif
