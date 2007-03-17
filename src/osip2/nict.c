@@ -151,58 +151,30 @@ osip_event_t *
 __osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state,
                                 int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (nict == NULL)
-    return NULL;
-  if (state == NICT_PROCEEDING || state == NICT_TRYING)
-    {
-      if (nict->timer_e_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &nict->timer_e_start, >))
-        return __osip_event_new (TIMEOUT_E, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(nict, &nict->timer_e_start,
+					       state == NICT_PROCEEDING
+					       || state == NICT_TRYING,
+					       transactionid,
+					       TIMEOUT_E);
 }
 
 osip_event_t *
 __osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state,
                                 int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (nict == NULL)
-    return NULL;
-  if (state == NICT_PROCEEDING || state == NICT_TRYING)
-    {
-      if (nict->timer_f_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &nict->timer_f_start, >))
-        return __osip_event_new (TIMEOUT_F, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(nict, &nict->timer_f_start,
+					       state == NICT_PROCEEDING
+					       || state == NICT_TRYING,
+					       transactionid,
+					       TIMEOUT_F);
 }
 
 osip_event_t *
 __osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state,
                                 int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (nict == NULL)
-    return NULL;
-  if (state == NICT_COMPLETED)
-    {
-      if (nict->timer_k_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &nict->timer_k_start, >))
-        return __osip_event_new (TIMEOUT_K, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(nict, &nict->timer_k_start,
+					       state == NICT_COMPLETED,
+					       transactionid,
+					       TIMEOUT_K);
 }

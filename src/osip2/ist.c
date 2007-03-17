@@ -88,58 +88,26 @@ __osip_ist_free (osip_ist_t * ist)
 osip_event_t *
 __osip_ist_need_timer_g_event (osip_ist_t * ist, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_COMPLETED)
-    {
-      if (ist->timer_g_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ist->timer_g_start, >))
-        return __osip_event_new (TIMEOUT_G, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ist, &ist->timer_g_start,
+					       state == IST_COMPLETED,
+					       transactionid,
+					       TIMEOUT_G);
 }
 
 osip_event_t *
 __osip_ist_need_timer_h_event (osip_ist_t * ist, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_COMPLETED)
-    {
-      /* may need timer H */
-      if (ist->timer_h_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ist->timer_h_start, >))
-        return __osip_event_new (TIMEOUT_H, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ist, &ist->timer_h_start,
+					       state == IST_COMPLETED,
+					       transactionid,
+					       TIMEOUT_H);
 }
 
 osip_event_t *
 __osip_ist_need_timer_i_event (osip_ist_t * ist, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ist == NULL)
-    return NULL;
-  if (state == IST_CONFIRMED)
-    {
-      /* may need timer I */
-      if (ist->timer_i_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ist->timer_i_start, >))
-        return __osip_event_new (TIMEOUT_I, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ist, &ist->timer_i_start,
+					       state == IST_CONFIRMED,
+					       transactionid,
+					       TIMEOUT_I);
 }

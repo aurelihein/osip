@@ -139,7 +139,6 @@ void
 nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
 {
   int i;
-  osip_t *osip = (osip_t *) nist->config;
 
   if (nist->state == NIST_PRE_TRYING)   /* announce new REQUEST */
     {
@@ -178,48 +177,7 @@ nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
                                nist->orig_request);
       if (nist->last_response != NULL)  /* retransmit last response */
         {
-          osip_via_t *via;
-
-          via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
-          if (via)
-            {
-              char *host;
-              int port;
-              osip_generic_param_t *maddr;
-              osip_generic_param_t *received;
-              osip_generic_param_t *rport;
-
-              osip_via_param_get_byname (via, "maddr", &maddr);
-              osip_via_param_get_byname (via, "received", &received);
-              osip_via_param_get_byname (via, "rport", &rport);
-              /* 1: user should not use the provided information
-                 (host and port) if they are using a reliable
-                 transport. Instead, they should use the already
-                 open socket attached to this transaction. */
-              /* 2: check maddr and multicast usage */
-              if (maddr != NULL)
-                host = maddr->gvalue;
-              /* we should check if this is a multicast address and use
-                 set the "ttl" in this case. (this must be done in the
-                 UDP message (not at the SIP layer) */
-              else if (received != NULL)
-                host = received->gvalue;
-              else
-                host = via->host;
-
-              if (rport == NULL || rport->gvalue == NULL)
-                {
-                  if (via->port != NULL)
-                    port = osip_atoi (via->port);
-                  else
-                    port = 5060;
-              } else
-                port = osip_atoi (rport->gvalue);
-
-              i = osip->cb_send_message (nist, nist->last_response, host,
-                                         port, nist->out_socket);
-          } else
-            i = -1;
+	  i = __osip_transaction_snd_xxx(nist, nist->last_response);
           if (i != 0)
             {
               nist_handle_transport_error (nist, i);
@@ -250,8 +208,6 @@ void
 nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
 {
   int i;
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) nist->config;
 
   if (nist->last_response != NULL)
     {
@@ -259,45 +215,7 @@ nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
     }
   nist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-      i = osip->cb_send_message (nist, nist->last_response, host,
-                                 port, nist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(nist, nist->last_response);
   if (i != 0)
     {
       nist_handle_transport_error (nist, i);
@@ -312,8 +230,6 @@ void
 nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
 {
   int i;
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) nist->config;
 
   if (nist->last_response != NULL)
     {
@@ -321,45 +237,7 @@ nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
     }
   nist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (&nist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-      i = osip->cb_send_message (nist, nist->last_response, host,
-                                 port, nist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(nist, nist->last_response);
   if (i != 0)
     {
       nist_handle_transport_error (nist, i);

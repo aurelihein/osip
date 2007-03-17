@@ -704,21 +704,71 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
   return 0;
 }
 
-#if 0
-
-int
-callleg_match (osip_to_t * to1, osip_from_t * from1, osip_to_t * to2,
-               osip_from_t * from2)
+osip_event_t *
+__osip_transaction_need_timer_x_event (void *xixt, struct timeval *timer,
+				       int cond_state,
+				       int transactionid,
+				       int TIMER_VAL)
 {
-  if (to1 == NULL || to2 == NULL)
-    return -1;
-  if (from1 == NULL || from2 == NULL)
-    return -1;
+  struct timeval now;
 
-  if (0 == osip_from_compare ((osip_from_t *) to1, (osip_from_t *) to2)
-      && 0 == osip_from_compare (from1, from2))
-    return 0;
-  return -1;
+  osip_gettimeofday (&now, NULL);
+
+  if (xixt == NULL)
+    return NULL;
+  if (cond_state)
+    {
+      if (timer->tv_sec == -1)
+        return NULL;
+      if (osip_timercmp (&now, timer, >))
+        return __osip_event_new (TIMER_VAL, transactionid);
+    }
+  return NULL;
 }
 
-#endif
+int
+__osip_transaction_snd_xxx (osip_transaction_t * ist, osip_message_t * msg)
+{
+  osip_t *osip = (osip_t *) ist->config;
+  osip_via_t *via;
+  char *host;
+  int port;
+  osip_generic_param_t *maddr;
+  osip_generic_param_t *received;
+  osip_generic_param_t *rport;
+
+  via = (osip_via_t *) osip_list_get (&msg->vias, 0);
+  if (!via)
+    return -1;
+
+  osip_via_param_get_byname (via, "maddr", &maddr);
+  osip_via_param_get_byname (via, "received", &received);
+  osip_via_param_get_byname (via, "rport", &rport);
+  /* 1: user should not use the provided information
+     (host and port) if they are using a reliable
+     transport. Instead, they should use the already
+     open socket attached to this transaction. */
+  /* 2: check maddr and multicast usage */
+  if (maddr != NULL)
+    host = maddr->gvalue;
+  /* we should check if this is a multicast address and use
+     set the "ttl" in this case. (this must be done in the
+     UDP message (not at the SIP layer) */
+  else if (received != NULL)
+    host = received->gvalue;
+  else
+    host = via->host;
+  
+  if (rport == NULL || rport->gvalue == NULL)
+    {
+      if (via->port != NULL)
+	port = osip_atoi (via->port);
+          else
+            port = 5060;
+    } else
+      port = osip_atoi (rport->gvalue);
+  
+  return osip->cb_send_message (ist, msg, host,
+				port, ist->out_socket);
+  
+}

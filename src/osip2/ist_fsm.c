@@ -123,57 +123,6 @@ __ist_load_fsm ()
 
 }
 
-osip_message_t *
-ist_create_resp_100 (osip_transaction_t * ist, osip_message_t * request)
-{
-  int i;
-  osip_message_t *resp_100;
-
-  i = osip_message_init (&resp_100);
-  if (i != 0)
-    return NULL;
-
-  /* follow instructions from 8.2.6 */
-  i = osip_from_clone (request->from, &(resp_100->from));
-  if (i != 0)
-    goto icr_error;
-  /* 17.2.1 says: should NOT add a tag */
-  i = osip_to_clone (request->to, &(resp_100->to));     /* DOES NOT include any tag! */
-  if (i != 0)
-    goto icr_error;
-  i = osip_call_id_clone (request->call_id, &(resp_100->call_id));
-  if (i != 0)
-    goto icr_error;
-  i = osip_cseq_clone (request->cseq, &(resp_100->cseq));
-  if (i != 0)
-    goto icr_error;
-
-  /* Via headers are copied from request */
-  {
-    int pos = 0;
-    osip_via_t *via;
-    osip_via_t *orig_via;
-
-    while (!osip_list_eol (&ist->orig_request->vias, pos))
-      {
-        orig_via = (osip_via_t *) osip_list_get (&ist->orig_request->vias, pos);
-        osip_via_clone (orig_via, &via);
-        osip_list_add (&resp_100->vias, via, -1);
-        pos++;
-      }
-  }
-
-  /* TODO: */
-  /* MUST copy the "Timestamp" header here (+ add a delay if necessary!)        */
-  /* a delay should not be necessary for 100 as it is sent in less than one sec */
-
-
-  return resp_100;
-icr_error:
-  osip_message_free (resp_100);
-  return NULL;
-}
-
 static void
 ist_handle_transport_error (osip_transaction_t * ist, int err)
 {
@@ -187,7 +136,6 @@ void
 ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
 {
   int i;
-  osip_t *osip = (osip_t *) ist->config;
 
   if (ist->state == IST_PRE_PROCEEDING) /* announce new INVITE */
     {
@@ -204,48 +152,7 @@ ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
                                ist->orig_request);
       if (ist->last_response != NULL)   /* retransmit last response */
         {
-          osip_via_t *via;
-
-          via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
-          if (via)
-            {
-              char *host;
-              int port;
-              osip_generic_param_t *maddr;
-              osip_generic_param_t *received;
-              osip_generic_param_t *rport;
-
-              osip_via_param_get_byname (via, "maddr", &maddr);
-              osip_via_param_get_byname (via, "received", &received);
-              osip_via_param_get_byname (via, "rport", &rport);
-              /* 1: user should not use the provided information
-                 (host and port) if they are using a reliable
-                 transport. Instead, they should use the already
-                 open socket attached to this transaction. */
-              /* 2: check maddr and multicast usage */
-              if (maddr != NULL)
-                host = maddr->gvalue;
-              /* we should check if this is a multicast address and use
-                 set the "ttl" in this case. (this must be done in the
-                 UDP message (not at the SIP layer) */
-              else if (received != NULL)
-                host = received->gvalue;
-              else
-                host = via->host;
-
-              if (rport == NULL || rport->gvalue == NULL)
-                {
-                  if (via->port != NULL)
-                    port = osip_atoi (via->port);
-                  else
-                    port = 5060;
-              } else
-                port = osip_atoi (rport->gvalue);
-
-              i = osip->cb_send_message (ist, ist->last_response, host,
-                                         port, ist->out_socket);
-          } else
-            i = -1;
+	  i = __osip_transaction_snd_xxx(ist, ist->last_response);
           if (i != 0)
             {
               ist_handle_transport_error (ist, i);
@@ -273,8 +180,6 @@ ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt)
 void
 osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
 {
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) ist->config;
   int i;
 
   ist->ist_context->timer_g_length = ist->ist_context->timer_g_length * 2;
@@ -284,47 +189,7 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
   add_gettimeofday (&ist->ist_context->timer_g_start,
                     ist->ist_context->timer_g_length);
 
-  /* retransmit RESPONSE */
-  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-
-      i = osip->cb_send_message (ist, ist->last_response, host,
-                                 port, ist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(ist, ist->last_response);
   if (i != 0)
     {
       ist_handle_transport_error (ist, i);
@@ -358,8 +223,6 @@ void
 ist_snd_1xx (osip_transaction_t * ist, osip_event_t * evt)
 {
   int i;
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) ist->config;
 
   if (ist->last_response != NULL)
     {
@@ -367,46 +230,7 @@ ist_snd_1xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-
-      i = osip->cb_send_message (ist, ist->last_response, host,
-                                 port, ist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(ist, evt->sip);
   if (i != 0)
     {
       ist_handle_transport_error (ist, i);
@@ -422,8 +246,6 @@ void
 ist_snd_2xx (osip_transaction_t * ist, osip_event_t * evt)
 {
   int i;
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) ist->config;
 
   if (ist->last_response != NULL)
     {
@@ -431,45 +253,7 @@ ist_snd_2xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-      i = osip->cb_send_message (ist, ist->last_response, host,
-                                 port, ist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(ist, evt->sip);
   if (i != 0)
     {
       ist_handle_transport_error (ist, i);
@@ -487,8 +271,6 @@ void
 ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
 {
   int i;
-  osip_via_t *via;
-  osip_t *osip = (osip_t *) ist->config;
 
   if (ist->last_response != NULL)
     {
@@ -496,45 +278,7 @@ ist_snd_3456xx (osip_transaction_t * ist, osip_event_t * evt)
     }
   ist->last_response = evt->sip;
 
-  via = (osip_via_t *) osip_list_get (&ist->last_response->vias, 0);
-  if (via)
-    {
-      char *host;
-      int port;
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
-
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
-
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-      i = osip->cb_send_message (ist, ist->last_response, host,
-                                 port, ist->out_socket);
-  } else
-    i = -1;
+  i = __osip_transaction_snd_xxx(ist, evt->sip);
   if (i != 0)
     {
       ist_handle_transport_error (ist, i);

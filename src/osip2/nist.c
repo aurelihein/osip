@@ -85,18 +85,8 @@ osip_event_t *
 __osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state,
                                 int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (nist == NULL)
-    return NULL;
-  if (state == NIST_COMPLETED)
-    {
-      if (nist->timer_j_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &nist->timer_j_start, >))
-        return __osip_event_new (TIMEOUT_J, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(nist, &nist->timer_j_start,
+					       state == NIST_COMPLETED,
+					       transactionid,
+					       TIMEOUT_J);
 }

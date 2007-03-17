@@ -104,8 +104,6 @@ void ict_retransmit_ack (osip_transaction_t * ict, osip_event_t * evt);
 /* FSM  ---- > IST      */
 /************************/
 
-osip_message_t *ist_create_resp_100 (osip_transaction_t * ist,
-                                     osip_message_t * request);
 void ist_rcv_invite (osip_transaction_t * ist, osip_event_t * evt);
 void osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt);
 void osip_ist_timeout_h_event (osip_transaction_t * ist, osip_event_t * evt);
@@ -175,6 +173,15 @@ int
 __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
                                                          tr,
                                                          osip_message_t * request);
+
+osip_event_t *
+__osip_transaction_need_timer_x_event (void *xixt, struct timeval *timer,
+				       int cond_state,
+				       int transactionid,
+				       int TIMER_VAL);
+
+int
+__osip_transaction_snd_xxx (osip_transaction_t * ist, osip_message_t * msg);
 
 #endif
 

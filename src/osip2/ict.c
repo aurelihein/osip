@@ -154,59 +154,26 @@ osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
 osip_event_t *
 __osip_ict_need_timer_a_event (osip_ict_t * ict, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_CALLING)
-    {
-      /* may need timer A */
-      if (ict->timer_a_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ict->timer_a_start, >))
-        return __osip_event_new (TIMEOUT_A, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ict, &ict->timer_a_start,
+					       state == ICT_CALLING,
+					       transactionid,
+					       TIMEOUT_A);
 }
 
 osip_event_t *
 __osip_ict_need_timer_b_event (osip_ict_t * ict, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_CALLING)
-    {
-      /* may need timer B */
-      if (ict->timer_b_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ict->timer_b_start, >))
-        return __osip_event_new (TIMEOUT_B, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ict, &ict->timer_b_start,
+					       state == ICT_CALLING,
+					       transactionid,
+					       TIMEOUT_B);
 }
 
 osip_event_t *
 __osip_ict_need_timer_d_event (osip_ict_t * ict, state_t state, int transactionid)
 {
-  struct timeval now;
-
-  osip_gettimeofday (&now, NULL);
-
-  if (ict == NULL)
-    return NULL;
-  if (state == ICT_COMPLETED)
-    {
-      /* may need timer D */
-      if (ict->timer_d_start.tv_sec == -1)
-        return NULL;
-      if (osip_timercmp (&now, &ict->timer_d_start, >))
-        return __osip_event_new (TIMEOUT_D, transactionid);
-    }
-  return NULL;
+  return __osip_transaction_need_timer_x_event(ict, &ict->timer_d_start,
+					       state == ICT_COMPLETED,
+					       transactionid,
+					       TIMEOUT_D);
 }
