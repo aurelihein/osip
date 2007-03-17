@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.78 $)dnl
+AC_REVISION($Revision: 1.79 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
@@ -129,6 +129,8 @@ if test "x$enable_mt" = "xyes"; then
   fi
 fi
 
+AM_CONDITIONAL(BUILD_MT, test x$enable_mt = xyes)
+
 if test "x$enable_gperf" = "xyes"; then
   SIP_PARSER_FLAGS="$SIP_PARSER_FLAGS -DUSE_GPERF"
 fi
@@ -206,6 +208,7 @@ fi
 if test "x$enable_minisize" = "xyes"; then
   SIP_EXTRA_FLAGS="$SIP_EXTRA_FLAGS -DMINISIZE"
 fi
+AM_CONDITIONAL(BUILD_MAXSIZE, test x$enable_minisize = xno)
 
 dnl Checks for libraries. (those one are needed for sun)
 AC_CHECK_LIB(posix4,sem_open,[FSM_LIB="$FSM_LIB -lposix4 -mt"])
