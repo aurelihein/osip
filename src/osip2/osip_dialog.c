@@ -455,7 +455,6 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   return 0;
 }
 
-#ifndef MINISIZE
 /* SIPIT13 */
 int
 osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
@@ -463,89 +462,27 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
                                              int local_cseq)
 {
   int i;
-  osip_generic_param_t *tag;
 
-  *dialog = NULL;
+  i = __osip_dialog_init (dialog,
+			  next_request,
+			  next_request,
+			  next_request->to, next_request->from,
+			  next_request);
 
-  (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
-  if (*dialog == NULL)
-    return -1;
-
-  memset (*dialog, 0, sizeof (osip_dialog_t));
-  (*dialog)->your_instance = NULL;
+  if (i!=0)
+    {
+      *dialog = NULL;
+      return -1;
+    }
 
   (*dialog)->type = CALLER;
-#if 0
   (*dialog)->state = DIALOG_CONFIRMED;
-#endif
-  (*dialog)->state = DIALOG_EARLY;
-
-  i = osip_call_id_to_str (next_request->call_id, &((*dialog)->call_id));
-  if (i != 0)
-    goto diau_error_0;
-
-  i = osip_from_get_tag (next_request->to, &tag);
-  if (i != 0)
-    goto diau_error_1;
-  (*dialog)->local_tag = osip_strdup (tag->gvalue);
-
-  i = osip_to_get_tag (next_request->from, &tag);
-  if (i == 0)
-    (*dialog)->remote_tag = osip_strdup (tag->gvalue);
-
-  osip_list_init (&(*dialog)->route_set);
 
   (*dialog)->local_cseq = local_cseq;   /* -1 osip_atoi (xxx->cseq->number); */
   (*dialog)->remote_cseq = osip_atoi (next_request->cseq->number);
 
-  i = osip_to_clone (next_request->from, &((*dialog)->remote_uri));
-  if (i != 0)
-    goto diau_error_3;
-
-  i = osip_from_clone (next_request->to, &((*dialog)->local_uri));
-  if (i != 0)
-    goto diau_error_4;
-
-  {
-    osip_contact_t *contact;
-
-    if (!osip_list_eol (&next_request->contacts, 0))
-      {
-        contact = osip_list_get (&next_request->contacts, 0);
-        i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
-        if (i != 0)
-          goto diau_error_5;
-    } else
-      {
-        (*dialog)->remote_contact_uri = NULL;
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                     "Remote UA is not compliant? missing a contact in response!\n"));
-      }
-  }
-
-  (*dialog)->secure = -1;       /* non secure */
-
   return 0;
-
-diau_error_5:
-  osip_from_free ((*dialog)->local_uri);
-diau_error_4:
-  osip_from_free ((*dialog)->remote_uri);
-diau_error_3:
-  osip_free ((*dialog)->remote_tag);
-  osip_free ((*dialog)->local_tag);
-diau_error_1:
-  osip_free ((*dialog)->call_id);
-diau_error_0:
-  OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_ERROR, NULL,
-               "Could not establish dialog!\n"));
-  osip_free (*dialog);
-  *dialog = NULL;
-  return -1;
 }
-#endif
 
 int
 osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
