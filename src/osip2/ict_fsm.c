@@ -35,9 +35,12 @@ __ict_get_fsm ()
 void
 __ict_unload_fsm ()
 {
+#ifndef MINISIZE
   transition_t *transition;
+#endif
   osip_statemachine_t *statemachine = __ict_get_fsm ();
 
+#ifndef MINISIZE
   for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
     {
       REMOVE_ELEMENT(statemachine->transitions, transition);
@@ -45,9 +48,11 @@ __ict_unload_fsm ()
     }
 
   osip_free (statemachine->transitions);
+#endif
   osip_free (statemachine);
 }
 
+#ifndef MINISIZE
 
 void
 __ict_load_fsm ()
@@ -134,6 +139,87 @@ __ict_load_fsm ()
   ADD_ELEMENT (ict_fsm->transitions, transition);
 
 }
+
+#else
+
+transition_t ict_transition[11] =
+  {
+    {
+      ICT_PRE_CALLING, SND_REQINVITE, (void (*)(void *, void *)) &ict_snd_invite,
+      &ict_transition[1], NULL
+    }
+    ,
+    {
+      ICT_CALLING,
+      TIMEOUT_A,
+      (void (*)(void *, void *)) &osip_ict_timeout_a_event,
+      &ict_transition[2], NULL
+    }
+    ,
+    {
+      ICT_CALLING,
+      TIMEOUT_B,
+      (void (*)(void *, void *)) &osip_ict_timeout_b_event,
+      &ict_transition[3], NULL
+    }
+    ,
+    { ICT_CALLING,
+      RCV_STATUS_1XX,
+      (void (*)(void *, void *)) &ict_rcv_1xx,
+      &ict_transition[4], NULL
+    }
+    ,
+    { ICT_CALLING,
+      RCV_STATUS_2XX,
+      (void (*)(void *, void *)) &ict_rcv_2xx,
+      &ict_transition[5], NULL
+    }
+    ,
+    { ICT_CALLING,
+      RCV_STATUS_3456XX,
+      (void (*)(void *, void *)) &ict_rcv_3456xx,
+      &ict_transition[6], NULL
+    }
+    ,
+    { ICT_PROCEEDING,
+      RCV_STATUS_1XX,
+      (void (*)(void *, void *)) &ict_rcv_1xx,
+      &ict_transition[7], NULL
+    }
+    ,
+    { ICT_PROCEEDING,
+      RCV_STATUS_2XX,
+      (void (*)(void *, void *)) &ict_rcv_2xx,
+      &ict_transition[8], NULL
+    }
+    ,
+    { ICT_PROCEEDING,
+      RCV_STATUS_3456XX,
+      (void (*)(void *, void *)) &ict_rcv_3456xx,
+      &ict_transition[9], NULL
+    }
+    ,
+    { ICT_COMPLETED,
+      RCV_STATUS_3456XX,
+      (void (*)(void *, void *)) &ict_retransmit_ack,
+      &ict_transition[10], NULL
+    }
+    ,
+    { ICT_COMPLETED,
+      TIMEOUT_D,
+      (void (*)(void *, void *)) &osip_ict_timeout_d_event,
+      NULL, NULL
+    }
+  };
+
+void
+__ict_load_fsm ()
+{
+  ict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  ict_fsm->transitions = ict_transition;
+}
+
+#endif
 
 static void
 ict_handle_transport_error (osip_transaction_t * ict, int err)
@@ -399,32 +485,6 @@ ict_rcv_3456xx (osip_transaction_t * ict, osip_event_t * evt)
 
       __osip_message_callback (OSIP_ICT_ACK_SENT, ict, evt->sip);
     }
-
-  /* TEST ME:
-     sipevt = osip_fifo_tryget(ict->transactionff);
-     if (sipevt==NULL)
-     {}
-     else if (sipevt->sip==NULL)
-     osip_fifo_insert(ict->transactionff, sipevt);
-     else if (MSG_IS_RESPONSE(sipevt->sip))
-     {
-     if (sipevt->sip->status_code==evt->sip->status_code)
-     {
-     OSIP_TRACE (osip_trace
-     (__FILE__, __LINE__, OSIP_WARNING, NULL,
-     "discard this clone of late response... callid:%s\n",
-     evt->sip->call_id->number));
-     osip_message_free(sipevt->sip);
-     osip_free(sipevt);
-     }
-     else
-     {
-     osip_fifo_insert(ict->transactionff, sipevt);
-     }
-     }
-     else
-     osip_fifo_insert(ict->transactionff, sipevt);
-   */
 
   /* start timer D (length is set to MAX (64*DEFAULT_T1 or 32000) */
   osip_gettimeofday (&ict->ict_context->timer_d_start, NULL);

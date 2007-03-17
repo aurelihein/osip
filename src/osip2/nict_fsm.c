@@ -33,9 +33,12 @@ __nict_get_fsm ()
 void
 __nict_unload_fsm ()
 {
+#ifndef MINISIZE
   transition_t *transition;
+#endif
   osip_statemachine_t *statemachine = __nict_get_fsm ();
 
+#ifndef MINISIZE
   for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
     {
       REMOVE_ELEMENT(statemachine->transitions, transition);
@@ -43,8 +46,11 @@ __nict_unload_fsm ()
     }
 
   osip_free (statemachine->transitions);
+#endif
   osip_free (statemachine);
 }
+
+#ifndef MINISIZE
 
 void
 __nict_load_fsm ()
@@ -149,6 +155,105 @@ __nict_load_fsm ()
    */
 
 }
+
+#else
+
+transition_t nict_transition[12] =
+  {
+    {
+      NICT_PRE_TRYING,
+      SND_REQUEST,
+      (void (*)(void *, void *)) &nict_snd_request,
+      &nict_transition[1], NULL
+    }
+    ,
+    {
+      NICT_TRYING,
+      TIMEOUT_F,
+      (void (*)(void *, void *)) &osip_nict_timeout_f_event,
+      &nict_transition[2], NULL
+    }
+    ,
+    {
+      NICT_TRYING,
+      TIMEOUT_E,
+      (void (*)(void *, void *)) &osip_nict_timeout_e_event,
+      &nict_transition[3], NULL
+    }
+    ,
+    {
+      NICT_TRYING,
+      RCV_STATUS_1XX,
+      (void (*)(void *, void *)) &nict_rcv_1xx,
+      &nict_transition[4], NULL
+    }
+    ,
+    {
+      NICT_TRYING,
+      RCV_STATUS_2XX,
+      (void (*)(void *, void *)) &nict_rcv_23456xx,
+      &nict_transition[5], NULL
+    }
+    ,
+    {
+      NICT_TRYING,
+      RCV_STATUS_3456XX,
+      (void (*)(void *, void *)) &nict_rcv_23456xx,
+      &nict_transition[6], NULL
+    }
+    ,
+    {
+      NICT_PROCEEDING,
+      TIMEOUT_F,
+      (void (*)(void *, void *)) &osip_nict_timeout_f_event,
+      &nict_transition[7], NULL
+    }
+    ,
+    {
+      NICT_PROCEEDING,
+      TIMEOUT_E,
+      (void (*)(void *, void *)) &osip_nict_timeout_e_event,
+      &nict_transition[8], NULL
+    }
+    ,
+    {
+      NICT_PROCEEDING,
+      RCV_STATUS_1XX,
+      (void (*)(void *, void *)) &nict_rcv_1xx,
+      &nict_transition[9], NULL
+    }
+    ,
+    {
+      NICT_PROCEEDING,
+      RCV_STATUS_2XX,
+      (void (*)(void *, void *)) &nict_rcv_23456xx,
+      &nict_transition[10], NULL
+    }
+    ,
+    {
+      NICT_PROCEEDING,
+      RCV_STATUS_3456XX,
+      (void (*)(void *, void *)) &nict_rcv_23456xx,
+      &nict_transition[11], NULL
+    }
+    ,
+    {
+      NICT_COMPLETED,
+      TIMEOUT_K,
+      (void (*)(void *, void *)) &osip_nict_timeout_k_event,
+      NULL, NULL
+    }
+  };
+
+
+void
+__nict_load_fsm ()
+{
+  nict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  nict_fsm->transitions = nict_transition;
+}
+
+#endif
 
 static void
 nict_handle_transport_error (osip_transaction_t * nict, int err)
