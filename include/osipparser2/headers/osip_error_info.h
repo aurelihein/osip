@@ -54,7 +54,7 @@ extern "C"
  * Free a Error-Info element.
  * @param header The element to work on.
  */
-#define  osip_error_info_free(header)      osip_call_info_free(header)
+#define  osip_error_info_free      osip_call_info_free
 /**
  * Parse a Error-Info element.
  * @param header The element to work on.

@@ -66,7 +66,7 @@ extern "C"
  * Free a Authenication-Info element.
  * @param header The element to work on.
  */
-#define osip_proxy_authentication_info_free(header) osip_authentication_info_free(header)
+#define osip_proxy_authentication_info_free osip_authentication_info_free
 /**
  * Clone a Authenication-Info element.
  * @param header The element to work on.

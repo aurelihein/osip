@@ -61,12 +61,12 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the new allocated string.
  */
-#define osip_allow_to_str(header, dest)  osip_content_length_to_str(header, dest)
+#define osip_allow_to_str  osip_content_length_to_str
 /**
  * Free a Allow element.
  * @param header The element to work on.
  */
-#define osip_allow_free(header)      osip_content_length_free(header)
+#define osip_allow_free      osip_content_length_free
 /**
  * Clone a Allow element.
  * @param header The element to work on.

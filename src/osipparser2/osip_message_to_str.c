@@ -38,7 +38,7 @@ static int strcat_headers_one_per_line (char **_string, size_t * malloc_size,
                                         size_t size_of_header,
                                         int (*xxx_to_str) (void *, char **),
                                         char **next);
-#ifndef MINISIZE
+#if 0
 static int strcat_headers_all_on_one_line (char **_string,
                                            size_t * malloc_size,
                                            char **_message,
@@ -306,7 +306,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size,
   return 0;
 }
 
-#ifndef MINISIZE
+#if 0
 static int
 strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
                                 char **_message, osip_list_t * headers,
@@ -505,9 +505,9 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       int (*to_str) (void *, char **);
     }
 #ifndef MINISIZE
-    table[23] = 
+    table[25] = 
 #else
-    table[24] = 
+    table[15] = 
 #endif
 	{
 	  { "Via: ", 5, NULL, NULL,
@@ -577,16 +577,16 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
     table[12].header_data = sip->content_type;
     table[13].header_data = sip->mime_version;
 #ifndef MINISIZE
-    table[14].header_list = sip->allows;
-    table[15].header_list = sip->content_encodings;
-    table[16].header_list = sip->call_infos;
-    table[16].header_list = sip->alert_infos;
-    table[17].header_list = sip->error_infos;
-    table[18].header_list = sip->accepts;
-    table[19].header_list = sip->accept_encodings;
-    table[20].header_list = sip->accept_languages;
-    table[21].header_list = sip->authentication_infos;
-    table[22].header_list = sip->proxy_authentication_infos;
+    table[14].header_list = &sip->allows;
+    table[15].header_list = &sip->content_encodings;
+    table[16].header_list = &sip->call_infos;
+    table[17].header_list = &sip->alert_infos;
+    table[18].header_list = &sip->error_infos;
+    table[19].header_list = &sip->accepts;
+    table[20].header_list = &sip->accept_encodings;
+    table[21].header_list = &sip->accept_languages;
+    table[22].header_list = &sip->authentication_infos;
+    table[23].header_list = &sip->proxy_authentication_infos;
 #endif
 
     pos = 0;

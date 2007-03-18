@@ -55,7 +55,7 @@ extern "C"
  * Free an Accept element.
  * @param header The element to work on.
  */
-#define osip_accept_free(header)     osip_content_type_free(header)
+#define osip_accept_free     osip_content_type_free
 /**
  * Parse an Accept element.
  * @param header The element to work on.

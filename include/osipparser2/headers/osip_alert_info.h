@@ -54,7 +54,7 @@ extern "C"
  * Free a Alert-Info element.
  * @param header The element to work on.
  */
-#define  osip_alert_info_free(header)      osip_call_info_free(header)
+#define  osip_alert_info_free      osip_call_info_free
 /**
  * Parse a Alert-Info element.
  * @param header The element to work on.

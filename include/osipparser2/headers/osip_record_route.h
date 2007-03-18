@@ -73,7 +73,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define osip_record_route_clone(header,dest)      osip_from_clone(header,dest)
+#define osip_record_route_clone      osip_from_clone
 #else
   #define osip_record_route_init   osip_from_init
   #define osip_record_route_free   osip_from_free
