@@ -184,6 +184,7 @@ extern "C"
 
 #if !defined(WIN32) && !defined(_WIN32_WCE)
 
+#ifndef MINISIZE
   typedef void *osip_malloc_func_t (size_t size);
   typedef void osip_free_func_t (void *ptr);
   typedef void *osip_realloc_func_t (void *ptr, size_t size);
@@ -195,7 +196,7 @@ extern "C"
   void osip_set_allocators (osip_malloc_func_t * malloc_func,
                             osip_realloc_func_t * realloc_func,
                             osip_free_func_t * free_func);
-
+#endif
 
 #ifdef DEBUG_MEM
 
@@ -268,11 +269,20 @@ extern "C"
 
   void osip_usleep (int useconds);
 
+#ifndef MINISIZE
+  int osip_atoi (const char *number);
+  int osip_strcasecmp (const char *s1, const char *s2);
+  int osip_strncasecmp (const char *s1, const char *s2, size_t len);
+#else
+#define osip_atoi  atoi
+#define osip_strcasecmp  strcasecmp
+#define osip_strncasecmp  strncasecmp
+#endif
+
 /**************************/
 /* STRING support         */
 /**************************/
 
-  int osip_atoi (const char *number);
   char *osip_strncpy (char *dest, const char *src, size_t length);
   char *osip_strdup (const char *ch);
   char *osip_strdup_without_quote (const char *ch);
@@ -286,9 +296,6 @@ extern "C"
   char *__osip_quote_find (const char *qstring);
   char *osip_enquote (const char *s);
   void osip_dequote (char *s);
-
-  int osip_strcasecmp (const char *s1, const char *s2);
-  int osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
   unsigned long osip_hash (const char *str);
   char *osip_str_append (char *dst, const char *src);

@@ -102,10 +102,12 @@ static osip_trace_func_t *trace_func = 0;
 
 static unsigned int random_seed_set = 0;
 
+#ifndef MINISIZE
 #if !defined(WIN32) && !defined(_WIN32_WCE)
 osip_malloc_func_t *osip_malloc_func = 0;
 osip_realloc_func_t *osip_realloc_func = 0;
 osip_free_func_t *osip_free_func = 0;
+#endif
 #endif
 
 #ifndef WIN32_USE_CRYPTO
@@ -207,6 +209,32 @@ osip_build_random_number ()
 #include <limits.h>
 #endif
 
+
+char *
+osip_strncpy (char *dest, const char *src, size_t length)
+{
+  strncpy (dest, src, length);
+  dest[length] = '\0';
+  return dest;
+}
+
+#undef osip_strdup
+
+char *
+osip_strdup (const char *ch)
+{
+  char *copy;
+  size_t length;
+
+  if (ch == NULL)
+    return NULL;
+  length = strlen (ch);
+  copy = (char *) osip_malloc (length + 1);
+  osip_strncpy (copy, ch, length);
+  return copy;
+}
+
+#ifndef MINISIZE
 int
 osip_atoi (const char *number)
 {
@@ -224,13 +252,7 @@ osip_atoi (const char *number)
   return atoi (number);
 }
 
-char *
-osip_strncpy (char *dest, const char *src, size_t length)
-{
-  strncpy (dest, src, length);
-  dest[length] = '\0';
-  return dest;
-}
+#endif
 
 /* append string_osip_to_append to string at position cur
    size is the current allocated size of the element
@@ -269,6 +291,12 @@ osip_usleep (int useconds)
     ;
 #elif defined(WIN32)
   Sleep (useconds / 1000);
+#elif defined(__arc__)
+  struct timespec req;
+  struct timespec rem;
+  req.tv_sec = (int) useconds / 1000000;
+  req.tv_nsec = (int) (useconds % 1000000)*1000;
+  nanosleep (&req, &rem);
 #else
   struct timeval delay;
   int sec;
@@ -285,22 +313,6 @@ osip_usleep (int useconds)
     }
   select (0, 0, 0, 0, &delay);
 #endif
-}
-
-#undef osip_strdup
-
-char *
-osip_strdup (const char *ch)
-{
-  char *copy;
-  size_t length;
-
-  if (ch == NULL)
-    return NULL;
-  length = strlen (ch);
-  copy = (char *) osip_malloc (length + 1);
-  osip_strncpy (copy, ch, length);
-  return copy;
 }
 
 char *
@@ -338,6 +350,7 @@ osip_tolower (char *word)
   return 0;
 }
 
+#ifndef MINISIZE
 int
 osip_strcasecmp (const char *s1, const char *s2)
 {
@@ -380,6 +393,7 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
   return _strnicmp (s1, s2, len);
 #endif
 }
+#endif
 
 /* remove SPACE before and after the content */
 int
@@ -911,6 +925,7 @@ osip_free (void *ptr)
 
 #else
 
+#ifndef MINISIZE
 void
 osip_set_allocators (osip_malloc_func_t * malloc_func,
                      osip_realloc_func_t * realloc_func,
@@ -920,6 +935,7 @@ osip_set_allocators (osip_malloc_func_t * malloc_func,
   osip_realloc_func = realloc_func;
   osip_free_func = free_func;
 }
+#endif
 
 #endif
 
