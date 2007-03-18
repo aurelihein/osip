@@ -67,7 +67,7 @@ extern "C"
  * Free a Proxy-Authorization element.
  * @param header The element to work on.
  */
-#define osip_proxy_authorization_free(header)     osip_authorization_free(header)
+#define osip_proxy_authorization_free     osip_authorization_free
 /**
  * Clone a Proxy-Authorization element.
  * @param header The element to work on.

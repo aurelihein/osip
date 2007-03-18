@@ -78,15 +78,6 @@ extern "C"
   const char *osip_message_get_reason (int status_code);
 
 /**
- * Get the a known header from a list of known header.
- * @param header_list The element to work on.
- * @param pos The index of the element to get.
- * @param dest A pointer on the header found.
- */
-  int osip_message_get_knownheaderlist (osip_list_t *header_list,
-					int pos,
-					void **dest);
-/**
  * Set the Accept header.
  * @param sip The element to work on.
  * @param hvalue The string describing the element.

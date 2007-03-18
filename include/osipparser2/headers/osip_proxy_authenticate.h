@@ -66,7 +66,7 @@ extern "C"
  * Free a Proxy-Authenticate element.
  * @param header The element to work on.
  */
-#define osip_proxy_authenticate_free(header)     osip_www_authenticate_free(header)
+#define osip_proxy_authenticate_free     osip_www_authenticate_free
 /**
  * Clone a Proxy-Authenticate element.
  * @param header The element to work on.

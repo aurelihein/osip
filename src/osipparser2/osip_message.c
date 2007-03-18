@@ -121,8 +121,6 @@ osip_message_set_uri (osip_message_t * sip, osip_uri_t * url)
 void
 osip_message_free (osip_message_t * sip)
 {
-  int pos = 0;
-
   if (sip == NULL)
     return;
 
@@ -135,253 +133,45 @@ osip_message_free (osip_message_t * sip)
   osip_free (sip->reason_phrase);
 
 #ifndef MINISIZE
-  {
-    osip_accept_t *accept;
-
-    while (!osip_list_eol (&sip->accepts, pos))
-      {
-        accept = (osip_accept_t *) osip_list_get (&sip->accepts, pos);
-        osip_list_remove (&sip->accepts, pos);
-        osip_accept_free (accept);
-      }
-  }
+  osip_list_special_free(&sip->accepts, (void *(*)(void *)) &osip_accept_free);
 #endif
-  {
-    osip_authorization_t *al;
-
-    while (!osip_list_eol (&sip->authorizations, pos))
-      {
-        al = (osip_authorization_t *) osip_list_get (&sip->authorizations, pos);
-        osip_list_remove (&sip->authorizations, pos);
-        osip_authorization_free (al);
-      }
-  }
+  osip_list_special_free(&sip->authorizations, (void *(*)(void *)) &osip_authorization_free);
   if (sip->call_id != NULL)
     {
       osip_call_id_free (sip->call_id);
     }
 #ifndef MINISIZE
-  {
-    osip_accept_encoding_t *accept_encoding;
-
-    while (!osip_list_eol (&sip->accept_encodings, pos))
-      {
-        accept_encoding =
-          (osip_accept_encoding_t *) osip_list_get (&sip->accept_encodings, pos);
-        osip_list_remove (&sip->accept_encodings, pos);
-        osip_accept_encoding_free (accept_encoding);
-      }
-  }
-  {
-    osip_accept_language_t *accept_language;
-
-    while (!osip_list_eol (&sip->accept_languages, pos))
-      {
-        accept_language =
-          (osip_accept_language_t *) osip_list_get (&sip->accept_languages, pos);
-        osip_list_remove (&sip->accept_languages, pos);
-        osip_accept_language_free (accept_language);
-      }
-  }
-  {
-    osip_alert_info_t *alert_info;
-
-    while (!osip_list_eol (&sip->alert_infos, pos))
-      {
-        alert_info = (osip_alert_info_t *) osip_list_get (&sip->alert_infos, pos);
-        osip_list_remove (&sip->alert_infos, pos);
-        osip_alert_info_free (alert_info);
-      }
-  }
-  {
-    osip_allow_t *al;
-
-    while (!osip_list_eol (&sip->allows, pos))
-      {
-        al = (osip_allow_t *) osip_list_get (&sip->allows, pos);
-        osip_list_remove (&sip->allows, pos);
-        osip_allow_free (al);
-      }
-  }
-  {
-    osip_authentication_info_t *al;
-
-    while (!osip_list_eol (&sip->authentication_infos, pos))
-      {
-        al =
-          (osip_authentication_info_t *) osip_list_get (&sip->
-                                                        authentication_infos, pos);
-        osip_list_remove (&sip->authentication_infos, pos);
-        osip_authentication_info_free (al);
-      }
-  }
-  {
-    osip_call_info_t *call_info;
-
-    while (!osip_list_eol (&sip->call_infos, pos))
-      {
-        call_info = (osip_call_info_t *) osip_list_get (&sip->call_infos, pos);
-        osip_list_remove (&sip->call_infos, pos);
-        osip_call_info_free (call_info);
-      }
-  }
-  {
-    osip_content_encoding_t *ce;
-
-    while (!osip_list_eol (&sip->content_encodings, pos))
-      {
-        ce =
-          (osip_content_encoding_t *) osip_list_get (&sip->content_encodings, pos);
-        osip_list_remove (&sip->content_encodings, pos);
-        osip_content_encoding_free (ce);
-      }
-  }
-  {
-    osip_error_info_t *error_info;
-
-    while (!osip_list_eol (&sip->error_infos, pos))
-      {
-        error_info = (osip_error_info_t *) osip_list_get (&sip->error_infos, pos);
-        osip_list_remove (&sip->error_infos, pos);
-        osip_error_info_free (error_info);
-      }
-  }
-  {
-    osip_proxy_authentication_info_t *al;
-
-    while (!osip_list_eol (&sip->proxy_authentication_infos, pos))
-      {
-        al =
-          (osip_proxy_authentication_info_t *) osip_list_get (&sip->
-                                                              proxy_authentication_infos,
-                                                              pos);
-        osip_list_remove (&sip->proxy_authentication_infos, pos);
-        osip_proxy_authentication_info_free (al);
-      }
-  }
+  osip_list_special_free(&sip->accept_encodings, (void *(*)(void *)) &osip_accept_encoding_free);
+  osip_list_special_free(&sip->accept_languages, (void *(*)(void *)) &osip_accept_language_free);
+  osip_list_special_free(&sip->alert_infos, (void *(*)(void *)) &osip_alert_info_free);
+  osip_list_special_free(&sip->allows, (void *(*)(void *)) &osip_allow_free);
+  osip_list_special_free(&sip->authentication_infos, (void *(*)(void *)) &osip_authentication_info_free);
+  osip_list_special_free(&sip->call_infos, (void *(*)(void *)) &osip_call_info_free);
+  osip_list_special_free(&sip->content_encodings, (void *(*)(void *)) &osip_content_encoding_free);
+  osip_list_special_free(&sip->error_infos, (void *(*)(void *)) &osip_error_info_free);
+  osip_list_special_free(&sip->proxy_authentication_infos, (void *(*)(void *)) &osip_proxy_authentication_info_free);
 #endif
-  {
-    osip_contact_t *contact;
-
-    while (!osip_list_eol (&sip->contacts, pos))
-      {
-        contact = (osip_contact_t *) osip_list_get (&sip->contacts, pos);
-        osip_list_remove (&sip->contacts, pos);
-        osip_contact_free (contact);
-      }
-  }
+  osip_list_special_free(&sip->contacts, (void *(*)(void *)) &osip_contact_free);
   if (sip->content_length != NULL)
-    {
       osip_content_length_free (sip->content_length);
-    }
   if (sip->content_type != NULL)
-    {
       osip_content_type_free (sip->content_type);
-    }
   if (sip->cseq != NULL)
-    {
       osip_cseq_free (sip->cseq);
-    }
   if (sip->from != NULL)
-    {
       osip_from_free (sip->from);
-    }
   if (sip->mime_version != NULL)
-    {
       osip_mime_version_free (sip->mime_version);
-    }
-  {
-    osip_proxy_authenticate_t *al;
-
-    while (!osip_list_eol (&sip->proxy_authenticates, pos))
-      {
-        al =
-          (osip_proxy_authenticate_t *) osip_list_get (&sip->
-                                                       proxy_authenticates, pos);
-        osip_list_remove (&sip->proxy_authenticates, pos);
-        osip_proxy_authenticate_free (al);
-      }
-  }
-  {
-    osip_proxy_authorization_t *proxy_authorization;
-
-    while (!osip_list_eol (&sip->proxy_authorizations, pos))
-      {
-        proxy_authorization =
-          (osip_proxy_authorization_t *) osip_list_get (&sip->
-                                                        proxy_authorizations, pos);
-        osip_list_remove (&sip->proxy_authorizations, pos);
-        osip_proxy_authorization_free (proxy_authorization);
-      }
-  }
-  {
-    osip_record_route_t *record_route;
-
-    while (!osip_list_eol (&sip->record_routes, pos))
-      {
-        record_route =
-          (osip_record_route_t *) osip_list_get (&sip->record_routes, pos);
-        osip_list_remove (&sip->record_routes, pos);
-        osip_record_route_free (record_route);
-      }
-  }
-  {
-    osip_route_t *route;
-
-    while (!osip_list_eol (&sip->routes, pos))
-      {
-        route = (osip_route_t *) osip_list_get (&sip->routes, pos);
-        osip_list_remove (&sip->routes, pos);
-        osip_route_free (route);
-      }
-  }
+  osip_list_special_free(&sip->proxy_authenticates, (void *(*)(void *)) &osip_proxy_authenticate_free);
+  osip_list_special_free(&sip->proxy_authorizations, (void *(*)(void *)) &osip_proxy_authorization_free);
+  osip_list_special_free(&sip->record_routes, (void *(*)(void *)) &osip_record_route_free);
+  osip_list_special_free(&sip->routes, (void *(*)(void *)) &osip_route_free);
   if (sip->to != NULL)
-    {
       osip_to_free (sip->to);
-    }
-  {
-    osip_via_t *via;
-
-    while (!osip_list_eol (&sip->vias, pos))
-      {
-        via = (osip_via_t *) osip_list_get (&sip->vias, pos);
-        osip_list_remove (&sip->vias, pos);
-        osip_via_free (via);
-      }
-  }
-  {
-    osip_www_authenticate_t *al;
-
-    while (!osip_list_eol (&sip->www_authenticates, pos))
-      {
-        al =
-          (osip_www_authenticate_t *) osip_list_get (&sip->www_authenticates, pos);
-        osip_list_remove (&sip->www_authenticates, pos);
-        osip_www_authenticate_free (al);
-      }
-  }
-
-  {
-    osip_header_t *header;
-
-    while (!osip_list_eol (&sip->headers, pos))
-      {
-        header = (osip_header_t *) osip_list_get (&sip->headers, pos);
-        osip_list_remove (&sip->headers, pos);
-        osip_header_free (header);
-      }
-  }
-
-  {
-    osip_body_t *body;
-
-    while (!osip_list_eol (&sip->bodies, pos))
-      {
-        body = (osip_body_t *) osip_list_get (&sip->bodies, pos);
-        osip_list_remove (&sip->bodies, pos);
-        osip_body_free (body);
-      }
-  }
+  osip_list_special_free(&sip->vias, (void *(*)(void *)) &osip_via_free);
+  osip_list_special_free(&sip->www_authenticates, (void *(*)(void *)) &osip_www_authenticate_free);
+  osip_list_special_free(&sip->headers, (void *(*)(void *)) &osip_header_free);
+  osip_list_special_free(&sip->bodies, (void *(*)(void *)) &osip_body_free);
   osip_free (sip->message);
   osip_free (sip);
 }
@@ -794,7 +584,6 @@ mc_error1:
   return -1;
 
 }
-
 
 int
 osip_message_get_knownheaderlist (osip_list_t *header_list,

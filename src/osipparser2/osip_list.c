@@ -35,15 +35,14 @@ osip_list_init (osip_list_t * li)
 void
 osip_list_special_free (osip_list_t * li, void *(*free_func) (void *))
 {
-  int pos = 0;
   void *element;
 
   if (li == NULL)
     return;
-  while (!osip_list_eol (li, pos))
+  while (!osip_list_eol (li, 0))
     {
-      element = (void *) osip_list_get (li, pos);
-      osip_list_remove (li, pos);
+      element = (void *) osip_list_get (li, 0);
+      osip_list_remove (li, 0);
       if (free_func != NULL)
         free_func (element);
     }
