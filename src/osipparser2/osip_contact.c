@@ -69,11 +69,13 @@ osip_contact_parse (osip_contact_t * contact, const char *hvalue)
   return osip_from_parse ((osip_from_t *) contact, hvalue);
 }
 
+#ifndef MINISIZE
 int
 osip_contact_init (osip_contact_t ** contact)
 {
   return osip_from_init ((osip_from_t **) contact);
 }
+#endif
 
 /* returns the pos of contact header.                      */
 /* INPUT : int pos | pos of contact header.                */
@@ -112,6 +114,7 @@ osip_contact_to_str (const osip_contact_t * contact, char **dest)
   return osip_from_to_str ((osip_from_t *) contact, dest);
 }
 
+#ifndef MINISIZE
 /* deallocates a osip_contact_t structure.  */
 /* INPUT : osip_contact_t *| contact. */
 void
@@ -125,3 +128,5 @@ osip_contact_clone (const osip_contact_t * contact, osip_contact_t ** dest)
 {
   return osip_from_clone ((osip_from_t *) contact, (osip_from_t **) dest);
 }
+#endif
+

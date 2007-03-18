@@ -45,7 +45,7 @@ extern "C"
 {
 #endif
 
-
+#ifndef MINISIZE
 /**
  * Allocate a Route element.
  * @param header The element to work on.
@@ -74,6 +74,13 @@ extern "C"
  * @param dest A pointer on the copy of the element.
  */
 #define osip_route_clone(header,dest)       osip_from_clone(header,dest)
+#else
+  #define osip_route_init   osip_from_init
+  #define osip_route_free   osip_from_free
+  #define osip_route_parse  osip_from_parse
+  #define osip_route_to_str osip_from_to_str
+  #define osip_route_clone  osip_from_clone
+#endif
 /**
  * Set the url in the Route element.
  * @param header The element to work on.

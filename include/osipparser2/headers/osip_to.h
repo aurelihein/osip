@@ -82,12 +82,12 @@ extern "C"
  */
   int osip_to_tag_match (osip_to_t * to1, osip_to_t * to2);
 #else
-  #define osip_to_init(A) osip_from_init((osip_from_t **) A)
-  #define osip_to_free(A) osip_from_free((osip_from_t *) A)
-  #define osip_to_parse(A,B) osip_from_parse((osip_from_t *) A, B)
+  #define osip_to_init   osip_from_init
+  #define osip_to_free   osip_from_free
+  #define osip_to_parse  osip_from_parse
   #define osip_to_to_str osip_from_to_str
-  #define osip_to_clone(A, B) osip_from_clone((osip_from_t *) A, B)
-  #define osip_to_tag_match(A, B) osip_from_tag_match((osip_from_t *) A, (osip_from_t *) B)
+  #define osip_to_clone  osip_from_clone
+  #define osip_to_tag_match osip_from_tag_match
 #endif
 /**
  * Set the displayname in the To element.

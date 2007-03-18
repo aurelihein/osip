@@ -45,6 +45,7 @@ extern "C"
 {
 #endif
 
+#ifndef MINISIZE
 /**
  * Allocate a Contact element.
  * @param header The element to work on.
@@ -55,6 +56,7 @@ extern "C"
  * @param header The element to work on.
  */
   void osip_contact_free (osip_contact_t * header);
+#endif
 /**
  * Parse a Contact element.
  * @param header The element to work on.
@@ -67,12 +69,18 @@ extern "C"
  * @param dest A pointer on the new allocated string.
  */
   int osip_contact_to_str (const osip_contact_t * header, char **dest);
+#ifndef MINISIZE
 /**
  * Clone a Contact element.
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
   int osip_contact_clone (const osip_contact_t * header, osip_contact_t ** dest);
+#else
+  #define osip_contact_init  osip_from_init
+  #define osip_contact_free  osip_from_free
+  #define osip_contact_clone osip_from_clone
+#endif
 /**
  * Get the displayname from a Contact header.
  * @param header The element to work on.

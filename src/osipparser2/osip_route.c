@@ -24,11 +24,13 @@
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 
+#ifndef MINISIZE
 int
 osip_route_init (osip_route_t ** route)
 {
   return osip_from_init ((osip_from_t **) route);
 }
+#endif
 
 /* adds the route header to message.         */
 /* INPUT : const char *hvalue | value of header.    */
@@ -77,6 +79,7 @@ osip_message_get_route (const osip_message_t * sip, int pos, osip_route_t ** des
   return pos;
 }
 
+#ifndef MINISIZE
 int
 osip_route_parse (osip_route_t * route, const char *hvalue)
 {
@@ -101,3 +104,4 @@ osip_route_free (osip_route_t * route)
 {
   osip_from_free ((osip_from_t *) route);
 }
+#endif
