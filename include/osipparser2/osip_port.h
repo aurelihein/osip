@@ -28,7 +28,7 @@
 #if defined(__arc__)
 #include "includes_api.h"
 #include "os_cfg_pub.h"
-#include <sys/select.h>
+#include <posix_time_pub.h>
 #endif
 
 #if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
