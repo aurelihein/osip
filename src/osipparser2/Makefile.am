@@ -13,7 +13,6 @@ osip_body.c                osip_md5c.c                \
 osip_message.c             osip_list.c                \
 osip_call_id.c             osip_message_parse.c       \
 osip_contact.c             osip_message_to_str.c      \
-sdp_accessor.c             sdp_message.c              \
 osip_content_length.c      osip_parser_cfg.c          \
 osip_content_type.c        osip_proxy_authenticate.c  \
 osip_mime_version.c        osip_port.c
@@ -24,6 +23,7 @@ osip_authentication_info.c  osip_proxy_authentication_info.c \
 osip_accept_language.c      osip_accept.c                    \
 osip_alert_info.c           osip_error_info.c                \
 osip_allow.c                osip_content_disposition.c       \
+sdp_accessor.c              sdp_message.c                    \
 osip_call_info.c
 endif
 
