@@ -60,6 +60,7 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the to header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -68,6 +69,7 @@ osip_message_get_to (const osip_message_t * sip)
 {
   return sip->to;
 }
+#endif
 
 #ifndef MINISIZE
 

@@ -70,7 +70,7 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
-
+#ifndef MINISIZE
 /* returns the content_type header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -79,6 +79,7 @@ osip_message_get_content_type (const osip_message_t * sip)
 {
   return sip->content_type;
 }
+#endif
 
 /* parses the string as a content_type header.                   */
 /* INPUT : const char *string | pointer to a content_type string.*/

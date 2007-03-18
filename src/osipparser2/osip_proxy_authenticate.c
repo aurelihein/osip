@@ -53,7 +53,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
 }
 
 
-
+#ifndef MINISIZE
 /* returns the proxy_authenticate header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -73,3 +73,4 @@ osip_message_get_proxy_authenticate (const osip_message_t * sip, int pos,
   *dest = proxy_authenticate;
   return pos;
 }
+#endif

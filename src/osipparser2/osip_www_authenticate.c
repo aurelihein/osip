@@ -360,6 +360,7 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
   return 0;                     /* ok */
 }
 
+#ifndef MINISIZE
 /* returns the www_authenticate header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -379,6 +380,7 @@ osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
   *dest = www_authenticate;
   return pos;
 }
+#endif
 
 char *
 osip_www_authenticate_get_auth_type (osip_www_authenticate_t * www_authenticate)

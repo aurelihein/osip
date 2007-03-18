@@ -63,6 +63,7 @@ osip_message_set_from (osip_message_t * sip, const char *hvalue)
 }
 
 
+#ifndef MINISIZE
 /* returns the from header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -71,6 +72,7 @@ osip_message_get_from (const osip_message_t * sip)
 {
   return sip->from;
 }
+#endif
 
 int
 osip_from_init (osip_from_t ** from)

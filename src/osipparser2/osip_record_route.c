@@ -59,6 +59,7 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the record_route header.    */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -75,6 +76,7 @@ osip_message_get_record_route (const osip_message_t * sip, int pos,
   *dest = record_route;
   return pos;
 }
+#endif
 
 #ifndef MINISIZE
 int

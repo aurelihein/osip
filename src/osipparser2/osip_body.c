@@ -127,6 +127,7 @@ bc_error1:
   return -1;
 }
 
+#ifndef MINISIZE
 /* returns the pos of body header.                   */
 /* INPUT : int pos | pos of body header.             */
 /* INPUT : osip_message_t *sip | sip message.                 */
@@ -144,6 +145,7 @@ osip_message_get_body (const osip_message_t * sip, int pos, osip_body_t ** dest)
   *dest = body;
   return pos;
 }
+#endif
 
 int
 osip_body_set_contenttype (osip_body_t * body, const char *hvalue)

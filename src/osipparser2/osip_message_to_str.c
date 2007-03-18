@@ -38,6 +38,7 @@ static int strcat_headers_one_per_line (char **_string, size_t * malloc_size,
                                         size_t size_of_header,
                                         int (*xxx_to_str) (void *, char **),
                                         char **next);
+#ifndef MINISIZE
 static int strcat_headers_all_on_one_line (char **_string,
                                            size_t * malloc_size,
                                            char **_message,
@@ -47,6 +48,7 @@ static int strcat_headers_all_on_one_line (char **_string,
                                            int (*xxx_to_str) (void *,
                                                               char **),
                                            char **next);
+#endif
 
 static int
 __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
@@ -304,6 +306,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size,
   return 0;
 }
 
+#ifndef MINISIZE
 static int
 strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
                                 char **_message, osip_list_t * headers,
@@ -383,6 +386,7 @@ strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
   *next = message;
   return 0;
 }
+#endif
 
  /* return values:
     1: structure and buffer "message" are identical.

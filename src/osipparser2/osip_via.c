@@ -76,6 +76,7 @@ osip_message_append_via (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the via header.                         */
 /* INPUT : int pos | pos of via header.            */
 /* INPUT : osip_message_t *sip | sip message.               */
@@ -93,7 +94,7 @@ osip_message_get_via (const osip_message_t * sip, int pos, osip_via_t ** dest)
 
   return pos;
 }
-
+#endif
 
 int
 osip_via_init (osip_via_t ** via)

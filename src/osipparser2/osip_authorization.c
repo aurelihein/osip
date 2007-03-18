@@ -240,6 +240,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
   return 0;                     /* ok */
 }
 
+#ifndef MINISIZE
 /* returns the authorization header.   */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -257,6 +258,7 @@ osip_message_get_authorization (const osip_message_t * sip, int pos,
   *dest = authorization;
   return pos;
 }
+#endif
 
 char *
 osip_authorization_get_auth_type (const osip_authorization_t * authorization)

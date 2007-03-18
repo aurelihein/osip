@@ -794,3 +794,17 @@ mc_error1:
   return -1;
 
 }
+
+
+int
+osip_message_get_knownheaderlist (osip_list_t *header_list,
+				  int pos,
+				  void **dest)
+{
+  *dest = NULL;
+  if (osip_list_size (header_list) <= pos)
+    return -1;                  /* does not exist */
+  *dest =
+    (void *) osip_list_get (header_list, pos);
+  return pos;
+}

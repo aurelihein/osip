@@ -53,6 +53,7 @@ osip_message_set_mime_version (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the mime_version header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -61,3 +62,4 @@ osip_message_get_mime_version (const osip_message_t * sip)
 {
   return sip->mime_version;
 }
+#endif

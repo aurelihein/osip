@@ -77,6 +77,7 @@ osip_contact_init (osip_contact_t ** contact)
 }
 #endif
 
+#ifndef MINISIZE
 /* returns the pos of contact header.                      */
 /* INPUT : int pos | pos of contact header.                */
 /* INPUT : osip_message_t *sip | sip message.                       */
@@ -94,6 +95,7 @@ osip_message_get_contact (const osip_message_t * sip, int pos,
   *dest = (osip_contact_t *) osip_list_get (&sip->contacts, pos);
   return pos;
 }
+#endif
 
 /* returns the contact header as a string.*/
 /* INPUT : osip_contact_t *contact | contact.  */

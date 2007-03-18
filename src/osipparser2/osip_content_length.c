@@ -81,6 +81,7 @@ osip_content_length_parse (osip_content_length_t * content_length,
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the content_length header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -89,6 +90,7 @@ osip_message_get_content_length (const osip_message_t * sip)
 {
   return sip->content_length;
 }
+#endif
 
 /* returns the content_length header as a string.          */
 /* INPUT : osip_content_length_t *content_length | content_length header.  */

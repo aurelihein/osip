@@ -54,6 +54,7 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 int
 osip_message_get_proxy_authorization (const osip_message_t * sip, int pos,
                                       osip_proxy_authorization_t ** dest)
@@ -68,3 +69,4 @@ osip_message_get_proxy_authorization (const osip_message_t * sip, int pos,
   *dest = proxy_authorization;
   return pos;
 }
+#endif

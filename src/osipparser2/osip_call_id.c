@@ -52,6 +52,7 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
   return 0;
 }
 
+#ifndef MINISIZE
 /* returns the call_id.               */
 /* INPUT : osip_message_t *sip | sip message.  */
 osip_call_id_t *
@@ -59,6 +60,7 @@ osip_message_get_call_id (const osip_message_t * sip)
 {
   return sip->call_id;
 }
+#endif
 
 int
 osip_call_id_init (osip_call_id_t ** callid)
