@@ -1154,6 +1154,7 @@ osip_strn_append (char *dst, const char *src, size_t len)
    This is to replace this construction:
    osip_strncpy (  dest, source, length);
    osip_clrspace ( dest ); */
+#ifndef MINISIZE
 char *
 osip_clrncpy (char *dst, const char *src, size_t len)
 {
@@ -1199,3 +1200,15 @@ osip_clrncpy (char *dst, const char *src, size_t len)
 
   return dst;
 }
+
+#else
+
+char *
+osip_clrncpy (char *dst, const char *src, size_t len)
+{
+   osip_strncpy ( dst, src, len);
+   osip_clrspace ( dst );
+   return dst;
+}
+
+#endif
