@@ -45,6 +45,7 @@ extern "C"
 {
 #endif
 
+#ifndef MINISIZE
 /**
  * Allocate a To element.
  * @param header The element to work on.
@@ -73,6 +74,21 @@ extern "C"
  * @param dest A pointer on the copy of the element.
  */
   int osip_to_clone (const osip_to_t * header, osip_to_t ** dest);
+/**
+ * Check if the tags in the To headers match.
+ * NOTE: THIS IS AN INTERNAL METHOD ONLY
+ * @param to1 The first To header.
+ * @param to2 The second To header.
+ */
+  int osip_to_tag_match (osip_to_t * to1, osip_to_t * to2);
+#else
+  #define osip_to_init(A) osip_from_init((osip_from_t **) A)
+  #define osip_to_free(A) osip_from_free((osip_from_t *) A)
+  #define osip_to_parse(A,B) osip_from_parse((osip_from_t *) A, B)
+  #define osip_to_to_str osip_from_to_str
+  #define osip_to_clone(A, B) osip_from_clone((osip_from_t *) A, B)
+  #define osip_to_tag_match(A, B) osip_from_tag_match((osip_from_t *) A, (osip_from_t *) B)
+#endif
 /**
  * Set the displayname in the To element.
  * @param header The element to work on.
@@ -134,14 +150,6 @@ extern "C"
 /* Compare the username, host and tag part of the two froms */
 #define osip_to_compare(header1, header2) osip_from_compare((osip_from_t *)header1, (osip_from_t *)header2)
 #endif
-
-/**
- * Check if the tags in the To headers match.
- * NOTE: THIS IS AN INTERNAL METHOD ONLY
- * @param to1 The first To header.
- * @param to2 The second To header.
- */
-  int osip_to_tag_match (osip_to_t * to1, osip_to_t * to2);
 
 #ifdef __cplusplus
 }

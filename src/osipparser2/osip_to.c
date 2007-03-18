@@ -24,11 +24,13 @@
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 
+#ifndef MINISIZE
 int
 osip_to_init (osip_to_t ** to)
 {
   return osip_from_init ((osip_from_t **) to);
 }
+#endif
 
 /* adds the to header to message.              */
 /* INPUT : const char *hvalue | value of header.    */
@@ -67,6 +69,8 @@ osip_message_get_to (const osip_message_t * sip)
   return sip->to;
 }
 
+#ifndef MINISIZE
+
 int
 osip_to_parse (osip_to_t * to, const char *hvalue)
 {
@@ -101,3 +105,5 @@ osip_to_tag_match (osip_to_t * to1, osip_to_t * to2)
 {
   return osip_from_tag_match ((osip_from_t *) to1, (osip_from_t *) to2);
 }
+
+#endif
