@@ -323,11 +323,15 @@ extern "C"
  * @param hvalue The string describing the element.
  */
   int osip_message_set_cseq (osip_message_t * sip, const char *hvalue);
+#ifndef MINISIZE
 /**
  * Get one Cseq header.
  * @param sip The element to work on.
  */
   osip_cseq_t *osip_message_get_cseq (const osip_message_t * sip);
+#else
+  #define osip_message_get_cseq(sip) sip->cseq
+#endif
 /**
  * Set the Error-info header.
  * @param sip The element to work on.

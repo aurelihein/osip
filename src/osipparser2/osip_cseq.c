@@ -100,6 +100,7 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
   return 0;                     /* ok */
 }
 
+#ifndef MINISIZE
 /* returns the cseq header.            */
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
@@ -108,6 +109,7 @@ osip_message_get_cseq (const osip_message_t * sip)
 {
   return sip->cseq;
 }
+#endif
 
 char *
 osip_cseq_get_number (osip_cseq_t * cseq)
