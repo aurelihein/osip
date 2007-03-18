@@ -589,6 +589,7 @@ extern "C"
  */
   int osip_message_set_header (osip_message_t * sip, const char *hname,
                                const char *hvalue);
+#ifndef MINISIZE
 /**
  * Allocate and Add an "unknown" header (not defined in oSIP).
  * The element is add on the top of the unknown header list. 
@@ -598,7 +599,7 @@ extern "C"
  */
   int osip_message_set_topheader (osip_message_t * sip, const char *hname,
                                   const char *hvalue);
-
+#endif
 /**
  * Find an "unknown" header. (not defined in oSIP)
  * @param sip The element to work on.
@@ -615,9 +616,12 @@ extern "C"
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
+#ifndef MINISZE
   int osip_message_get_header (const osip_message_t * sip, int pos,
                                osip_header_t ** dest);
-
+#else
+#define osip_message_get_header(sip, pos, dest) osip_message_get_knownheaderlist((&(sip)->headers), pos, (void **)(dest)) 
+#endif
 /**
  * Set the Body of the SIP message.
  * @param sip The element to work on.

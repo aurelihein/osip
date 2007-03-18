@@ -70,6 +70,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
   return 0;                     /* ok */
 }
 
+#ifndef MINISIZE
 /* Add a header to a SIP message at the top of the list.    */
 /* INPUT :  char *hname | pointer to a header name.         */
 /* INPUT :  char *hvalue | pointer to a header value.       */
@@ -126,8 +127,9 @@ osip_message_get_header (const osip_message_t * sip, int pos,
   if (osip_list_size (&sip->headers) <= pos)
     return -1;                  /* NULL */
   *dest = (osip_header_t *) osip_list_get (&sip->headers, pos);
-  return 0;
+  return pos;
 }
+#endif
 
 /* Get a header in a SIP message.                       */
 /* INPUT : int pos | position where we start the search */
