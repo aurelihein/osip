@@ -195,24 +195,12 @@ osip_call_info_clone (const osip_call_info_t * ctt, osip_call_info_t ** dest)
     return -1;
   ct->element = osip_strdup (ctt->element);
 
-  {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-    osip_generic_param_t *dest_param;
-
-    while (!osip_list_eol (&ctt->gen_params, pos))
-      {
-        u_param = (osip_generic_param_t *) osip_list_get (&ctt->gen_params, pos);
-        i = osip_generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          {
-            osip_call_info_free (ct);
-            return -1;
-          }
-        osip_list_add (&ct->gen_params, dest_param, -1);
-        pos++;
-      }
-  }
+  i = osip_list_clone(&ctt->gen_params, &ct->gen_params, (int *(*)(void *, void *)) &osip_generic_param_clone);
+  if (i != 0)
+    {
+      osip_call_info_free (ct);
+      return -1;
+    }
   *dest = ct;
   return 0;
 }

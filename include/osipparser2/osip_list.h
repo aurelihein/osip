@@ -112,6 +112,14 @@ extern "C"
  */
   void osip_list_special_free (osip_list_t * li, void *(*free_func) (void *));
 /**
+ * Clone a list of element.
+ * Each element will be cloned with the method given as the second parameter.
+ * @param src The element to work on.
+ * @param dst The element to work on.
+ * @param clone_func The method that is able to release one element of the list.
+ */
+  int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int *(*clone_func) (void *, void *));
+/**
  * Free a list of element where elements are pointer to 'char'.
  * @param li The element to work on.
  */

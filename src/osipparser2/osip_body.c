@@ -80,7 +80,6 @@ osip_message_set_body (osip_message_t * sip, const char *buf, size_t length)
 int
 osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
 {
-  int pos;
   int i;
   osip_body_t *copy;
 
@@ -104,21 +103,9 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
         goto bc_error1;
     }
 
-  {
-    osip_header_t *header;
-    osip_header_t *header2;
-
-    pos = 0;
-    while (!osip_list_eol (body->headers, pos))
-      {
-        header = (osip_header_t *) osip_list_get (body->headers, pos);
-        i = osip_header_clone (header, &header2);
-        if (i != 0)
-          goto bc_error1;
-        osip_list_add (copy->headers, header2, -1);     /* insert as last element */
-        pos++;
-      }
-  }
+  i = osip_list_clone(body->headers, copy->headers, (int *(*)(void *, void *)) &osip_header_clone);
+  if (i != 0)
+    goto bc_error1;
 
   *dest = copy;
   return 0;

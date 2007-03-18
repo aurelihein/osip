@@ -411,7 +411,7 @@ extern "C"
  * @param GP The element to work on.
  * @param DEST The resulting new allocated buffer.
  */
-#define osip_generic_param_clone(GP,DEST)     osip_uri_param_clone(GP,DEST)
+#define osip_generic_param_clone      osip_uri_param_clone
 #ifndef DOXYGEN
 /*
  * Free a list of a generic parameter element.

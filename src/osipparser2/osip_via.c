@@ -448,24 +448,12 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
   if (via->comment != NULL)
     vi->comment = osip_strdup (via->comment);
 
-  {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-    osip_generic_param_t *dest_param;
-
-    while (!osip_list_eol (&via->via_params, pos))
-      {
-        u_param = (osip_generic_param_t *) osip_list_get (&via->via_params, pos);
-        i = osip_generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          {
-            osip_via_free (vi);
-            return -1;
-          }
-        osip_list_add (&vi->via_params, dest_param, -1);
-        pos++;
-      }
-  }
+  i = osip_list_clone(&via->via_params, &vi->via_params, (int *(*)(void *, void *)) &osip_generic_param_clone);
+  if (i != 0)
+    {
+      osip_via_free(vi);
+      return -1;
+    }
   *dest = vi;
   return 0;
 }

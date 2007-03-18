@@ -391,24 +391,12 @@ osip_from_clone (const osip_from_t * from, osip_from_t ** dest)
         }
     }
 
-  {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-    osip_generic_param_t *dest_param;
-
-    while (!osip_list_eol (&from->gen_params, pos))
-      {
-        u_param = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
-        i = osip_generic_param_clone (u_param, &dest_param);
-        if (i != 0)
-          {
-            osip_from_free (fr);
-            return -1;
-          }
-        osip_list_add (&fr->gen_params, dest_param, -1);
-        pos++;
-      }
-  }
+  i = osip_list_clone(&from->gen_params, &fr->gen_params, (int *(*)(void *, void *)) &osip_generic_param_clone);
+  if (i != 0)
+    {
+      osip_from_free (fr);
+      return -1;
+    }
   *dest = fr;
   return 0;
 }

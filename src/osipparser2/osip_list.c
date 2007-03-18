@@ -32,6 +32,22 @@ osip_list_init (osip_list_t * li)
   return 0;                     /* ok */
 }
 
+int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int *(*clone_func) (void *, void *))
+{
+    void *data;
+    void *data2;
+    int pos=0;
+    while (!osip_list_eol (src, pos))
+      {
+        data = osip_list_get (src, pos);
+        if (clone_func (data, &data2)!=0)
+	  return -1;
+        osip_list_add (dst, data2, -1);
+        pos++;
+      }
+    return 0;
+}
+
 void
 osip_list_special_free (osip_list_t * li, void *(*free_func) (void *))
 {

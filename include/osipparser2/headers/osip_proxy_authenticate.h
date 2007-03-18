@@ -72,7 +72,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define osip_proxy_authenticate_clone(header, dest) osip_www_authenticate_clone(header, dest)
+#define osip_proxy_authenticate_clone  osip_www_authenticate_clone
 
 /**
  * Get value of the auth_type parameter from a Proxy-Authenticate element.
