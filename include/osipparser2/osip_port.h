@@ -215,6 +215,7 @@ extern "C"
 
 #else
 
+#ifndef MINISIZE
 #ifndef osip_malloc
 #define osip_malloc(S) (osip_malloc_func?osip_malloc_func(S):malloc(S))
 #endif
@@ -223,6 +224,20 @@ extern "C"
 #endif
 #ifndef osip_free
 #define osip_free(P) { if (P!=NULL) { if (osip_free_func) osip_free_func(P); else free(P);} }
+#endif
+
+#else
+  /* MINISIZE code */
+#ifndef osip_malloc
+#define osip_malloc(S) malloc(S)
+#endif
+#ifndef osip_realloc
+#define osip_realloc(P,S) realloc(P,S)
+#endif
+#ifndef osip_free
+#define osip_free(P) { if (P!=NULL) { free(P);} }
+#endif
+
 #endif
 
 #endif
