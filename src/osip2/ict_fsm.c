@@ -23,6 +23,8 @@
 #include "fsm.h"
 #include "xixt.h"
 
+#ifndef MINISIZE
+
 osip_statemachine_t *ict_fsm;
 
 osip_statemachine_t *
@@ -31,16 +33,12 @@ __ict_get_fsm ()
   return ict_fsm;
 }
 
-
 void
 __ict_unload_fsm ()
 {
-#ifndef MINISIZE
   transition_t *transition;
-#endif
   osip_statemachine_t *statemachine = __ict_get_fsm ();
 
-#ifndef MINISIZE
   for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
     {
       REMOVE_ELEMENT(statemachine->transitions, transition);
@@ -48,11 +46,8 @@ __ict_unload_fsm ()
     }
 
   osip_free (statemachine->transitions);
-#endif
   osip_free (statemachine);
 }
-
-#ifndef MINISIZE
 
 void
 __ict_load_fsm ()
@@ -145,7 +140,9 @@ __ict_load_fsm ()
 transition_t ict_transition[11] =
   {
     {
-      ICT_PRE_CALLING, SND_REQINVITE, (void (*)(void *, void *)) &ict_snd_invite,
+      ICT_PRE_CALLING,
+      SND_REQINVITE,
+      (void (*)(void *, void *)) &ict_snd_invite,
       &ict_transition[1], NULL
     }
     ,
@@ -212,12 +209,7 @@ transition_t ict_transition[11] =
     }
   };
 
-void
-__ict_load_fsm ()
-{
-  ict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
-  ict_fsm->transitions = ict_transition;
-}
+osip_statemachine_t ict_fsm = { ict_transition };
 
 #endif
 

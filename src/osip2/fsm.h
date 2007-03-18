@@ -48,6 +48,7 @@ type_t evt_set_type_incoming_sipmessage (osip_message_t * sip);
 type_t evt_set_type_outgoing_sipmessage (osip_message_t * sip);
 
 
+#ifndef MINISIZE
 void __ict_load_fsm (void);
 void __ist_load_fsm (void);
 void __nict_load_fsm (void);
@@ -64,6 +65,7 @@ osip_statemachine_t *__ist_get_fsm (void);
 
 osip_statemachine_t *__nict_get_fsm (void);
 osip_statemachine_t *__nist_get_fsm (void);
+#endif
 
 typedef struct _transition_t transition_t;
 

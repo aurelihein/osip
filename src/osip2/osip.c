@@ -45,10 +45,12 @@ static int
 __osip_global_init ()
 {
   /* load the fsm configuration */
+#ifndef MINISIZE
   __ict_load_fsm ();
   __ist_load_fsm ();
   __nict_load_fsm ();
   __nist_load_fsm ();
+#endif
 
   /* load the parser configuration */
   parser_init ();
@@ -68,10 +70,12 @@ __osip_global_init ()
 static void
 __osip_global_free ()
 {
+#ifndef MINISIZE
   __ict_unload_fsm ();
   __ist_unload_fsm ();
   __nict_unload_fsm ();
   __nist_unload_fsm ();
+#endif
 
 #ifdef OSIP_MT
   osip_mutex_destroy (ict_fastmutex);

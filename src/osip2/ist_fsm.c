@@ -22,6 +22,8 @@
 
 #include "fsm.h"
 
+#ifndef MINISIZE
+
 osip_statemachine_t *ist_fsm;
 
 osip_statemachine_t *
@@ -122,6 +124,92 @@ __ist_load_fsm ()
   ADD_ELEMENT (ist_fsm->transitions, transition);
 
 }
+
+#else
+
+transition_t ist_transition[11] =
+  {
+    {
+      IST_PRE_PROCEEDING,
+      RCV_REQINVITE,
+      (void (*)(void *, void *)) &ist_rcv_invite,
+      &ist_transition[1], NULL
+    }
+    ,
+    {
+      IST_PROCEEDING,
+      RCV_REQINVITE,
+      (void (*)(void *, void *)) &ist_rcv_invite,
+      &ist_transition[2], NULL
+    }
+    ,
+    {
+      IST_COMPLETED,
+      RCV_REQINVITE,
+      (void (*)(void *, void *)) &ist_rcv_invite,
+      &ist_transition[3], NULL
+    }
+    ,
+    {
+      IST_COMPLETED,
+      TIMEOUT_G,
+      (void (*)(void *, void *)) &osip_ist_timeout_g_event,
+      &ist_transition[4], NULL
+    }
+    ,
+    {
+      IST_COMPLETED,
+      TIMEOUT_H,
+      (void (*)(void *, void *)) &osip_ist_timeout_h_event,
+      &ist_transition[5], NULL
+    }
+    ,
+    {
+      IST_PROCEEDING,
+      SND_STATUS_1XX,
+      (void (*)(void *, void *)) &ist_snd_1xx,
+      &ist_transition[6], NULL
+    }
+    ,
+    {
+      IST_PROCEEDING,
+      SND_STATUS_2XX,
+      (void (*)(void *, void *)) &ist_snd_2xx,
+      &ist_transition[7], NULL
+    }
+    ,
+    {
+      IST_PROCEEDING,
+      SND_STATUS_3456XX,
+      (void (*)(void *, void *)) &ist_snd_3456xx,
+      &ist_transition[8], NULL
+    }
+    ,
+    {
+      IST_COMPLETED,
+      RCV_REQACK,
+      (void (*)(void *, void *)) &ist_rcv_ack,
+      &ist_transition[9], NULL
+    }
+    ,
+    {
+      IST_CONFIRMED,
+      RCV_REQACK,
+      (void (*)(void *, void *)) &ist_rcv_ack,
+      &ist_transition[10], NULL
+    }
+    ,
+    {
+      IST_CONFIRMED,
+      TIMEOUT_I,
+      (void (*)(void *, void *)) &osip_ist_timeout_i_event,
+      NULL, NULL
+    }
+  };
+
+osip_statemachine_t ist_fsm = { ist_transition };
+
+#endif
 
 static void
 ist_handle_transport_error (osip_transaction_t * ist, int err)

@@ -22,6 +22,8 @@
 
 #include "fsm.h"
 
+#ifndef MINISIZE
+
 osip_statemachine_t *nist_fsm;
 
 osip_statemachine_t *
@@ -60,15 +62,6 @@ __nist_load_fsm ()
   transition->type = RCV_REQUEST;
   transition->method = (void (*)(void *, void *)) &nist_rcv_request;
   ADD_ELEMENT (nist_fsm->transitions, transition);
-
-  /* This can be used to announce request but is useless, as
-     the transaction cannot send any response yet!
-     transition         = (transition_t *) osip_malloc(sizeof(transition_t));
-     transition->state  = NIST_TRYING;
-     transition->type   = RCV_REQUEST;
-     transition->method = (void(*)(void *,void *))&nist_rcv_request;
-     osip_list_add(nist_fsm->transitions,transition,-1);
-   */
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));
   transition->state = NIST_TRYING;
@@ -125,6 +118,85 @@ __nist_load_fsm ()
   ADD_ELEMENT (nist_fsm->transitions, transition);
 
 }
+
+#else
+
+transition_t nist_transition[10] =
+  {
+    {
+      NIST_PRE_TRYING,
+      RCV_REQUEST,
+      (void (*)(void *, void *)) &nist_rcv_request,
+      &nist_transition[1], NULL
+    }
+    ,
+    {
+      NIST_TRYING,
+      SND_STATUS_1XX,
+      (void (*)(void *, void *)) &nist_snd_1xx,
+      &nist_transition[2], NULL
+    }
+    ,
+    {
+      NIST_TRYING,
+      SND_STATUS_2XX,
+      (void (*)(void *, void *)) &nist_snd_23456xx,
+      &nist_transition[3], NULL
+    }
+    ,
+    {
+      NIST_TRYING,
+      SND_STATUS_3456XX,
+      (void (*)(void *, void *)) &nist_snd_23456xx,
+      &nist_transition[4], NULL
+    }
+    ,
+    {
+      NIST_PROCEEDING,
+      SND_STATUS_1XX,
+      (void (*)(void *, void *)) &nist_snd_1xx,
+      &nist_transition[5], NULL
+    }
+    ,
+    {
+      NIST_PROCEEDING,
+      SND_STATUS_2XX,
+      (void (*)(void *, void *)) &nist_snd_23456xx,
+      &nist_transition[6], NULL
+    }
+    ,
+    {
+      NIST_PROCEEDING,
+      SND_STATUS_3456XX,
+      (void (*)(void *, void *)) &nist_snd_23456xx,
+      &nist_transition[7], NULL
+    }
+    ,
+    {
+      NIST_PROCEEDING,
+      RCV_REQUEST,
+      (void (*)(void *, void *)) &nist_rcv_request,
+      &nist_transition[8], NULL
+    }
+    ,
+    {
+      NIST_COMPLETED,
+      TIMEOUT_J,
+      (void (*)(void *, void *)) &osip_nist_timeout_j_event,
+      &nist_transition[9], NULL
+    }
+    ,
+    {
+      NIST_COMPLETED,
+      RCV_REQUEST,
+      (void (*)(void *, void *)) &nist_rcv_request,
+      NULL, NULL
+    }
+  };
+
+osip_statemachine_t nist_fsm = { nist_transition };
+
+#endif
 
 static void
 nist_handle_transport_error (osip_transaction_t * nist, int err)

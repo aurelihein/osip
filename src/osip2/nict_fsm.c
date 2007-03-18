@@ -22,6 +22,8 @@
 
 #include "fsm.h"
 
+#ifndef MINISIZE
+
 osip_statemachine_t *nict_fsm;
 
 osip_statemachine_t *
@@ -33,12 +35,9 @@ __nict_get_fsm ()
 void
 __nict_unload_fsm ()
 {
-#ifndef MINISIZE
   transition_t *transition;
-#endif
   osip_statemachine_t *statemachine = __nict_get_fsm ();
 
-#ifndef MINISIZE
   for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
     {
       REMOVE_ELEMENT(statemachine->transitions, transition);
@@ -46,11 +45,8 @@ __nict_unload_fsm ()
     }
 
   osip_free (statemachine->transitions);
-#endif
   osip_free (statemachine);
 }
-
-#ifndef MINISIZE
 
 void
 __nict_load_fsm ()
@@ -246,12 +242,7 @@ transition_t nict_transition[12] =
   };
 
 
-void
-__nict_load_fsm ()
-{
-  nict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
-  nict_fsm->transitions = nict_transition;
-}
+osip_statemachine_t nict_fsm = { nict_transition };
 
 #endif
 
