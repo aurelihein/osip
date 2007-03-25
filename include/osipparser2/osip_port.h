@@ -103,7 +103,7 @@ int osip_snprintf (char *buf, int max, const char *fmt, ...);
 #  include <sys/types.h>
 #endif
 
-#if STDC_HEADERS
+#ifdef STDC_HEADERS
 #    include <stdlib.h>
 #endif /* !STDC_HEADERS */
 
