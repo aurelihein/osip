@@ -94,6 +94,9 @@
 #include <pthread.h>
 #endif
 
+#if defined(__arc__)
+#define HAVE_LRAND48
+#endif
 
 FILE *logfile = NULL;
 int tracing_table[END_TRACE_LEVEL];
@@ -174,7 +177,20 @@ osip_fallback_random_number ()
       random_seed_set = 1;
     }
 #ifdef HAVE_LRAND48
-  return lrand48 ();
+  {
+    int val = lrand48();
+    if (val==0)
+      {
+	unsigned int ticks;
+	struct timeval tv;
+	gettimeofday (&tv, NULL);
+	ticks = tv.tv_sec + tv.tv_usec;
+	srand48 (ticks);
+	return lrand48 ();
+      }
+
+    return val;
+  }
 #else
   return rand ();
 #endif
