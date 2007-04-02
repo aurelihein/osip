@@ -335,7 +335,7 @@ extern "C"
 #ifndef MINISIZE
   osip_content_type_t *osip_message_get_content_type (const osip_message_t * sip);
 #else
-#define osip_message_get_content_type    ((sip)->content_type)
+#define osip_message_get_content_type(sip)    ((sip)->content_type)
 #endif
 /**
  * Set the Cseq header.
