@@ -580,6 +580,14 @@ extern "C"
  */
   int osip_message_set_header (osip_message_t * sip, const char *hname,
                                const char *hvalue);
+/**
+ * Allocate and Add/Replace an "unknown" header (not defined in oSIP).
+ * @param sip The element to work on.
+ * @param hname The token name.
+ * @param hvalue The token value.
+ */
+  int osip_message_replace_header (osip_message_t * sip, const char *hname,
+				   const char *hvalue);
 #ifndef MINISIZE
 /**
  * Allocate and Add an "unknown" header (not defined in oSIP).

@@ -70,6 +70,60 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
   return 0;                     /* ok */
 }
 
+/* Add a or replace exising header  to a SIP message.       */
+/* INPUT :  char *hname | pointer to a header name.         */
+/* INPUT :  char *hvalue | pointer to a header value.       */
+/* OUTPUT: osip_message_t *sip | structure to save results. */
+/* returns -1 on error. */
+int
+osip_message_replace_header (osip_message_t * sip, const char *hname,
+			     const char *hvalue)
+{
+  osip_header_t *h, *oldh;
+  int i, oldpos = -1;
+
+  if (hname == NULL)
+    return -1;
+
+  oldpos = osip_message_header_get_byname(sip, hname, 0, &oldh);
+
+  i = osip_header_init (&h);
+  if (i != 0)
+    return -1;
+
+  h->hname = (char *) osip_malloc (strlen (hname) + 1);
+
+  if (h->hname == NULL)
+    {
+      osip_header_free (h);
+      return -1;
+    }
+  osip_clrncpy (h->hname, hname, strlen (hname));
+
+  if (hvalue != NULL)
+    {                           /* some headers can be null ("subject:") */
+      h->hvalue = (char *) osip_malloc (strlen (hvalue) + 1);
+      if (h->hvalue == NULL)
+	{
+	  osip_header_free (h);
+	  return -1;
+	}
+      osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
+    } else
+      h->hvalue = NULL;
+
+  if (oldpos != -1)
+    {
+      osip_list_remove(&sip->headers, oldpos);
+      osip_header_free(oldh);
+    }
+
+  sip->message_property = 2;
+  osip_list_add (&sip->headers, h, -1);
+  return 0;                     /* ok */
+}
+
+
 #ifndef MINISIZE
 /* Add a header to a SIP message at the top of the list.    */
 /* INPUT :  char *hname | pointer to a header name.         */
