@@ -33,11 +33,11 @@
 
 #if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
 	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
-    !defined(HAVE_PTHREAD) && !defined(HAVE_PTH_PTHREAD_H)
+    !defined(HAVE_PTHREAD) && !defined(HAVE_PTH_PTHREAD_H) && !defined(__rtems__)
 #error No thread implementation found!
 #endif
 
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32) || !defined(__rtems__) 
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
 
 struct osip_mutex *
 osip_mutex_init ()
