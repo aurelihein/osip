@@ -28,7 +28,7 @@
 #include <osip2/osip_condv.h>
 
 
-#if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
+#if !defined(__rtems__) && !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
 	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
     !defined(HAVE_PTHREAD) && !defined(HAVE_PTH_PTHREAD_H)
 #error No thread implementation found!

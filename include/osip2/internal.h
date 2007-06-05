@@ -30,7 +30,7 @@
 
 #ifndef DOXYGEN
 
-#if !((defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL)))
+#if !( defined(__rtems__) || defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL) )
 /* Struct timeval */
 struct timeval
 {
@@ -78,6 +78,9 @@ void __payload_free (__payload_t * payload);
 #ifdef OSIP_MT
 
 /* Thread abstraction layer definition */
+#if defined(__rtems__)
+#include <rtems.h>
+#else
 
 /* Is there any thread implementation available? */
 /* HAVE_PTHREAD_H is not used any more! I keep it for a while... */
@@ -269,6 +272,26 @@ typedef struct osip_cond
   struct osip_sem *sem;
 } osip_cond_t;
 #endif
+
+#endif 
+
+#if defined(__rtems__)
+typedef struct
+{
+    rtems_id tid;
+} osip_thread_t;
+
+typedef struct
+{
+  rtems_id id;
+} osip_sem_t;
+
+typedef struct
+{
+  rtems_id id;
+} osip_mutex_t ;
+#endif
+
 
 #endif /* #ifdef OSIP_MT */
 

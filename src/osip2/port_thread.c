@@ -24,6 +24,11 @@
 #include <osip2/internal.h>
 #include <osip2/osip_mt.h>
 
+#if defined(__rtems__)
+#include <rtems.h>
+#endif 
+
+#if !defined(__rtems__)
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 #  if defined _WIN32_WCE
 #    define _beginthreadex	CreateThread
@@ -243,5 +248,71 @@ osip_thread_exit ()
 }
 
 #endif
+#endif /* #ifndef __rtems__ */
+
+#if defined(__rtems__)
+struct osip_thread *osip_thread_create(int stacksize, void *(*func) (void *), void *arg)
+{
+  rtems_status_code status;
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc(sizeof(osip_thread_t));
+
+  if (thread == NULL)
+    return NULL;
+
+  status = rtems_task_create(rtems_build_name('S','I','P','T'),
+			     100 ,
+			     stacksize,
+			     RTEMS_DEFAULT_MODES, RTEMS_DEFAULT_ATTRIBUTES,
+			     &thread->tid);
+
+  if ( status == RTEMS_SUCCESSFUL )
+    {
+      status = rtems_task_start(thread->tid,
+				(rtems_task_entry) func,
+				( rtems_task_argument ) arg );
+    }
+
+  if ( status != RTEMS_SUCCESSFUL )
+    {
+      osip_free(thread);
+      thread = NULL ;
+    }
+
+  return (struct osip_thread *) thread;
+}
+
+int osip_thread_set_priority(struct osip_thread *_thread, int priority)
+{
+  osip_thread_t *thread = (osip_thread_t *) _thread;
+
+  rtems_task_priority old;
+  if ( thread != NULL )
+    {
+      return rtems_task_set_priority( thread->tid,
+				      priority,
+				      &old);
+    }
+  return 0;
+}
+
+
+int osip_thread_join(struct osip_thread *_thread)
+{
+  osip_thread_t *thread = (osip_thread_t *) _thread;
+
+  if (thread == NULL)
+    {
+      return -1;
+    }
+  return rtems_task_delete( thread->tid);
+}
+
+void osip_thread_exit()
+{
+  rtems_task_delete( RTEMS_SELF);
+}
+
+
+#endif 
 
 #endif /* #ifdef OSIP_MT */

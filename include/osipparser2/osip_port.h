@@ -69,7 +69,7 @@
 
 #endif
 
-#ifdef __VXWORKS_OS__
+#if defined(__VXWORKS_OS__) || defined(__rtems__) 
 #include <string.h>
 #include <time.h>
 #include <sys/times.h>
@@ -78,13 +78,14 @@
 #include <stdlib.h>
 #define VA_START(a, f)  va_start(a, f)
 
+#if defined(__VXWORKS_OS__)
 /* VxWorks lacks support for snprintf */
 int osip_vsnprintf (char *buf, int max, const char *fmt, va_list ap);
 int osip_snprintf (char *buf, int max, const char *fmt, ...);
 
 #define snprintf  osip_snprintf
 #define vsnprintf osip_vsnprintf
-
+#endif 
 
 #else /* end of __VXWORKS_OS__ */
 

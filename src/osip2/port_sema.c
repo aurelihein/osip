@@ -27,6 +27,9 @@
 #include <osip2/internal.h>
 #include <osip2/osip_mt.h>
 
+#if defined(__rtems__)
+#include <rtems.h>
+#endif 
 
 #if !defined(__VXWORKS_OS__) && !defined(__PSOS__) && \
 	!defined(WIN32) && !defined(_WIN32_WCE) && !defined(HAVE_PTHREAD_WIN32) && \
@@ -34,7 +37,7 @@
 #error No thread implementation found!
 #endif
 
-#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
+#if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32) || !defined(__rtems__) 
 
 struct osip_mutex *
 osip_mutex_init ()
@@ -694,4 +697,143 @@ osip_sem_trywait (struct osip_sem *_sem)
 
 #endif
 
+
+
+#if defined(__rtems__)
+
+struct osip_mutex *osip_mutex_init()
+{
+  rtems_status_code status;
+  osip_mutex_t *mut = (osip_mutex_t *) osip_malloc(sizeof(osip_mutex_t));
+
+  status = rtems_semaphore_create( rtems_build_name( 's','i','p','M'),
+				   1, /* Count */
+				   RTEMS_SIMPLE_BINARY_SEMAPHORE ,
+				   0,
+				   &mut->id);
+  if ( status == RTEMS_SUCCESSFUL )
+    {
+      return (struct osip_mutex *) (mut);
+    }
+  osip_free(mut);
+  return (NULL);
+}
+
+void osip_mutex_destroy(struct osip_mutex *_mut)
+{
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
+  if ( mut != NULL )
+    {
+      rtems_semaphore_delete(mut->id);
+      osip_free(mut);
+    }
+}
+
+int osip_mutex_lock(struct osip_mutex *_mut)
+{
+  rtems_status_code status;
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
+  if ( mut != NULL)
+    {
+      status = rtems_semaphore_obtain( mut->id,
+				       RTEMS_WAIT,
+				       RTEMS_NO_TIMEOUT);
+      if ( status != RTEMS_SUCCESSFUL )
+	{
+	  return -1;
+	}
+    }
+  return 0;
+}
+
+int osip_mutex_unlock(struct osip_mutex *_mut)
+{
+  osip_mutex_t *mut = (osip_mutex_t *) _mut;
+
+  if ( mut != NULL )
+    {
+      (void) rtems_semaphore_release( mut->id);
+    }
+
+  return (0);
+}
+
+struct osip_sem *osip_sem_init(unsigned int value)
+{
+  rtems_status_code status;
+
+  osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
+  status = rtems_semaphore_create( rtems_build_name('s','i','p','S'),
+				   value,
+				   RTEMS_COUNTING_SEMAPHORE,
+				   0,
+				   &sem->id);
+
+  if ( status == RTEMS_SUCCESSFUL )
+    {
+      return (struct osip_sem *) (sem);
+    }
+  osip_free (sem);
+  return (NULL);
+}
+
+int osip_sem_destroy(struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    {
+      return 0;
+    }
+  rtems_semaphore_delete(sem->id);
+  osip_free (sem);
+  return (0);
+}
+
+int osip_sem_post(struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    {
+      return -1;
+    }
+  return rtems_semaphore_release( sem->id);
+}
+
+int osip_sem_wait(struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    {
+      return -1;
+    }
+  if ( rtems_semaphore_obtain( sem->id, RTEMS_WAIT, RTEMS_NO_TIMEOUT) != RTEMS_SUCCESSFUL )
+    {
+      return (-1);
+    }
+  return (0);
+}
+
+int osip_sem_trywait(struct osip_sem *_sem)
+{
+  osip_sem_t *sem = (osip_sem_t *) _sem;
+
+  if (sem == NULL)
+    {
+      return -1;
+    }
+  if ( rtems_semaphore_obtain( sem->id,RTEMS_NO_WAIT, 0) != RTEMS_SUCCESSFUL)
+    {
+      return (-1);
+    }
+  return (0);
+}
+
+
+#endif 
 #endif /* #ifdef OSIP_MT */

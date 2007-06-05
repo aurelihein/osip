@@ -74,6 +74,10 @@
 #endif
 #endif
 
+#if defined (__rtems__)
+#include <rtems.h>
+#endif 
+
 #if defined (HAVE_SYS_UNISTD_H)
 #  include <sys/unistd.h>
 #endif
@@ -143,6 +147,8 @@ osip_fallback_random_number ()
 #elif defined(_WIN32_WCE)
       ticks = GetTickCount ();
 #elif defined(__PSOS__)
+#elif defined(__rtems__)
+        rtems_clock_get( RTEMS_CLOCK_GET_TICKS_SINCE_BOOT, &ticks);
 #elif defined(__VXWORKS_OS__)
       struct timespec tp;
 
@@ -307,6 +313,8 @@ osip_usleep (int useconds)
     ;
 #elif defined(WIN32)
   Sleep (useconds / 1000);
+#elif defined(__rtems__)
+    rtems_task_wake_after( RTEMS_MICROSECONDS_TO_TICKS(useconds) );
 #elif defined(__arc__)
   struct timespec req;
   struct timespec rem;
@@ -800,7 +808,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 
   VA_START (ap, chfr);
 
-#ifdef __VXWORKS_OS__
+#if  defined(__VXWORKS_OS__) || defined(__rtems__)
   /* vxworks can't have a local file */
   f = stdout;
 #endif
