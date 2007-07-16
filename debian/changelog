@@ -1,3 +1,6 @@
+libosip2 (3.0.3-1) unstable; urgency=low
+ * initial support for rtems.
+
 libosip2 (2.2.3-1) unstable; urgency=low
  * fix 64-bit (amd64) issue with hash.
  * remove SDP negotiation (much better to do it in your applications)
