@@ -1,3 +1,6 @@
+libosip2 (3.0.4)
+	* terminate body with '\0' after parsing (don't rely on this!)
+
 libosip2 (3.0.3)
 	* initial support for rtems.
 	
