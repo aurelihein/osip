@@ -39,13 +39,17 @@
  */
   typedef struct osip_authentication_info osip_authentication_info_t;
 
+/**
+ * Definition of the Authentication-Info header.
+ * @struct osip_authentication_info
+ */
   struct osip_authentication_info
   {
-    char *nextnonce;    /* optional */
-    char *qop_options;  /* optional */
-    char *rspauth;      /* optional */
-    char *cnonce;       /* optional */
-    char *nonce_count;  /* optional */
+    char *nextnonce;    /**< nextnonce value */
+    char *qop_options;  /**< qop options value */
+    char *rspauth;      /**< rspauth value */
+    char *cnonce;       /**< cnonce value */
+    char *nonce_count;  /**< noncecount value */
   };
 
 

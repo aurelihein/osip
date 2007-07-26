@@ -448,7 +448,7 @@ extern "C"
 
 /**
  * Enumeration for callback type used when a transport error is detected.
- * @enum osip_transport_error_callback_type_t
+ * @var osip_transport_error_callback_type_t
  */
   typedef enum osip_transport_error_callback_type
   {

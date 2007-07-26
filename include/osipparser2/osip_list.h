@@ -70,7 +70,10 @@ extern "C"
  */
   typedef struct osip_list osip_list_t;
 
-/* added by bennewit@cs.tu-berlin.de */
+/**
+ * Structure used to iterate list.
+ * @var osip_list_iterator_t
+ */
   typedef struct
   {
     __node_t *actual;
@@ -90,9 +93,6 @@ extern "C"
     __node_t *node;     /**< Next node containing element  */
 
   };
-
-/* added by bennewit@cs.tu-berlin.de */
-#define osip_list_iterator_has_elem( it ) ( 0 != (it).actual && (it).pos < (it).li->nb_elt )
 
 /**
  * Initialise a osip_list_t element.
@@ -155,11 +155,26 @@ extern "C"
  */
   int osip_list_remove (osip_list_t * li, int pos);
 
-/* added by bennewit@cs.tu-berlin.de */
-  void *osip_list_get_first (osip_list_t * li, osip_list_iterator_t * it);
-/* added by bennewit@cs.tu-berlin.de */
+/**
+ * Check current iterator state.
+ * @param it The element to work on.
+ */
+#define osip_list_iterator_has_elem( it ) ( 0 != (it).actual && (it).pos < (it).li->nb_elt )
+/**
+ * Get first iterator from list.
+ * @param li The element to work on.
+ * @param it The iterator.
+ */ 
+void *osip_list_get_first (osip_list_t * li, osip_list_iterator_t * it);
+/**
+ * GEt next iterator.
+ * @param it The element to work on.
+ */
   void *osip_list_get_next (osip_list_iterator_t * it);
-/* added by bennewit@cs.tu-berlin.de */
+/**
+ * Remove current iterator.
+ * @param it The element to work on.
+ */
   void *osip_list_iterator_remove (osip_list_iterator_t * it);
 
 #ifdef __cplusplus
