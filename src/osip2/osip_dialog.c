@@ -371,9 +371,9 @@ __osip_dialog_init (osip_dialog_t ** dialog,
       if (i != 0)
         goto diau_error_2;
       if (invite==NULL)
-	osip_list_add (&(*dialog)->route_set, rr2, -1);
-      else
 	osip_list_add (&(*dialog)->route_set, rr2, 0);
+      else
+	osip_list_add (&(*dialog)->route_set, rr2, -1);
 
       pos++;
     }
