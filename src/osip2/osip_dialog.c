@@ -333,6 +333,10 @@ __osip_dialog_init (osip_dialog_t ** dialog,
   int pos;
   osip_generic_param_t *tag;
 
+  *dialog = NULL;
+  if (response==NULL || response->cseq==NULL || local==NULL || remote==NULL)
+    return -1;
+
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
     return -1;
@@ -463,6 +467,10 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
 {
   int i;
 
+  *dialog = NULL;
+  if (next_request->cseq==NULL)
+    return -1;
+
   i = __osip_dialog_init (dialog,
 			  next_request,
 			  next_request,
@@ -489,6 +497,10 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
                          osip_message_t * response)
 {
   int i;
+
+  *dialog = NULL;
+  if (response->cseq==NULL)
+    return -1;
 
   i = __osip_dialog_init (dialog,
 			  invite,
