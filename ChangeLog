@@ -1,4 +1,5 @@
 libosip2 (3.0.4)
+	* fix when a space appear as the first char in body.
 	* terminate body with '\0' after parsing (don't rely on this!)
 
 libosip2 (3.0.3)

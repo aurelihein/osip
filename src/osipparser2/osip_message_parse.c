@@ -337,7 +337,7 @@ __osip_find_next_crlf (const char *start_of_header, const char **end_of_header)
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_BUG, NULL,
                    "Message that contains LWS must be processed with osip_util_replace_all_lws(char *tmp) before being parsed.\n"));
-      return -1;
+      return -2;
     }
 
   *end_of_header = soh + 1;
