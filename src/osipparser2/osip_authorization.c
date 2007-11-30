@@ -422,9 +422,17 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
 
   *dest = NULL;
   /* DO NOT REALLY KNOW THE LIST OF MANDATORY PARAMETER: Please HELP! */
+#if 0
   if ((auth == NULL) || (auth->auth_type == NULL) || (auth->realm == NULL)
       || (auth->nonce == NULL))
     return -1;
+#else
+  /* IMS requirement: send authorization like in:
+     Digest uri="sip:sip.antisip.com", username="joe", response=""
+   */
+  if ((auth == NULL) || (auth->auth_type == NULL))
+    return -1;
+#endif
 
   len = strlen (auth->auth_type) + 1;
   if (auth->username != NULL)
