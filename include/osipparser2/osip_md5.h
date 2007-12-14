@@ -71,11 +71,11 @@ If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
     UINT4 count[2];             /* number of bits, modulo 2^64 (lsb first) */
     unsigned char buffer[64];   /* input buffer */
   }
-  MD5_CTX;
+  osip_MD5_CTX;
 
-  void MD5Init PROTO_LIST ((MD5_CTX *));
-  void MD5Update PROTO_LIST ((MD5_CTX *, unsigned char *, unsigned int));
-  void MD5Final PROTO_LIST ((unsigned char[16], MD5_CTX *));
+  void osip_MD5Init PROTO_LIST ((osip_MD5_CTX *));
+  void osip_MD5Update PROTO_LIST ((osip_MD5_CTX *, unsigned char *, unsigned int));
+  void osip_MD5Final PROTO_LIST ((unsigned char[16], osip_MD5_CTX *));
 
 
 #ifdef __cplusplus
