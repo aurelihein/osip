@@ -552,6 +552,11 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
     {
       equal = comma;            /* at the end */
       pvalue = NULL;
+      if (equal - params < 2)
+	{
+	  osip_free (pvalue);
+	  return 0; /* empty comma? */
+	}
   } else
     {
       const char *tmp;
