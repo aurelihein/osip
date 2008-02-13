@@ -1,4 +1,6 @@
-libosip2 (3.0.4)
+libosip2 (3.1.0)
+	* Windows Mobile 5/6 improvments.
+	* allow uncompliant/IMS authentication headers.
 	* fix when a space appear as the first char in body.
 	* terminate body with '\0' after parsing (don't rely on this!)
 
