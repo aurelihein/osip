@@ -359,9 +359,9 @@ EXPORTS
      via_set_port        @358	
      via_set_protocol        @359	
      via_set_version        @360
-     MD5Update   @362
-     MD5Final    @363
-     MD5Init     @364
+     osip_MD5Update   @362
+     osip_MD5Final    @363
+     osip_MD5Init     @364
      osip_enquote @365
      osip_dequote @366
      osip_rfc3264_init      @367
