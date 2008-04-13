@@ -41,12 +41,12 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
 
   i = osip_accept_encoding_init (&accept_encoding);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_accept_encoding_parse (accept_encoding, hvalue);
   if (i != 0)
     {
       osip_accept_encoding_free (accept_encoding);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->accept_encodings, accept_encoding, -1);
@@ -61,7 +61,7 @@ osip_message_get_accept_encoding (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->accept_encodings) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   accept_encoding =
     (osip_accept_encoding_t *) osip_list_get (&sip->accept_encodings, pos);
   *dest = accept_encoding;

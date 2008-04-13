@@ -31,7 +31,7 @@ sdp_message_v_version_set (sdp_message_t * sdp, char *v_version)
   if (sdp == NULL)
     return -1;
   sdp->v_version = v_version;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -55,7 +55,7 @@ sdp_message_o_origin_set (sdp_message_t * sdp, char *username, char *sess_id,
   sdp->o_nettype = nettype;
   sdp->o_addrtype = addrtype;
   sdp->o_addr = addr;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -112,7 +112,7 @@ sdp_message_s_name_set (sdp_message_t * sdp, char *name)
   if (sdp == NULL)
     return -1;
   sdp->s_name = name;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -133,13 +133,13 @@ sdp_message_i_info_set (sdp_message_t * sdp, int pos_media, char *info)
   if (pos_media == -1)
     {
       sdp->i_info = info;
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = osip_list_get (&sdp->m_medias, pos_media);
   if (med == NULL)
     return -1;
   med->i_info = info;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -165,7 +165,7 @@ sdp_message_u_uri_set (sdp_message_t * sdp, char *uri)
   if (sdp == NULL)
     return -1;
   sdp->u_uri = uri;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -182,7 +182,7 @@ sdp_message_e_email_add (sdp_message_t * sdp, char *email)
   if (sdp == NULL)
     return -1;
   osip_list_add (&sdp->e_emails, email, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -201,7 +201,7 @@ sdp_message_p_phone_add (sdp_message_t * sdp, char *phone)
   if (sdp == NULL)
     return -1;
   osip_list_add (&sdp->p_phones, phone, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -239,11 +239,11 @@ sdp_message_c_connection_add (sdp_message_t * sdp, int pos_media,
   if (pos_media == -1)
     {
       sdp->c_connection = conn;
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   osip_list_add (&med->c_connections, conn, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* this method should be internal only... */
@@ -332,11 +332,11 @@ sdp_message_b_bandwidth_add (sdp_message_t * sdp, int pos_media, char *bwtype,
   if (pos_media == -1)
     {
       osip_list_add (&sdp->b_bandwidths, band, -1);
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   osip_list_add (&med->b_bandwidths, band, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 sdp_bandwidth_t *
@@ -388,7 +388,7 @@ sdp_message_t_time_descr_add (sdp_message_t * sdp, char *start, char *stop)
   td->t_start_time = start;
   td->t_stop_time = stop;
   osip_list_add (&sdp->t_descrs, td, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -428,7 +428,7 @@ sdp_message_r_repeat_add (sdp_message_t * sdp, int pos_time_descr, char *field)
   if (td == NULL)
     return -1;
   osip_list_add (&td->r_repeats, field, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -450,7 +450,7 @@ sdp_message_z_adjustments_set (sdp_message_t * sdp, char *field)
   if (sdp == NULL)
     return -1;
   sdp->z_adjustments = field;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -478,11 +478,11 @@ sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype,
   if (pos_media == -1)
     {
       sdp->k_key = key;
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   med->k_key = key;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -547,11 +547,11 @@ sdp_message_a_attribute_add (sdp_message_t * sdp, int pos_media,
   if (pos_media == -1)
     {
       osip_list_add (&sdp->a_attributes, attr, -1);
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   osip_list_add (&med->a_attributes, attr, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -577,7 +577,7 @@ sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, char *att_field
           } else
             i++;
         }
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   if (med == NULL)
@@ -592,7 +592,7 @@ sdp_message_a_attribute_del (sdp_message_t * sdp, int pos_media, char *att_field
       } else
         i++;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -626,7 +626,7 @@ sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media,
           osip_list_remove (&sdp->a_attributes, pos_attr);
           sdp_attribute_free (attr);
         }
-      return 0;
+      return OSIP_SUCCESS;
     }
   med = (sdp_media_t *) osip_list_get (&sdp->m_medias, pos_media);
   if (med == NULL)
@@ -648,7 +648,7 @@ sdp_message_a_attribute_del_at_index (sdp_message_t * sdp, int pos_media,
           sdp_attribute_free (attr);
         }
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -693,9 +693,9 @@ sdp_message_endof_media (sdp_message_t * sdp, int i)
   if (sdp == NULL)
     return -1;
   if (i == -1)
-    return 0;
+    return OSIP_SUCCESS;
   if (!osip_list_eol (&sdp->m_medias, i))
-    return 0;                   /* not end of list */
+    return OSIP_SUCCESS;                   /* not end of list */
   return -1;                    /* end of list */
 }
 
@@ -714,7 +714,7 @@ sdp_message_m_media_add (sdp_message_t * sdp, char *media,
   med->m_number_of_port = number_of_port;
   med->m_proto = proto;
   osip_list_add (&sdp->m_medias, med, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -757,7 +757,7 @@ sdp_message_m_port_set (sdp_message_t * sdp, int pos_media, char *port)
   if (med->m_port)
     osip_free (med->m_port);
   med->m_port = port;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -778,7 +778,7 @@ sdp_message_m_payload_add (sdp_message_t * sdp, int pos_media, char *payload)
   if (med == NULL)
     return -1;
   osip_list_add (&med->m_payloads, payload, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -803,5 +803,5 @@ sdp_message_m_payload_del (sdp_message_t * sdp, int pos_media, int pos)
     return -1;
   osip_list_remove (&med->m_payloads, pos);
   osip_free (payload);
-  return 0;
+  return OSIP_SUCCESS;
 }

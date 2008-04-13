@@ -252,7 +252,7 @@ osip_message_get_authorization (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->authorizations) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   authorization =
     (osip_authorization_t *) osip_list_get (&sip->authorizations, pos);
   *dest = authorization;

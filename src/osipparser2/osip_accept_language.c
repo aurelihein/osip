@@ -58,7 +58,7 @@ osip_message_get_accept_language (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->accept_languages) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   accept_language =
     (osip_accept_language_t *) osip_list_get (&sip->accept_languages, pos);
   *dest = accept_language;

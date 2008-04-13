@@ -71,7 +71,7 @@ osip_message_get_proxy_authentication_info (const osip_message_t * sip,
 
   *dest = NULL;
   if (osip_list_size (&sip->proxy_authentication_infos) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
 
   proxy_authentication_info = (osip_proxy_authentication_info_t *)
     osip_list_get (&sip->proxy_authentication_infos, pos);

@@ -360,7 +360,7 @@ osip_from_param_get (osip_from_t * from, int pos, osip_generic_param_t ** fparam
   if (from == NULL)
     return -1;
   if (osip_list_size (&from->gen_params) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   *fparam = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
   return pos;
 }

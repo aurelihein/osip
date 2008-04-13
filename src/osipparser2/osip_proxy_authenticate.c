@@ -65,7 +65,7 @@ osip_message_get_proxy_authenticate (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->proxy_authenticates) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
 
   proxy_authenticate = (osip_proxy_authenticate_t *)
     osip_list_get (&sip->proxy_authenticates, pos);

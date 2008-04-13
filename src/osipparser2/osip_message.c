@@ -456,7 +456,7 @@ osip_message_get_knownheaderlist (osip_list_t *header_list,
 {
   *dest = NULL;
   if (osip_list_size (header_list) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   *dest =
     (void *) osip_list_get (header_list, pos);
   return pos;

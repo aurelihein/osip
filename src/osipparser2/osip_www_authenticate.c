@@ -372,7 +372,7 @@ osip_message_get_www_authenticate (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->www_authenticates) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
 
   www_authenticate =
     (osip_www_authenticate_t *) osip_list_get (&sip->www_authenticates, pos);

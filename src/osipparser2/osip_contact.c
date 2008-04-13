@@ -91,7 +91,7 @@ osip_message_get_contact (const osip_message_t * sip, int pos,
   if (sip == NULL)
     return -1;
   if (osip_list_size (&sip->contacts) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   *dest = (osip_contact_t *) osip_list_get (&sip->contacts, pos);
   return pos;
 }

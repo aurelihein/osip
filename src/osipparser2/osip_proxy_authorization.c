@@ -63,7 +63,7 @@ osip_message_get_proxy_authorization (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->proxy_authorizations) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   proxy_authorization =
     (osip_proxy_authorization_t *) osip_list_get (&sip->proxy_authorizations, pos);
   *dest = proxy_authorization;

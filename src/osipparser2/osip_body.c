@@ -127,7 +127,7 @@ osip_message_get_body (const osip_message_t * sip, int pos, osip_body_t ** dest)
 
   *dest = NULL;
   if (osip_list_size (&sip->bodies) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   body = (osip_body_t *) osip_list_get (&sip->bodies, pos);
   *dest = body;
   return pos;
