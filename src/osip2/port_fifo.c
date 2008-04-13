@@ -70,7 +70,7 @@ osip_fifo_add (osip_fifo_t * ff, void *el)
   osip_sem_post (ff->qisempty);
   osip_mutex_unlock (ff->qislocked);
 #endif
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -105,7 +105,7 @@ osip_fifo_insert (osip_fifo_t * ff, void *el)
   osip_sem_post (ff->qisempty);
   osip_mutex_unlock (ff->qislocked);
 #endif
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -151,7 +151,7 @@ osip_fifo_get (osip_fifo_t * ff)
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return 0;                 /* pile vide */
+      return OSIP_SUCCESS;                 /* pile vide */
     }
   /* if (ff->nb_elt <= 0) */
   if (osip_list_size (&ff->queue) <= 0)
@@ -193,7 +193,7 @@ osip_fifo_tryget (osip_fifo_t * ff)
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_INFO4, NULL, "no element in fifo.\n"));
       osip_mutex_unlock (ff->qislocked);
-      return 0;
+      return OSIP_SUCCESS;
     }
 #endif
 

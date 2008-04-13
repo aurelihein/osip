@@ -38,7 +38,7 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_proxy_authorization_init (&proxy_authorization);
   if (i != 0)
@@ -51,7 +51,7 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->proxy_authorizations, proxy_authorization, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE

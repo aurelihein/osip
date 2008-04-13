@@ -126,14 +126,14 @@ int
 osip_cond_destroy (struct osip_cond *_cond)
 {
   if (!_cond)
-    return 0;
+    return OSIP_SUCCESS;
   if (_cond->sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
 
   osip_sem_destroy (_cond->sem);
 
   if (_cond->mut == NULL)
-    return 0;
+    return OSIP_SUCCESS;
 
   osip_mutex_destroy (_cond->mut);
   osip_free (_cond);
@@ -171,7 +171,7 @@ osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 
   if (ret1 || ret2 || ret3)
     return -1;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #define OSIP_CLOCK_REALTIME 4002
@@ -190,7 +190,7 @@ __osip_clock_gettime (unsigned int clock_id, struct timespec *tp)
   _ftime (&time_val);
   tp->tv_sec = (long) time_val.time;
   tp->tv_nsec = time_val.millitm * 1000000;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -199,7 +199,7 @@ _delta_time (const struct timespec *start, const struct timespec *end)
   int difx;
 
   if (start == NULL || end == NULL)
-    return 0;
+    return OSIP_SUCCESS;
 
   difx = ((end->tv_sec - start->tv_sec) * 1000) +
     ((end->tv_nsec - start->tv_nsec) / 1000000);
@@ -245,7 +245,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   switch (dwRet)
     {
       case WAIT_OBJECT_0:
-        return 0;
+        return OSIP_SUCCESS;
         break;
       case WAIT_TIMEOUT:
         return 1;               /* ETIMEDOUT; */
@@ -280,7 +280,7 @@ int
 osip_cond_destroy (struct osip_cond *_cond)
 {
   if (_cond->sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
 
   osip_sem_destroy (_cond->sem);
   osip_free (_cond);

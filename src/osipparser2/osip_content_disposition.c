@@ -49,7 +49,7 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
     return -1;
   osip_clrncpy (cd->element, hvalue, cd_params - hvalue);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #endif

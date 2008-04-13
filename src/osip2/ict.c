@@ -119,7 +119,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   /* Oups! A bug! */
   /*  (*ict)->port  = 5060; */
 
-  return 0;
+  return OSIP_SUCCESS;
 
 ii_error_1:
   osip_free (*ict);
@@ -136,7 +136,7 @@ __osip_ict_free (osip_ict_t * ict)
 
   osip_free (ict->destination);
   osip_free (ict);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -148,7 +148,7 @@ osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
     osip_free (ict->destination);
   ict->destination = destination;
   ict->port = port;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 osip_event_t *

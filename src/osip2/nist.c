@@ -60,7 +60,7 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
       }
   }
 
-  return 0;
+  return OSIP_SUCCESS;
 
 ii_error_1:
   osip_free (*nist);
@@ -76,7 +76,7 @@ __osip_nist_free (osip_nist_t * nist)
               (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 
   osip_free (nist);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

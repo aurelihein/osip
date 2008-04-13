@@ -39,7 +39,7 @@ osip_content_type_init (osip_content_type_t ** content_type)
 
   osip_list_init (&(*content_type)->gen_params);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* adds the content_type header to message.              */
@@ -55,7 +55,7 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
     return -1;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_content_type_init (&(sip->content_type));
   if (i != 0)
@@ -67,7 +67,7 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
       osip_content_type_free (sip->content_type);
       sip->content_type = NULL;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -103,7 +103,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
      ^          ^
    */
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;                   /* It's valid to add empty Accept header! */
+    return OSIP_SUCCESS;                   /* It's valid to add empty Accept header! */
 
   subtype = strchr (hvalue, '/');
   osip_content_type_params = strchr (hvalue, ';');
@@ -135,7 +135,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
   osip_clrncpy (content_type->subtype, subtype + 1,
                 osip_content_type_params - subtype - 1);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -200,7 +200,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -261,5 +261,5 @@ osip_content_type_clone (const osip_content_type_t * ctt,
       }
   }
   *dest = ct;
-  return 0;
+  return OSIP_SUCCESS;
 }

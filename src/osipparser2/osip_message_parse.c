@@ -141,7 +141,7 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
       hp++;
     (*headers) = hp;
   }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -202,7 +202,7 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
       hp++;
     (*headers) = hp;
   }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -242,7 +242,7 @@ __osip_find_next_occurence (const char *str, const char *buf,
             }
           return -1;
         }
-      return 0;
+      return OSIP_SUCCESS;
     }
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_BUG, NULL,
@@ -341,7 +341,7 @@ __osip_find_next_crlf (const char *start_of_header, const char **end_of_header)
     }
 
   *end_of_header = soh + 1;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -374,11 +374,11 @@ __osip_find_next_crlfcrlf (const char *start_of_part, const char **end_of_part)
           if ('\n' == end_of_line[1])
             end_of_line++;
           *end_of_part = end_of_line + 1;
-          return 0;
+          return OSIP_SUCCESS;
       } else if ('\n' == end_of_line[0])
         {
           *end_of_part = end_of_line + 1;
-          return 0;
+          return OSIP_SUCCESS;
         }
       start_of_line = end_of_line;
     }
@@ -403,7 +403,7 @@ osip_message_set__header (osip_message_t * sip, const char *hname,
       ret = __osip_message_call_method (my_index, sip, hvalue);
       if (ret == -1)
 	return -1;
-      return 0;
+      return OSIP_SUCCESS;
     }
   /* unknownheader */
   if (osip_message_set_header (sip, hname, hvalue) == -1)
@@ -411,10 +411,10 @@ osip_message_set__header (osip_message_t * sip, const char *hname,
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_WARNING, NULL,
                    "Could not set unknown header\n"));
-      return 0;
+      return OSIP_SUCCESS;
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -437,7 +437,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
       i = osip_message_set__header (sip, hname, hvalue);
       if (i == -1)
         return -1;
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   ptr = hvalue;
@@ -472,7 +472,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
       i = osip_message_set__header (sip, hname, hvalue);
       if (i == -1)
         return -1;
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   beg = hvalue;
@@ -542,16 +542,16 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
             {                   /* this one does not need an allocation... */
 #if 0
               if (strlen (beg) < 2)
-                return 0;       /* empty header */
+                return OSIP_SUCCESS;       /* empty header */
 #else
               if (beg[0] == '\0' || beg[1] == '\0')
-                return 0;       /* empty header */
+                return OSIP_SUCCESS;       /* empty header */
 #endif
               osip_clrspace (beg);
               i = osip_message_set__header (sip, hname, beg);
               if (i == -1)
                 return -1;
-              return 0;
+              return OSIP_SUCCESS;
             }
         }
 
@@ -575,16 +575,16 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
             {                   /* this one does not need an allocation... */
 #if 0
               if (strlen (beg) < 2)
-                return 0;       /* empty header */
+                return OSIP_SUCCESS;       /* empty header */
 #else
               if (beg[0] == '\0' || beg[1] == '\0')
-                return 0;       /* empty header */
+                return OSIP_SUCCESS;       /* empty header */
 #endif
               osip_clrspace (beg);
               i = osip_message_set__header (sip, hname, beg);
               if (i == -1)
                 return -1;
-              return 0;
+              return OSIP_SUCCESS;
             }
         }
     }
@@ -609,7 +609,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
           OSIP_TRACE (osip_trace
                       (__FILE__, __LINE__, OSIP_INFO1, NULL,
                        "SIP message does not end with CRLFCRLF\n"));
-          return 0;
+          return OSIP_SUCCESS;
         }
 
       i = __osip_find_next_crlf (start_of_header, &end_of_header);
@@ -626,7 +626,7 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
       if ((start_of_header[0] == '\r') || (start_of_header[0] == '\n'))
         {
           *body = start_of_header;
-          return 0;             /* end of header found        */
+          return OSIP_SUCCESS;             /* end of header found        */
         }
 
       /* find the header name */
@@ -712,7 +712,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
 
   if (sip->content_type == NULL
       || sip->content_type->type == NULL || sip->content_type->subtype == NULL)
-    return 0;                   /* no body is attached */
+    return OSIP_SUCCESS;                   /* no body is attached */
 
   if (0 != osip_strcasecmp (sip->content_type->type, "multipart"))
     {
@@ -778,7 +778,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       osip_free (tmp);
       if (i != 0)
         return -1;
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   /* find the boundary */
@@ -867,7 +867,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
         {                       /* end of all bodies */
           *next_body = end_of_body;
           osip_free (sep_boundary);
-          return 0;
+          return OSIP_SUCCESS;
         }
 
       /* continue on the next body */
@@ -931,7 +931,7 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length,
       if (sip->content_length == NULL)
         osip_message_set_content_length (sip, "0");
       osip_free (beg);
-      return 0;                 /* no body found */
+      return OSIP_SUCCESS;                 /* no body found */
     }
 
   i = msg_osip_body_parse (sip, tmp, &next_header_index, length - (tmp - beg));
@@ -948,7 +948,7 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length,
   if (sip->content_length == NULL)
     osip_message_set_content_length (sip, "0");
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -977,7 +977,7 @@ osip_message_fix_last_via_header (osip_message_t * request,
   if (request == NULL)
     return -1;
   if (MSG_IS_RESPONSE (request))
-    return 0;                   /* Don't fix Via header */
+    return OSIP_SUCCESS;                   /* Don't fix Via header */
 
   via = osip_list_get (&request->vias, 0);
   if (via == NULL || via->host == NULL)
@@ -1001,9 +1001,9 @@ osip_message_fix_last_via_header (osip_message_t * request,
   /* only add the received parameter if the 'sent-by' value does not contains
      this ip address */
   if (0 == strcmp (via->host, ip_addr)) /* don't need the received parameter */
-    return 0;
+    return OSIP_SUCCESS;
   osip_via_set_received (via, osip_strdup (ip_addr));
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 const char *

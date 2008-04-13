@@ -67,7 +67,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
     h->hvalue = NULL;
   sip->message_property = 2;
   osip_list_add (&sip->headers, h, -1);
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 /* Add a or replace exising header  to a SIP message.       */
@@ -120,7 +120,7 @@ osip_message_replace_header (osip_message_t * sip, const char *hname,
 
   sip->message_property = 2;
   osip_list_add (&sip->headers, h, -1);
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 
@@ -166,7 +166,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
     h->hvalue = NULL;
   sip->message_property = 2;
   osip_list_add (&sip->headers, h, 0);
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 /* Get a header in a SIP message.                       */
@@ -222,7 +222,7 @@ osip_header_init (osip_header_t ** header)
     return -1;
   (*header)->hname = NULL;
   (*header)->hvalue = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -265,7 +265,7 @@ osip_header_to_str (const osip_header_t * header, char **dest)
 
   if (*dest[0] > 'a' && *dest[0] < 'z')
     *dest[0] = (*dest[0] - 32);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -316,5 +316,5 @@ osip_header_clone (const osip_header_t * header, osip_header_t ** dest)
     he->hvalue = osip_strdup (header->hvalue);
 
   *dest = he;
-  return 0;
+  return OSIP_SUCCESS;
 }

@@ -115,7 +115,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
   /* Oups! a Bug! */
   /*  (*nict)->port  = 5060; */
 
-  return 0;
+  return OSIP_SUCCESS;
 
 ii_error_1:
   osip_free (*nict);
@@ -132,7 +132,7 @@ __osip_nict_free (osip_nict_t * nict)
 
   osip_free (nict->destination);
   osip_free (nict);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -144,7 +144,7 @@ osip_nict_set_destination (osip_nict_t * nict, char *destination, int port)
     osip_free (nict->destination);
   nict->destination = destination;
   nict->port = port;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 osip_event_t *

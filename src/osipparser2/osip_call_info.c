@@ -34,7 +34,7 @@ osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_call_info_init (&call_info);
   if (i != 0)
@@ -47,7 +47,7 @@ osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->call_infos, call_info, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -75,7 +75,7 @@ osip_call_info_init (osip_call_info_t ** call_info)
 
   osip_list_init (&(*call_info)->gen_params);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -108,7 +108,7 @@ osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
     return -1;
   osip_clrncpy (call_info->element, hvalue, osip_call_info_params - hvalue);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* returns the call_info header as a string.  */
@@ -158,7 +158,7 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -202,7 +202,7 @@ osip_call_info_clone (const osip_call_info_t * ctt, osip_call_info_t ** dest)
       return -1;
     }
   *dest = ct;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

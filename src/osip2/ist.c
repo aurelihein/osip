@@ -67,7 +67,7 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
   (*ist)->timer_h_length = 64 * DEFAULT_T1;
   (*ist)->timer_h_start.tv_sec = -1;    /* not started */
 
-  return 0;
+  return OSIP_SUCCESS;
 
 ii_error_1:
   osip_free (*ist);
@@ -82,7 +82,7 @@ __osip_ist_free (osip_ist_t * ist)
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ist ressource\n"));
   osip_free (ist);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 osip_event_t *

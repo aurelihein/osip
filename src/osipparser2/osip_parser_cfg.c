@@ -201,7 +201,7 @@ parser_init (void)
         }
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* improved look-up mechanism
@@ -241,7 +241,7 @@ __osip_message_call_method (int i, osip_message_t * dest, const char *hvalue)
 		   "Could not set header: %s: %s\n", pconfig[i].hname, hvalue));
     }
   if (pconfig[i].ignored_when_invalid==1)
-    return 0;
+    return OSIP_SUCCESS;
   return err;
 }
 

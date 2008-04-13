@@ -108,10 +108,10 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   osip_mutex_destroy(sem->_sem_mutex);
   osip_free (sem);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -124,7 +124,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_mutex_lock(sem->_sem_mutex);
   sem->_sem_counter++;
   osip_mutex_unlock(sem->_sem_mutex);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -143,7 +143,7 @@ osip_sem_wait (struct osip_sem *_sem)
 	{
 	  sem->_sem_counter--;
 	  osip_mutex_unlock(sem->_sem_mutex);
-	  return 0;
+	  return OSIP_SUCCESS;
 	}
       osip_mutex_unlock(sem->_sem_mutex);
       osip_usleep(1000);
@@ -163,7 +163,7 @@ osip_sem_trywait (struct osip_sem *_sem)
     {
       sem->_sem_counter--;
       osip_mutex_unlock(sem->_sem_mutex);
-      return 0;
+      return OSIP_SUCCESS;
     }
   osip_mutex_unlock(sem->_sem_mutex);
   return -1;
@@ -192,10 +192,10 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   sem_destroy (sem);
   osip_free (sem);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -268,11 +268,11 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   val.val = 0;
   semctl (sem->semid, 0, IPC_RMID, val);
   osip_free (sem);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -381,10 +381,10 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   semDelete (sem->semId);
   osip_free (sem);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -542,7 +542,7 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   CloseHandle (sem->h);
   osip_free (sem);
   return (0);
@@ -655,7 +655,7 @@ osip_sem_destroy (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   sm_delete (sem->id);
   osip_free (sem);
   return (0);
@@ -745,7 +745,7 @@ int osip_mutex_lock(struct osip_mutex *_mut)
 	  return -1;
 	}
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int osip_mutex_unlock(struct osip_mutex *_mut)
@@ -786,7 +786,7 @@ int osip_sem_destroy(struct osip_sem *_sem)
 
   if (sem == NULL)
     {
-      return 0;
+      return OSIP_SUCCESS;
     }
   rtems_semaphore_delete(sem->id);
   osip_free (sem);

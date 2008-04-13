@@ -51,7 +51,7 @@ __osip_transaction_set_topvia (osip_transaction_t * transaction,
     return -1;
   i = osip_via_clone (topvia, &(transaction->topvia));
   if (i == 0)
-    return 0;
+    return OSIP_SUCCESS;
   transaction->topvia = NULL;
   return -1;
 }
@@ -65,7 +65,7 @@ __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * fro
     return -1;
   i = osip_from_clone (from, &(transaction->from));
   if (i == 0)
-    return 0;
+    return OSIP_SUCCESS;
   transaction->from = NULL;
   return -1;
 }
@@ -79,7 +79,7 @@ __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to)
     return -1;
   i = osip_to_clone (to, &(transaction->to));
   if (i == 0)
-    return 0;
+    return OSIP_SUCCESS;
   transaction->to = NULL;
   return -1;
 }
@@ -94,7 +94,7 @@ __osip_transaction_set_call_id (osip_transaction_t * transaction,
     return -1;
   i = osip_call_id_clone (call_id, &(transaction->callid));
   if (i == 0)
-    return 0;
+    return OSIP_SUCCESS;
   transaction->callid = NULL;
   return -1;
 }
@@ -108,7 +108,7 @@ __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cse
     return -1;
   i = osip_cseq_clone (cseq, &(transaction->cseq));
   if (i == 0)
-    return 0;
+    return OSIP_SUCCESS;
   transaction->cseq = NULL;
   return -1;
 }
@@ -218,7 +218,7 @@ osip_transaction_init (osip_transaction_t ** transaction,
         goto ti_error_7;
       __osip_add_nist (osip, *transaction);
     }
-  return 0;
+  return OSIP_SUCCESS;
 
 
 ti_error_7:
@@ -326,7 +326,7 @@ osip_transaction_free2 (osip_transaction_t * transaction)
   osip_cseq_free (transaction->cseq);
 
   osip_free (transaction);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -338,7 +338,7 @@ osip_transaction_add_event (osip_transaction_t * transaction, osip_event_t * evt
     return -1;
   evt->transactionid = transaction->transactionid;
   osip_fifo_add (transaction->transactionff, evt);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -355,7 +355,7 @@ osip_transaction_execute (osip_transaction_t * transaction, osip_event_t * evt)
       /* osip_transaction_free(transaction);
          osip_free(transaction); */
       osip_free (evt);
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   OSIP_TRACE (osip_trace
@@ -426,12 +426,12 @@ osip_transaction_get_destination (osip_transaction_t * transaction, char **ip,
     {
       *ip = transaction->ict_context->destination;
       *port = transaction->ict_context->port;
-      return 0;
+      return OSIP_SUCCESS;
   } else if (transaction->nict_context != NULL)
     {
       *ip = transaction->nict_context->destination;
       *port = transaction->nict_context->port;
-      return 0;
+      return OSIP_SUCCESS;
     }
   return -1;
 }
@@ -442,7 +442,7 @@ osip_transaction_set_srv_record(osip_transaction_t *transaction, osip_srv_record
 	if (transaction==NULL)
 		return -1;
 	memcpy(&transaction->record, record, sizeof(osip_srv_record_t));
-	return 0;
+	return OSIP_SUCCESS;
 }
 
 int
@@ -452,7 +452,7 @@ osip_transaction_set_your_instance (osip_transaction_t * transaction,
   if (transaction == NULL)
     return -1;
   transaction->your_instance = instance;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void *
@@ -469,7 +469,7 @@ __osip_transaction_set_state (osip_transaction_t * transaction, state_t state)
   if (transaction == NULL)
     return -1;
   transaction->state = state;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -478,7 +478,7 @@ osip_transaction_set_in_socket (osip_transaction_t * transaction, int sock)
   if (transaction == NULL)
     return -1;
   transaction->in_socket = sock;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -487,7 +487,7 @@ osip_transaction_set_out_socket (osip_transaction_t * transaction, int sock)
   if (transaction == NULL)
     return -1;
   transaction->out_socket = sock;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -551,7 +551,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
       /* the Call-ID field */
       if (call_id_match (tr->callid, response->call_id) != 0)
         return -1;
-      return 0;
+      return OSIP_SUCCESS;
 #else
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_BUG, NULL,
@@ -580,7 +580,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
      AMD NOTE: cseq->method is ALWAYS the same than the METHOD of the request.
    */
   if (0 == strcmp (response->cseq->method, tr->cseq->method))   /* general case */
-    return 0;
+    return OSIP_SUCCESS;
   return -1;
 }
 
@@ -682,7 +682,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
                   0 == strcmp (request->cseq->method, "ACK")))
                && 0 != strcmp (tr->cseq->method, request->cseq->method))
             return -1;
-          return 0;
+          return OSIP_SUCCESS;
         }
     }
 
@@ -718,7 +718,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
     return -1;
   if (0 != osip_via_match (tr->topvia, topvia_request))
     return -1;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 osip_event_t *

@@ -36,7 +36,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_via_init (&via);
   if (i != 0)
@@ -49,7 +49,7 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->vias, via, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* adds the via header to message in the first position. (to be used by proxy) */
@@ -73,7 +73,7 @@ osip_message_append_via (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->vias, via, 0);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -107,7 +107,7 @@ osip_via_init (osip_via_t ** via)
 
   osip_list_init (&(*via)->via_params);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -259,7 +259,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
 
   /* host is already set in the case of ipv6 */
   if (ipv6host != NULL)
-    return 0;
+    return OSIP_SUCCESS;
 
   if (port - host < 2)
     return -1;
@@ -268,7 +268,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
     return -1;
   osip_clrncpy (via->host, host + 1, port - host - 1);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -348,7 +348,7 @@ osip_via_to_str (const osip_via_t * via, char **dest)
       sprintf (tmp, " (%s)", via->comment);
     }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -455,7 +455,7 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
       return -1;
     }
   *dest = vi;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -487,5 +487,5 @@ osip_via_match (osip_via_t * via1, osip_via_t * via2)
   osip_free (_via2);
   if (i != 0)
     return -1;
-  return 0;
+  return OSIP_SUCCESS;
 }

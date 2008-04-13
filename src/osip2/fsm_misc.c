@@ -57,5 +57,5 @@ fsm_callmethod (type_t type, state_t state,
       return -1;                /* error */
     }
   transition->method (transaction, sipevent);
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }

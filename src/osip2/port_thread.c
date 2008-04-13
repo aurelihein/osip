@@ -66,7 +66,7 @@ osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 int
 osip_thread_set_priority (struct osip_thread *thread, int priority)
 {
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -143,7 +143,7 @@ osip_thread_exit ()
 int
 osip_thread_set_priority (struct osip_thread *thread, int priority)
 {
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -182,7 +182,7 @@ osip_thread_set_priority (struct osip_thread *_thread, int priority)
   if (thread == NULL)
     return -1;
   t_set_pri (thread->tid, priority, &oldprio);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -228,7 +228,7 @@ osip_thread_set_priority (struct osip_thread *_thread, int priority)
   if (thread == NULL)
     return -1;
   taskPrioritySet (thread->id, 1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -292,7 +292,7 @@ int osip_thread_set_priority(struct osip_thread *_thread, int priority)
 				      priority,
 				      &old);
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

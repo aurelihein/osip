@@ -48,7 +48,7 @@ osip_body_init (osip_body_t ** body)
       return -1;
     }
   osip_list_init ((*body)->headers);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /**
@@ -74,7 +74,7 @@ osip_message_set_body (osip_message_t * sip, const char *buf, size_t length)
     }
   sip->message_property = 2;
   osip_list_add (&sip->bodies, body, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -108,7 +108,7 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
     goto bc_error1;
 
   *dest = copy;
-  return 0;
+  return OSIP_SUCCESS;
 bc_error1:
   osip_body_free (copy);
   return -1;
@@ -154,7 +154,7 @@ osip_body_set_contenttype (osip_body_t * body, const char *hvalue)
       body->content_type = NULL;
       return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -178,7 +178,7 @@ osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue)
   h->hvalue = osip_strdup (hvalue);
 
   osip_list_add (body->headers, h, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fill the body of message.                              */
@@ -202,7 +202,7 @@ osip_message_set_body_mime (osip_message_t * sip, const char *buf, size_t length
     }
   sip->message_property = 2;
   osip_list_add (&sip->bodies, body, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -265,7 +265,7 @@ osip_body_parse_header (osip_body_t * body,
           || strncmp (end_of_line, "\r", 1) == 0)
         {
           *next_body = end_of_line;
-          return 0;
+          return OSIP_SUCCESS;
         }
       start_of_line = end_of_line;
     }
@@ -287,7 +287,7 @@ osip_body_parse (osip_body_t * body, const char *start_of_body, size_t length)
   memcpy (body->body, start_of_body, length);
   body->body[length] = '\0';
   body->length = length;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -338,7 +338,7 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body, size_t leng
 
   body->body[body->length] = '\0';
 
-  return 0;
+  return OSIP_SUCCESS;
 
 }
 
@@ -443,7 +443,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t * str_length)
   if (str_length != NULL)
     *str_length = tmp_body - ptr;
   *dest = ptr;
-  return 0;
+  return OSIP_SUCCESS;
 
 }
 

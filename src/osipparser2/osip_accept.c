@@ -38,17 +38,17 @@ osip_message_set_accept (osip_message_t * sip, const char *hvalue)
 
   i = accept_init (&accept);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_accept_parse (accept, hvalue);
   if (i != 0)
     {
       osip_accept_free (accept);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
 
   osip_list_add (&sip->accepts, accept, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -60,7 +60,7 @@ osip_message_get_accept (const osip_message_t * sip, int pos,
 
   *dest = NULL;
   if (osip_list_size (&sip->accepts) <= pos)
-    return -1;                  /* does not exist */
+    return OSIP_UNDEFINED_ERROR;     /* does not exist */
   accept = (osip_accept_t *) osip_list_get (&sip->accepts, pos);
   *dest = accept;
   return pos;
@@ -78,7 +78,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
 
   *dest = NULL;
   if (accept == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (accept->type != NULL)
     len += strlen (accept->type);
@@ -90,10 +90,12 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
     {
       /* Empty header ! */
       buf = (char *) osip_malloc (2);
+	  if (buf==NULL)
+		  return OSIP_NOMEM;
       buf[0] = ' ';
       buf[1] = '\0';
       *dest = buf;
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   /* try to guess a long enough length */
@@ -101,6 +103,8 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
     + 10 * osip_list_size (&accept->gen_params);
 
   buf = (char *) osip_malloc (len);
+  if (buf==NULL)
+	  return OSIP_NOMEM;
   tmp = buf;
 
   sprintf (tmp, "%s/%s", accept->type, accept->subtype);
@@ -125,7 +129,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
         if (u_param->gvalue == NULL)
           {
             osip_free (buf);
-            return -1;
+            return OSIP_SYNTAXERROR;
           }
         tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
           + strlen (u_param->gvalue) + 1;
@@ -141,7 +145,7 @@ osip_accept_to_str (const osip_accept_t * accept, char **dest)
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #endif

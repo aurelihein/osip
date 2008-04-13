@@ -45,7 +45,7 @@ osip_authorization_init (osip_authorization_t ** dest)
   (*dest)->message_qop = NULL;  /* optionnal */
   (*dest)->nonce_count = NULL;  /* optionnal */
   (*dest)->auth_param = NULL;   /* for other headers --NOT IMPLEMENTED-- */
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the www-authenticate header of message.               */
@@ -59,7 +59,7 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip == NULL)
     return -1;
@@ -74,7 +74,7 @@ osip_message_set_authorization (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->authorizations, authorization, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the www-authenticate structure.           */
@@ -107,7 +107,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("username", space, &(auth->username), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -116,7 +116,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("realm", space, &(auth->realm), &next))
         return -1;
       if (next == NULL)
-        return 0;
+        return OSIP_SUCCESS;
       else if (next != space)
         {
           space = next;
@@ -125,7 +125,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("nonce", space, &(auth->nonce), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -134,7 +134,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("uri", space, &(auth->uri), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -143,7 +143,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("response", space, &(auth->response), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -152,7 +152,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("digest", space, &(auth->digest), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -161,7 +161,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_token_set ("algorithm", space, &(auth->algorithm), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -170,7 +170,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("cnonce", space, &(auth->cnonce), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -179,7 +179,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_quoted_string_set ("opaque", space, &(auth->opaque), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -188,7 +188,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_token_set ("qop", space, &(auth->message_qop), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -197,7 +197,7 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
       if (__osip_token_set ("nc", space, &(auth->nonce_count), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -216,10 +216,10 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
           /* parameter not understood!!! I'm too lazy to handle IT */
           /* let's simply bypass it */
           if (strlen (space) < 1)
-            return 0;
+            return OSIP_SUCCESS;
           tmp = strchr (space + 1, ',');
           if (tmp == NULL)      /* it was the last header */
-            return 0;
+            return OSIP_SUCCESS;
           quote1 = __osip_quote_find (space);
           if ((quote1 != NULL) && (quote1 < tmp))       /* this may be a quoted string! */
             {
@@ -231,13 +231,13 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
               else
                 space = tmp;
               if (space == NULL)        /* it was the last header */
-                return 0;
+                return OSIP_SUCCESS;
           } else
             space = tmp;
           /* continue parsing... */
         }
     }
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 #ifndef MINISIZE
@@ -530,7 +530,7 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
       tmp = osip_strn_append (tmp, ", nc=", 5);
       tmp = osip_str_append (tmp, auth->nonce_count);
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_authorization_t structure.  */
@@ -652,7 +652,7 @@ osip_authorization_clone (const osip_authorization_t * auth,
     }
 
   *dest = au;
-  return 0;
+  return OSIP_SUCCESS;
 
 ac_error:
   osip_authorization_free (au);

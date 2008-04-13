@@ -84,7 +84,7 @@ osip_message_init (osip_message_t ** sip)
   (*sip)->message_length = 0;
 
   (*sip)->application_data = NULL;
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 
@@ -442,7 +442,7 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
   copy->message_property = sip->message_property;
 
   *dest = copy;
-  return 0;
+  return OSIP_SUCCESS;
 mc_error1:
   osip_message_free (copy);
   return -1;

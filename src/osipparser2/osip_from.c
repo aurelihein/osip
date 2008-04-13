@@ -44,7 +44,7 @@ osip_message_set_from (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip->from != NULL)
     return -1;
@@ -59,7 +59,7 @@ osip_message_set_from (osip_message_t * sip, const char *hvalue)
       sip->from = NULL;
       return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -85,7 +85,7 @@ osip_from_init (osip_from_t ** from)
 
   osip_list_init (&(*from)->gen_params);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_from_t structure.  */
@@ -252,7 +252,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
     if (i != 0)
       return -1;
   }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -322,7 +322,7 @@ osip_from_to_str (const osip_from_t * from, char **dest)
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -398,7 +398,7 @@ osip_from_clone (const osip_from_t * from, osip_from_t ** dest)
       return -1;
     }
   *dest = fr;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -419,7 +419,7 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
       if (from1->url->string == NULL || from2->url->string == NULL)
         return -1;
       if (0 == strcmp (from1->url->string, from2->url->string))
-        return 0;
+        return OSIP_SUCCESS;
     }
   if (from1->url->host == NULL || from2->url->host == NULL)
     return -1;
@@ -466,7 +466,7 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
 
   /* sounds like a BUG!
      if tag2 exists and tag1 does not, then it will
-     return 0;
+     return OSIP_SUCCESS;
      in the first request, (INVITE) the To field does not
      contain any tag. The response contains one! and the
      response must match the request....
@@ -479,7 +479,7 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
   /* We could return a special case, when */
   /* only one tag exists?? */
 
-  return 0;                     /* return code changed to 0 from release 0.6.1 */
+  return OSIP_SUCCESS;                     /* return code changed to 0 from release 0.6.1 */
 }
 
 int
@@ -555,7 +555,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
       if (equal - params < 2)
 	{
 	  osip_free (pvalue);
-	  return 0; /* empty comma? */
+	  return OSIP_SUCCESS; /* empty comma? */
 	}
   } else
     {
@@ -593,7 +593,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
 
   osip_generic_param_add (gen_params, pname, pvalue);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -636,7 +636,7 @@ osip_from_tag_match (osip_from_t * from1, osip_from_t * from2)
   osip_from_param_get_byname (from1, "tag", &tag_from1);
   osip_from_param_get_byname (from2, "tag", &tag_from2);
   if (tag_from1 == NULL && tag_from2 == NULL)
-    return 0;
+    return OSIP_SUCCESS;
   if ((tag_from1 != NULL && tag_from2 == NULL)
       || (tag_from1 == NULL && tag_from2 != NULL))
     return -1;
@@ -644,5 +644,5 @@ osip_from_tag_match (osip_from_t * from1, osip_from_t * from2)
     return -1;
   if (0 != strcmp (tag_from1->gvalue, tag_from2->gvalue))
     return -1;
-  return 0;
+  return OSIP_SUCCESS;
 }

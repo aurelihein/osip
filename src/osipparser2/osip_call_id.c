@@ -34,7 +34,7 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip->call_id != NULL)
     return -1;
@@ -49,7 +49,7 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
       sip->call_id = NULL;
       return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -70,7 +70,7 @@ osip_call_id_init (osip_call_id_t ** callid)
     return -1;
   (*callid)->number = NULL;
   (*callid)->host = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -124,7 +124,7 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
     return -1;
   osip_clrncpy (callid->number, hvalue, host - hvalue);
 
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 /* returns the call_id as a string.          */
@@ -151,7 +151,7 @@ osip_call_id_to_str (const osip_call_id_t * callid, char **dest)
         return -1;
       sprintf (*dest, "%s@%s", callid->number, callid->host);
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 char *
@@ -202,7 +202,7 @@ osip_call_id_clone (const osip_call_id_t * callid, osip_call_id_t ** dest)
     ci->host = osip_strdup (callid->host);
 
   *dest = ci;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -218,7 +218,7 @@ osip_call_id_match (osip_call_id_t * callid1, osip_call_id_t * callid2)
     return -1;
 
   if ((callid1->host == NULL) && (callid2->host == NULL))
-    return 0;
+    return OSIP_SUCCESS;
   if ((callid1->host == NULL) && (callid2->host != NULL))
     return -1;
   if ((callid1->host != NULL) && (callid2->host == NULL))
@@ -226,5 +226,5 @@ osip_call_id_match (osip_call_id_t * callid1, osip_call_id_t * callid2)
   if (0 != strcmp (callid1->host, callid2->host))
     return -1;
 
-  return 0;
+  return OSIP_SUCCESS;
 }

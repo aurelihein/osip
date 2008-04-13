@@ -33,7 +33,7 @@ osip_cseq_init (osip_cseq_t ** cseq)
     return -1;
   (*cseq)->method = NULL;
   (*cseq)->number = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the cseq header of message.               */
@@ -46,7 +46,7 @@ osip_message_set_cseq (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip->cseq != NULL)
     return -1;
@@ -61,7 +61,7 @@ osip_message_set_cseq (osip_message_t * sip, const char *hvalue)
       sip->cseq = NULL;
       return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the cseq strucuture.                      */
@@ -97,7 +97,7 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
     return -1;
   osip_clrncpy (cseq->method, method + 1, end - method);
 
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 #ifndef MINISIZE
@@ -151,7 +151,7 @@ osip_cseq_to_str (const osip_cseq_t * cseq, char **dest)
   if (*dest == NULL)
     return -1;
   sprintf (*dest, "%s %s", cseq->number, cseq->method);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_cseq_t structure.  */
@@ -190,7 +190,7 @@ osip_cseq_clone (const osip_cseq_t * cseq, osip_cseq_t ** dest)
   cs->number = osip_strdup (cseq->number);
 
   *dest = cs;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -209,11 +209,11 @@ osip_cseq_match (osip_cseq_t * cseq1, osip_cseq_t * cseq2)
         {
           if (0 == strcmp (cseq1->method, "INVITE") ||
               0 == strcmp (cseq1->method, "ACK"))
-            return 0;
+            return OSIP_SUCCESS;
       } else
         {
           if (0 == strcmp (cseq1->method, cseq2->method))
-            return 0;
+            return OSIP_SUCCESS;
         }
     }
   return -1;

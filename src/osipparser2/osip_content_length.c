@@ -31,7 +31,7 @@ osip_content_length_init (osip_content_length_t ** cl)
   if (*cl == NULL)
     return -1;
   (*cl)->value = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* adds the content_length header to message.       */
@@ -44,7 +44,7 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip->content_length != NULL)
     return -1;
@@ -60,7 +60,7 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
       return -1;
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -78,7 +78,7 @@ osip_content_length_parse (osip_content_length_t * content_length,
   if (content_length->value == NULL)
     return -1;
   osip_strncpy (content_length->value, hvalue, len);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -101,7 +101,7 @@ osip_content_length_to_str (const osip_content_length_t * cl, char **dest)
   if (cl == NULL)
     return -1;
   *dest = osip_strdup (cl->value);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_content_length_t strcture.  */
@@ -136,5 +136,5 @@ osip_content_length_clone (const osip_content_length_t * ctl,
     cl->value = osip_strdup (ctl->value);
 
   *dest = cl;
-  return 0;
+  return OSIP_SUCCESS;
 }

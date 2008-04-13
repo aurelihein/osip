@@ -43,7 +43,7 @@ osip_uri_init (osip_uri_t ** url)
   osip_list_init (&(*url)->url_headers);
 
   (*url)->string = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* examples:
@@ -132,7 +132,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
       if (url->string == NULL)
         return -1;
       osip_strncpy (url->string, tmp + 1, i);
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   /*  law number 1:
@@ -251,7 +251,7 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
     return -1;
   osip_clrncpy (url->host, host + 1, port - host - 1);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -407,7 +407,7 @@ osip_uri_parse_headers (osip_uri_t * url, const char *headers)
         }
     }
   while (equal != NULL);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -495,7 +495,7 @@ osip_uri_parse_params (osip_uri_t * url, const char *params)
 
   osip_uri_uparam_add (url, pname, pvalue);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -529,7 +529,7 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
       buf = buf + strlen (scheme) + 1;
       sprintf (buf, "%s", url->string);
       buf = buf + strlen (url->string);
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   len = strlen (scheme) + 1 + strlen (url->host) + 5;
@@ -662,7 +662,7 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
   }
 
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 
@@ -738,7 +738,7 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
       return -1;
     }
   *dest = ur;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -747,7 +747,7 @@ osip_uri_param_init (osip_uri_param_t ** url_param)
   *url_param = (osip_uri_param_t *) osip_malloc (sizeof (osip_uri_param_t));
   (*url_param)->gname = NULL;
   (*url_param)->gvalue = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -767,7 +767,7 @@ osip_uri_param_set (osip_uri_param_t * url_param, char *pname, char *pvalue)
   url_param->gvalue = pvalue;
   if (url_param->gvalue != NULL)
     osip_clrspace (url_param->gvalue);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -786,7 +786,7 @@ osip_uri_param_add (osip_list_t * url_params, char *pname, char *pvalue)
       return -1;
     }
   osip_list_add (url_params, url_param, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void
@@ -826,7 +826,7 @@ osip_uri_param_get_byname (osip_list_t * params, char *pname,
           && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0)
         {
           *url_param = u_param;
-          return 0;
+          return OSIP_SUCCESS;
         }
       pos++;
     }
@@ -854,7 +854,7 @@ osip_uri_param_clone (const osip_uri_param_t * uparam, osip_uri_param_t ** dest)
   else
     up->gvalue = NULL;
   *dest = up;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

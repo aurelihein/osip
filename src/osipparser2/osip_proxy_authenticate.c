@@ -36,7 +36,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_proxy_authenticate_init (&(proxy_authenticate));
   if (i != 0)
@@ -49,7 +49,7 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->proxy_authenticates, proxy_authenticate, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

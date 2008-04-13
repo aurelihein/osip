@@ -43,7 +43,7 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
 #ifdef __VXWORKS_OS__
   i = osip_route_init2 (&route);
@@ -60,7 +60,7 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->routes, route, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE

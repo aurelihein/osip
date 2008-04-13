@@ -84,7 +84,7 @@ __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
   strcpy (tmp, sip_version);
 
   osip_free (rquri);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -119,7 +119,7 @@ __osip_message_startline_to_strresp (osip_message_t * sip, char **dest)
   tmp++;
   strcpy (tmp, sip->reason_phrase);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -231,7 +231,7 @@ strcat_simple_header (char **_string, size_t * malloc_size,
   *_string = string;
   *_message = message;
   *next = message;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -303,7 +303,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size,
   *_string = string;
   *_message = message;
   *next = message;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #if 0
@@ -384,7 +384,7 @@ strcat_headers_all_on_one_line (char **_string, size_t * malloc_size,
   *_string = string;
   *_message = message;
   *next = message;
-  return 0;
+  return OSIP_SUCCESS;
 }
 #endif
 
@@ -407,7 +407,7 @@ osip_message_force_update (osip_message_t * sip)
   if (sip == NULL)
     return -1;
   sip->message_property = 2;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -425,7 +425,7 @@ _osip_message_realloc (char **message, char **dest, size_t needed,
       *message = *dest + size;
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 static int
@@ -463,7 +463,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
         (*dest)[sip->message_length] = '\0';
         if (message_length != NULL)
           *message_length = sip->message_length;
-        return 0;
+        return OSIP_SUCCESS;
     } else
       {
         /* message should be rebuilt: delete the old one if exists. */
@@ -668,7 +668,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       if (message_length != NULL)
         *message_length = message - *dest;
 
-      return 0;                 /* it's all done */
+      return OSIP_SUCCESS;                 /* it's all done */
     }
 
   osip_strncpy (message, "Content-Length: ", 16);
@@ -724,7 +724,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       if (message_length != NULL)
         *message_length = total_length;
 
-      return 0;                 /* it's all done */
+      return OSIP_SUCCESS;                 /* it's all done */
     }
 
   if (sip->mime_version != NULL && sip->content_type
@@ -859,7 +859,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
       if (message_length != NULL)
         *message_length = total_length;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int

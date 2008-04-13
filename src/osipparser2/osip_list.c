@@ -29,7 +29,7 @@ osip_list_init (osip_list_t * li)
   if (li == NULL)
     return -1;
   memset (li, 0, sizeof (osip_list_t));
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int *(*clone_func) (void *, void *))
@@ -45,7 +45,7 @@ int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int *(*clone_fu
         osip_list_add (dst, data2, -1);
         pos++;
       }
-    return 0;
+    return OSIP_SUCCESS;
 }
 
 void
@@ -102,7 +102,7 @@ osip_list_eol (const osip_list_t * li, int i)
   if (li == NULL)
     return -1;
   if (i < li->nb_elt)
-    return 0;                   /* not end of list */
+    return OSIP_SUCCESS;                   /* not end of list */
   return 1;                     /* end of list */
 }
 
@@ -222,7 +222,7 @@ osip_list_get_first (osip_list_t * li, osip_list_iterator_t * iterator)
   if (0 >= li->nb_elt)
     {
       iterator->actual = 0;
-      return 0;
+      return OSIP_SUCCESS;
     }
 
   iterator->actual = li->node;
@@ -247,7 +247,7 @@ osip_list_get_next (osip_list_iterator_t * iterator)
     }
 
   iterator->actual = 0;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* added by bennewit@cs.tu-berlin.de */
@@ -269,7 +269,7 @@ osip_list_iterator_remove (osip_list_iterator_t * iterator)
       return iterator->actual->element;
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* return -1 if failed */

@@ -42,7 +42,7 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip->to != NULL)
     return -1;
@@ -57,7 +57,7 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
       sip->to = NULL;
       return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE

@@ -37,7 +37,7 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_accept_encoding_init (&accept_encoding);
   if (i != 0)
@@ -50,7 +50,7 @@ osip_message_set_accept_encoding (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->accept_encodings, accept_encoding, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -79,7 +79,7 @@ osip_accept_encoding_init (osip_accept_encoding_t ** accept_encoding)
 
   osip_list_init (&(*accept_encoding)->gen_params);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -107,7 +107,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
   osip_clrncpy (accept_encoding->element, hvalue,
                 osip_accept_encoding_params - hvalue);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* returns the accept_encoding header as a string.  */
@@ -157,7 +157,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_accept_encoding_t structure.  */
@@ -216,7 +216,7 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
       }
   }
   *dest = ct;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

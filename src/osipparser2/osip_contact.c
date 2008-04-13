@@ -36,7 +36,7 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
   osip_contact_t *contact;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_contact_init (&contact);
   if (i != 0)
@@ -49,7 +49,7 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->contacts, contact, -1);
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 /* parses a contact header.                                 */
@@ -64,7 +64,7 @@ osip_contact_parse (osip_contact_t * contact, const char *hvalue)
   if (strncmp (hvalue, "*", 1) == 0)
     {
       contact->displayname = osip_strdup (hvalue);
-      return 0;
+      return OSIP_SUCCESS;
     }
   return osip_from_parse ((osip_from_t *) contact, hvalue);
 }
@@ -110,7 +110,7 @@ osip_contact_to_str (const osip_contact_t * contact, char **dest)
       if (strncmp (contact->displayname, "*", 1) == 0)
         {
           *dest = osip_strdup ("*");
-          return 0;
+          return OSIP_SUCCESS;
         }
     }
   return osip_from_to_str ((osip_from_t *) contact, dest);

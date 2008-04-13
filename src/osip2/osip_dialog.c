@@ -61,7 +61,7 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
       if (i != 0)
         return -1;
     }
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -74,7 +74,7 @@ osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
     return -1;
 
   dialog->remote_cseq = osip_atoi (invite->cseq->number);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -138,7 +138,7 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
 
   if (MSG_IS_STATUS_2XX (response))
     dialog->state = DIALOG_CONFIRMED;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -169,7 +169,7 @@ osip_dialog_update_tag_as_uac (osip_dialog_t * dialog, osip_message_t * response
       dialog->remote_tag = NULL;
   } else
     dialog->remote_tag = osip_strdup (tag->gvalue);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -231,7 +231,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
           osip_from_compare ((osip_from_t *) dlg->local_uri,
                              (osip_from_t *) answer->from)
           && 0 == osip_from_compare (dlg->remote_uri, answer->to))
-        return 0;
+        return OSIP_SUCCESS;
       return -1;
     }
 
@@ -244,7 +244,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
           osip_from_compare ((osip_from_t *) dlg->local_uri,
                              (osip_from_t *) answer->from)
           && 0 == osip_from_compare (dlg->remote_uri, answer->to))
-        return 0;
+        return OSIP_SUCCESS;
       return -1;
     }
 
@@ -253,7 +253,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
      && local_uri with to.    ----> we have both tag recognized, it's enough..
    */
   if (0 == strcmp (tag_param_remote->gvalue, dlg->remote_tag))
-    return 0;
+    return OSIP_SUCCESS;
   return -1;
 }
 
@@ -296,7 +296,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
           osip_from_compare ((osip_from_t *) dlg->remote_uri,
                              (osip_from_t *) request->from)
           && 0 == osip_from_compare (dlg->local_uri, request->to))
-        return 0;
+        return OSIP_SUCCESS;
       return -1;
     }
 
@@ -309,7 +309,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
           osip_from_compare ((osip_from_t *) dlg->remote_uri,
                              (osip_from_t *) request->from)
           && 0 == osip_from_compare (dlg->local_uri, request->to))
-        return 0;
+        return OSIP_SUCCESS;
       return -1;
     }
   /* we don't have to compare
@@ -317,7 +317,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
      && local_uri with to.    ----> we have both tag recognized, it's enough..
    */
   if (0 == strcmp (tag_param_remote->gvalue, dlg->remote_tag))
-    return 0;
+    return OSIP_SUCCESS;
 
   return -1;
 }
@@ -413,7 +413,7 @@ __osip_dialog_init (osip_dialog_t ** dialog,
   }
   (*dialog)->secure = -1;       /* non secure */
 
-  return 0;
+  return OSIP_SUCCESS;
 
 diau_error_5:
   osip_from_free ((*dialog)->local_uri);
@@ -456,7 +456,7 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   (*dialog)->type = CALLER;
   (*dialog)->remote_cseq = -1;
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* SIPIT13 */
@@ -489,7 +489,7 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   (*dialog)->local_cseq = local_cseq;   /* -1 osip_atoi (xxx->cseq->number); */
   (*dialog)->remote_cseq = osip_atoi (next_request->cseq->number);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int
@@ -517,7 +517,7 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   (*dialog)->type = CALLEE;
   (*dialog)->remote_cseq = osip_atoi (response->cseq->number);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 void

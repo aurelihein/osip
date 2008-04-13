@@ -43,7 +43,7 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_record_route_init (&record_route);
   if (i != 0)
@@ -56,7 +56,7 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->record_routes, record_route, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -150,7 +150,7 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
       }
   }
   *dest = buf;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_record_route_t structure.  */

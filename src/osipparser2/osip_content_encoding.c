@@ -37,7 +37,7 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   i = osip_content_encoding_init (&content_encoding);
   if (i != 0)
@@ -50,7 +50,7 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
     }
   sip->message_property = 2;
   osip_list_add (&sip->content_encodings, content_encoding, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 int

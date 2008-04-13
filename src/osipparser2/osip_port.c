@@ -371,7 +371,7 @@ osip_tolower (char *word)
         word[i] = word[i] + 32;
     }
 #endif
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -399,7 +399,7 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
 {
 #if defined(__VXWORKS_OS__) || defined( __PSOS__)
   if (len == 0)
-    return 0;
+    return OSIP_SUCCESS;
   while ((len > 0) && (tolower (*s1) == tolower (*s2)))
     {
       len--;
@@ -430,7 +430,7 @@ osip_clrspace (char *word)
   if (word == NULL)
     return -1;
   if (*word == '\0')
-    return 0;
+    return OSIP_SUCCESS;
   len = strlen (word);
 
   pbeg = word;
@@ -444,7 +444,7 @@ osip_clrspace (char *word)
       if (pend < pbeg)
         {
           *word = '\0';
-          return 0;
+          return OSIP_SUCCESS;
         }
     }
 
@@ -455,7 +455,7 @@ osip_clrspace (char *word)
   if (pbeg != word)
     memmove (word, pbeg, pend - pbeg + 2);
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* __osip_set_next_token:
@@ -495,7 +495,7 @@ __osip_set_next_token (char **dest, char *buf, int end_separator, char **next)
   osip_strncpy (*dest, buf, sep - buf);
 
   *next = sep + 1;              /* return the position right after the separator */
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #if 0
@@ -801,7 +801,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 #endif
 
   if (tracing_table[level] == LOG_FALSE)
-    return 0;
+    return OSIP_SUCCESS;
 
   if (f == NULL && trace_func == NULL)
     f = logfile;
@@ -913,7 +913,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 
   va_end (ap);
 #endif
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 

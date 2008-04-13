@@ -41,7 +41,7 @@ osip_authentication_info_init (osip_authentication_info_t ** dest)
   (*dest)->rspauth = NULL;
   (*dest)->cnonce = NULL;
   (*dest)->nonce_count = NULL;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the www-authenticate header of message.               */
@@ -55,7 +55,7 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (hvalue == NULL || hvalue[0] == '\0')
-    return 0;
+    return OSIP_SUCCESS;
 
   if (sip == NULL)
     return -1;
@@ -71,7 +71,7 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
   sip->message_property = 2;
 
   osip_list_add (&sip->authentication_infos, authentication_info, -1);
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* fills the authentication_info strucuture.                      */
@@ -99,7 +99,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
           ("nextnonce", space, &(ainfo->nextnonce), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -108,7 +108,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
       if (__osip_quoted_string_set ("cnonce", space, &(ainfo->cnonce), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -117,7 +117,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
       if (__osip_quoted_string_set ("rspauth", space, &(ainfo->rspauth), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -126,7 +126,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
       if (__osip_token_set ("nc", space, &(ainfo->nonce_count), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -135,7 +135,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
       if (__osip_token_set ("qop", space, &(ainfo->qop_options), &next))
         return -1;
       if (next == NULL)
-        return 0;               /* end of header detected! */
+        return OSIP_SUCCESS;               /* end of header detected! */
       else if (next != space)
         {
           space = next;
@@ -149,10 +149,10 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
           /* parameter not understood!!! I'm too lazy to handle IT */
           /* let's simply bypass it */
           if (strlen (space) < 1)
-            return 0;
+            return OSIP_SUCCESS;
           tmp = strchr (space + 1, ',');
           if (tmp == NULL)      /* it was the last header */
-            return 0;
+            return OSIP_SUCCESS;
           quote1 = __osip_quote_find (space);
           if ((quote1 != NULL) && (quote1 < tmp))       /* this may be a quoted string! */
             {
@@ -164,13 +164,13 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo,
               else
                 space = tmp;
               if (space == NULL)        /* it was the last header */
-                return 0;
+                return OSIP_SUCCESS;
           } else
             space = tmp;
           /* continue parsing... */
         }
     }
-  return 0;                     /* ok */
+  return OSIP_SUCCESS;                     /* ok */
 }
 
 /* returns the authentication_info header.            */
@@ -341,7 +341,7 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo,
       tmp = osip_str_append (tmp, ainfo->nonce_count);
     }
 
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_authentication_info_t structure.  */
@@ -386,7 +386,7 @@ osip_authentication_info_clone (const osip_authentication_info_t * ainfo,
     wa->qop_options = osip_strdup (ainfo->qop_options);
 
   *dest = wa;
-  return 0;
+  return OSIP_SUCCESS;
 }
 
 #endif
