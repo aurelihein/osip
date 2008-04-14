@@ -196,7 +196,7 @@ ixt_init (ixt_t ** ixt)
 
   *ixt = pixt = (ixt_t *) osip_malloc (sizeof (ixt_t));
   if (pixt == NULL)
-    return -1;
+    return OSIP_NOMEM;
   pixt->dialog = NULL;
   pixt->msg2xx = NULL;
   pixt->ack = NULL;
@@ -1363,19 +1363,40 @@ decrease_ref_count (void)
 int
 osip_init (osip_t ** osip)
 {
+  int i;
   if (increase_ref_count () != 0)
     return -1;
 
   *osip = (osip_t *) osip_malloc (sizeof (osip_t));
   if (*osip == NULL)
-    return -1;                  /* allocation failed */
+    return OSIP_NOMEM;                  /* allocation failed */
 
   memset (*osip, 0, sizeof (osip_t));
 
-  osip_list_init (&(*osip)->osip_ict_transactions);
-  osip_list_init (&(*osip)->osip_ist_transactions);
-  osip_list_init (&(*osip)->osip_nict_transactions);
-  osip_list_init (&(*osip)->osip_nist_transactions);
+  i = osip_list_init (&(*osip)->osip_ict_transactions);
+  if (i!=0)
+  {
+	  osip_free(*osip);
+	  return OSIP_NOMEM;
+  }
+  i = osip_list_init (&(*osip)->osip_ist_transactions);
+  if (i!=0)
+  {
+	  osip_free(*osip);
+	  return OSIP_NOMEM;
+  }
+  i = osip_list_init (&(*osip)->osip_nict_transactions);
+  if (i!=0)
+  {
+	  osip_free(*osip);
+	  return OSIP_NOMEM;
+  }
+  i = osip_list_init (&(*osip)->osip_nist_transactions);
+  if (i!=0)
+  {
+	  osip_free(*osip);
+	  return OSIP_NOMEM;
+  }
 
   osip_list_init (&(*osip)->ixt_retransmissions);
 
@@ -1453,7 +1474,7 @@ osip_ict_execute (osip_t * osip)
 #ifdef OSIP_MT
       osip_mutex_unlock (ict_fastmutex);
 #endif
-      return OSIP_SUCCESS;
+      return OSIP_NOMEM; /* OSIP_SUCCESS; */
     }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
@@ -1516,7 +1537,7 @@ osip_ist_execute (osip_t * osip)
 #ifdef OSIP_MT
       osip_mutex_unlock (ist_fastmutex);
 #endif
-      return OSIP_SUCCESS;
+      return OSIP_NOMEM; /* OSIP_SUCCESS; */
     }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
@@ -1580,7 +1601,7 @@ osip_nict_execute (osip_t * osip)
 #ifdef OSIP_MT
       osip_mutex_unlock (nict_fastmutex);
 #endif
-      return OSIP_SUCCESS;
+      return OSIP_NOMEM; /* OSIP_SUCCESS; */
     }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
@@ -1643,7 +1664,7 @@ osip_nist_execute (osip_t * osip)
 #ifdef OSIP_MT
       osip_mutex_unlock (nist_fastmutex);
 #endif
-      return OSIP_SUCCESS;
+      return OSIP_NOMEM; /* OSIP_SUCCESS; */
     }
   transaction =
     (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,

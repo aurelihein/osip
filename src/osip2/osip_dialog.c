@@ -339,7 +339,7 @@ __osip_dialog_init (osip_dialog_t ** dialog,
 
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   memset (*dialog, 0, sizeof (osip_dialog_t));
   (*dialog)->your_instance = NULL;

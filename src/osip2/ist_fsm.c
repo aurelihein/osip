@@ -55,6 +55,8 @@ __ist_load_fsm ()
   transition_t *transition;
 
   ist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  if (ist_fsm==NULL)
+	  return;
   ist_fsm->transitions = NULL;
 
   transition = (transition_t *) osip_malloc (sizeof (transition_t));

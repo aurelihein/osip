@@ -139,7 +139,7 @@ osip_transaction_init (osip_transaction_t ** transaction,
 
   *transaction = (osip_transaction_t *) osip_malloc (sizeof (osip_transaction_t));
   if (*transaction == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   now = time (NULL);
 

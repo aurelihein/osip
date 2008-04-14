@@ -54,6 +54,8 @@ __nict_load_fsm ()
   transition_t *transition;
 
   nict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  if (nict_fsm==NULL)
+	  return;
   nict_fsm->transitions = NULL;
 
   /* to avoid race conditions between timers and first request */

@@ -35,7 +35,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 
   *nict = (osip_nict_t *) osip_malloc (sizeof (osip_nict_t));
   if (*nict == NULL)
-    return -1;
+    return OSIP_NOMEM;
   now = time (NULL);
   memset (*nict, 0, sizeof (osip_nict_t));
   /* for REQUEST retransmissions */

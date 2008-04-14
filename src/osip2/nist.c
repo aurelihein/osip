@@ -33,7 +33,7 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
 
   *nist = (osip_nist_t *) osip_malloc (sizeof (osip_nist_t));
   if (*nist == NULL)
-    return -1;
+    return OSIP_NOMEM;
   memset (*nist, 0, sizeof (osip_nist_t));
   /* for INVITE retransmissions */
   {

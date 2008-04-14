@@ -35,7 +35,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 
   *ict = (osip_ict_t *) osip_malloc (sizeof (osip_ict_t));
   if (*ict == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   now = time (NULL);
   memset (*ict, 0, sizeof (osip_ict_t));

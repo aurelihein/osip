@@ -55,6 +55,8 @@ __ict_load_fsm ()
   transition_t *transition;
 
   ict_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
+  if (ict_fsm==NULL)
+	  return;
   ict_fsm->transitions = NULL;
 
   /* a new state is needed because a race can happen between
@@ -337,10 +339,16 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
     goto ica_error;
   osip_free (ack->cseq->method);
   ack->cseq->method = osip_strdup ("ACK");
+  if (ack->cseq->method==NULL)
+    goto ica_error;
 
   ack->sip_method = (char *) osip_malloc (5);
+  if (ack->sip_method==NULL)
+    goto ica_error;
   sprintf (ack->sip_method, "ACK");
   ack->sip_version = osip_strdup (ict->orig_request->sip_version);
+  if (ack->sip_version==NULL)
+    goto ica_error;
 
   ack->status_code = 0;
   ack->reason_phrase = NULL;
