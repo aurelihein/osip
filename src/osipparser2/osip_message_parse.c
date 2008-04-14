@@ -63,6 +63,8 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
       return -1;
     }
   dest->sip_method = (char *) osip_malloc (p2 - buf + 1);
+  if (dest->sip_method==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (dest->sip_method, buf, p2 - buf);
 
   /* The second token is a sip-url or a uri: */
@@ -84,9 +86,23 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
     }
 
   requesturi = (char *) osip_malloc (p1 - p2);
+  if (requesturi==NULL)
+  {
+      osip_free (dest->sip_method);
+      dest->sip_method = NULL;
+	  return OSIP_NOMEM;
+  }
   osip_clrncpy (requesturi, p2 + 1, (p1 - p2 - 1));
 
-  osip_uri_init (&(dest->req_uri));
+  i = osip_uri_init (&(dest->req_uri));
+  if (i!=0)
+  {
+      osip_free (requesturi);
+      requesturi = NULL;
+      osip_free (dest->sip_method);
+      dest->sip_method = NULL;
+	  return OSIP_NOMEM;
+  }
   i = osip_uri_parse (dest->req_uri, requesturi);
   osip_free (requesturi);
   if (i != 0)
@@ -127,6 +143,15 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf,
       }
 
     dest->sip_version = (char *) osip_malloc (hp - p1);
+	if (dest->sip_version==NULL)
+    {
+        osip_free (dest->sip_method);
+        dest->sip_method = NULL;
+        osip_uri_free (dest->req_uri);
+        dest->req_uri = NULL;
+		return OSIP_NOMEM;
+    }
+
     osip_strncpy (dest->sip_version, p1 + 1, (hp - p1 - 1));
 
     if (0 != osip_strcasecmp (dest->sip_version, "SIP/2.0"))
@@ -160,6 +185,8 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
   if (statuscode == NULL)
     return -1;
   dest->sip_version = (char *) osip_malloc (statuscode - (*headers) + 1);
+  if (dest->sip_version==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (dest->sip_version, *headers, statuscode - (*headers));
 
   reasonphrase = strchr (statuscode + 1, ' ');
@@ -195,6 +222,13 @@ __osip_message_startline_parseresp (osip_message_t * dest, const char *buf,
           }
       }
     dest->reason_phrase = (char *) osip_malloc (hp - reasonphrase);
+	if (dest->reason_phrase==NULL)
+	{
+		osip_free (dest->sip_version);
+		dest->sip_version = NULL;
+		return OSIP_NOMEM;
+	}
+
     osip_strncpy (dest->reason_phrase, reasonphrase + 1, hp - reasonphrase - 1);
 
     hp++;
@@ -562,6 +596,8 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
           if (end - beg + 1 < 2)
             return -1;
           avalue = (char *) osip_malloc (end - beg + 1);
+		  if (avalue==NULL)
+			return OSIP_NOMEM;
           osip_clrncpy (avalue, beg, end - beg);
           /* really store the header in the sip structure */
           i = osip_message_set__header (sip, hname, avalue);
@@ -648,6 +684,8 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
           return -1;
         }
       hname = (char *) osip_malloc (colon_index - start_of_header + 1);
+	  if (hname==NULL)
+		return OSIP_NOMEM;
       osip_clrncpy (hname, start_of_header, colon_index - start_of_header);
 
       {
@@ -664,6 +702,11 @@ msg_headers_parse (osip_message_t * sip, const char *start_of_header,
         else
           {
             hvalue = (char *) osip_malloc ((end) - colon_index + 1);
+			if (hvalue==NULL)
+			{
+				osip_free (hname);
+				return OSIP_NOMEM;
+			}
             osip_clrncpy (hvalue, colon_index + 1, (end) - colon_index - 1);
           }
       }
@@ -770,7 +813,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       end_of_body = start_of_body + osip_body_len;
       tmp = osip_malloc (end_of_body - start_of_body + 2);
       if (tmp == NULL)
-        return -1;
+        return OSIP_NOMEM;
       memcpy (tmp, start_of_body, end_of_body - start_of_body);
       tmp[end_of_body - start_of_body] = '\0';
 
@@ -798,6 +841,8 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
     size_t len = strlen (ct_param->gvalue);
 
     sep_boundary = (char *) osip_malloc (len + sizeof (boundary_prefix));
+	if (sep_boundary==NULL)
+		return OSIP_NOMEM;
     sprintf (sep_boundary, boundary_prefix);
     if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len - 1] == '"')
       strncat (sep_boundary, ct_param->gvalue + 1, len - 2);
@@ -850,7 +895,7 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf,
       if (tmp == NULL)
         {
           osip_free (sep_boundary);
-          return -1;
+          return OSIP_NOMEM;
         }
       memcpy (tmp, start_of_body, body_len);
       tmp[body_len] = '\0';
@@ -894,7 +939,7 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length,
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "Could not allocate memory.\n"));
-      return -1;
+      return OSIP_NOMEM;
     }
   beg = tmp;
   memcpy (tmp, buf, length);    /* may contain binary data */
@@ -990,6 +1035,8 @@ osip_message_fix_last_via_header (osip_message_t * request,
       if (rport->gvalue == NULL)
         {
           rport->gvalue = (char *) osip_malloc (9);
+		  if (rport->gvalue==NULL)
+			  return OSIP_NOMEM;
 #if !defined __PALMOS__ && (defined WIN32 || defined _WIN32_WCE)
           _snprintf (rport->gvalue, 8, "%i", port);
 #else

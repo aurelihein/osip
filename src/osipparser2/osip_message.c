@@ -34,7 +34,7 @@ osip_message_init (osip_message_t ** sip)
 {
   *sip = (osip_message_t *) osip_malloc (sizeof (osip_message_t));
   if (*sip == NULL)
-    return -1;
+    return OSIP_NOMEM;
   memset (*sip, 0, sizeof (osip_message_t));
 
 #ifndef MINISIZE

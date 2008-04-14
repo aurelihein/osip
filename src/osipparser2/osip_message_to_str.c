@@ -73,6 +73,11 @@ __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
 
   *dest = (char *) osip_malloc (strlen (sip->sip_method)
                                 + strlen (rquri) + strlen (sip_version) + 3);
+  if (*dest==NULL)
+  {
+	  osip_free (rquri);
+	  return OSIP_NOMEM;
+  }
   tmp = *dest;
 
   tmp = osip_str_append (tmp, sip->sip_method);
@@ -108,6 +113,8 @@ __osip_message_startline_to_strresp (osip_message_t * sip, char **dest)
 
   *dest = (char *) osip_malloc (strlen (sip_version)
                                 + 3 + strlen (sip->reason_phrase) + 4);
+  if (*dest==NULL)
+	  return OSIP_NOMEM;
   tmp = *dest;
 
   tmp = osip_str_append (tmp, sip_version);
@@ -458,7 +465,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
         *dest = osip_malloc (sip->message_length + 1);
         if (*dest == NULL)
-          return -1;
+          return OSIP_NOMEM;
         memcpy (*dest, sip->message, sip->message_length);
         (*dest)[sip->message_length] = '\0';
         if (message_length != NULL)
@@ -474,7 +481,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
 
   message = (char *) osip_malloc (SIP_MESSAGE_MAX_LENGTH);      /* ???? message could be > 4000  */
   if (message == NULL)
-    return -1;
+    return OSIP_NOMEM;
   *dest = message;
 
   /* add the first line of message */
@@ -748,6 +755,12 @@ _osip_message_to_str (osip_message_t * sip, char **dest,
             }
 
           boundary = osip_malloc (len + 5);
+		  if (boundary==NULL)
+		  {
+              osip_free (*dest);
+              *dest = NULL;
+			  return OSIP_NOMEM;
+		  }
 
           osip_strncpy (boundary, CRLF, 2);
           osip_strncpy (boundary + 2, "--", 2);

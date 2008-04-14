@@ -31,7 +31,7 @@ osip_authorization_init (osip_authorization_t ** dest)
 {
   *dest = (osip_authorization_t *) osip_malloc (sizeof (osip_authorization_t));
   if (*dest == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*dest)->auth_type = NULL;
   (*dest)->username = NULL;
   (*dest)->realm = NULL;
@@ -98,6 +98,8 @@ osip_authorization_parse (osip_authorization_t * auth, const char *hvalue)
   if (space - hvalue < 1)
     return -1;
   auth->auth_type = (char *) osip_malloc (space - hvalue + 1);
+  if (auth->auth_type==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (auth->auth_type, hvalue, space - hvalue);
 
   for (;;)
@@ -461,7 +463,7 @@ osip_authorization_to_str (const osip_authorization_t * auth, char **dest)
 
   tmp = (char *) osip_malloc (len);
   if (tmp == NULL)
-    return -1;
+    return OSIP_NOMEM;
   *dest = tmp;
 
   tmp = osip_str_append (tmp, auth->auth_type);

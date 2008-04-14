@@ -63,7 +63,7 @@ sdp_bandwidth_init (sdp_bandwidth_t ** b)
 {
   *b = (sdp_bandwidth_t *) osip_malloc (sizeof (sdp_bandwidth_t));
   if (*b == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*b)->b_bwtype = NULL;
   (*b)->b_bandwidth = NULL;
   return OSIP_SUCCESS;
@@ -84,7 +84,7 @@ sdp_time_descr_init (sdp_time_descr_t ** td)
 {
   *td = (sdp_time_descr_t *) osip_malloc (sizeof (sdp_time_descr_t));
   if (*td == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*td)->t_start_time = NULL;
   (*td)->t_stop_time = NULL;
   osip_list_init (&(*td)->r_repeats);
@@ -107,7 +107,7 @@ sdp_key_init (sdp_key_t ** key)
 {
   *key = (sdp_key_t *) osip_malloc (sizeof (sdp_key_t));
   if (*key == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*key)->k_keytype = NULL;
   (*key)->k_keydata = NULL;
   return OSIP_SUCCESS;
@@ -128,7 +128,7 @@ sdp_attribute_init (sdp_attribute_t ** attribute)
 {
   *attribute = (sdp_attribute_t *) osip_malloc (sizeof (sdp_attribute_t));
   if (*attribute == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*attribute)->a_att_field = NULL;
   (*attribute)->a_att_value = NULL;
   return OSIP_SUCCESS;
@@ -149,7 +149,7 @@ sdp_connection_init (sdp_connection_t ** connection)
 {
   *connection = (sdp_connection_t *) osip_malloc (sizeof (sdp_connection_t));
   if (*connection == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*connection)->c_nettype = NULL;
   (*connection)->c_addrtype = NULL;
   (*connection)->c_addr = NULL;
@@ -174,18 +174,52 @@ sdp_connection_free (sdp_connection_t * connection)
 int
 sdp_media_init (sdp_media_t ** media)
 {
+  int i;
   *media = (sdp_media_t *) osip_malloc (sizeof (sdp_media_t));
   if (*media == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*media)->m_media = NULL;
   (*media)->m_port = NULL;
   (*media)->m_number_of_port = NULL;
   (*media)->m_proto = NULL;
-  osip_list_init (&(*media)->m_payloads);
+  i = osip_list_init (&(*media)->m_payloads);
+  if (i!=0)
+  {
+	  osip_free(*media);
+	  *media=NULL;
+	  return OSIP_NOMEM;	
+  }
   (*media)->i_info = NULL;
-  osip_list_init (&(*media)->c_connections);
-  osip_list_init (&(*media)->b_bandwidths);
-  osip_list_init (&(*media)->a_attributes);
+  i = osip_list_init (&(*media)->c_connections);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*media)->m_payloads);
+	  osip_free(*media);
+	  *media=NULL;
+	  return OSIP_NOMEM;	
+  }
+  i = osip_list_init (&(*media)->b_bandwidths);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*media)->m_payloads);
+	  osip_list_special_free (&(*media)->c_connections,
+							  (void *(*)(void *)) &sdp_connection_free);
+	  osip_free(*media);
+	  *media=NULL;
+	  return OSIP_NOMEM;	
+  }
+  i = osip_list_init (&(*media)->a_attributes);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*media)->m_payloads);
+	  osip_list_special_free (&(*media)->c_connections,
+							  (void *(*)(void *)) &sdp_connection_free);
+	  osip_list_special_free (&(*media)->b_bandwidths,
+							  (void *(*)(void *)) &sdp_bandwidth_free);
+	  osip_free(*media);
+	  *media=NULL;
+	  return OSIP_NOMEM;	
+  }
   (*media)->k_key = NULL;
   return OSIP_SUCCESS;
 }
@@ -215,9 +249,10 @@ sdp_media_free (sdp_media_t * media)
 int
 sdp_message_init (sdp_message_t ** sdp)
 {
+  int i;
   (*sdp) = (sdp_message_t *) osip_malloc (sizeof (sdp_message_t));
   if (*sdp == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   (*sdp)->v_version = NULL;
   (*sdp)->o_username = NULL;
@@ -230,22 +265,78 @@ sdp_message_init (sdp_message_t ** sdp)
   (*sdp)->i_info = NULL;
   (*sdp)->u_uri = NULL;
 
-  osip_list_init (&(*sdp)->e_emails);
+  i = osip_list_init (&(*sdp)->e_emails);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
 
-  osip_list_init (&(*sdp)->p_phones);
+  i = osip_list_init (&(*sdp)->p_phones);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
 
   (*sdp)->c_connection = NULL;
 
-  osip_list_init (&(*sdp)->b_bandwidths);
+  i = osip_list_init (&(*sdp)->b_bandwidths);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_list_ofchar_free (&(*sdp)->p_phones);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
 
-  osip_list_init (&(*sdp)->t_descrs);
+  i = osip_list_init (&(*sdp)->t_descrs);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_list_ofchar_free (&(*sdp)->p_phones);
+	  osip_list_special_free (&(*sdp)->b_bandwidths,
+							  (void *(*)(void *)) &sdp_bandwidth_free);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
 
   (*sdp)->z_adjustments = NULL;
   (*sdp)->k_key = NULL;
 
-  osip_list_init (&(*sdp)->a_attributes);
+  i = osip_list_init (&(*sdp)->a_attributes);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_list_ofchar_free (&(*sdp)->p_phones);
+	  osip_list_special_free (&(*sdp)->b_bandwidths,
+							  (void *(*)(void *)) &sdp_bandwidth_free);
+	  osip_list_special_free (&(*sdp)->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
 
-  osip_list_init (&(*sdp)->m_medias);
+  i = osip_list_init (&(*sdp)->m_medias);
+  if (i!=0)
+  {
+	  osip_list_ofchar_free (&(*sdp)->e_emails);
+	  osip_list_ofchar_free (&(*sdp)->p_phones);
+	  osip_list_special_free (&(*sdp)->b_bandwidths,
+							  (void *(*)(void *)) &sdp_bandwidth_free);
+	  osip_list_special_free (&(*sdp)->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+	  osip_list_special_free (&(*sdp)->a_attributes,
+							  (void *(*)(void *)) &sdp_attribute_free);
+	  osip_free(*sdp);
+	  *sdp=NULL;
+	  return OSIP_NOMEM;	
+  }
   return OSIP_SUCCESS;
 }
 
@@ -279,6 +370,8 @@ sdp_message_parse_v (sdp_message_t * sdp, char *buf, char **next)
   if (crlf == equal + 1)
     return ERR_ERROR;           /*v=\r ?? bad header */
   sdp->v_version = osip_malloc (crlf - (equal + 1) + 1);
+  if (sdp->v_version==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (sdp->v_version, equal + 1, crlf - (equal + 1));
 
   if (crlf[1] == '\n')
@@ -425,6 +518,8 @@ sdp_message_parse_s (sdp_message_t * sdp, char *buf, char **next)
   /* text is interpreted as ISO-10646 UTF8! */
   /* using ISO 8859-1 requires "a=charset:ISO-8859-1 */
   sdp->s_name = osip_malloc (crlf - (equal + 1) + 1);
+  if (sdp->s_name==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (sdp->s_name, equal + 1, crlf - (equal + 1));
 
   if (crlf[1] == '\n')
@@ -468,6 +563,8 @@ sdp_message_parse_i (sdp_message_t * sdp, char *buf, char **next)
   /* text is interpreted as ISO-10646 UTF8! */
   /* using ISO 8859-1 requires "a=charset:ISO-8859-1 */
   i_info = osip_malloc (crlf - (equal + 1) + 1);
+  if (i_info==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (i_info, equal + 1, crlf - (equal + 1));
 
   /* add the bandwidth at the correct place:
@@ -521,6 +618,8 @@ sdp_message_parse_u (sdp_message_t * sdp, char *buf, char **next)
   /* u=uri */
   /* we assume this is a URI */
   sdp->u_uri = osip_malloc (crlf - (equal + 1) + 1);
+  if (sdp->u_uri==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (sdp->u_uri, equal + 1, crlf - (equal + 1));
 
   if (crlf[1] == '\n')
@@ -561,6 +660,8 @@ sdp_message_parse_e (sdp_message_t * sdp, char *buf, char **next)
   /* e=email */
   /* we assume this is an EMAIL-ADDRESS */
   e_email = osip_malloc (crlf - (equal + 1) + 1);
+  if (e_email==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (e_email, equal + 1, crlf - (equal + 1));
 
   osip_list_add (&sdp->e_emails, e_email, -1);
@@ -603,6 +704,8 @@ sdp_message_parse_p (sdp_message_t * sdp, char *buf, char **next)
   /* e=email */
   /* we assume this is an EMAIL-ADDRESS */
   p_phone = osip_malloc (crlf - (equal + 1) + 1);
+  if (p_phone==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (p_phone, equal + 1, crlf - (equal + 1));
 
   osip_list_add (&sdp->p_phones, p_phone, -1);
@@ -945,6 +1048,8 @@ sdp_message_parse_r (sdp_message_t * sdp, char *buf, char **next)
 
   /* r=far too complexe and somewhat useless... I don't parse it! */
   r_header = osip_malloc (crlf - (equal + 1) + 1);
+  if (r_header==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (r_header, equal + 1, crlf - (equal + 1));
 
   /* r field carry information for the last "t" field */
@@ -988,6 +1093,8 @@ sdp_message_parse_z (sdp_message_t * sdp, char *buf, char **next)
 
   /* z=somewhat useless... I don't parse it! */
   z_header = osip_malloc (crlf - (equal + 1) + 1);
+  if (z_header==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (z_header, equal + 1, crlf - (equal + 1));
 
   sdp->z_adjustments = z_header;
@@ -1873,6 +1980,8 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
 
   size = BODY_MESSAGE_MAX_SIZE;
   tmp = (char *) osip_malloc (size);
+  if (tmp==NULL)
+	  return OSIP_NOMEM;
   string = tmp;
 
   tmp = __osip_sdp_append_string (string, size, tmp, "v=");

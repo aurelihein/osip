@@ -32,7 +32,7 @@ osip_www_authenticate_init (osip_www_authenticate_t ** dest)
   *dest =
     (osip_www_authenticate_t *) osip_malloc (sizeof (osip_www_authenticate_t));
   if (*dest == NULL)
-    return -1;
+    return OSIP_NOMEM;
   memset (*dest, 0, sizeof (osip_www_authenticate_t));
   return OSIP_SUCCESS;
 }
@@ -139,7 +139,7 @@ __osip_quoted_string_set (const char *name, const char *str,
         }
       *result = (char *) osip_malloc (quote2 - quote1 + 3);
       if (*result == NULL)
-        return -1;
+        return OSIP_NOMEM;
       osip_strncpy (*result, quote1, quote2 - quote1 + 1);
       tmp = quote2 + 1;         /* next element start here */
       for (; *tmp == ' ' || *tmp == '\t'; tmp++)
@@ -205,7 +205,7 @@ __osip_token_set (const char *name, const char *str, char **result,
         return -1;
       *result = (char *) osip_malloc (end - beg);
       if (*result == NULL)
-        return -1;
+        return OSIP_NOMEM;
       osip_clrncpy (*result, beg + 1, end - beg - 1);
 
       /* make sure the element does not contain more parameter */
@@ -258,7 +258,7 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
     return -1;
   wwwa->auth_type = (char *) osip_malloc (space - hvalue + 1);
   if (wwwa->auth_type == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_strncpy (wwwa->auth_type, hvalue, space - hvalue);
 
   for (;;)
@@ -521,7 +521,7 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa, char **dest)
 
   tmp = (char *) osip_malloc (len);
   if (tmp == NULL)
-    return -1;
+    return OSIP_NOMEM;
   *dest = tmp;
 
   tmp = osip_str_append (tmp, wwwa->auth_type);

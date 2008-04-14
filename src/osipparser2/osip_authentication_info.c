@@ -35,7 +35,7 @@ osip_authentication_info_init (osip_authentication_info_t ** dest)
     (osip_authentication_info_t *)
     osip_malloc (sizeof (osip_authentication_info_t));
   if (*dest == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*dest)->nextnonce = NULL;
   (*dest)->qop_options = NULL;
   (*dest)->rspauth = NULL;
@@ -296,7 +296,7 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo,
 
   tmp = (char *) osip_malloc (len);
   if (tmp == NULL)
-    return -1;
+    return OSIP_NOMEM;
   *dest = tmp;
 
   if (ainfo->qop_options != NULL)

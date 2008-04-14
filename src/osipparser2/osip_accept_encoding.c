@@ -74,7 +74,7 @@ osip_accept_encoding_init (osip_accept_encoding_t ** accept_encoding)
   *accept_encoding =
     (osip_accept_encoding_t *) osip_malloc (sizeof (osip_accept_encoding_t));
   if (*accept_encoding == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*accept_encoding)->element = NULL;
 
   osip_list_init (&(*accept_encoding)->gen_params);
@@ -103,7 +103,7 @@ osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
   accept_encoding->element =
     (char *) osip_malloc (osip_accept_encoding_params - hvalue + 1);
   if (accept_encoding->element == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (accept_encoding->element, hvalue,
                 osip_accept_encoding_params - hvalue);
 
@@ -128,7 +128,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
   len = strlen (accept_encoding->element) + 2;
   buf = (char *) osip_malloc (len);
   if (buf == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   sprintf (buf, "%s", accept_encoding->element);
   {

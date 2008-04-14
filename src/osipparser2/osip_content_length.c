@@ -29,7 +29,7 @@ osip_content_length_init (osip_content_length_t ** cl)
 {
   *cl = (osip_content_length_t *) osip_malloc (sizeof (osip_content_length_t));
   if (*cl == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*cl)->value = NULL;
   return OSIP_SUCCESS;
 }
@@ -76,7 +76,7 @@ osip_content_length_parse (osip_content_length_t * content_length,
     return -1;
   content_length->value = (char *) osip_malloc (len + 1);
   if (content_length->value == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_strncpy (content_length->value, hvalue, len);
   return OSIP_SUCCESS;
 }

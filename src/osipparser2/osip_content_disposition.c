@@ -46,7 +46,7 @@ osip_content_disposition_parse (osip_content_disposition_t * cd,
     return -1;
   cd->element = (char *) osip_malloc (cd_params - hvalue + 1);
   if (cd->element == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (cd->element, hvalue, cd_params - hvalue);
 
   return OSIP_SUCCESS;

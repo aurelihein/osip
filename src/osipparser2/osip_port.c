@@ -252,6 +252,8 @@ osip_strdup (const char *ch)
     return NULL;
   length = strlen (ch);
   copy = (char *) osip_malloc (length + 1);
+  if (copy==NULL)
+	  return NULL;
   osip_strncpy (copy, ch, length);
   return copy;
 }
@@ -343,6 +345,8 @@ char *
 osip_strdup_without_quote (const char *ch)
 {
   char *copy = (char *) osip_malloc (strlen (ch) + 1);
+  if (copy==NULL)
+	  return NULL;
 
   /* remove leading and trailing " */
   if ((*ch == '\"'))
@@ -492,6 +496,8 @@ __osip_set_next_token (char **dest, char *buf, int end_separator, char **next)
     return -1;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
+  if (*dest==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (*dest, buf, sep - buf);
 
   *next = sep + 1;              /* return the position right after the separator */
@@ -524,6 +530,8 @@ __osip_set_next_token_better (char **dest, char *buf, int end_separator,
     return -1;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
+  if (*dest==NULL)
+	  return OSIP_NOMEM;
   osip_strncpy (*dest, buf, sep - buf);
 
   *next = sep + 1;              /* return the position right after the separator */
@@ -603,6 +611,8 @@ osip_enquote (const char *s)
   char *t;
 
   t = rtn = osip_malloc (strlen (s) * 2 + 3);
+  if (rtn==NULL)
+	  return NULL;
   *t++ = '"';
   for (; *s != '\0'; s++)
     {

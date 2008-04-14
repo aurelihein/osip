@@ -121,7 +121,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
 
       li->node = (__node_t *) osip_malloc (sizeof (__node_t));
       if (li->node == NULL)
-        return -1;
+        return OSIP_NOMEM;
       li->node->element = el;
       li->node->next = NULL;
       li->nb_elt++;
@@ -142,7 +142,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
         {
           /* leave the list unchanged */
           li->node = ntmp;
-          return -1;
+          return OSIP_NOMEM;
         }
       li->node->element = el;
       li->node->next = ntmp;
@@ -163,7 +163,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
     {
       ntmp->next = (__node_t *) osip_malloc (sizeof (__node_t));
       if (ntmp->next == NULL)
-        return -1;              /* leave the list unchanged */
+        return OSIP_NOMEM;              /* leave the list unchanged */
       ntmp = (__node_t *) ntmp->next;
       ntmp->element = el;
       ntmp->next = NULL;
@@ -180,7 +180,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
       {
         /* leave the list unchanged */
         ntmp->next = nextnode;
-        return -1;
+        return OSIP_NOMEM;
       }
     ntmp = (__node_t *) ntmp->next;
     ntmp->element = el;

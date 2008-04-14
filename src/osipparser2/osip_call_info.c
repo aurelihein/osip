@@ -69,7 +69,7 @@ osip_call_info_init (osip_call_info_t ** call_info)
 {
   *call_info = (osip_call_info_t *) osip_malloc (sizeof (osip_call_info_t));
   if (*call_info == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   (*call_info)->element = NULL;
 
@@ -105,7 +105,7 @@ osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
     return -1;
   call_info->element = (char *) osip_malloc (osip_call_info_params - hvalue + 1);
   if (call_info->element == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (call_info->element, hvalue, osip_call_info_params - hvalue);
 
   return OSIP_SUCCESS;
@@ -129,7 +129,7 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
   len = strlen (call_info->element) + 2;
   buf = (char *) osip_malloc (len);
   if (buf == NULL)
-    return -1;
+    return OSIP_NOMEM;
   *dest = buf;
 
   sprintf (buf, "%s", call_info->element);

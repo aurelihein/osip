@@ -30,7 +30,7 @@ osip_cseq_init (osip_cseq_t ** cseq)
 {
   *cseq = (osip_cseq_t *) osip_malloc (sizeof (osip_cseq_t));
   if (*cseq == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*cseq)->method = NULL;
   (*cseq)->number = NULL;
   return OSIP_SUCCESS;
@@ -87,14 +87,14 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
     return -1;
   cseq->number = (char *) osip_malloc (method - hvalue + 1);
   if (cseq->number == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (cseq->number, hvalue, method - hvalue);
 
   if (end - method + 1 < 2)
     return -1;
   cseq->method = (char *) osip_malloc (end - method + 1);
   if (cseq->method == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (cseq->method, method + 1, end - method);
 
   return OSIP_SUCCESS;                     /* ok */
@@ -149,7 +149,7 @@ osip_cseq_to_str (const osip_cseq_t * cseq, char **dest)
   len = strlen (cseq->method) + strlen (cseq->number) + 2;
   *dest = (char *) osip_malloc (len);
   if (*dest == NULL)
-    return -1;
+    return OSIP_NOMEM;
   sprintf (*dest, "%s %s", cseq->number, cseq->method);
   return OSIP_SUCCESS;
 }

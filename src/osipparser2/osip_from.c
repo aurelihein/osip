@@ -79,7 +79,7 @@ osip_from_init (osip_from_t ** from)
 {
   *from = (osip_from_t *) osip_malloc (sizeof (osip_from_t));
   if (*from == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*from)->displayname = NULL;
   (*from)->url = NULL;
 
@@ -165,7 +165,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
             return -1;
           from->displayname = (char *) osip_malloc (url - hvalue + 1);
           if (from->displayname == NULL)
-            return -1;
+            return OSIP_NOMEM;
           osip_clrncpy (from->displayname, hvalue, url - hvalue);
         }
       url++;                    /* place pointer on the beginning of url */
@@ -190,7 +190,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
             {
               from->displayname = (char *) osip_malloc (second - first + 2);
               if (from->displayname == NULL)
-                return -1;
+                return OSIP_NOMEM;
               osip_strncpy (from->displayname, first, second - first + 1);
               /* osip_clrspace(from->displayname); *//*should we do that? */
 
@@ -245,7 +245,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
       return -1;
     tmp = (char *) osip_malloc (url_end - url + 2);
     if (tmp == NULL)
-      return -1;
+      return OSIP_NOMEM;
     osip_strncpy (tmp, url, url_end - url + 1);
     i = osip_uri_parse (from->url, tmp);
     osip_free (tmp);
@@ -284,7 +284,7 @@ osip_from_to_str (const osip_from_t * from, char **dest)
   if (buf == NULL)
     {
       osip_free (url);
-      return -1;
+      return OSIP_NOMEM;
     }
 
   if (from->displayname != NULL)
@@ -520,7 +520,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
                 return -1;
               pvalue = (char *) osip_malloc (comma - equal);
               if (pvalue == NULL)
-                return -1;
+                return OSIP_NOMEM;
               osip_strncpy (pvalue, equal + 1, comma - equal - 1);
             }
         }
@@ -534,7 +534,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
       if (pname == NULL)
         {
           osip_free (pvalue);
-          return -1;
+          return OSIP_NOMEM;
         }
       osip_strncpy (pname, params + 1, equal - params - 1);
 
@@ -573,7 +573,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
             return -1;
           pvalue = (char *) osip_malloc (comma - equal);
           if (pvalue == NULL)
-            return -1;
+            return OSIP_NOMEM;
           osip_strncpy (pvalue, equal + 1, comma - equal - 1);
         }
     }
@@ -587,7 +587,7 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
   if (pname == NULL)
     {
       osip_free (pvalue);
-      return -1;
+      return OSIP_NOMEM;
     }
   osip_strncpy (pname, params + 1, equal - params - 1);
 

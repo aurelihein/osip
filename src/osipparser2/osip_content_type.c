@@ -32,7 +32,7 @@ osip_content_type_init (osip_content_type_t ** content_type)
   *content_type =
     (osip_content_type_t *) osip_malloc (sizeof (osip_content_type_t));
   if (*content_type == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   (*content_type)->type = NULL;
   (*content_type)->subtype = NULL;
@@ -123,7 +123,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
     return -1;
   content_type->type = (char *) osip_malloc (subtype - hvalue + 1);
   if (content_type->type == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (content_type->type, hvalue, subtype - hvalue);
 
   if (osip_content_type_params - subtype < 2)
@@ -131,7 +131,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
   content_type->subtype =
     (char *) osip_malloc (osip_content_type_params - subtype);
   if (content_type->subtype == NULL)
-    return -1;
+    return OSIP_NOMEM;
   osip_clrncpy (content_type->subtype, subtype + 1,
                 osip_content_type_params - subtype - 1);
 
@@ -159,6 +159,8 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
     + 10 * osip_list_size (&content_type->gen_params);
 
   buf = (char *) osip_malloc (len);
+  if (buf==NULL)
+	  return OSIP_NOMEM;
   tmp = buf;
 
   sprintf (tmp, "%s/%s", content_type->type, content_type->subtype);

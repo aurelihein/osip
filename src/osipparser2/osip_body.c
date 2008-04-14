@@ -35,7 +35,7 @@ osip_body_init (osip_body_t ** body)
 {
   *body = (osip_body_t *) osip_malloc (sizeof (osip_body_t));
   if (*body == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*body)->body = NULL;
   (*body)->content_type = NULL;
   (*body)->length = 0;
@@ -45,7 +45,7 @@ osip_body_init (osip_body_t ** body)
     {
       osip_free (*body);
       *body = NULL;
-      return -1;
+      return OSIP_NOMEM;
     }
   osip_list_init ((*body)->headers);
   return OSIP_SUCCESS;
@@ -92,6 +92,8 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
 
 
   copy->body = (char *) osip_malloc (body->length + 2);
+  if (copy->body==NULL)
+	  return OSIP_NOMEM;
   copy->length = body->length;
   memcpy (copy->body, body->body, body->length);
   copy->body[body->length] = '\0';
@@ -234,7 +236,7 @@ osip_body_parse_header (osip_body_t * body,
         return -1;
       hname = (char *) osip_malloc (colon_index - start_of_line + 1);
       if (hname == NULL)
-        return -1;
+        return OSIP_NOMEM;
       osip_clrncpy (hname, start_of_line, colon_index - start_of_line);
 
       if ((end_of_line - 2) - colon_index < 2)
@@ -246,7 +248,7 @@ osip_body_parse_header (osip_body_t * body,
       if (hvalue == NULL)
         {
           osip_free (hname);
-          return -1;
+          return OSIP_NOMEM;
         }
       osip_clrncpy (hvalue, colon_index + 1, (end_of_line - 2) - colon_index - 1);
 
@@ -283,7 +285,7 @@ osip_body_parse (osip_body_t * body, const char *start_of_body, size_t length)
 
   body->body = (char *) osip_malloc (length + 1);
   if (body->body == NULL)
-    return -1;
+    return OSIP_NOMEM;
   memcpy (body->body, start_of_body, length);
   body->body[length] = '\0';
   body->length = length;
@@ -331,7 +333,7 @@ osip_body_parse_mime (osip_body_t * body, const char *start_of_body, size_t leng
   body->body =
     (char *) osip_malloc (end_of_osip_body_header - start_of_osip_body_header + 1);
   if (body->body == NULL)
-    return -1;
+    return OSIP_NOMEM;
   memcpy (body->body, start_of_osip_body_header,
           end_of_osip_body_header - start_of_osip_body_header);
   body->length = end_of_osip_body_header - start_of_osip_body_header;
@@ -369,7 +371,7 @@ osip_body_to_str (const osip_body_t * body, char **dest, size_t * str_length)
   length = 15 + body->length + (osip_list_size (body->headers) * 40);
   tmp_body = (char *) osip_malloc (length);
   if (tmp_body == NULL)
-    return -1;
+    return OSIP_NOMEM;
   ptr = tmp_body;               /* save the initial address of the string */
 
   if (body->content_type != NULL)

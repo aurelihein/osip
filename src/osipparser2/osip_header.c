@@ -50,7 +50,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
   if (h->hname == NULL)
     {
       osip_header_free (h);
-      return -1;
+      return OSIP_NOMEM;
     }
   osip_clrncpy (h->hname, hname, strlen (hname));
 
@@ -60,7 +60,7 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
       if (h->hvalue == NULL)
         {
           osip_header_free (h);
-          return -1;
+          return OSIP_NOMEM;
         }
       osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
   } else
@@ -96,7 +96,7 @@ osip_message_replace_header (osip_message_t * sip, const char *hname,
   if (h->hname == NULL)
     {
       osip_header_free (h);
-      return -1;
+      return OSIP_NOMEM;
     }
   osip_clrncpy (h->hname, hname, strlen (hname));
 
@@ -106,7 +106,7 @@ osip_message_replace_header (osip_message_t * sip, const char *hname,
       if (h->hvalue == NULL)
 	{
 	  osip_header_free (h);
-	  return -1;
+	  return OSIP_NOMEM;
 	}
       osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
     } else
@@ -149,7 +149,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
   if (h->hname == NULL)
     {
       osip_header_free (h);
-      return -1;
+      return OSIP_NOMEM;
     }
   osip_clrncpy (h->hname, hname, strlen (hname));
 
@@ -159,7 +159,7 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
       if (h->hvalue == NULL)
         {
           osip_header_free (h);
-          return -1;
+          return OSIP_NOMEM;
         }
       osip_clrncpy (h->hvalue, hvalue, strlen (hvalue));
   } else
@@ -219,7 +219,7 @@ osip_header_init (osip_header_t ** header)
 {
   *header = (osip_header_t *) osip_malloc (sizeof (osip_header_t));
   if (*header == NULL)
-    return -1;
+    return OSIP_NOMEM;
   (*header)->hname = NULL;
   (*header)->hvalue = NULL;
   return OSIP_SUCCESS;
@@ -256,7 +256,7 @@ osip_header_to_str (const osip_header_t * header, char **dest)
 
   *dest = (char *) osip_malloc (strlen (header->hname) + len + 3);
   if (*dest == NULL)
-    return -1;
+    return OSIP_NOMEM;
 
   if (header->hvalue != NULL)
     sprintf (*dest, "%s: %s", header->hname, header->hvalue);

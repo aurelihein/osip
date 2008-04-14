@@ -113,7 +113,7 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
   if (buf == NULL)
     {
       osip_free (url);
-      return -1;
+      return OSIP_NOMEM;
     }
 
   /* route and record-route always use brackets */
