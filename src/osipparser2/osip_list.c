@@ -32,7 +32,7 @@ osip_list_init (osip_list_t * li)
   return OSIP_SUCCESS;                     /* ok */
 }
 
-int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_func) (void *, void *))
+int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_func) (void *, void **))
 {
     void *data;
     void *data2;

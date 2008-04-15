@@ -118,7 +118,7 @@ extern "C"
  * @param dst The element to work on.
  * @param clone_func The method that is able to release one element of the list.
  */
-  int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_func) (void *, void *));
+  int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_func) (void *, void **));
 /**
  * Free a list of element where elements are pointer to 'char'.
  * @param li The element to work on.
