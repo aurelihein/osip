@@ -51,12 +51,12 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
   i = osip_route_init (&route);
 #endif
   if (i != 0)
-    return -1;
+    return i;
   i = osip_route_parse (route, hvalue);
   if (i != 0)
     {
       osip_route_free (route);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->routes, route, -1);

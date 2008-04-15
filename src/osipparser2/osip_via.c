@@ -40,12 +40,12 @@ osip_message_set_via (osip_message_t * sip, const char *hvalue)
 
   i = osip_via_init (&via);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_via_parse (via, hvalue);
   if (i != 0)
     {
       osip_via_free (via);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->vias, via, -1);
@@ -64,12 +64,12 @@ osip_message_append_via (osip_message_t * sip, const char *hvalue)
 
   i = osip_via_init (&via);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_via_parse (via, hvalue);
   if (i != 0)
     {
       osip_via_free (via);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->vias, via, 0);
@@ -87,9 +87,9 @@ osip_message_get_via (const osip_message_t * sip, int pos, osip_via_t ** dest)
 {
   *dest = NULL;
   if (sip == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (osip_list_size (&sip->vias) <= pos)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   *dest = (osip_via_t *) osip_list_get (&sip->vias, pos);
 
   return pos;
@@ -135,18 +135,22 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   const char *port;
   const char *via_params;
   const char *comment;
+  int i;
+
+  if (hvalue==NULL)
+	  return OSIP_BADPARAMETER;
 
   version = strchr (hvalue, '/');
   if (version == NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   protocol = strchr (version + 1, '/');
   if (protocol == NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   /* set the version */
   if (protocol - version < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   via->version = (char *) osip_malloc (protocol - version);
   if (via->version == NULL)
     return OSIP_NOMEM;
@@ -155,24 +159,24 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   /* Here: we avoid matching an additionnal space */
   host = strchr (protocol + 1, ' ');
   if (host == NULL)
-    return -1;                  /* fixed in 0.8.4 */
+    return OSIP_SYNTAXERROR;                  /* fixed in 0.8.4 */
   if (host == protocol + 1)     /* there are extra SPACE characters */
     {
       while (0 == strncmp (host, " ", 1))
         {
           host++;
           if (strlen (host) == 1)
-            return -1;          /* via is malformed */
+            return OSIP_SYNTAXERROR;          /* via is malformed */
         }
       /* here, we match the real space located after the protocol name */
       host = strchr (host + 1, ' ');
       if (host == NULL)
-        return -1;              /* fixed in 0.8.4 */
+        return OSIP_SYNTAXERROR;              /* fixed in 0.8.4 */
     }
 
   /* set the protocol */
   if (host - protocol < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   via->protocol = (char *) osip_malloc (host - protocol);
   if (via->protocol == NULL)
     return OSIP_NOMEM;
@@ -187,9 +191,9 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
 
       end_comment = strchr (host, ')');
       if (end_comment == NULL)
-        return -1;              /* if '(' exist ')' MUST exist */
+        return OSIP_SYNTAXERROR;              /* if '(' exist ')' MUST exist */
       if (end_comment - comment < 2)
-        return -1;
+        return OSIP_SYNTAXERROR;
       via->comment = (char *) osip_malloc (end_comment - comment);
       if (via->comment == NULL)
         return OSIP_NOMEM;
@@ -206,15 +210,16 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
       char *tmp;
 
       if (comment - via_params + 1 < 2)
-        return -1;
+        return OSIP_SYNTAXERROR;
       tmp = (char *) osip_malloc (comment - via_params + 1);
       if (tmp == NULL)
         return OSIP_NOMEM;
       osip_strncpy (tmp, via_params, comment - via_params);
-      if (__osip_generic_param_parseall (&via->via_params, tmp))
+	  i = __osip_generic_param_parseall (&via->via_params, tmp);
+      if (i!=0)
         {
           osip_free (tmp);
-          return -1;
+          return i;
         }
 
       osip_free (tmp);
@@ -230,10 +235,10 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
     {
       port = strchr (ipv6host, ']');
       if (port == NULL || port > via_params)
-        return -1;
+        return OSIP_SYNTAXERROR;
 
       if (port - ipv6host < 2)
-        return -1;
+        return OSIP_SYNTAXERROR;
       via->host = (char *) osip_malloc (port - ipv6host);
       if (via->host == NULL)
         return OSIP_NOMEM;
@@ -249,7 +254,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
   if ((port != NULL) && (port < via_params))
     {
       if (via_params - port < 2)
-        return -1;
+        return OSIP_SYNTAXERROR;
       via->port = (char *) osip_malloc (via_params - port);
       if (via->port == NULL)
         return OSIP_NOMEM;
@@ -262,7 +267,7 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (port - host < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   via->host = (char *) osip_malloc (port - host);
   if (via->host == NULL)
     return OSIP_NOMEM;
@@ -286,7 +291,7 @@ osip_via_to_str (const osip_via_t * via, char **dest)
   *dest = NULL;
   if ((via == NULL) || (via->host == NULL)
       || (via->version == NULL) || (via->protocol == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   len = strlen (via->version) + 1 + strlen (via->protocol) + 1 + 3 + 2; /* sip/xxx/xxx */
   len = len + strlen (via->host) + 3 + 1;
@@ -429,30 +434,59 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
 
   *dest = NULL;
   if (via == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (via->version == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (via->protocol == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (via->host == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_via_init (&vi);
   if (i != 0)
-    return -1;
+    return i;
   vi->version = osip_strdup (via->version);
+  if (vi->version==NULL && via->version!=NULL)
+  {
+	  osip_via_free (vi);
+	  return OSIP_NOMEM;
+  }
   vi->protocol = osip_strdup (via->protocol);
+  if (vi->protocol==NULL && via->protocol!=NULL)
+  {
+	  osip_via_free (vi);
+	  return OSIP_NOMEM;
+  }
   vi->host = osip_strdup (via->host);
+  if (vi->host==NULL && via->host!=NULL)
+  {
+	  osip_via_free (vi);
+	  return OSIP_NOMEM;
+  }
   if (via->port != NULL)
-    vi->port = osip_strdup (via->port);
+  {
+	  vi->port = osip_strdup (via->port);
+	  if (vi->port==NULL)
+	  {
+		  osip_via_free (vi);
+		  return OSIP_NOMEM;
+	  }
+  }
   if (via->comment != NULL)
-    vi->comment = osip_strdup (via->comment);
+  {
+	  vi->comment = osip_strdup (via->comment);
+	  if (vi->comment==NULL)
+	  {
+		  osip_via_free (vi);
+		  return OSIP_NOMEM;
+	  }
+  }
 
-  i = osip_list_clone(&via->via_params, &vi->via_params, (int *(*)(void *, void *)) &osip_generic_param_clone);
+  i = osip_list_clone(&via->via_params, &vi->via_params, &osip_generic_param_clone);
   if (i != 0)
     {
       osip_via_free(vi);
-      return -1;
+      return i;
     }
   *dest = vi;
   return OSIP_SUCCESS;
@@ -471,21 +505,21 @@ osip_via_match (osip_via_t * via1, osip_via_t * via2)
   int i;
 
   if (via1 == NULL || via2 == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_via_to_str (via1, &_via1);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_via_to_str (via2, &_via2);
   if (i != 0)
     {
       osip_free (_via1);
-      return -1;
+      return i;
     }
 
   i = strcmp (_via1, _via2);
   osip_free (_via1);
   osip_free (_via2);
   if (i != 0)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   return OSIP_SUCCESS;
 }

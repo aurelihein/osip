@@ -41,12 +41,12 @@ osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
 
   i = osip_content_encoding_init (&content_encoding);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_content_encoding_parse (content_encoding, hvalue);
   if (i != 0)
     {
       osip_content_encoding_free (content_encoding);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->content_encodings, content_encoding, -1);

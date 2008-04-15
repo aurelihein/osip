@@ -86,20 +86,22 @@ int
 osip_accept_encoding_parse (osip_accept_encoding_t * accept_encoding,
                             const char *hvalue)
 {
+  int i;
   const char *osip_accept_encoding_params;
 
   osip_accept_encoding_params = strchr (hvalue, ';');
 
   if (osip_accept_encoding_params != NULL)
     {
-      if (__osip_generic_param_parseall (&accept_encoding->gen_params,
-                                         osip_accept_encoding_params) == -1)
-        return -1;
+		i = __osip_generic_param_parseall (&accept_encoding->gen_params,        
+                                 osip_accept_encoding_params);
+		if (i != 0)
+			return i;
   } else
     osip_accept_encoding_params = hvalue + strlen (hvalue);
 
   if (osip_accept_encoding_params - hvalue + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   accept_encoding->element =
     (char *) osip_malloc (osip_accept_encoding_params - hvalue + 1);
   if (accept_encoding->element == NULL)
@@ -123,7 +125,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding,
 
   *dest = NULL;
   if ((accept_encoding == NULL) || (accept_encoding->element == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   len = strlen (accept_encoding->element) + 2;
   buf = (char *) osip_malloc (len);
@@ -184,18 +186,18 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
 
   *dest = NULL;
   if (ctt == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (ctt->element == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_accept_encoding_init (&ct);
   if (i != 0)                   /* allocation failed */
-    return -1;
+    return i;
   ct->element = osip_strdup (ctt->element);
-  if (ctt->element != NULL && ct->element == NULL)
+  if (ct->element == NULL)
     {
       osip_accept_encoding_free (ct);
-      return -1;
+      return OSIP_NOMEM;
     }
   {
     int pos = 0;
@@ -209,7 +211,7 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt,
         if (i != 0)
           {
             osip_accept_encoding_free (ct);
-            return -1;
+            return i;
           }
         osip_list_add (&ct->gen_params, dest_param, -1);
         pos++;

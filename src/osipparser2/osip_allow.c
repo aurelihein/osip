@@ -38,12 +38,12 @@ osip_message_set_allow (osip_message_t * sip, const char *hvalue)
 
   i = osip_allow_init (&allow);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_allow_parse (allow, hvalue);
   if (i != 0)
     {
       osip_allow_free (allow);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->allows, allow, -1);

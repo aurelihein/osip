@@ -52,20 +52,21 @@ osip_message_set_content_type (osip_message_t * sip, const char *hvalue)
   int i;
 
   if (sip->content_type != NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (hvalue == NULL || hvalue[0] == '\0')
     return OSIP_SUCCESS;
 
   i = osip_content_type_init (&(sip->content_type));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_content_type_parse (sip->content_type, hvalue);
   if (i != 0)
     {
       osip_content_type_free (sip->content_type);
       sip->content_type = NULL;
+	  return i;
     }
   return OSIP_SUCCESS;
 }
@@ -90,6 +91,7 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
 {
   char *subtype;
   char *osip_content_type_params;
+  int i;
 
   /* How to parse:
 
@@ -109,25 +111,25 @@ osip_content_type_parse (osip_content_type_t * content_type, const char *hvalue)
   osip_content_type_params = strchr (hvalue, ';');
 
   if (subtype == NULL)
-    return -1;                  /* do we really mind such an error */
+    return OSIP_SYNTAXERROR;                  /* do we really mind such an error */
 
   if (osip_content_type_params != NULL)
     {
-      if (__osip_generic_param_parseall (&content_type->gen_params,
-                                         osip_content_type_params) == -1)
-        return -1;
+		i = __osip_generic_param_parseall (&content_type->gen_params, osip_content_type_params);
+		if (i != 0)
+	        return i;
   } else
     osip_content_type_params = subtype + strlen (subtype);
 
   if (subtype - hvalue + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   content_type->type = (char *) osip_malloc (subtype - hvalue + 1);
   if (content_type->type == NULL)
     return OSIP_NOMEM;
   osip_clrncpy (content_type->type, hvalue, subtype - hvalue);
 
   if (osip_content_type_params - subtype < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   content_type->subtype =
     (char *) osip_malloc (osip_content_type_params - subtype);
   if (content_type->subtype == NULL)
@@ -152,7 +154,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
   *dest = NULL;
   if ((content_type == NULL) || (content_type->type == NULL)
       || (content_type->subtype == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   /* try to guess a long enough length */
   len = strlen (content_type->type) + strlen (content_type->subtype) + 4        /* for '/', ' ', ';' and '\0' */
@@ -186,7 +188,7 @@ osip_content_type_to_str (const osip_content_type_t * content_type, char **dest)
         if (u_param->gvalue == NULL)
           {
             osip_free (buf);
-            return -1;
+            return OSIP_SYNTAXERROR;
           }
         tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
           + strlen (u_param->gvalue) + 1;
@@ -233,11 +235,11 @@ osip_content_type_clone (const osip_content_type_t * ctt,
 
   *dest = NULL;
   if (ctt == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_content_type_init (&ct);
   if (i != 0)                   /* allocation failed */
-    return -1;
+    return i;
   if (ctt->type != NULL)
     ct->type = osip_strdup (ctt->type);
   if (ctt->subtype != NULL)
@@ -256,7 +258,7 @@ osip_content_type_clone (const osip_content_type_t * ctt,
           {
             osip_content_type_free (ct);
             osip_free (ct);
-            return -1;
+            return i;
           }
         osip_list_add (&ct->gen_params, dest_param, -1);
         pos++;

@@ -38,12 +38,12 @@ osip_message_set_call_info (osip_message_t * sip, const char *hvalue)
 
   i = osip_call_info_init (&call_info);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_call_info_parse (call_info, hvalue);
   if (i != 0)                   /* allocation failed */
     {
       osip_call_info_free (call_info);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->call_infos, call_info, -1);
@@ -82,27 +82,28 @@ int
 osip_call_info_parse (osip_call_info_t * call_info, const char *hvalue)
 {
   const char *osip_call_info_params;
+  int i;
 
   osip_call_info_params = strchr (hvalue, '<');
   if (osip_call_info_params == NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   osip_call_info_params = strchr (osip_call_info_params + 1, '>');
   if (osip_call_info_params == NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   osip_call_info_params = strchr (osip_call_info_params + 1, ';');
 
   if (osip_call_info_params != NULL)
     {
-      if (__osip_generic_param_parseall
-          (&call_info->gen_params, osip_call_info_params) == -1)
-        return -1;
+	  i = __osip_generic_param_parseall(&call_info->gen_params, osip_call_info_params);
+      if (i != 0)
+        return i;
   } else
     osip_call_info_params = hvalue + strlen (hvalue);
 
   if (osip_call_info_params - hvalue + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   call_info->element = (char *) osip_malloc (osip_call_info_params - hvalue + 1);
   if (call_info->element == NULL)
     return OSIP_NOMEM;
@@ -124,7 +125,7 @@ osip_call_info_to_str (const osip_call_info_t * call_info, char **dest)
 
   *dest = NULL;
   if ((call_info == NULL) || (call_info->element == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   len = strlen (call_info->element) + 2;
   buf = (char *) osip_malloc (len);
@@ -186,20 +187,25 @@ osip_call_info_clone (const osip_call_info_t * ctt, osip_call_info_t ** dest)
 
   *dest = NULL;
   if (ctt == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (ctt->element == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_call_info_init (&ct);
   if (i != 0)                   /* allocation failed */
-    return -1;
+    return i;
   ct->element = osip_strdup (ctt->element);
+  if (ct->element==NULL)
+  {
+      osip_call_info_free (ct);
+	  return OSIP_NOMEM;
+  }
 
-  i = osip_list_clone(&ctt->gen_params, &ct->gen_params, (int *(*)(void *, void *)) &osip_generic_param_clone);
+  i = osip_list_clone(&ctt->gen_params, &ct->gen_params, &osip_generic_param_clone);
   if (i != 0)
     {
       osip_call_info_free (ct);
-      return -1;
+      return i;
     }
   *dest = ct;
   return OSIP_SUCCESS;

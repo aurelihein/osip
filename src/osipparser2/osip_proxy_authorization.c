@@ -42,12 +42,12 @@ osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
 
   i = osip_proxy_authorization_init (&proxy_authorization);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_proxy_authorization_parse (proxy_authorization, hvalue);
   if (i != 0)
     {
       osip_proxy_authorization_free (proxy_authorization);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->proxy_authorizations, proxy_authorization, -1);

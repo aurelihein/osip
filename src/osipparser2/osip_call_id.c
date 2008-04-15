@@ -37,17 +37,17 @@ osip_message_set_call_id (osip_message_t * sip, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (sip->call_id != NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
   i = osip_call_id_init (&(sip->call_id));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_call_id_parse (sip->call_id, hvalue);
   if (i != 0)
     {
       osip_call_id_free (sip->call_id);
       sip->call_id = NULL;
-      return -1;
+      return i;
     }
   return OSIP_SUCCESS;
 }
@@ -111,14 +111,14 @@ osip_call_id_parse (osip_call_id_t * callid, const char *hvalue)
   else
     {
       if (end - host + 1 < 2)
-        return -1;
+        return OSIP_SYNTAXERROR;
       callid->host = (char *) osip_malloc (end - host);
       if (callid->host == NULL)
         return OSIP_NOMEM;
       osip_clrncpy (callid->host, host + 1, end - host - 1);
     }
   if (host - hvalue + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   callid->number = (char *) osip_malloc (host - hvalue + 1);
   if (callid->number == NULL)
     return OSIP_NOMEM;
@@ -135,7 +135,7 @@ osip_call_id_to_str (const osip_call_id_t * callid, char **dest)
 {
   *dest = NULL;
   if ((callid == NULL) || (callid->number == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (callid->host == NULL)
     {
@@ -190,13 +190,13 @@ osip_call_id_clone (const osip_call_id_t * callid, osip_call_id_t ** dest)
 
   *dest = NULL;
   if (callid == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (callid->number == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_call_id_init (&ci);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)                  /* allocation failed */
+    return i;
   ci->number = osip_strdup (callid->number);
   if (callid->host != NULL)
     ci->host = osip_strdup (callid->host);
@@ -210,21 +210,21 @@ osip_call_id_match (osip_call_id_t * callid1, osip_call_id_t * callid2)
 {
 
   if (callid1 == NULL || callid2 == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (callid1->number == NULL || callid2->number == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (0 != strcmp (callid1->number, callid2->number))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   if ((callid1->host == NULL) && (callid2->host == NULL))
     return OSIP_SUCCESS;
   if ((callid1->host == NULL) && (callid2->host != NULL))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if ((callid1->host != NULL) && (callid2->host == NULL))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if (0 != strcmp (callid1->host, callid2->host))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   return OSIP_SUCCESS;
 }

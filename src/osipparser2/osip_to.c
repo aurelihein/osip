@@ -45,17 +45,17 @@ osip_message_set_to (osip_message_t * sip, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (sip->to != NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
   i = osip_to_init (&(sip->to));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_to_parse (sip->to, hvalue);
   if (i != 0)
     {
       osip_to_free (sip->to);
       sip->to = NULL;
-      return -1;
+      return i;
     }
   return OSIP_SUCCESS;
 }

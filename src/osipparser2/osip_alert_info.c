@@ -38,12 +38,12 @@ osip_message_set_alert_info (osip_message_t * sip, const char *hvalue)
 
   i = osip_alert_info_init (&alert_info);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_alert_info_parse (alert_info, hvalue);
   if (i != 0)
     {
       osip_alert_info_free (alert_info);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->alert_infos, alert_info, -1);

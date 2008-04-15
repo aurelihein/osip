@@ -47,17 +47,17 @@ osip_message_set_content_length (osip_message_t * sip, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (sip->content_length != NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
   i = osip_content_length_init (&(sip->content_length));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_content_length_parse (sip->content_length, hvalue);
   if (i != 0)
     {
       osip_content_length_free (sip->content_length);
       sip->content_length = NULL;
-      return -1;
+      return i;
     }
 
   return OSIP_SUCCESS;
@@ -70,10 +70,10 @@ osip_content_length_parse (osip_content_length_t * content_length,
   size_t len;
 
   if (hvalue == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   len = strlen (hvalue);
   if (len + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   content_length->value = (char *) osip_malloc (len + 1);
   if (content_length->value == NULL)
     return OSIP_NOMEM;
@@ -99,8 +99,10 @@ int
 osip_content_length_to_str (const osip_content_length_t * cl, char **dest)
 {
   if (cl == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   *dest = osip_strdup (cl->value);
+  if (*dest==NULL)
+	  return OSIP_NOMEM;
   return OSIP_SUCCESS;
 }
 
@@ -124,16 +126,23 @@ osip_content_length_clone (const osip_content_length_t * ctl,
 
   *dest = NULL;
   if (ctl == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   /*
      empty headers are allowed:
      if (ctl->value==NULL) return -1;
    */
   i = osip_content_length_init (&cl);
-  if (i == -1)                  /* allocation failed */
-    return -1;
+  if (i != 0)                  /* allocation failed */
+    return i;
   if (ctl->value != NULL)
-    cl->value = osip_strdup (ctl->value);
+  {
+	  cl->value = osip_strdup (ctl->value);
+	  if (cl->value==NULL)
+	  {
+		  osip_content_length_free (cl);
+		  return OSIP_NOMEM;
+	  }
+  }
 
   *dest = cl;
   return OSIP_SUCCESS;

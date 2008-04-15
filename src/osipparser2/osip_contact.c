@@ -40,12 +40,12 @@ osip_message_set_contact (osip_message_t * sip, const char *hvalue)
 
   i = osip_contact_init (&contact);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_contact_parse (contact, hvalue);
   if (i != 0)
     {
       osip_contact_free (contact);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->contacts, contact, -1);
@@ -60,10 +60,14 @@ int
 osip_contact_parse (osip_contact_t * contact, const char *hvalue)
 {
   if (contact == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (strncmp (hvalue, "*", 1) == 0)
     {
       contact->displayname = osip_strdup (hvalue);
+	  if (contact->displayname==NULL)
+	  {
+		  return OSIP_NOMEM;
+	  }
       return OSIP_SUCCESS;
     }
   return osip_from_parse ((osip_from_t *) contact, hvalue);
@@ -89,7 +93,7 @@ osip_message_get_contact (const osip_message_t * sip, int pos,
 {
   *dest = NULL;
   if (sip == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (osip_list_size (&sip->contacts) <= pos)
     return OSIP_UNDEFINED_ERROR;     /* does not exist */
   *dest = (osip_contact_t *) osip_list_get (&sip->contacts, pos);
@@ -104,12 +108,14 @@ int
 osip_contact_to_str (const osip_contact_t * contact, char **dest)
 {
   if (contact == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (contact->displayname != NULL)
     {
       if (strncmp (contact->displayname, "*", 1) == 0)
         {
           *dest = osip_strdup ("*");
+		  if (*dest==NULL)
+			  return OSIP_NOMEM;
           return OSIP_SUCCESS;
         }
     }

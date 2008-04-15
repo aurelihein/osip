@@ -266,10 +266,10 @@ osip_atoi (const char *number)
   int i;
 
   if (number == NULL)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   i = strtol (number, (char **) NULL, 10);
   if (i == LONG_MIN || i == LONG_MAX)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   return i;
 #endif
 
@@ -432,7 +432,7 @@ osip_clrspace (char *word)
   size_t len;
 
   if (word == NULL)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if (*word == '\0')
     return OSIP_SUCCESS;
   len = strlen (word);
@@ -488,12 +488,12 @@ __osip_set_next_token (char **dest, char *buf, int end_separator, char **next)
   if ((*sep == '\r') || (*sep == '\n'))
     {                           /* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
     }
   if (*sep == '\0')
-    return -1;                  /* value must not end with this separator! */
+    return OSIP_UNDEFINED_ERROR;                  /* value must not end with this separator! */
   if (sep == buf)
-    return -1;                  /* empty value (or several space!) */
+    return OSIP_UNDEFINED_ERROR;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
   if (*dest==NULL)
@@ -522,12 +522,12 @@ __osip_set_next_token_better (char **dest, char *buf, int end_separator,
   if ((*sep == '\r') && (*sep == '\n'))
     {                           /* we should continue normally only if this is the separator asked! */
       if (*sep != end_separator)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
     }
   if (*sep == '\0')
-    return -1;                  /* value must not end with this separator! */
+    return OSIP_UNDEFINED_ERROR;                  /* value must not end with this separator! */
   if (sep == buf)
-    return -1;                  /* empty value (or several space!) */
+    return OSIP_UNDEFINED_ERROR;                  /* empty value (or several space!) */
 
   *dest = osip_malloc (sep - (buf) + 1);
   if (*dest==NULL)
@@ -1017,7 +1017,7 @@ osip_vsnprintf (char *buf, int max, const char *fmt, va_list ap)
 
   if (fioFormatV (fmt, ap, _cb_snprintf, (int) &ctx) != OK)
     {
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
 
   return ctx.len;
@@ -1054,7 +1054,7 @@ osip_snprintf (char *buf, int max, const char *fmt, ...)
   retval = strlen (buffer);
   memmove (buf, buffer, max);
   if (retval > max)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   return retval;
 }
 

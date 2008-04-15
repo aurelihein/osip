@@ -38,12 +38,12 @@ osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
 
   i = osip_error_info_init (&error_info);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_error_info_parse (error_info, hvalue);
   if (i != 0)
     {
       osip_error_info_free (error_info);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->error_infos, error_info, -1);

@@ -38,17 +38,17 @@ osip_message_set_mime_version (osip_message_t * sip, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (sip->mime_version != NULL)
-    return -1;
+    return OSIP_SYNTAXERROR;
   i = osip_mime_version_init (&(sip->mime_version));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_mime_version_parse (sip->mime_version, hvalue);
   if (i != 0)
     {
       osip_mime_version_free (sip->mime_version);
       sip->mime_version = NULL;
-      return -1;
+      return i;
     }
   return OSIP_SUCCESS;
 }

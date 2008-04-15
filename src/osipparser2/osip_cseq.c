@@ -49,17 +49,17 @@ osip_message_set_cseq (osip_message_t * sip, const char *hvalue)
     return OSIP_SUCCESS;
 
   if (sip->cseq != NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_cseq_init (&(sip->cseq));
   if (i != 0)
-    return -1;
+    return i;
   sip->message_property = 2;
   i = osip_cseq_parse (sip->cseq, hvalue);
   if (i != 0)
     {
       osip_cseq_free (sip->cseq);
       sip->cseq = NULL;
-      return -1;
+      return i;
     }
   return OSIP_SUCCESS;
 }
@@ -74,24 +74,27 @@ osip_cseq_parse (osip_cseq_t * cseq, const char *hvalue)
   char *method = NULL;
   const char *end = NULL;
 
+  if (cseq==NULL || hvalue==NULL)
+	  return OSIP_BADPARAMETER;
+
   cseq->number = NULL;
   cseq->method = NULL;
 
   method = strchr (hvalue, ' ');        /* SEARCH FOR SPACE */
+  if (method == NULL)
+    return OSIP_SYNTAXERROR;
+
   end = hvalue + strlen (hvalue);
 
-  if (method == NULL)
-    return -1;
-
   if (method - hvalue + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   cseq->number = (char *) osip_malloc (method - hvalue + 1);
   if (cseq->number == NULL)
     return OSIP_NOMEM;
   osip_clrncpy (cseq->number, hvalue, method - hvalue);
 
   if (end - method + 1 < 2)
-    return -1;
+    return OSIP_SYNTAXERROR;
   cseq->method = (char *) osip_malloc (end - method + 1);
   if (cseq->method == NULL)
     return OSIP_NOMEM;
@@ -145,7 +148,7 @@ osip_cseq_to_str (const osip_cseq_t * cseq, char **dest)
 
   *dest = NULL;
   if ((cseq == NULL) || (cseq->number == NULL) || (cseq->method == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
   len = strlen (cseq->method) + strlen (cseq->number) + 2;
   *dest = (char *) osip_malloc (len);
   if (*dest == NULL)
@@ -174,17 +177,17 @@ osip_cseq_clone (const osip_cseq_t * cseq, osip_cseq_t ** dest)
 
   *dest = NULL;
   if (cseq == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (cseq->method == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (cseq->number == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_cseq_init (&cs);
   if (i != 0)
     {
       osip_cseq_free (cs);
-      return -1;
+      return i;
     }
   cs->method = osip_strdup (cseq->method);
   cs->number = osip_strdup (cseq->number);
@@ -197,10 +200,10 @@ int
 osip_cseq_match (osip_cseq_t * cseq1, osip_cseq_t * cseq2)
 {
   if (cseq1 == NULL || cseq2 == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (cseq1->number == NULL || cseq2->number == NULL
       || cseq1->method == NULL || cseq2->method == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (0 == strcmp (cseq1->number, cseq2->number))
     {
@@ -216,5 +219,5 @@ osip_cseq_match (osip_cseq_t * cseq1, osip_cseq_t * cseq2)
             return OSIP_SUCCESS;
         }
     }
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }

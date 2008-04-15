@@ -197,7 +197,7 @@ parser_init (void)
 	  OSIP_TRACE (osip_trace
 		      (__FILE__, __LINE__, OSIP_ERROR, NULL,
 		       "conflict with current hashtable size\n"));
-	  return -1;
+	  return OSIP_UNDEFINED_ERROR;
         }
     }
 

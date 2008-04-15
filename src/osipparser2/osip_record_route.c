@@ -47,12 +47,12 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
 
   i = osip_record_route_init (&record_route);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_record_route_parse (record_route, hvalue);
   if (i != 0)
     {
       osip_record_route_free (record_route);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->record_routes, record_route, -1);
@@ -98,11 +98,11 @@ osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
 
   *dest = NULL;
   if ((record_route == NULL) || (record_route->url == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_uri_to_str (record_route->url, &url);
   if (i != 0)
-    return -1;
+    return i;
 
   if (record_route->displayname == NULL)
     len = strlen (url) + 5;

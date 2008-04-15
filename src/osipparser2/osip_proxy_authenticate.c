@@ -40,12 +40,12 @@ osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
 
   i = osip_proxy_authenticate_init (&(proxy_authenticate));
   if (i != 0)
-    return -1;
+    return i;
   i = osip_proxy_authenticate_parse (proxy_authenticate, hvalue);
   if (i != 0)
     {
       osip_proxy_authenticate_free (proxy_authenticate);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->proxy_authenticates, proxy_authenticate, -1);

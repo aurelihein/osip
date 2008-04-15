@@ -38,12 +38,12 @@ osip_message_set_header (osip_message_t * sip, const char *hname,
   osip_header_t *h;
   int i;
 
-  if (hname == NULL)
-    return -1;
+  if (sip == NULL || hname == NULL)
+    return OSIP_BADPARAMETER;
 
   i = osip_header_init (&h);
   if (i != 0)
-    return -1;
+    return i;
 
   h->hname = (char *) osip_malloc (strlen (hname) + 1);
 
@@ -82,14 +82,14 @@ osip_message_replace_header (osip_message_t * sip, const char *hname,
   osip_header_t *h, *oldh;
   int i, oldpos = -1;
 
-  if (hname == NULL)
-    return -1;
+  if (sip == NULL || hname == NULL)
+    return OSIP_BADPARAMETER;
 
   oldpos = osip_message_header_get_byname(sip, hname, 0, &oldh);
 
   i = osip_header_init (&h);
   if (i != 0)
-    return -1;
+    return i;
 
   h->hname = (char *) osip_malloc (strlen (hname) + 1);
 
@@ -137,12 +137,12 @@ osip_message_set_topheader (osip_message_t * sip, const char *hname,
   osip_header_t *h;
   int i;
 
-  if (hname == NULL)
-    return -1;
+  if (sip == NULL || hname == NULL)
+    return OSIP_BADPARAMETER;
 
   i = osip_header_init (&h);
   if (i != 0)
-    return -1;
+    return i;
 
   h->hname = (char *) osip_malloc (strlen (hname) + 1);
 
@@ -179,7 +179,7 @@ osip_message_get_header (const osip_message_t * sip, int pos,
 {
   *dest = NULL;
   if (osip_list_size (&sip->headers) <= pos)
-    return -1;                  /* NULL */
+    return OSIP_UNDEFINED_ERROR;                  /* NULL */
   *dest = (osip_header_t *) osip_list_get (&sip->headers, pos);
   return pos;
 }
@@ -200,7 +200,7 @@ osip_message_header_get_byname (const osip_message_t * sip, const char *hname,
   *dest = NULL;
   i = pos;
   if (osip_list_size (&sip->headers) <= pos)
-    return -1;                  /* NULL */
+    return OSIP_UNDEFINED_ERROR;                  /* NULL */
   while (osip_list_size (&sip->headers) > i)
     {
       tmp = (osip_header_t *) osip_list_get (&sip->headers, i);
@@ -211,7 +211,7 @@ osip_message_header_get_byname (const osip_message_t * sip, const char *hname,
         }
       i++;
     }
-  return -1;                    /* not found */
+  return OSIP_UNDEFINED_ERROR;                    /* not found */
 }
 
 int
@@ -248,7 +248,7 @@ osip_header_to_str (const osip_header_t * header, char **dest)
 
   *dest = NULL;
   if ((header == NULL) || (header->hname == NULL))
-    return -1;
+    return OSIP_BADPARAMETER;
 
   len = 0;
   if (header->hvalue != NULL)
@@ -304,16 +304,29 @@ osip_header_clone (const osip_header_t * header, osip_header_t ** dest)
 
   *dest = NULL;
   if (header == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (header->hname == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = osip_header_init (&he);
   if (i != 0)
-    return -1;
+    return i;
   he->hname = osip_strdup (header->hname);
+
+  if (he->hname==NULL)
+  {
+	  osip_header_free (he);
+	  return OSIP_NOMEM;
+  }
   if (header->hvalue != NULL)
-    he->hvalue = osip_strdup (header->hvalue);
+  {
+	  he->hvalue = osip_strdup (header->hvalue);
+	  if (he->hvalue==NULL)
+	  {
+		  osip_header_free (he);
+		  return OSIP_NOMEM;
+	  }
+  }
 
   *dest = he;
   return OSIP_SUCCESS;

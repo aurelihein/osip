@@ -38,12 +38,12 @@ osip_message_set_accept_language (osip_message_t * sip, const char *hvalue)
 
   i = osip_accept_language_init (&accept_language);
   if (i != 0)
-    return -1;
+    return i;
   i = osip_accept_language_parse (accept_language, hvalue);
   if (i != 0)
     {
       osip_accept_language_free (accept_language);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
   osip_list_add (&sip->accept_languages, accept_language, -1);

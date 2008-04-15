@@ -27,21 +27,23 @@ int
 osip_list_init (osip_list_t * li)
 {
   if (li == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   memset (li, 0, sizeof (osip_list_t));
   return OSIP_SUCCESS;                     /* ok */
 }
 
-int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int *(*clone_func) (void *, void *))
+int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_func) (void *, void *))
 {
     void *data;
     void *data2;
     int pos=0;
+	int i;
     while (!osip_list_eol (src, pos))
       {
         data = osip_list_get (src, pos);
-        if (clone_func (data, &data2)!=0)
-	  return -1;
+		i = clone_func (data, &data2);
+        if (i!=0)
+			return i;
         osip_list_add (dst, data2, -1);
         pos++;
       }
@@ -83,24 +85,17 @@ osip_list_ofchar_free (osip_list_t * li)
 int
 osip_list_size (const osip_list_t * li)
 {
-  /* 
-     Robin Nayathodan <roooot@softhome.net> 
-     N.K Electronics INDIA
+  if (li == NULL)
+    return OSIP_BADPARAMETER;
 
-     NULL Checks  
-   */
-
-  if (li != NULL)
-    return li->nb_elt;
-  else
-    return -1;
+  return li->nb_elt;
 }
 
 int
 osip_list_eol (const osip_list_t * li, int i)
 {
   if (li == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (i < li->nb_elt)
     return OSIP_SUCCESS;                   /* not end of list */
   return 1;                     /* end of list */
@@ -114,7 +109,7 @@ osip_list_add (osip_list_t * li, void *el, int pos)
   int i = 0;
 
   if (li == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (li->nb_elt == 0)
     {
@@ -281,11 +276,11 @@ osip_list_remove (osip_list_t * li, int pos)
   int i = 0;
 
   if (li == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (pos < 0 || pos >= li->nb_elt)
     /* element does not exist */
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   ntmp = li->node;              /* exist because nb_elt>0 */
 

@@ -43,12 +43,12 @@ osip_message_set_proxy_authentication_info (osip_message_t * sip,
 
   i = osip_proxy_authentication_info_init (&(proxy_authentication_info));
   if (i != 0)
-    return -1;
+    return i;
   i = osip_proxy_authentication_info_parse (proxy_authentication_info, hvalue);
   if (i != 0)
     {
       osip_proxy_authentication_info_free (proxy_authentication_info);
-      return -1;
+      return i;
     }
   sip->message_property = 2;
 
