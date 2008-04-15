@@ -48,12 +48,12 @@ __osip_transaction_set_topvia (osip_transaction_t * transaction,
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_via_clone (topvia, &(transaction->topvia));
   if (i == 0)
     return OSIP_SUCCESS;
   transaction->topvia = NULL;
-  return -1;
+  return i;
 }
 
 static int
@@ -62,12 +62,12 @@ __osip_transaction_set_from (osip_transaction_t * transaction, osip_from_t * fro
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_from_clone (from, &(transaction->from));
   if (i == 0)
     return OSIP_SUCCESS;
   transaction->from = NULL;
-  return -1;
+  return i;
 }
 
 static int
@@ -76,12 +76,12 @@ __osip_transaction_set_to (osip_transaction_t * transaction, osip_to_t * to)
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_to_clone (to, &(transaction->to));
   if (i == 0)
     return OSIP_SUCCESS;
   transaction->to = NULL;
-  return -1;
+  return i;
 }
 
 static int
@@ -91,12 +91,12 @@ __osip_transaction_set_call_id (osip_transaction_t * transaction,
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_call_id_clone (call_id, &(transaction->callid));
   if (i == 0)
     return OSIP_SUCCESS;
   transaction->callid = NULL;
-  return -1;
+  return i;
 }
 
 static int
@@ -105,12 +105,12 @@ __osip_transaction_set_cseq (osip_transaction_t * transaction, osip_cseq_t * cse
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_cseq_clone (cseq, &(transaction->cseq));
   if (i == 0)
     return OSIP_SUCCESS;
   transaction->cseq = NULL;
-  return -1;
+  return i;
 }
 
 int
@@ -126,11 +126,11 @@ osip_transaction_init (osip_transaction_t ** transaction,
 
   *transaction = NULL;
   if (request == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (request->call_id == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (request->call_id->number == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO2, NULL,
@@ -151,27 +151,50 @@ osip_transaction_init (osip_transaction_t ** transaction,
 
   topvia = osip_list_get (&request->vias, 0);
   if (topvia == NULL)
-    goto ti_error_1;
-
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return OSIP_SYNTAXERROR;
+  }
   i = __osip_transaction_set_topvia (*transaction, topvia);
   if (i != 0)
-    goto ti_error_1;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return i;
+  }
 
   /* In some situation, some of those informtions might
      be useless. Mostly, I prefer to keep them in all case
      for backward compatibility. */
   i = __osip_transaction_set_from (*transaction, request->from);
   if (i != 0)
-    goto ti_error_2;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return i;
+  }
   i = __osip_transaction_set_to (*transaction, request->to);
   if (i != 0)
-    goto ti_error_3;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return i;
+  }
   i = __osip_transaction_set_call_id (*transaction, request->call_id);
   if (i != 0)
-    goto ti_error_4;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return i;
+  }
   i = __osip_transaction_set_cseq (*transaction, request->cseq);
   if (i != 0)
-    goto ti_error_5;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return i;
+  }
   /* RACE conditions can happen for server transactions */
   /* (*transaction)->orig_request = request; */
   (*transaction)->orig_request = NULL;
@@ -181,7 +204,11 @@ osip_transaction_init (osip_transaction_t ** transaction,
   (*transaction)->transactionff =
     (osip_fifo_t *) osip_malloc (sizeof (osip_fifo_t));
   if ((*transaction)->transactionff == NULL)
-    goto ti_error_6;
+  {
+	osip_transaction_free(*transaction);
+	*transaction = NULL;
+	return OSIP_NOMEM;
+  }
   osip_fifo_init ((*transaction)->transactionff);
 
   (*transaction)->ctx_type = ctx_type;
@@ -194,49 +221,47 @@ osip_transaction_init (osip_transaction_t ** transaction,
       (*transaction)->state = ICT_PRE_CALLING;
       i = __osip_ict_init (&((*transaction)->ict_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	  {
+		osip_transaction_free(*transaction);
+		*transaction = NULL;
+		return i;
+	  }
       __osip_add_ict (osip, *transaction);
   } else if (ctx_type == IST)
     {
       (*transaction)->state = IST_PRE_PROCEEDING;
       i = __osip_ist_init (&((*transaction)->ist_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	  {
+		osip_transaction_free(*transaction);
+		*transaction = NULL;
+		return i;
+	  }
       __osip_add_ist (osip, *transaction);
   } else if (ctx_type == NICT)
     {
       (*transaction)->state = NICT_PRE_TRYING;
       i = __osip_nict_init (&((*transaction)->nict_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	  {
+		osip_transaction_free(*transaction);
+		*transaction = NULL;
+		return i;
+	  }
       __osip_add_nict (osip, *transaction);
   } else
     {
       (*transaction)->state = NIST_PRE_TRYING;
       i = __osip_nist_init (&((*transaction)->nist_context), osip, request);
       if (i != 0)
-        goto ti_error_7;
+	  {
+		osip_transaction_free(*transaction);
+		*transaction = NULL;
+		return i;
+	  }
       __osip_add_nist (osip, *transaction);
     }
   return OSIP_SUCCESS;
-
-
-ti_error_7:
-  osip_fifo_free ((*transaction)->transactionff);
-ti_error_6:
-  osip_cseq_free ((*transaction)->cseq);
-ti_error_5:
-  osip_call_id_free ((*transaction)->callid);
-ti_error_4:
-  osip_to_free ((*transaction)->to);
-ti_error_3:
-  osip_from_free ((*transaction)->from);
-ti_error_2:
-  osip_via_free ((*transaction)->topvia);
-ti_error_1:
-  osip_free (*transaction);
-  *transaction = NULL;
-  return -1;
 }
 
 /* This method automaticly remove the transaction context from
@@ -259,7 +284,7 @@ osip_transaction_free (osip_transaction_t * transaction)
   int i;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = osip_remove_transaction (transaction->config, transaction);
 
   if (i != 0)                   /* yet removed ??? */
@@ -280,7 +305,7 @@ osip_transaction_free2 (osip_transaction_t * transaction)
   osip_event_t *evt;
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (transaction->orig_request != NULL
       && transaction->orig_request->call_id != NULL
       && transaction->orig_request->call_id->number != NULL)
@@ -333,9 +358,9 @@ int
 osip_transaction_add_event (osip_transaction_t * transaction, osip_event_t * evt)
 {
   if (evt == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   evt->transactionid = transaction->transactionid;
   osip_fifo_add (transaction->transactionff, evt);
   return OSIP_SUCCESS;
@@ -391,7 +416,7 @@ osip_transaction_execute (osip_transaction_t * transaction, osip_event_t * evt)
     statemachine = &nist_fsm;
 #endif
 
-  if (-1 == fsm_callmethod (evt->type,
+  if (0 != fsm_callmethod (evt->type,
                             transaction->state, statemachine, evt, transaction))
     {
       OSIP_TRACE (osip_trace
@@ -421,7 +446,7 @@ osip_transaction_get_destination (osip_transaction_t * transaction, char **ip,
   *ip = NULL;
   *port = 0;
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (transaction->ict_context != NULL)
     {
       *ip = transaction->ict_context->destination;
@@ -433,14 +458,14 @@ osip_transaction_get_destination (osip_transaction_t * transaction, char **ip,
       *port = transaction->nict_context->port;
       return OSIP_SUCCESS;
     }
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
 osip_transaction_set_srv_record(osip_transaction_t *transaction, osip_srv_record_t *record)
 {
 	if (transaction==NULL)
-		return -1;
+		return OSIP_BADPARAMETER;
 	memcpy(&transaction->record, record, sizeof(osip_srv_record_t));
 	return OSIP_SUCCESS;
 }
@@ -450,7 +475,7 @@ osip_transaction_set_your_instance (osip_transaction_t * transaction,
                                     void *instance)
 {
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   transaction->your_instance = instance;
   return OSIP_SUCCESS;
 }
@@ -467,7 +492,7 @@ int
 __osip_transaction_set_state (osip_transaction_t * transaction, state_t state)
 {
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   transaction->state = state;
   return OSIP_SUCCESS;
 }
@@ -476,7 +501,7 @@ int
 osip_transaction_set_in_socket (osip_transaction_t * transaction, int sock)
 {
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   transaction->in_socket = sock;
   return OSIP_SUCCESS;
 }
@@ -485,7 +510,7 @@ int
 osip_transaction_set_out_socket (osip_transaction_t * transaction, int sock)
 {
   if (transaction == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   transaction->out_socket = sock;
   return OSIP_SUCCESS;
 }
@@ -504,7 +529,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
   if (tr == NULL || (tr->ict_context == NULL && tr->nict_context == NULL) ||
       /* only ict and nict can match a response */
       response == NULL || response->cseq == NULL || response->cseq->method == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   topvia_response = osip_list_get (&response->vias, 0);
   if (topvia_response == NULL)
@@ -512,7 +537,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "Remote UA is not compliant: missing a Via header!\n"));
-      return -1;
+      return OSIP_SYNTAXERROR;
     }
   osip_via_param_get_byname (tr->topvia, "branch", &b_request);
   if (b_request == NULL)
@@ -520,7 +545,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_BUG, NULL,
                    "You created a transaction without any branch! THIS IS NOT ALLOWED\n"));
-      return -1;
+      return OSIP_SYNTAXERROR;
     }
   osip_via_param_get_byname (topvia_response, "branch", &b_response);
   if (b_response == NULL)
@@ -528,35 +553,35 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
 #ifdef FWDSUPPORT
       /* the from tag (unique) */
       if (from_tag_match (tr->from, response->from) != 0)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
       /* the Cseq field */
       if (cseq_match (tr->cseq, response->cseq) != 0)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
       /* the To field */
       if (response->to->url->username == NULL && tr->from->url->username != NULL)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
       if (response->to->url->username != NULL && tr->from->url->username == NULL)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
       if (response->to->url->username != NULL && tr->from->url->username != NULL)
         {
           if (strcmp (response->to->url->host, tr->from->url->host) ||
               strcmp (response->to->url->username, tr->from->url->username))
-            return -1;
+            return OSIP_UNDEFINED_ERROR;
       } else
         {
           if (strcmp (response->to->url->host, tr->from->url->host))
-            return -1;
+            return OSIP_UNDEFINED_ERROR;
         }
 
       /* the Call-ID field */
       if (call_id_match (tr->callid, response->call_id) != 0)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
       return OSIP_SUCCESS;
 #else
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_BUG, NULL,
                    "Remote UA is not compliant: missing a branch parameter in  Via header!\n"));
-      return -1;
+      return OSIP_SYNTAXERROR;
 #endif
     }
 
@@ -570,7 +595,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
      transaction.
    */
   if (0 != strcmp (b_request->gvalue, b_response->gvalue))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   /*  
      2.   If the method parameter in the CSeq header field matches
      the method of the request that created the transaction. The
@@ -581,7 +606,7 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3 (osip_transaction_t *
    */
   if (0 == strcmp (response->cseq->method, tr->cseq->method))   /* general case */
     return OSIP_SUCCESS;
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -599,7 +624,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
   if (tr == NULL || (tr->ist_context == NULL && tr->nist_context == NULL) ||
       /* only ist and nist can match a request */
       request == NULL || request->cseq == NULL || request->cseq->method == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   topvia_request = osip_list_get (&request->vias, 0);
   if (topvia_request == NULL)
@@ -607,14 +632,14 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "Remote UA is not compliant: missing a Via header!\n"));
-      return -1;
+      return OSIP_SYNTAXERROR;
     }
   osip_via_param_get_byname (topvia_request, "branch", &b_request);
   osip_via_param_get_byname (tr->topvia, "branch", &b_origrequest);
 
   if ((b_origrequest == NULL && b_request != NULL) ||
       (b_origrequest != NULL && b_request == NULL))
-    return -1;                  /* one request is compliant, the other one is not... */
+    return OSIP_SYNTAXERROR;                  /* one request is compliant, the other one is not... */
 
   /* Section 17.2.3 Matching Requests to Server Transactions:
      "The branch parameter in the topmost Via header field of the request
@@ -626,13 +651,13 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
   if (b_origrequest != NULL && b_request != NULL)
     /* case where both request contains a branch */
     {
-      if ( ! b_origrequest->gvalue ) return -1;
-      if ( ! b_request->gvalue )     return -1;
+      if ( ! b_origrequest->gvalue ) return OSIP_UNDEFINED_ERROR;
+      if ( ! b_request->gvalue )     return OSIP_UNDEFINED_ERROR;
 
       length_br = strlen (b_origrequest->gvalue);
       length_br2 = strlen (b_request->gvalue);
       if (length_br != length_br2)
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
 
       /* can't be the same */
       if (0 == strncmp (b_origrequest->gvalue, "z9hG4bK", 7)
@@ -648,7 +673,7 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
              that created the transaction was also CANCEL.
            */
           if (0 != strcmp (b_origrequest->gvalue, b_request->gvalue))
-            return -1;          /* branch param does not match */
+            return OSIP_UNDEFINED_ERROR;          /* branch param does not match */
           {
             /* check the sent-by values */
             char *b_port = via_get_port (topvia_request);
@@ -657,38 +682,38 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
             char *b_orighost = via_get_host (tr->topvia);
 
             if ((b_host == NULL || b_orighost == NULL))
-              return -1;
+              return OSIP_UNDEFINED_ERROR;
             if (0 != strcmp (b_orighost, b_host))
-              return -1;
+              return OSIP_UNDEFINED_ERROR;
 
             if (b_port != NULL && b_origport == NULL
                 && 0 != strcmp (b_port, "5060"))
-              return -1;
+              return OSIP_UNDEFINED_ERROR;
             else if (b_origport != NULL && b_port == NULL
                      && 0 != strcmp (b_origport, "5060"))
-              return -1;
+              return OSIP_UNDEFINED_ERROR;
             else if (b_origport != NULL && b_port != NULL
                      && 0 != strcmp (b_origport, b_port))
-              return -1;
+              return OSIP_UNDEFINED_ERROR;
           }
 #ifdef AC_BUG
           /* audiocodes bug (MP108-fxs-SIP-4-0-282-380) */
           if (0 != osip_from_tag_match (tr->from, request->from))
-            return -1;
+            return OSIP_UNDEFINED_ERROR;
 #endif
           if (                  /* MSG_IS_CANCEL(request)&& <<-- BUG from the spec?
                                    I always check the CSeq */
                (!(0 == strcmp (tr->cseq->method, "INVITE") &&
                   0 == strcmp (request->cseq->method, "ACK")))
                && 0 != strcmp (tr->cseq->method, request->cseq->method))
-            return -1;
+            return OSIP_UNDEFINED_ERROR;
           return OSIP_SUCCESS;
         }
     }
 
   /* Back to the old backward compatibilty mechanism for matching requests */
   if (0 != osip_call_id_match (tr->callid, request->call_id))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if (MSG_IS_ACK (request))
     {
       osip_generic_param_t *tag_from1;
@@ -701,23 +726,23 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t *
                                    answer has a tag while an INVITE doesn't have one */
       } else if (tag_from1 != NULL && tag_from2 == NULL)
         {
-          return -1;
+          return OSIP_UNDEFINED_ERROR;
       } else
         {
           if (0 != osip_to_tag_match (tr->to, request->to))
-            return -1;
+            return OSIP_UNDEFINED_ERROR;
         }
   } else
     {
       if (0 != osip_to_tag_match (tr->to, request->to))
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
     }
   if (0 != osip_from_tag_match (tr->from, request->from))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if (0 != osip_cseq_match (tr->cseq, request->cseq))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   if (0 != osip_via_match (tr->topvia, topvia_request))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   return OSIP_SUCCESS;
 }
 
@@ -756,7 +781,7 @@ __osip_transaction_snd_xxx (osip_transaction_t * ist, osip_message_t * msg)
 
   via = (osip_via_t *) osip_list_get (&msg->vias, 0);
   if (!via)
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   osip_via_param_get_byname (via, "maddr", &maddr);
   osip_via_param_get_byname (via, "received", &received);

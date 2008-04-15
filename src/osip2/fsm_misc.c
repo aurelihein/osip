@@ -54,7 +54,7 @@ fsm_callmethod (type_t type, state_t state,
   if (transition == NULL)
     {
       /* No transition found for this event */
-      return -1;                /* error */
+      return OSIP_UNDEFINED_ERROR;                /* error */
     }
   transition->method (transaction, sipevent);
   return OSIP_SUCCESS;                     /* ok */

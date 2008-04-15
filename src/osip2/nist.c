@@ -42,10 +42,18 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
 
     i = osip_message_get_via (invite, 0, &via); /* get top via */
     if (i != 0)
-      goto ii_error_1;
+	{
+	  osip_free (*nist);
+	  *nist=NULL;
+	  return i;
+	}
     proto = via_get_protocol (via);
     if (proto == NULL)
-      goto ii_error_1;
+	{
+	  osip_free (*nist);
+	  *nist=NULL;
+	  return OSIP_UNDEFINED_ERROR;
+	}
 
     if (osip_strcasecmp (proto, "TCP") != 0
         && osip_strcasecmp (proto, "TLS") != 0
@@ -61,17 +69,13 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
   }
 
   return OSIP_SUCCESS;
-
-ii_error_1:
-  osip_free (*nist);
-  return -1;
 }
 
 int
 __osip_nist_free (osip_nist_t * nist)
 {
   if (nist == NULL)
-    return -1;
+    return OSIP_SUCCESS;
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 

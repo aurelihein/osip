@@ -67,7 +67,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_mutex_lock (mut);
 }
 
@@ -77,7 +77,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_mutex_unlock (mut);
 }
 
@@ -120,7 +120,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   osip_mutex_lock(sem->_sem_mutex);
   sem->_sem_counter++;
   osip_mutex_unlock(sem->_sem_mutex);
@@ -133,7 +133,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   /* poor emulation... */
   while (1)
@@ -148,7 +148,7 @@ osip_sem_wait (struct osip_sem *_sem)
       osip_mutex_unlock(sem->_sem_mutex);
       osip_usleep(1000);
     }
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -157,7 +157,7 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   osip_mutex_lock(sem->_sem_mutex);
   if (sem->_sem_counter>0)
     {
@@ -166,7 +166,7 @@ osip_sem_trywait (struct osip_sem *_sem)
       return OSIP_SUCCESS;
     }
   osip_mutex_unlock(sem->_sem_mutex);
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 #elif (defined(HAVE_SEMAPHORE_H) && !defined(__APPLE_CC__)) || defined(HAVE_PTHREAD_WIN32)
@@ -204,7 +204,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return sem_post (sem);
 }
 
@@ -214,7 +214,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return sem_wait (sem);
 }
 
@@ -224,7 +224,7 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return sem_trywait (sem);
 }
 
@@ -282,7 +282,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   sb.sem_num = 0;
   sb.sem_op = 1;
   sb.sem_flg = 0;
@@ -296,7 +296,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   sb.sem_num = 0;
   sb.sem_op = -1;
   sb.sem_flg = 0;
@@ -310,7 +310,7 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   sb.sem_num = 0;
   sb.sem_op = -1;
   sb.sem_flg = IPC_NOWAIT;
@@ -345,7 +345,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return semTake (mut, WAIT_FOREVER);
 }
 
@@ -355,7 +355,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return semGive (mut);
 }
 
@@ -393,7 +393,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return semGive (sem->semId);
 }
 
@@ -403,7 +403,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return semTake (sem->semId, WAIT_FOREVER);
 }
 
@@ -413,7 +413,7 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return semTake (sem->semId, NO_WAIT);
 }
 
@@ -455,7 +455,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   EnterCriticalSection (&mut->h);
 
   return (0);
@@ -467,7 +467,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   LeaveCriticalSection (&mut->h);
   return (0);
 }
@@ -504,7 +504,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if ((err = WaitForSingleObject (mut->h, INFINITE)) == WAIT_OBJECT_0)
     return (0);
   return (EBUSY);
@@ -516,7 +516,7 @@ osip_mutex_unlock (struct osip_mutex *_mut)
   osip_mutex_t *mut = (osip_mutex_t *) _mut;
 
   if (mut == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   ReleaseMutex (mut->h);
   return (0);
 }
@@ -554,7 +554,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   ReleaseSemaphore (sem->h, 1, NULL);
   return (0);
 }
@@ -566,7 +566,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if ((err = WaitForSingleObject (sem->h, INFINITE)) == WAIT_OBJECT_0)
     return (0);
   if (err == WAIT_TIMEOUT)
@@ -581,7 +581,7 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if ((err = WaitForSingleObject (sem->h, 0)) == WAIT_OBJECT_0)
     return (0);
   return (EBUSY);
@@ -620,7 +620,7 @@ osip_mutex_lock (struct osip_mutex *_mut)
   if (mut)
     {
       if (sm_p (mut->id, SM_WAIT, 0) != 0)
-        return (-1);
+        return OSIP_UNDEFINED_ERROR;
     }
   return (0);
 }
@@ -667,7 +667,7 @@ osip_sem_post (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return (sm_v (sem->id));
 }
 
@@ -677,7 +677,7 @@ osip_sem_wait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (sm_p (sem->id, SM_WAIT, 0) != 0)
     return (-1);
   return (0);
@@ -689,9 +689,9 @@ osip_sem_trywait (struct osip_sem *_sem)
   osip_sem_t *sem = (osip_sem_t *) _sem;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (sm_p (sem->id, SM_NOWAIT, 0) != 0)
-    return (-1);
+    return OSIP_UNDEFINED_ERROR;
   return (0);
 }
 
@@ -742,7 +742,7 @@ int osip_mutex_lock(struct osip_mutex *_mut)
 				       RTEMS_NO_TIMEOUT);
       if ( status != RTEMS_SUCCESSFUL )
 	{
-	  return -1;
+	  return OSIP_UNDEFINED_ERROR;
 	}
     }
   return OSIP_SUCCESS;
@@ -799,7 +799,7 @@ int osip_sem_post(struct osip_sem *_sem)
 
   if (sem == NULL)
     {
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
   return rtems_semaphore_release( sem->id);
 }
@@ -810,11 +810,11 @@ int osip_sem_wait(struct osip_sem *_sem)
 
   if (sem == NULL)
     {
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   if ( rtems_semaphore_obtain( sem->id, RTEMS_WAIT, RTEMS_NO_TIMEOUT) != RTEMS_SUCCESSFUL )
     {
-      return (-1);
+      return OSIP_UNDEFINED_ERROR;
     }
   return (0);
 }
@@ -825,11 +825,11 @@ int osip_sem_trywait(struct osip_sem *_sem)
 
   if (sem == NULL)
     {
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   if ( rtems_semaphore_obtain( sem->id,RTEMS_NO_WAIT, 0) != RTEMS_SUCCESSFUL)
     {
-      return (-1);
+      return OSIP_UNDEFINED_ERROR;
     }
   return (0);
 }

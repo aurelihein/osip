@@ -327,34 +327,60 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
   /* Section 17.1.1.3: Construction of the ACK request: */
   i = osip_from_clone (response->from, &(ack->from));
   if (i != 0)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
   i = osip_to_clone (response->to, &(ack->to)); /* include the tag! */
   if (i != 0)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
   i = osip_call_id_clone (response->call_id, &(ack->call_id));
   if (i != 0)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
   i = osip_cseq_clone (response->cseq, &(ack->cseq));
   if (i != 0)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
   osip_free (ack->cseq->method);
   ack->cseq->method = osip_strdup ("ACK");
   if (ack->cseq->method==NULL)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
 
   ack->sip_method = (char *) osip_malloc (5);
   if (ack->sip_method==NULL)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
   sprintf (ack->sip_method, "ACK");
   ack->sip_version = osip_strdup (ict->orig_request->sip_version);
   if (ack->sip_version==NULL)
-    goto ica_error;
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
 
   ack->status_code = 0;
   ack->reason_phrase = NULL;
 
   /* MUST copy REQUEST-URI from Contact header! */
-  osip_uri_clone (ict->orig_request->req_uri, &(ack->req_uri));
+  i = osip_uri_clone (ict->orig_request->req_uri, &(ack->req_uri));
+  if (i != 0)
+  {
+	  osip_message_free (ack);
+	  return NULL;
+  }
 
   /* ACK MUST contain only the TOP Via field from original request */
   {
@@ -363,8 +389,16 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
 
     osip_message_get_via (ict->orig_request, 0, &orig_via);
     if (orig_via == NULL)
-      goto ica_error;
-    osip_via_clone (orig_via, &via);
+	{
+	  osip_message_free (ack);
+	  return NULL;
+	}
+    i = osip_via_clone (orig_via, &via);
+	if (i != 0)
+	{
+		  osip_message_free (ack);
+		  return NULL;
+	}
     osip_list_add (&ack->vias, via, -1);
   }
 
@@ -381,7 +415,12 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
       {
         orig_route =
           (osip_route_t *) osip_list_get (&ict->orig_request->routes, pos);
-        osip_route_clone (orig_route, &route);
+        i = osip_route_clone (orig_route, &route);
+		if (i != 0)
+		{
+			  osip_message_free (ack);
+			  return NULL;
+		}
         osip_list_add (&ack->routes, route, -1);
         pos++;
       }
@@ -391,9 +430,6 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
   /* For example "Max-Forward" */
 
   return ack;
-ica_error:
-  osip_message_free (ack);
-  return NULL;
 }
 
 void

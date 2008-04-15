@@ -75,7 +75,7 @@ osip_thread_join (struct osip_thread *_thread)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_join (*thread, NULL);
 }
 
@@ -119,7 +119,7 @@ osip_thread_join (struct osip_thread *_thread)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   i = WaitForSingleObject (thread->h, INFINITE);
   if (i == WAIT_OBJECT_0)
     {
@@ -127,7 +127,7 @@ osip_thread_join (struct osip_thread *_thread)
   } else
     {
       /* fprintf (stdout, "ERROR!! thread joined ERROR!!\n"); */
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
   CloseHandle (thread->h);
   return (0);
@@ -180,7 +180,7 @@ osip_thread_set_priority (struct osip_thread *_thread, int priority)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   t_set_pri (thread->tid, priority, &oldprio);
   return OSIP_SUCCESS;
 }
@@ -191,7 +191,7 @@ osip_thread_join (struct osip_thread *_thread)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   t_delete (thread->tid);
 
   return (0);
@@ -226,7 +226,7 @@ osip_thread_set_priority (struct osip_thread *_thread, int priority)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   taskPrioritySet (thread->id, 1);
   return OSIP_SUCCESS;
 }
@@ -237,7 +237,7 @@ osip_thread_join (struct osip_thread *_thread)
   osip_thread_t *thread = (osip_thread_t *) _thread;
 
   if (thread == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   return taskDelete (thread->id);
 }
 
@@ -302,7 +302,7 @@ int osip_thread_join(struct osip_thread *_thread)
 
   if (thread == NULL)
     {
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   return rtems_task_delete( thread->tid);
 }

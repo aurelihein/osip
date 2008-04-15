@@ -58,7 +58,7 @@ osip_fifo_add (osip_fifo_t * ff, void *el)
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return -1;                /* stack is full */
+      return OSIP_UNDEFINED_ERROR;                /* stack is full */
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (&ff->queue) >= MAX_LEN)
@@ -93,7 +93,7 @@ osip_fifo_insert (osip_fifo_t * ff, void *el)
 #ifdef OSIP_MT
       osip_mutex_unlock (ff->qislocked);
 #endif
-      return -1;                /* stack is full */
+      return OSIP_UNDEFINED_ERROR;                /* stack is full */
     }
   /* if (ff->nb_elt >= MAX_LEN) */
   if (osip_list_size (&ff->queue) >= MAX_LEN)

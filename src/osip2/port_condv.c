@@ -61,7 +61,7 @@ osip_cond_destroy (struct osip_cond *_cond)
   int ret;
 
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
   ret = pthread_cond_destroy (&_cond->cv);
   osip_free (_cond);
   return ret;
@@ -71,7 +71,7 @@ int
 osip_cond_signal (struct osip_cond *_cond)
 {
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_cond_signal (&_cond->cv);
 }
 
@@ -80,7 +80,7 @@ int
 osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 {
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_cond_wait (&_cond->cv, (pthread_mutex_t *) _mut);
 }
 
@@ -90,7 +90,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
                      const struct timespec *abstime)
 {
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
   return pthread_cond_timedwait (&_cond->cv, (pthread_mutex_t *) _mut,
                                  (const struct timespec *) abstime);
 }
@@ -144,7 +144,7 @@ int
 osip_cond_signal (struct osip_cond *_cond)
 {
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
   return osip_sem_post (_cond->sem);
 }
 
@@ -153,15 +153,18 @@ int
 osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 {
   int ret1 = 0, ret2 = 0, ret3 = 0;
+  int i;
 
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
 
-  if (osip_mutex_lock (_cond->mut))
-    return -1;
+  i = osip_mutex_lock (_cond->mut);
+  if (i!=0)
+    return i;
 
-  if (osip_mutex_unlock (_mut))
-    return -1;
+  i = osip_mutex_unlock (_mut);
+  if (i!=0)
+    return i;
 
   ret1 = osip_sem_wait (_cond->sem);
 
@@ -169,8 +172,12 @@ osip_cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut)
 
   ret3 = osip_mutex_unlock (_cond->mut);
 
-  if (ret1 || ret2 || ret3)
-    return -1;
+  if (ret1)
+    return ret1;
+  if (ret2)
+    return ret2;
+  if (ret3)
+    return ret3;
   return OSIP_SUCCESS;
 }
 
@@ -182,10 +189,10 @@ __osip_clock_gettime (unsigned int clock_id, struct timespec *tp)
   struct _timeb time_val;
 
   if (clock_id != OSIP_CLOCK_REALTIME)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (tp == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   _ftime (&time_val);
   tp->tv_sec = (long) time_val.time;
@@ -216,17 +223,18 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   struct timespec now;
   int timeout_ms;
   HANDLE sem;
+  int i;
 
   if (!_cond)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   sem = *((HANDLE *) _cond->sem);
 
   if (sem == NULL)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   if (abstime == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   __osip_clock_gettime (OSIP_CLOCK_REALTIME, &now);
 
@@ -234,13 +242,15 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   if (timeout_ms <= 0)
     return 1;                   /* ETIMEDOUT; */
 
-  if (osip_mutex_unlock (_mut))
-    return -1;
+  i = osip_mutex_unlock (_mut);
+  if (i!=0)
+    return i;
 
   dwRet = WaitForSingleObject (sem, timeout_ms);
 
-  if (osip_mutex_lock (_mut))
-    return -1;
+  i = osip_mutex_lock (_mut);
+  if (i!=0)
+    return i;
 
   switch (dwRet)
     {
@@ -251,7 +261,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
         return 1;               /* ETIMEDOUT; */
         break;
       default:
-        return -1;
+        return OSIP_UNDEFINED_ERROR;
         break;
     }
 }
@@ -298,9 +308,13 @@ _cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut, int ticks)
 {
   int ret;
 
-  if (osip_mutex_unlock (_mut) != 0)
+  if (_cond==NULL)
+	  return OSIP_BADPARAMETER;
+
+  ret = osip_mutex_unlock (_mut);
+  if (ret != 0)
     {
-      return -1;
+      return ret;
     }
 
   ret = semTake (((osip_sem_t *) _cond->sem)->semId, ticks);
@@ -315,7 +329,7 @@ _cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut, int ticks)
 #if 0
           case S_intLib_NOT_ISR_CALLABLE:
 #endif
-            ret = -1;
+            ret = OSIP_UNDEFINED_ERROR;
             break;
           case S_objLib_OBJ_TIMEOUT:
             ret = 1;
@@ -326,9 +340,10 @@ _cond_wait (struct osip_cond *_cond, struct osip_mutex *_mut, int ticks)
         }
     }
 
-  if (osip_mutex_lock (_mut))
+  i = osip_mutex_lock (_mut);
+  if (i!=0)
     {
-      ret = -1;
+      ret = i;
     }
   return ret;
 }
@@ -350,15 +365,15 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut,
   SEM_ID sem;
 
   if (_cond == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   sem = ((osip_sem_t *) _cond->sem)->semId;
 
   if (sem == NULL)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   if (abstime == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   clock_gettime (CLOCK_REALTIME, &now);
 
   sec = abstime->tv_sec - now.tv_sec;

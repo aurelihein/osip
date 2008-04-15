@@ -46,10 +46,16 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 
     i = osip_message_get_via (invite, 0, &via); /* get top via */
     if (i != 0)
-      goto ii_error_1;
+	{
+	  osip_free (*ict);
+	  return i;
+	}
     proto = via_get_protocol (via);
     if (proto == NULL)
-      goto ii_error_1;
+	{
+	  osip_free (*ict);
+	  return OSIP_SYNTAXERROR;
+	}
 
     if (osip_strcasecmp (proto, "TCP") != 0
         && osip_strcasecmp (proto, "TLS") != 0
@@ -120,17 +126,13 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
   /*  (*ict)->port  = 5060; */
 
   return OSIP_SUCCESS;
-
-ii_error_1:
-  osip_free (*ict);
-  return -1;
 }
 
 int
 __osip_ict_free (osip_ict_t * ict)
 {
   if (ict == NULL)
-    return -1;
+    return OSIP_SUCCESS;
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
 
@@ -143,7 +145,7 @@ int
 osip_ict_set_destination (osip_ict_t * ict, char *destination, int port)
 {
   if (ict == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (ict->destination != NULL)
     osip_free (ict->destination);
   ict->destination = destination;

@@ -40,9 +40,9 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
   int i;
 
   if (dialog == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (invite == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (osip_list_eol (&invite->contacts, 0))
     {
@@ -59,7 +59,7 @@ osip_dialog_update_route_set_as_uas (osip_dialog_t * dialog,
       contact = osip_list_get (&invite->contacts, 0);
       i = osip_contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
-        return -1;
+        return i;
     }
   return OSIP_SUCCESS;
 }
@@ -69,9 +69,9 @@ osip_dialog_update_osip_cseq_as_uas (osip_dialog_t * dialog,
                                      osip_message_t * invite)
 {
   if (dialog == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (invite == NULL || invite->cseq == NULL || invite->cseq->number == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   dialog->remote_cseq = osip_atoi (invite->cseq->number);
   return OSIP_SUCCESS;
@@ -86,9 +86,9 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
   int i;
 
   if (dialog == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (response == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (osip_list_eol (&response->contacts, 0))
     {                           /* no contact header in response? */
@@ -107,7 +107,7 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
       contact = osip_list_get (&response->contacts, 0);
       i = osip_contact_clone (contact, &(dialog->remote_contact_uri));
       if (i != 0)
-        return -1;
+        return i;
     }
 
   if (dialog->state == DIALOG_EARLY && osip_list_size (&dialog->route_set) > 0)
@@ -130,7 +130,7 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
             (osip_record_route_t *) osip_list_get (&response->record_routes, pos);
           i = osip_record_route_clone (rr, &rr2);
           if (i != 0)
-            return -1;
+            return i;
           osip_list_add (&dialog->route_set, rr2, 0);
           pos++;
         }
@@ -148,16 +148,16 @@ osip_dialog_update_tag_as_uac (osip_dialog_t * dialog, osip_message_t * response
   int i;
 
   if (dialog == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (response == NULL || response->to == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   if (dialog->remote_tag!=NULL)
     {
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_WARNING, NULL,
                    "This dialog already have a remote tag: it can't be changed!\n"));
-      return -1;
+      return OSIP_WRONG_STATE;
     }
 
   i = osip_to_get_tag (response->to, &tag);
@@ -181,10 +181,10 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
   int i;
 
   if (dlg == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (answer == NULL || answer->call_id == NULL ||
       answer->from == NULL || answer->to == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   OSIP_TRACE (osip_trace
               (__FILE__, __LINE__, OSIP_WARNING, NULL,
@@ -205,7 +205,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
   if (0 != strcmp (dlg->call_id, tmp))
     {
       osip_free (tmp);
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
   osip_free (tmp);
 
@@ -215,16 +215,16 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
    */
   i = osip_from_get_tag (answer->from, &tag_param_local);
   if (i != 0)
-    return -1;
+    return OSIP_SYNTAXERROR;
   if (dlg->local_tag == NULL)
     /* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
-    return -1;
+    return OSIP_SYNTAXERROR;
   if (0 != strcmp (tag_param_local->gvalue, dlg->local_tag))
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
 
   i = osip_to_get_tag (answer->to, &tag_param_remote);
   if (i != 0 && dlg->remote_tag != NULL)        /* no tag in response but tag in dialog */
-    return -1;                  /* impossible... */
+    return OSIP_SYNTAXERROR;                  /* impossible... */
   if (i != 0 && dlg->remote_tag == NULL)        /* no tag in response AND no tag in dialog */
     {
       if (0 ==
@@ -232,7 +232,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
                              (osip_from_t *) answer->from)
           && 0 == osip_from_compare (dlg->remote_uri, answer->to))
         return OSIP_SUCCESS;
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
 
   if (dlg->remote_tag == NULL)  /* tag in response BUT no tag in dialog */
@@ -245,7 +245,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
                              (osip_from_t *) answer->from)
           && 0 == osip_from_compare (dlg->remote_uri, answer->to))
         return OSIP_SUCCESS;
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
 
   /* we don't have to compare
@@ -254,7 +254,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
    */
   if (0 == strcmp (tag_param_remote->gvalue, dlg->remote_tag))
     return OSIP_SUCCESS;
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -265,16 +265,16 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
   char *tmp;
 
   if (dlg == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (request == NULL || request->call_id == NULL ||
       request->from == NULL || request->to == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   osip_call_id_to_str (request->call_id, &tmp);
   if (0 != strcmp (dlg->call_id, tmp))
     {
       osip_free (tmp);
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
   osip_free (tmp);
 
@@ -285,11 +285,11 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
 
   if (dlg->local_tag == NULL)
     /* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
-    return -1;
+    return OSIP_SYNTAXERROR;
 
   i = osip_from_get_tag (request->from, &tag_param_remote);
   if (i != 0 && dlg->remote_tag != NULL)        /* no tag in request but tag in dialog */
-    return -1;                  /* impossible... */
+    return OSIP_SYNTAXERROR;                  /* impossible... */
   if (i != 0 && dlg->remote_tag == NULL)        /* no tag in request AND no tag in dialog */
     {
       if (0 ==
@@ -297,7 +297,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
                              (osip_from_t *) request->from)
           && 0 == osip_from_compare (dlg->local_uri, request->to))
         return OSIP_SUCCESS;
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
 
   if (dlg->remote_tag == NULL)  /* tag in response BUT no tag in dialog */
@@ -310,7 +310,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
                              (osip_from_t *) request->from)
           && 0 == osip_from_compare (dlg->local_uri, request->to))
         return OSIP_SUCCESS;
-      return -1;
+      return OSIP_UNDEFINED_ERROR;
     }
   /* we don't have to compare
      remote_uri with from
@@ -319,7 +319,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
   if (0 == strcmp (tag_param_remote->gvalue, dlg->remote_tag))
     return OSIP_SUCCESS;
 
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 static int
@@ -335,7 +335,7 @@ __osip_dialog_init (osip_dialog_t ** dialog,
 
   *dialog = NULL;
   if (response==NULL || response->cseq==NULL || local==NULL || remote==NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
@@ -351,11 +351,26 @@ __osip_dialog_init (osip_dialog_t ** dialog,
 
   i = osip_call_id_to_str (response->call_id, &((*dialog)->call_id));
   if (i != 0)
-    goto diau_error_0;
+  {
+	  OSIP_TRACE (osip_trace
+				  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+				   "Could not establish dialog!\n"));
+	  osip_dialog_free(*dialog);
+	  *dialog = NULL;
+	  return i;
+  }
 
   i = osip_to_get_tag (local, &tag);
   if (i != 0)
-    goto diau_error_1;
+  {
+	  OSIP_TRACE (osip_trace
+				  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+				   "Could not establish dialog!\n"));
+	  osip_dialog_free(*dialog);
+	  *dialog = NULL;
+	  return i;
+  }
+
   (*dialog)->local_tag = osip_strdup (tag->gvalue);
 
   i = osip_from_get_tag (remote, &tag);
@@ -373,7 +388,14 @@ __osip_dialog_init (osip_dialog_t ** dialog,
       rr = (osip_record_route_t *) osip_list_get (&response->record_routes, pos);
       i = osip_record_route_clone (rr, &rr2);
       if (i != 0)
-        goto diau_error_2;
+	  {
+		  OSIP_TRACE (osip_trace
+					  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					   "Could not establish dialog!\n"));
+		  osip_dialog_free(*dialog);
+		  *dialog = NULL;
+		  return i;
+	  }
       if (invite==NULL)
 	osip_list_add (&(*dialog)->route_set, rr2, 0);
       else
@@ -388,11 +410,25 @@ __osip_dialog_init (osip_dialog_t ** dialog,
 
   i = osip_from_clone (remote, &((*dialog)->remote_uri));
   if (i != 0)
-    goto diau_error_3;
+  {
+	  OSIP_TRACE (osip_trace
+				  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+				   "Could not establish dialog!\n"));
+	  osip_dialog_free(*dialog);
+	  *dialog = NULL;
+	  return i;
+  }
 
   i = osip_to_clone (local, &((*dialog)->local_uri));
   if (i != 0)
-    goto diau_error_4;
+  {
+	  OSIP_TRACE (osip_trace
+				  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+				   "Could not establish dialog!\n"));
+	  osip_dialog_free(*dialog);
+	  *dialog = NULL;
+	  return i;
+  }
 
   {
     osip_contact_t *contact;
@@ -402,7 +438,14 @@ __osip_dialog_init (osip_dialog_t ** dialog,
         contact = osip_list_get (&remote_msg->contacts, 0);
         i = osip_contact_clone (contact, &((*dialog)->remote_contact_uri));
         if (i != 0)
-          goto diau_error_5;
+		{
+		  OSIP_TRACE (osip_trace
+					  (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					   "Could not establish dialog!\n"));
+		  osip_dialog_free(*dialog);
+		  *dialog = NULL;
+		  return i;
+		}
     } else
       {
         (*dialog)->remote_contact_uri = NULL;
@@ -414,26 +457,6 @@ __osip_dialog_init (osip_dialog_t ** dialog,
   (*dialog)->secure = -1;       /* non secure */
 
   return OSIP_SUCCESS;
-
-diau_error_5:
-  osip_from_free ((*dialog)->local_uri);
-diau_error_4:
-  osip_from_free ((*dialog)->remote_uri);
-diau_error_3:
-diau_error_2:
-  osip_list_special_free (&(*dialog)->route_set,
-                          (void *(*)(void *)) &osip_record_route_free);
-  osip_free ((*dialog)->remote_tag);
-  osip_free ((*dialog)->local_tag);
-diau_error_1:
-  osip_free ((*dialog)->call_id);
-diau_error_0:
-  OSIP_TRACE (osip_trace
-              (__FILE__, __LINE__, OSIP_ERROR, NULL,
-               "Could not establish dialog!\n"));
-  osip_free (*dialog);
-  *dialog = NULL;
-  return -1;
 }
 
 int
@@ -450,7 +473,7 @@ osip_dialog_init_as_uac (osip_dialog_t ** dialog, osip_message_t * response)
   if (i!=0)
     {
       *dialog = NULL;
-      return -1;
+      return i;
     }
 
   (*dialog)->type = CALLER;
@@ -469,7 +492,7 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
 
   *dialog = NULL;
   if (next_request->cseq==NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = __osip_dialog_init (dialog,
 			  next_request,
@@ -480,7 +503,7 @@ osip_dialog_init_as_uac_with_remote_request (osip_dialog_t ** dialog,
   if (i!=0)
     {
       *dialog = NULL;
-      return -1;
+      return i;
     }
 
   (*dialog)->type = CALLER;
@@ -500,7 +523,7 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
 
   *dialog = NULL;
   if (response->cseq==NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
 
   i = __osip_dialog_init (dialog,
 			  invite,
@@ -511,7 +534,7 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
   if (i!=0)
     {
       *dialog = NULL;
-      return -1;
+      return i;
     }
 
   (*dialog)->type = CALLEE;

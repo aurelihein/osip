@@ -612,7 +612,7 @@ osip_remove_transaction (osip_t * osip, osip_transaction_t * tr)
   int i = -1;
 
   if (tr == NULL)
-    return -1;
+    return OSIP_BADPARAMETER;
   if (tr->ctx_type == ICT)
     i = __osip_remove_ict_transaction (osip, tr);
   else if (tr->ctx_type == IST)
@@ -622,7 +622,7 @@ osip_remove_transaction (osip_t * osip, osip_transaction_t * tr)
   else if (tr->ctx_type == NIST)
     i = __osip_remove_nist_transaction (osip, tr);
   else
-    return -1;
+    return OSIP_BADPARAMETER;
   return i;
 }
 
@@ -679,7 +679,7 @@ __osip_remove_ict_transaction (osip_t * osip, osip_transaction_t * ict)
 #ifdef OSIP_MT
   osip_mutex_unlock (ict_fastmutex);
 #endif
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -736,7 +736,7 @@ __osip_remove_ist_transaction (osip_t * osip, osip_transaction_t * ist)
 #ifdef OSIP_MT
   osip_mutex_unlock (ist_fastmutex);
 #endif
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -793,7 +793,7 @@ __osip_remove_nict_transaction (osip_t * osip, osip_transaction_t * nict)
 #ifdef OSIP_MT
   osip_mutex_unlock (nict_fastmutex);
 #endif
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 int
@@ -850,7 +850,7 @@ __osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist)
 #ifdef OSIP_MT
   osip_mutex_unlock (nist_fastmutex);
 #endif
-  return -1;
+  return OSIP_UNDEFINED_ERROR;
 }
 
 #if 0
@@ -998,7 +998,7 @@ osip_find_transaction_and_add_event (osip_t * osip, osip_event_t * evt)
   osip_transaction_t *transaction = __osip_find_transaction (osip, evt, 1);
 
   if (transaction == NULL)
-    return -1;
+    return OSIP_UNDEFINED_ERROR;
   return OSIP_SUCCESS;
 }
 
@@ -1173,7 +1173,7 @@ osip_create_transaction (osip_t * osip, osip_event_t * evt)
     }
 
   i = osip_transaction_init (&transaction, ctx_type, osip, evt->sip);
-  if (i == -1)
+  if (i != 0)
     {
       return NULL;
     }
@@ -1364,8 +1364,9 @@ int
 osip_init (osip_t ** osip)
 {
   int i;
-  if (increase_ref_count () != 0)
-    return -1;
+  i = increase_ref_count ();
+  if (i != 0)
+    return i;
 
   *osip = (osip_t *) osip_malloc (sizeof (osip_t));
   if (*osip == NULL)
@@ -1373,31 +1374,10 @@ osip_init (osip_t ** osip)
 
   memset (*osip, 0, sizeof (osip_t));
 
-  i = osip_list_init (&(*osip)->osip_ict_transactions);
-  if (i!=0)
-  {
-	  osip_free(*osip);
-	  return OSIP_NOMEM;
-  }
-  i = osip_list_init (&(*osip)->osip_ist_transactions);
-  if (i!=0)
-  {
-	  osip_free(*osip);
-	  return OSIP_NOMEM;
-  }
-  i = osip_list_init (&(*osip)->osip_nict_transactions);
-  if (i!=0)
-  {
-	  osip_free(*osip);
-	  return OSIP_NOMEM;
-  }
-  i = osip_list_init (&(*osip)->osip_nist_transactions);
-  if (i!=0)
-  {
-	  osip_free(*osip);
-	  return OSIP_NOMEM;
-  }
-
+  osip_list_init (&(*osip)->osip_ict_transactions);
+  osip_list_init (&(*osip)->osip_ist_transactions);
+  osip_list_init (&(*osip)->osip_nict_transactions);
+  osip_list_init (&(*osip)->osip_nist_transactions);
   osip_list_init (&(*osip)->ixt_retransmissions);
 
 #if defined(HAVE_DICT_DICT_H)
@@ -2122,7 +2102,7 @@ osip_set_message_callback (osip_t * config, int type, osip_message_cb_t cb)
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "invalid callback type %d\n", type));
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   config->msg_callbacks[type] = cb;
 
@@ -2138,7 +2118,7 @@ osip_set_kill_transaction_callback (osip_t * config, int type,
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "invalid callback type %d\n", type));
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   config->kill_callbacks[type] = cb;
   return OSIP_SUCCESS;
@@ -2153,7 +2133,7 @@ osip_set_transport_error_callback (osip_t * config, int type,
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
                    "invalid callback type %d\n", type));
-      return -1;
+      return OSIP_BADPARAMETER;
     }
   config->tp_error_callbacks[type] = cb;
   return OSIP_SUCCESS;
