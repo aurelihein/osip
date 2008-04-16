@@ -180,9 +180,9 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
   int pos = 0;
   int i;
 
+  *dest = NULL;
   if (sip == NULL)
     return OSIP_BADPARAMETER;
-  *dest = NULL;
 
   i = osip_message_init (&copy);
   if (i != 0)

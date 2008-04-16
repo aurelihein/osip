@@ -430,6 +430,7 @@ extern "C"
 #define OSIP_WRONG_STATE          -4
 #define OSIP_NOMEM                -5
 #define OSIP_SYNTAXERROR          -6
+#define OSIP_NOTFOUND             -7
 
 #define OSIP_NO_NETWORK           -10
 #define OSIP_PORT_BUSY            -11
