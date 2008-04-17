@@ -41,7 +41,7 @@ __osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
     char *proto;
 
     i = osip_message_get_via (invite, 0, &via); /* get top via */
-    if (i != 0)
+    if (i < 0)
 	{
 	  osip_free (*nist);
 	  *nist=NULL;

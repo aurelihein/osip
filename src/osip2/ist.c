@@ -40,7 +40,7 @@ __osip_ist_init (osip_ist_t ** ist, osip_t * osip, osip_message_t * invite)
     char *proto;
 
     i = osip_message_get_via (invite, 0, &via); /* get top via */
-    if (i != 0)
+    if (i < 0)
 	{
 	  osip_free (*ist);
 	  *ist=NULL;

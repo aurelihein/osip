@@ -44,7 +44,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
     char *proto;
 
     i = osip_message_get_via (request, 0, &via);        /* get top via */
-    if (i != 0)
+    if (i < 0)
 	{
 		osip_free (*nict);
 		*nict=NULL;
