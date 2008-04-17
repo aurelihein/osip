@@ -1,3 +1,6 @@
+libosip2 (3.2.0)
+	* return new error code for all API.
+	
 libosip2 (3.1.0)
 	* Windows Mobile 5/6 improvments.
 	* allow uncompliant/IMS authentication headers.
