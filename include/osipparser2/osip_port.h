@@ -425,12 +425,12 @@ extern "C"
 
 #define OSIP_SUCCESS               0
 #define OSIP_UNDEFINED_ERROR      -1
-#define OSIP_API_NOT_INITIALIZED  -2
-#define OSIP_BADPARAMETER         -3
-#define OSIP_WRONG_STATE          -4
-#define OSIP_NOMEM                -5
-#define OSIP_SYNTAXERROR          -6
-#define OSIP_NOTFOUND             -7
+#define OSIP_BADPARAMETER         -2
+#define OSIP_WRONG_STATE          -3
+#define OSIP_NOMEM                -4
+#define OSIP_SYNTAXERROR          -5
+#define OSIP_NOTFOUND             -6
+#define OSIP_API_NOT_INITIALIZED  -7
 
 #define OSIP_NO_NETWORK           -10
 #define OSIP_PORT_BUSY            -11
