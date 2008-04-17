@@ -334,8 +334,10 @@ __osip_dialog_init (osip_dialog_t ** dialog,
   osip_generic_param_t *tag;
 
   *dialog = NULL;
-  if (response==NULL || response->cseq==NULL || local==NULL || remote==NULL)
+  if (response==NULL)
     return OSIP_BADPARAMETER;
+  if (response->cseq==NULL || local==NULL || remote==NULL)
+    return OSIP_SYNTAXERROR;
 
   (*dialog) = (osip_dialog_t *) osip_malloc (sizeof (osip_dialog_t));
   if (*dialog == NULL)
@@ -523,7 +525,7 @@ osip_dialog_init_as_uas (osip_dialog_t ** dialog, osip_message_t * invite,
 
   *dialog = NULL;
   if (response->cseq==NULL)
-    return OSIP_BADPARAMETER;
+    return OSIP_SYNTAXERROR;
 
   i = __osip_dialog_init (dialog,
 			  invite,
