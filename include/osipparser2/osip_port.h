@@ -419,6 +419,8 @@ extern "C"
       element->next   = NULL;                         \
     }
 
+const char *osip_strerror(int err);
+
 #ifdef __cplusplus
 }
 #endif

@@ -117,6 +117,69 @@ osip_free_func_t *osip_free_func = 0;
 #endif
 #endif
 
+const char *osip_error_table[] = {
+ "success",
+ "undefined error",
+ "bad parameter",
+ "wrong state",
+ "allocation failure",
+ "syntax error",
+ "not found",
+ "api not initialized",
+ "undefined",
+ "undefined",
+ "no network",        /* -10 */
+ "busy port",
+ "unknown host"
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "disk full",        /* -20 */
+ "no rights",
+ "file not found",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",        /* -30 */
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",        /* -40 */
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ ""        /* -50 */
+};
+
+const char *osip_strerror(int err)
+{
+	if (err>0)
+		return osip_error_table[0];
+	if (err>-50)
+		return osip_error_table[-err];
+	return osip_error_table[49];
+}
+
 #ifndef WIN32_USE_CRYPTO
 unsigned int
 osip_build_random_number ()
