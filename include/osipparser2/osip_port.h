@@ -442,4 +442,9 @@ const char *osip_strerror(int err);
 #define OSIP_NO_RIGHTS            -31
 #define OSIP_FILE_NOT_EXIST       -32
 
+#define OSIP_TIMEOUT              -50
+#define OSIP_TOOMUCHCALL          -51
+#define OSIP_WRONG_FORMAT         -52
+#define OSIP_NOCOMMONCODEC        -53
+
 #endif                          /* _PORT_H_ */

@@ -138,19 +138,19 @@ const char *osip_error_table[] = {
  "undefined",
  "undefined",
  "undefined",
- "disk full",        /* -20 */
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "disk full",        /* -30 */
  "no rights",
  "file not found",
- "undefined",
- "undefined",
- "undefined",
- "undefined",
- "undefined",
- "undefined",
- "undefined",
- "undefined",        /* -30 */
- "undefined",
- "undefined",
  "undefined",
  "undefined",
  "undefined",
@@ -168,16 +168,26 @@ const char *osip_error_table[] = {
  "undefined",
  "undefined",
  "undefined",
- ""        /* -50 */
+ "time out", /* -50 */
+ "too much call",
+ "wrong format",
+ "no common codec",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined",
+ "undefined", /* -60 */
 };
 
 const char *osip_strerror(int err)
 {
 	if (err>0)
 		return osip_error_table[0];
-	if (err>-50)
+	if (err>-60)
 		return osip_error_table[-err];
-	return osip_error_table[49];
+	return osip_error_table[59];
 }
 
 #ifndef WIN32_USE_CRYPTO
