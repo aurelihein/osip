@@ -17,6 +17,13 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#if defined(WIN32)
+#if !defined(_WIN32_WINNT) && defined(WINVER)
+#define _WIN32_WINNT WINVER
+#else !defined(_WIN32_WINNT)
+#define _WIN32_WINNT 0x0403
+#endif
+#endif
 
 #include <osipparser2/osip_port.h>
 
@@ -106,10 +113,12 @@ typedef pthread_t osip_thread_t;
 
 /* Windows without Pthreads for Win32 */
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+
 /* Prevent the inclusion of winsock.h */
 #define _WINSOCKAPI_
 #include <windows.h>
 #undef _WINSOCKAPI_
+
 typedef struct
 {
   HANDLE h;
@@ -198,7 +207,7 @@ osip_sem_t;
 #include <windows.h>
 #undef _WINSOCKAPI_
 
-#if (_WIN32_WINNT >= 0x0500)
+#if (_WIN32_WINNT >= 0x0403)
 
 #define OSIP_CRITICALSECTION_SPIN  4000
 typedef struct

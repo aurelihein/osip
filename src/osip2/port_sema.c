@@ -423,7 +423,7 @@ osip_sem_trywait (struct osip_sem *_sem)
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 #include <limits.h>
 
-#if (_WIN32_WINNT >= 0x0500)
+#if (_WIN32_WINNT >= 0x0403)
 struct osip_mutex *
 osip_mutex_init ()
 {
