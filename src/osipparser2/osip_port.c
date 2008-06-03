@@ -130,7 +130,7 @@ const char *osip_error_table[] = {
  "undefined",
  "no network",        /* -10 */
  "busy port",
- "unknown host"
+ "unknown host",
  "undefined",
  "undefined",
  "undefined",
