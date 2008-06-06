@@ -1202,7 +1202,7 @@ osip_transaction_find (osip_list_t * transactions, osip_event_t * evt)
       osip_generic_param_t *b_request;
       osip_via_t *topvia_request;
 
-      topvia_request = osip_list_get (evt->sip->vias, 0);
+      topvia_request = osip_list_get (&evt->sip->vias, 0);
       if (topvia_request == NULL)
         {
           OSIP_TRACE (osip_trace
@@ -1254,7 +1254,7 @@ osip_transaction_find (osip_list_t * transactions, osip_event_t * evt)
       osip_generic_param_t *b_request;
       osip_via_t *topvia_request;
 
-      topvia_request = osip_list_get (evt->sip->vias, 0);
+      topvia_request = osip_list_get (&evt->sip->vias, 0);
       if (topvia_request == NULL)
         {
           OSIP_TRACE (osip_trace
