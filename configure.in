@@ -382,7 +382,6 @@ include/osipparser2/headers/Makefile
 help/Makefile
 help/man/Makefile
 help/doxygen/Makefile
-debian/Makefile
 platform/Makefile
 platform/rpm/Makefile
 platform/vsnet/Makefile
