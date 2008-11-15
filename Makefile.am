@@ -1,12 +1,9 @@
 EXTRA_DIST = README BUGS FEATURES HISTORY autogen.sh libosip2.pc.in
 
-SUBDIRS = include src scripts help platform debian
+SUBDIRS = include src scripts help platform
 
 rpm-package:
 	cd platform && $(MAKE) rpm-package
-
-deb:
-	dpkg-buildpackage -rfakeroot
 
 upload: dist
 	@echo "######## Maintainer only ##########";
