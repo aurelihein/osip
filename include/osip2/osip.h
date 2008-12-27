@@ -709,14 +709,14 @@ extern "C"
 
 /**
  * Set the socket for incoming message.
- * NOTE: THIS HAS NEVER TESTED! Please send feedback.
+ *
  * @param transaction The element to work on.
  * @param sock The socket for incoming message.
  */
   int osip_transaction_set_in_socket (osip_transaction_t * transaction, int sock);
 /**
  * Set the socket for outgoing message.
- * NOTE: THIS HAS NEVER TESTED! Please send feedback.
+ *
  * @param transaction The element to work on.
  * @param sock The socket for outgoing message.
  */
