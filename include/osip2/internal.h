@@ -198,6 +198,15 @@ typedef struct
   int semid;
 }
 osip_sem_t;
+#elif defined (__APPLE_CC__)
+#include <mach/task.h>
+#include <mach/semaphore.h>
+#include <mach/mach_init.h>
+typedef struct
+{
+	semaphore_t semid;
+}
+osip_sem_t;
 #endif
 
 /* Windows without Pthreads for Win32 */

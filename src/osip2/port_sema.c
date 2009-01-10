@@ -317,6 +317,72 @@ osip_sem_trywait (struct osip_sem *_sem)
   return semop (sem->semid, &sb, 1);
 }
 
+#elif defined (__APPLE_CC__)
+struct osip_sem *
+osip_sem_init (unsigned int value)
+{
+	task_t task = mach_task_self();
+	int policy = SYNC_POLICY_FIFO;
+	osip_sem_t *sem = (osip_sem_t *) osip_malloc (sizeof (osip_sem_t));
+
+	if (sem == NULL)
+		return NULL;
+
+	if(semaphore_create(task, &sem->semid, policy, value) == KERN_SUCCESS)
+		return (struct osip_sem *) sem;
+
+  return NULL;
+}
+
+int
+osip_sem_destroy (struct osip_sem *_sem)
+{
+	task_t task = mach_task_self();
+	osip_sem_t *sem = (osip_sem_t *) _sem;
+	if (sem == NULL)
+		return OSIP_SUCCESS;
+	if(semaphore_destroy(task, sem->semid) == KERN_SUCCESS)
+		return OSIP_SUCCESS;
+
+  return OSIP_SUCCESS;
+}
+
+int
+osip_sem_post (struct osip_sem *_sem)
+{
+	osip_sem_t *sem = (osip_sem_t *) _sem;
+	if (sem == NULL)
+		return OSIP_BADPARAMETER;
+	if(semaphore_signal(sem->semid) == KERN_SUCCESS)
+		return OSIP_SUCCESS;
+
+  return OSIP_UNDEFINED_ERROR;
+}
+
+int
+osip_sem_wait (struct osip_sem *_sem)
+{
+	osip_sem_t *sem = (osip_sem_t *) _sem;
+	if (sem == NULL)
+		return OSIP_BADPARAMETER;
+	if(semaphore_wait(sem->semid) == KERN_SUCCESS)
+		return OSIP_SUCCESS;
+
+  return OSIP_UNDEFINED_ERROR;
+}
+
+int
+osip_sem_trywait (struct osip_sem *_sem)
+{
+	osip_sem_t *sem = (osip_sem_t *) _sem;
+	if (sem == NULL)
+		return OSIP_BADPARAMETER;
+	mach_timespec_t wait_time = {0, 0};
+	if(semaphore_timedwait(sem->semid, wait_time) == KERN_SUCCESS)
+		return OSIP_SUCCESS;
+
+  return OSIP_UNDEFINED_ERROR;
+}
 #endif
 
 
