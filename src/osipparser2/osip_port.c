@@ -870,12 +870,50 @@ osip_is_trace_level_activate (osip_trace_level_t level)
 }
 #endif
 
+#ifdef WIN32
+
+#include <time.h>
+#include <sys/timeb.h>
+
+int
+__osip_port_gettimeofday (struct timeval *tp, void *tz)
+{
+	struct _timeb timebuffer;
+
+	_ftime (&timebuffer);
+	tp->tv_sec = (long) timebuffer.time;
+	tp->tv_usec = timebuffer.millitm * 1000;
+	return OSIP_SUCCESS;
+}
+#elif defined(__linux)
+#include <sys/time.h>
+#define __osip_port_gettimeofday gettimeofday
+#endif
+
 int
 osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
 {
 #ifdef ENABLE_TRACE
   va_list ap;
+  int relative_time=0;
+  
+#if defined(WIN32) || defined(__linux)
+  static struct timeval start={0,0};
+  struct timeval now;
 
+  if (start.tv_sec==0 && start.tv_usec==0)
+  {
+	  __osip_port_gettimeofday(&start, NULL);
+  }
+  __osip_port_gettimeofday(&now, NULL);
+
+  relative_time = 1000*(now.tv_sec - start.tv_sec);
+  if (now.tv_usec - start.tv_usec>0)
+	  relative_time = relative_time + ((now.tv_usec - start.tv_usec)/1000);
+  else
+	  relative_time = relative_time -1 + ((now.tv_usec - start.tv_usec)/1000);
+#endif
+  
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
   if (logfile == NULL && use_syslog == 0 && trace_func == NULL)
     {                           /* user did not initialize logger.. */
@@ -898,23 +936,23 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
 
   if (f && use_syslog == 0)
     {
-      if (level == OSIP_FATAL)
-        fprintf (f, "| FATAL | <%s: %i> ", fi, li);
+	  if (level == OSIP_FATAL)
+        fprintf (f, "| FATAL | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_BUG)
-        fprintf (f, "|  BUG  | <%s: %i> ", fi, li);
+        fprintf (f, "|  BUG  | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_ERROR)
-        fprintf (f, "| ERROR | <%s: %i> ", fi, li);
+        fprintf (f, "| ERROR | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_WARNING)
-        fprintf (f, "|WARNING| <%s: %i> ", fi, li);
+        fprintf (f, "|WARNING| %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO1)
-        fprintf (f, "| INFO1 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO1 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO2)
-        fprintf (f, "| INFO2 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO2 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO3)
-        fprintf (f, "| INFO3 | <%s: %i> ", fi, li);
+        fprintf (f, "| INFO3 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO4)
-        fprintf (f, "| INFO4 | <%s: %i> ", fi, li);
-
+		  fprintf (f, "| INFO4 | %i <%s: %i> ", relative_time, fi, li);
+	  
       vfprintf (f, chfr, ap);
 
       fflush (f);
@@ -970,24 +1008,27 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
     {
       char buffer[512];
       int in = 0;
-
+#ifdef DISPLAY_TIME
+	  int relative_time;
+#endif
+	  
       memset (buffer, 0, sizeof (buffer));
       if (level == OSIP_FATAL)
-        in = _snprintf (buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| FATAL | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_BUG)
-        in = _snprintf (buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "|  BUG  | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_ERROR)
-        in = _snprintf (buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| ERROR | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_WARNING)
-        in = _snprintf (buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "|WARNING| %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO1)
-        in = _snprintf (buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO1 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO2)
-        in = _snprintf (buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO2 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO3)
-        in = _snprintf (buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO3 | %i <%s: %i> ", relative_time, fi, li);
       else if (level == OSIP_INFO4)
-        in = _snprintf (buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+        in = _snprintf (buffer, 511, "| INFO4 | %i <%s: %i> ", relative_time, fi, li);
 
       _vsnprintf (buffer + in, 511 - in, chfr, ap);
       OutputDebugString (buffer);
