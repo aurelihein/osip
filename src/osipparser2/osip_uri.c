@@ -478,6 +478,7 @@ osip_uri_parse_params (osip_uri_t * url, const char *params)
       if (pvalue == NULL)
         return OSIP_NOMEM;
       osip_strncpy (pvalue, equal + 1, comma - equal - 1);
+      __osip_uri_unescape (pvalue);
     }
 
   if (equal - params < 2)
@@ -492,6 +493,7 @@ osip_uri_parse_params (osip_uri_t * url, const char *params)
       return OSIP_NOMEM;
     }
   osip_strncpy (pname, params + 1, equal - params - 1);
+  __osip_uri_unescape (pname);
 
   osip_uri_uparam_add (url, pname, pvalue);
 
