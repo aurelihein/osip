@@ -103,11 +103,13 @@ osip_uri_test_accessor_api (osip_uri_t * url)
     fprintf (stdout, ":%s|", url->password);
   if (url->username != NULL)
     fprintf (stdout, "@|");
-  /*   if (url->host!=NULL)  mandatory */
-  if (strchr (url->host, ':') != NULL)
-    fprintf (stdout, "[%s]|", url->host);
-  else
-    fprintf (stdout, "%s|", url->host);
+  if (url->host!=NULL)
+    {
+      if (strchr (url->host, ':') != NULL)
+        fprintf (stdout, "[%s]|", url->host); 
+      else
+        fprintf (stdout, "%s|", url->host);
+    }
   if (url->port != NULL)
     fprintf (stdout, ":%s|", url->port);
 
