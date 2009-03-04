@@ -1,3 +1,8 @@
+libosip2 (3.3.0)
+	* new APPLE native interface for semaphore
+	* add relative time in log information on linux/windows
+	* fix: unescape last uri parameters.
+
 libosip2 (3.2.0)
 	* return new error code for all API.
 	
