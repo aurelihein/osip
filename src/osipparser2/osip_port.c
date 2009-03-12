@@ -870,7 +870,7 @@ osip_is_trace_level_activate (osip_trace_level_t level)
 }
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(_WIN32_WCE)
 
 #include <time.h>
 #include <sys/timeb.h>
@@ -897,7 +897,7 @@ osip_trace (char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ..
   va_list ap;
   int relative_time=0;
   
-#if defined(WIN32) || defined(__linux)
+#if (defined(WIN32)  && !defined(_WIN32_WCE)) || defined(__linux)
   static struct timeval start={0,0};
   struct timeval now;
 
