@@ -34,37 +34,6 @@ osip_parse (const char *buf, size_t length)
   if (se == NULL)
     return NULL;
 
-#ifdef TEST_PARSER_SPEED
-  {
-    int kk;
-    int pstime1, pstime;
-    struct timespec tv1;
-
-    clock_get_time (CLOCK_REALTIME, &tv1);
-    pstime = ((tv1.tv_sec * 1000) + (tv1.tv_nsec / 1000000));
-    for (kk = 0; kk < 10000; kk++)
-      {
-
-        i = osip_message_init (&(se->sip));
-
-        if (osip_message_parse (se->sip, buf, length) != 0)
-          {
-            fprintf (stdout, "osip_message_parse retrun -1\n");
-            osip_message_free (se->sip);
-        } else
-          {                     /* msg is parsed */
-            osip_message_free (se->sip);
-          }
-      }
-    clock_get_time (CLOCK_REALTIME, &tv1);
-    pstime1 = ((tv1.tv_sec * 1000) + (tv1.tv_nsec / 1000000));
-    fprintf (stdout, "CPU clock ticks for 10000 messages - T1: %i - T2: %i\n",
-             pstime1, pstime);
-    fprintf (stdout, "CPU time for 10000 messages - %d\n", (pstime1 - pstime));
-  }
-  osip_free (se);
-  return NULL;
-#endif
   /* parse message and set up an event */
   i = osip_message_init (&(se->sip));
   if (i != 0)
