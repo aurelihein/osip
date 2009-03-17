@@ -275,10 +275,12 @@ extern "C"
   int osip_atoi (const char *number);
   int osip_strcasecmp (const char *s1, const char *s2);
   int osip_strncasecmp (const char *s1, const char *s2, size_t len);
+  char *osip_strcasestr(const char *haystack, const char *needle);
 #else
 #define osip_atoi  atoi
 #define osip_strcasecmp  strcasecmp
 #define osip_strncasecmp  strncasecmp
+#define osip_strcasestr  strcasestr
 #endif
 
 /**************************/

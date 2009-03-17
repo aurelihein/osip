@@ -494,6 +494,38 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
   return _strnicmp (s1, s2, len);
 #endif
 }
+
+char *osip_strcasestr(const char *haystack, const char *needle)
+{
+	const char *p = haystack;
+	const char *s = NULL;
+	const char *n = NULL;
+
+	if (*p == '\0')
+		return NULL;
+
+	while (*p != '\0') {
+		if (n) {
+			/* continue until 'needle' is 100% found */
+			if (toupper(*p) == toupper(*n)) {
+				if (!*++n)
+					return (char *)s;
+			} else {
+				/* failure */
+				n = NULL;
+				p = s+1;
+			}
+		} else
+			if (toupper(*p) == toupper(*needle)) {
+				/* first char found */
+				n = needle + 1;
+				s = p;
+			}
+	}
+
+	return NULL;
+}
+
 #endif
 
 /* remove SPACE before and after the content */
