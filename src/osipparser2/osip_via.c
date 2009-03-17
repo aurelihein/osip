@@ -482,7 +482,7 @@ osip_via_clone (const osip_via_t * via, osip_via_t ** dest)
 	  }
   }
 
-  i = osip_list_clone(&via->via_params, &vi->via_params, &osip_generic_param_clone);
+  i = osip_list_clone(&via->via_params, &vi->via_params, (int (*) (void *, void **))&osip_generic_param_clone);
   if (i != 0)
     {
       osip_via_free(vi);
