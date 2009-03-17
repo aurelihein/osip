@@ -47,7 +47,7 @@ osip_parse (const char *buf, size_t length)
 
         i = osip_message_init (&(se->sip));
 
-        if (osip_message_parse (se->sip, buf, length) == -1)
+        if (osip_message_parse (se->sip, buf, length) != 0)
           {
             fprintf (stdout, "osip_message_parse retrun -1\n");
             osip_message_free (se->sip);
@@ -72,7 +72,7 @@ osip_parse (const char *buf, size_t length)
       osip_free (se);
       return NULL;
     }
-  if (osip_message_parse (se->sip, buf, length) == -1)
+  if (osip_message_parse (se->sip, buf, length) != 0)
     {
       OSIP_TRACE (osip_trace
                   (__FILE__, __LINE__, OSIP_ERROR, NULL,
