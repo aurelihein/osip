@@ -108,7 +108,7 @@ osip_body_clone (const osip_body_t * body, osip_body_t ** dest)
 	  }
     }
 
-  i = osip_list_clone(body->headers, copy->headers, &osip_header_clone);
+  i = osip_list_clone(body->headers, copy->headers, (int (*) (void *, void **))&osip_header_clone);
   if (i != 0)
   {
 	  osip_body_free (copy);

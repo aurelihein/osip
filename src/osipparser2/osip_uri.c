@@ -727,13 +727,13 @@ osip_uri_clone (const osip_uri_t * url, osip_uri_t ** dest)
   if (url->string != NULL)
     ur->string = osip_strdup (url->string);
 
-  i = osip_list_clone(&url->url_params, &ur->url_params, &osip_uri_param_clone);
+  i = osip_list_clone(&url->url_params, &ur->url_params, (int (*) (void *, void **))&osip_uri_param_clone);
   if (i != 0)
     {
       osip_uri_free(ur);
       return i;
     }
-  i = osip_list_clone(&url->url_headers, &ur->url_headers, &osip_uri_param_clone);
+  i = osip_list_clone(&url->url_headers, &ur->url_headers, (int (*) (void *, void **))&osip_uri_param_clone);
   if (i != 0)
     {
       osip_uri_free(ur);

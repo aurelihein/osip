@@ -201,7 +201,7 @@ osip_call_info_clone (const osip_call_info_t * ctt, osip_call_info_t ** dest)
 	  return OSIP_NOMEM;
   }
 
-  i = osip_list_clone(&ctt->gen_params, &ct->gen_params, &osip_generic_param_clone);
+  i = osip_list_clone(&ctt->gen_params, &ct->gen_params, (int (*) (void *, void **))&osip_generic_param_clone);
   if (i != 0)
     {
       osip_call_info_free (ct);

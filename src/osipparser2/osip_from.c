@@ -403,7 +403,7 @@ osip_from_clone (const osip_from_t * from, osip_from_t ** dest)
         }
     }
 
-  i = osip_list_clone(&from->gen_params, &fr->gen_params, &osip_generic_param_clone);
+  i = osip_list_clone(&from->gen_params, &fr->gen_params, (int (*) (void *, void **))&osip_generic_param_clone);
   if (i != 0)
     {
       osip_from_free (fr);
