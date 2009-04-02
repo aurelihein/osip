@@ -59,7 +59,7 @@ extern "C"
  */
   struct __node
   {
-    void *next;                 /**< next __node_t containing element */
+    __node_t *next;                 /**< next __node_t containing element */
     void *element;              /**< element in Current node */
   };
 #endif
