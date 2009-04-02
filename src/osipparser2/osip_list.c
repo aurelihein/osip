@@ -51,7 +51,7 @@ int osip_list_clone (const osip_list_t * src, osip_list_t * dst, int (*clone_fun
 }
 
 void
-osip_list_special_free (osip_list_t * li, void *(*free_func) (void *))
+osip_list_special_free (osip_list_t * li, void (*free_func) (void *))
 {
   void *element;
 

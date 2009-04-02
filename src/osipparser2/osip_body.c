@@ -480,7 +480,7 @@ osip_body_free (osip_body_t * body)
       osip_content_type_free (body->content_type);
     }
 
-  osip_list_special_free(body->headers, (void *(*)(void *)) &osip_header_free);
+  osip_list_special_free(body->headers, (void (*)(void *)) &osip_header_free);
   osip_free (body->headers);
   osip_free (body);
 }

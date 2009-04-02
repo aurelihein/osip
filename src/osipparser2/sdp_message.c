@@ -203,7 +203,7 @@ sdp_media_init (sdp_media_t ** media)
   {
 	  osip_list_ofchar_free (&(*media)->m_payloads);
 	  osip_list_special_free (&(*media)->c_connections,
-							  (void *(*)(void *)) &sdp_connection_free);
+							  (void (*)(void *)) &sdp_connection_free);
 	  osip_free(*media);
 	  *media=NULL;
 	  return OSIP_NOMEM;	
@@ -213,9 +213,9 @@ sdp_media_init (sdp_media_t ** media)
   {
 	  osip_list_ofchar_free (&(*media)->m_payloads);
 	  osip_list_special_free (&(*media)->c_connections,
-							  (void *(*)(void *)) &sdp_connection_free);
+							  (void (*)(void *)) &sdp_connection_free);
 	  osip_list_special_free (&(*media)->b_bandwidths,
-							  (void *(*)(void *)) &sdp_bandwidth_free);
+							  (void (*)(void *)) &sdp_bandwidth_free);
 	  osip_free(*media);
 	  *media=NULL;
 	  return OSIP_NOMEM;	
@@ -236,11 +236,11 @@ sdp_media_free (sdp_media_t * media)
   osip_list_ofchar_free (&media->m_payloads);
   osip_free (media->i_info);
   osip_list_special_free (&media->c_connections,
-                          (void *(*)(void *)) &sdp_connection_free);
+                          (void (*)(void *)) &sdp_connection_free);
   osip_list_special_free (&media->b_bandwidths,
-                          (void *(*)(void *)) &sdp_bandwidth_free);
+                          (void (*)(void *)) &sdp_bandwidth_free);
   osip_list_special_free (&media->a_attributes,
-                          (void *(*)(void *)) &sdp_attribute_free);
+                          (void (*)(void *)) &sdp_attribute_free);
   sdp_key_free (media->k_key);
   osip_free (media);
 }
@@ -301,7 +301,7 @@ sdp_message_init (sdp_message_t ** sdp)
 	  osip_list_ofchar_free (&(*sdp)->e_emails);
 	  osip_list_ofchar_free (&(*sdp)->p_phones);
 	  osip_list_special_free (&(*sdp)->b_bandwidths,
-							  (void *(*)(void *)) &sdp_bandwidth_free);
+							  (void (*)(void *)) &sdp_bandwidth_free);
 	  osip_free(*sdp);
 	  *sdp=NULL;
 	  return OSIP_NOMEM;	
@@ -316,8 +316,8 @@ sdp_message_init (sdp_message_t ** sdp)
 	  osip_list_ofchar_free (&(*sdp)->e_emails);
 	  osip_list_ofchar_free (&(*sdp)->p_phones);
 	  osip_list_special_free (&(*sdp)->b_bandwidths,
-							  (void *(*)(void *)) &sdp_bandwidth_free);
-	  osip_list_special_free (&(*sdp)->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+							  (void (*)(void *)) &sdp_bandwidth_free);
+	  osip_list_special_free (&(*sdp)->t_descrs, (void (*)(void *)) &sdp_time_descr_free);
 	  osip_free(*sdp);
 	  *sdp=NULL;
 	  return OSIP_NOMEM;	
@@ -329,10 +329,10 @@ sdp_message_init (sdp_message_t ** sdp)
 	  osip_list_ofchar_free (&(*sdp)->e_emails);
 	  osip_list_ofchar_free (&(*sdp)->p_phones);
 	  osip_list_special_free (&(*sdp)->b_bandwidths,
-							  (void *(*)(void *)) &sdp_bandwidth_free);
-	  osip_list_special_free (&(*sdp)->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+							  (void (*)(void *)) &sdp_bandwidth_free);
+	  osip_list_special_free (&(*sdp)->t_descrs, (void (*)(void *)) &sdp_time_descr_free);
 	  osip_list_special_free (&(*sdp)->a_attributes,
-							  (void *(*)(void *)) &sdp_attribute_free);
+							  (void (*)(void *)) &sdp_attribute_free);
 	  osip_free(*sdp);
 	  *sdp=NULL;
 	  return OSIP_NOMEM;	
@@ -2169,17 +2169,17 @@ sdp_message_free (sdp_message_t * sdp)
   sdp_connection_free (sdp->c_connection);
 
   osip_list_special_free (&sdp->b_bandwidths,
-                          (void *(*)(void *)) &sdp_bandwidth_free);
+                          (void (*)(void *)) &sdp_bandwidth_free);
 
-  osip_list_special_free (&sdp->t_descrs, (void *(*)(void *)) &sdp_time_descr_free);
+  osip_list_special_free (&sdp->t_descrs, (void (*)(void *)) &sdp_time_descr_free);
 
   osip_free (sdp->z_adjustments);
   sdp_key_free (sdp->k_key);
 
   osip_list_special_free (&sdp->a_attributes,
-                          (void *(*)(void *)) &sdp_attribute_free);
+                          (void (*)(void *)) &sdp_attribute_free);
 
-  osip_list_special_free (&sdp->m_medias, (void *(*)(void *)) &sdp_media_free);
+  osip_list_special_free (&sdp->m_medias, (void (*)(void *)) &sdp_media_free);
 
   osip_free (sdp);
 }

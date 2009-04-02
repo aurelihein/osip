@@ -113,7 +113,7 @@ osip_dialog_update_route_set_as_uac (osip_dialog_t * dialog,
   if (dialog->state == DIALOG_EARLY && osip_list_size (&dialog->route_set) > 0)
     {
       osip_list_special_free (&dialog->route_set,
-			      (void *(*)(void *)) &osip_record_route_free);
+			      (void (*)(void *)) &osip_record_route_free);
       osip_list_init (&dialog->route_set);
     }
 
@@ -554,7 +554,7 @@ osip_dialog_free (osip_dialog_t * dialog)
   osip_from_free (dialog->local_uri);
   osip_to_free (dialog->remote_uri);
   osip_list_special_free (&dialog->route_set,
-                          (void *(*)(void *)) &osip_record_route_free);
+                          (void (*)(void *)) &osip_record_route_free);
   osip_free (dialog->remote_tag);
   osip_free (dialog->local_tag);
   osip_free (dialog->call_id);

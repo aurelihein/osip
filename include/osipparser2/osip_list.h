@@ -110,7 +110,7 @@ extern "C"
  * @param li The element to work on.
  * @param free_func The method that is able to release one element of the list.
  */
-  void osip_list_special_free (osip_list_t * li, void *(*free_func) (void *));
+  void osip_list_special_free (osip_list_t * li, void (*free_func) (void *));
 /**
  * Clone a list of element.
  * Each element will be cloned with the method given as the second parameter.
