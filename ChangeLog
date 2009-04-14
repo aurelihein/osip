@@ -1,3 +1,8 @@
+libosip2 (3.4.0)
+	* osip_list improvements.
+	* osip_list prototypes and warnings fix.
+	* new osip_strcasestr method.
+	
 libosip2 (3.3.0)
 	* new APPLE native interface for semaphore
 	* add relative time in log information on linux/windows
