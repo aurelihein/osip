@@ -30,6 +30,9 @@ extern osip_statemachine_t nict_fsm;
 extern osip_statemachine_t nist_fsm;
 #endif
 
+int osip_id_mutex_lock (osip_t * osip);
+int osip_id_mutex_unlock (osip_t * osip);
+
 static int __osip_transaction_set_topvia (osip_transaction_t * transaction,
                                           osip_via_t * topvia);
 static int __osip_transaction_set_from (osip_transaction_t * transaction,
@@ -146,8 +149,11 @@ osip_transaction_init (osip_transaction_t ** transaction,
   memset (*transaction, 0, sizeof (osip_transaction_t));
 
   (*transaction)->birth_time = now;
+
+  osip_id_mutex_lock(osip);
   (*transaction)->transactionid = transactionid;
   transactionid++;
+  osip_id_mutex_unlock(osip);
 
   topvia = osip_list_get (&request->vias, 0);
   if (topvia == NULL)

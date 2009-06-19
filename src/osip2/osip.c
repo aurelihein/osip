@@ -28,6 +28,7 @@ static struct osip_mutex *ict_fastmutex;
 static struct osip_mutex *ist_fastmutex;
 static struct osip_mutex *nict_fastmutex;
 static struct osip_mutex *nist_fastmutex;
+static struct osip_mutex *id_mutex;
 #endif
 
 
@@ -63,6 +64,7 @@ __osip_global_init ()
 
   ixt_fastmutex = osip_mutex_init ();
 
+  id_mutex = osip_mutex_init ();
 #endif
   return OSIP_SUCCESS;
 }
@@ -84,6 +86,8 @@ __osip_global_free ()
   osip_mutex_destroy (nist_fastmutex);
 
   osip_mutex_destroy (ixt_fastmutex);
+
+  osip_mutex_destroy (id_mutex);
 #endif
 }
 
@@ -152,6 +156,26 @@ osip_ixt_unlock (osip_t * osip)
 {
 #ifdef OSIP_MT
   return osip_mutex_unlock (ixt_fastmutex);
+#else
+  return OSIP_SUCCESS;
+#endif
+}
+
+int
+osip_id_mutex_lock (osip_t * osip)
+{
+#ifdef OSIP_MT
+  return osip_mutex_lock (id_mutex);
+#else
+  return OSIP_SUCCESS;
+#endif
+}
+
+int
+osip_id_mutex_unlock (osip_t * osip)
+{
+#ifdef OSIP_MT
+  return osip_mutex_unlock (id_mutex);
 #else
   return OSIP_SUCCESS;
 #endif
