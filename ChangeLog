@@ -1,4 +1,5 @@
 libosip2 (3.4.0)
+	* fix race condition for non-atomic incrementation operation.
 	* osip_list improvements.
 	* osip_list prototypes and warnings fix.
 	* new osip_strcasestr method.
