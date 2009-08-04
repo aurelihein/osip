@@ -120,6 +120,11 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
     return OSIP_NOMEM;
   osip_strncpy (url->scheme, buf, tmp - buf);
 
+  if (strchr (url->scheme, ' ')!=NULL)
+  {
+    return OSIP_SYNTAXERROR;
+  }
+
   if (strlen (url->scheme) < 3 ||
       (0 != osip_strncasecmp (url->scheme, "sip", 3)
        && 0 != osip_strncasecmp (url->scheme, "sips", 4)))
