@@ -57,6 +57,7 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 	  return OSIP_SYNTAXERROR;
 	}
 
+#ifdef USE_BLOCKINGSOCKET
     if (osip_strcasecmp (proto, "TCP") != 0
         && osip_strcasecmp (proto, "TLS") != 0
         && osip_strcasecmp (proto, "SCTP") != 0)
@@ -78,6 +79,30 @@ __osip_ict_init (osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
         (*ict)->timer_d_start.tv_sec = -1;      /* not started */
       }
   }
+#else
+    if (osip_strcasecmp (proto, "TCP") != 0
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+      {                         /* for other reliable protocol than TCP, the timer
+                                   must be desactived by the external application */
+        (*ict)->timer_a_length = DEFAULT_T1;
+        if (64 * DEFAULT_T1 < 32000)
+          (*ict)->timer_d_length = 32000;
+        else
+          (*ict)->timer_d_length = 64 * DEFAULT_T1;
+        osip_gettimeofday (&(*ict)->timer_a_start, NULL);
+        add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
+        (*ict)->timer_d_start.tv_sec = -1;      /* not started */
+    } else
+      {                         /* reliable protocol is used: */
+        (*ict)->timer_a_length = DEFAULT_T1;
+        (*ict)->timer_d_length = 0;     /* MUST do the transition immediatly */
+        osip_gettimeofday (&(*ict)->timer_a_start, NULL);
+        add_gettimeofday (&(*ict)->timer_a_start, (*ict)->timer_a_length);
+        (*ict)->timer_d_start.tv_sec = -1;      /* not started */
+      }
+  }
+#endif
 
   /* for PROXY, the destination MUST be set by the application layer,
      this one may not be correct. */

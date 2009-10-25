@@ -236,14 +236,49 @@ ict_snd_invite (osip_transaction_t * ict, osip_event_t * evt)
   i = osip->cb_send_message (ict, evt->sip, ict->ict_context->destination,
                              ict->ict_context->port, ict->out_socket);
 
-  if (i == 0)
-    {
-      __osip_message_callback (OSIP_ICT_INVITE_SENT, ict, ict->orig_request);
-      __osip_transaction_set_state (ict, ICT_CALLING);
-  } else
-    {
+  if (i < 0)
+  {
       ict_handle_transport_error (ict, i);
-    }
+	  return;
+  }
+
+#ifndef USE_BLOCKINGSOCKET
+  /*
+  stop timer E in reliable transport - non blocking socket: 
+  the message was just sent
+  */
+  if (i == 0) /* but message was really sent */
+  {
+    osip_via_t *via;
+    char *proto;
+
+    i = osip_message_get_via (ict->orig_request, 0, &via);        /* get top via */
+    if (i < 0)
+	{
+      ict_handle_transport_error (ict, i);
+      return;
+	}
+    proto = via_get_protocol (via);
+    if (proto == NULL)
+	{
+      ict_handle_transport_error (ict, i);
+      return;
+	}
+	if (osip_strcasecmp (proto, "TCP") != 0
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+	{
+	}
+	else
+	{                         /* reliable protocol is used: */
+		ict->ict_context->timer_a_length = -1;   /* A is not ACTIVE */
+		ict->ict_context->timer_a_start.tv_sec = -1;
+	}
+  }
+#endif
+
+  __osip_message_callback (OSIP_ICT_INVITE_SENT, ict, ict->orig_request);
+  __osip_transaction_set_state (ict, ICT_CALLING);
 }
 
 void
@@ -263,13 +298,49 @@ osip_ict_timeout_a_event (osip_transaction_t * ict, osip_event_t * evt)
     osip->cb_send_message (ict, ict->orig_request,
                            ict->ict_context->destination,
                            ict->ict_context->port, ict->out_socket);
-  if (i != 0)
+  if (i < 0)
     {
       ict_handle_transport_error (ict, i);
       return;
     }
 
-  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict, ict->orig_request);
+#ifndef USE_BLOCKINGSOCKET
+  /*
+  stop timer E in reliable transport - non blocking socket: 
+  the message was just sent
+  */
+  if (i == 0) /* but message was really sent */
+  {
+    osip_via_t *via;
+    char *proto;
+
+    i = osip_message_get_via (ict->orig_request, 0, &via);        /* get top via */
+    if (i < 0)
+	{
+      ict_handle_transport_error (ict, i);
+      return;
+	}
+    proto = via_get_protocol (via);
+    if (proto == NULL)
+	{
+      ict_handle_transport_error (ict, i);
+      return;
+	}
+	if (osip_strcasecmp (proto, "TCP") != 0
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+	{
+	}
+	else
+	{                         /* reliable protocol is used: */
+		ict->ict_context->timer_a_length = -1;   /* A is not ACTIVE */
+		ict->ict_context->timer_a_start.tv_sec = -1;
+	}
+  }
+#endif
+
+  if (i==0)
+	  __osip_message_callback (OSIP_ICT_INVITE_SENT_AGAIN, ict, ict->orig_request);
 }
 
 void

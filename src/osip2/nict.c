@@ -57,7 +57,7 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 		*nict=NULL;
 		return OSIP_UNDEFINED_ERROR;
 	}
-
+#ifdef USE_BLOCKINGSOCKET
     if (osip_strcasecmp (proto, "TCP") != 0
         && osip_strcasecmp (proto, "TLS") != 0
         && osip_strcasecmp (proto, "SCTP") != 0)
@@ -74,7 +74,24 @@ __osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
         (*nict)->timer_k_start.tv_sec = -1;     /* not started */
       }
   }
-
+#else
+    if (osip_strcasecmp (proto, "TCP") != 0
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+      {
+        (*nict)->timer_e_length = DEFAULT_T1;
+        (*nict)->timer_k_length = DEFAULT_T4;
+        (*nict)->timer_e_start.tv_sec = -1;
+        (*nict)->timer_k_start.tv_sec = -1;     /* not started */
+    } else
+      {                         /* reliable protocol is used: */
+        (*nict)->timer_e_length = DEFAULT_T1;
+        (*nict)->timer_k_length = 0;    /* MUST do the transition immediatly */
+        (*nict)->timer_e_start.tv_sec = -1;
+        (*nict)->timer_k_start.tv_sec = -1;     /* not started */
+      }
+  }
+#endif
   /* for PROXY, the destination MUST be set by the application layer,
      this one may not be correct. */
   osip_message_get_route (request, 0, &route);

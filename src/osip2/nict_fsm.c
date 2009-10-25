@@ -269,7 +269,7 @@ nict_snd_request (osip_transaction_t * nict, osip_event_t * evt)
   i = osip->cb_send_message (nict, evt->sip, nict->nict_context->destination,
                              nict->nict_context->port, nict->out_socket);
 
-  if (i == 0)
+  if (i >= 0)
     {
       /* invoke the right callback! */
       if (MSG_IS_REGISTER (evt->sip))
@@ -326,12 +326,47 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
   i = osip->cb_send_message (nict, nict->orig_request,
                              nict->nict_context->destination,
                              nict->nict_context->port, nict->out_socket);
-  if (i != 0)
+  if (i < 0)
     {
       nict_handle_transport_error (nict, i);
       return;
     }
-  __osip_message_callback (OSIP_NICT_REQUEST_SENT_AGAIN, nict, nict->orig_request);
+#ifndef USE_BLOCKINGSOCKET
+  /*
+  stop timer E in reliable transport - non blocking socket: 
+  the message was just sent
+  */
+  if (i == 0) /* but message was really sent */
+  {
+    osip_via_t *via;
+    char *proto;
+
+    i = osip_message_get_via (nict->orig_request, 0, &via);        /* get top via */
+    if (i < 0)
+	{
+      nict_handle_transport_error (nict, -1);
+      return;
+	}
+    proto = via_get_protocol (via);
+    if (proto == NULL)
+	{
+      nict_handle_transport_error (nict, -1);
+      return;
+	}
+	if (osip_strcasecmp (proto, "TCP") != 0
+        && osip_strcasecmp (proto, "TLS") != 0
+        && osip_strcasecmp (proto, "SCTP") != 0)
+	{
+	}
+	else
+	{                         /* reliable protocol is used: */
+		nict->nict_context->timer_e_length = -1;   /* E is not ACTIVE */
+		nict->nict_context->timer_e_start.tv_sec = -1;
+	}
+  }
+#endif
+  if (i == 0) /* but message was really sent */
+	  __osip_message_callback (OSIP_NICT_REQUEST_SENT_AGAIN, nict, nict->orig_request);
 }
 
 void
