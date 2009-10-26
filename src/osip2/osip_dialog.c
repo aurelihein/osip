@@ -167,7 +167,7 @@ int osip_dialog_match_as_uac(osip_dialog_t * dlg, osip_message_t * answer)
 	char *tmp;
 	int i;
 
-	if (dlg == NULL)
+	if (dlg == NULL || dlg->call_id == NULL)
 		return OSIP_BADPARAMETER;
 	if (answer == NULL || answer->call_id == NULL ||
 		answer->from == NULL || answer->to == NULL)
@@ -247,7 +247,7 @@ int osip_dialog_match_as_uas(osip_dialog_t * dlg, osip_message_t * request)
 	int i;
 	char *tmp;
 
-	if (dlg == NULL)
+	if (dlg == NULL || dlg->call_id == NULL)
 		return OSIP_BADPARAMETER;
 	if (request == NULL || request->call_id == NULL ||
 		request->from == NULL || request->to == NULL)
