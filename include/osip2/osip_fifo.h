@@ -40,17 +40,14 @@
  */
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 
 #ifndef DOXYGEN
 
 #define MAX_LEN 1000
-  typedef enum
-  { osip_ok, osip_full, osip_empty }
-  osip_fifo_state;
+	typedef enum { osip_ok, osip_full, osip_empty } osip_fifo_state;
 
 #endif
 
@@ -58,22 +55,22 @@ extern "C"
  * Structure for referencing a fifo.
  * @var osip_fifo_t
  */
-  typedef struct osip_fifo osip_fifo_t;
+	typedef struct osip_fifo osip_fifo_t;
 
 /**
  * Structure for referencing a fifo.
  * @struct osip_fifo
  */
-  struct osip_fifo
-  {
+	struct osip_fifo {
 #ifdef OSIP_MT
-    struct osip_mutex *qislocked;  /**@internal */
-    struct osip_sem *qisempty;     /**@internal */
+		struct osip_mutex *qislocked;
+								   /**@internal */
+		struct osip_sem *qisempty; /**@internal */
 #endif
-    osip_list_t queue;             /**< list of nodes containing elements */
-    int nb_elt;                    /**< nb of elements */
-    osip_fifo_state state;           /**@internal state of the fifo */
-  };
+		osip_list_t queue;		   /**< list of nodes containing elements */
+		int nb_elt;				   /**< nb of elements */
+		osip_fifo_state state;		 /**@internal state of the fifo */
+	};
 
 /**
  * Initialise a osip_fifo_t element.
@@ -84,41 +81,41 @@ extern "C"
  * if you want to use osip_fifo_free().
  * @param ff The element to initialise.
  */
-  void osip_fifo_init (osip_fifo_t * ff);
+	void osip_fifo_init(osip_fifo_t * ff);
 /**
  * Free a fifo element.
  * @param ff The element to work on.
  */
-  void osip_fifo_free (osip_fifo_t * ff);
+	void osip_fifo_free(osip_fifo_t * ff);
 /**
  * Insert an element in a fifo (at the beginning).
  * @param ff The element to work on.
  * @param element The pointer on the element to insert.
  */
-  int osip_fifo_insert (osip_fifo_t * ff, void *element);
+	int osip_fifo_insert(osip_fifo_t * ff, void *element);
 /**
  * Add an element in a fifo.
  * @param ff The element to work on.
  * @param element The pointer on the element to add.
  */
-  int osip_fifo_add (osip_fifo_t * ff, void *element);
+	int osip_fifo_add(osip_fifo_t * ff, void *element);
 /**
  * Get the number of element in a fifo.
  * @param ff The element to work on.
  */
-  int osip_fifo_size (osip_fifo_t * ff);
+	int osip_fifo_size(osip_fifo_t * ff);
 #ifdef OSIP_MT
 /**
  * Get an element from a fifo or block until one is added.
  * @param ff The element to work on.
  */
-  void *osip_fifo_get (osip_fifo_t * ff);
+	void *osip_fifo_get(osip_fifo_t * ff);
 #endif
 /**
  * Try to get an element from a fifo, but do not block if there is no element.
  * @param ff The element to work on.
  */
-  void *osip_fifo_tryget (osip_fifo_t * ff);
+	void *osip_fifo_tryget(osip_fifo_t * ff);
 
 
 /** @} */
@@ -127,6 +124,4 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-
-
 #endif

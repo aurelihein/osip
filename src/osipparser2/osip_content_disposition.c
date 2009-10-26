@@ -28,30 +28,28 @@
 #ifndef MINISIZE
 
 int
-osip_content_disposition_parse (osip_content_disposition_t * cd,
-                                const char *hvalue)
+osip_content_disposition_parse(osip_content_disposition_t * cd, const char *hvalue)
 {
-  const char *cd_params;
-  int i;
+	const char *cd_params;
+	int i;
 
-  cd_params = strchr (hvalue, ';');
+	cd_params = strchr(hvalue, ';');
 
-  if (cd_params != NULL)
-    {
-	  i = __osip_generic_param_parseall (&cd->gen_params, cd_params);
-      if (i != 0)
-        return i;
-  } else
-    cd_params = hvalue + strlen (hvalue);
+	if (cd_params != NULL) {
+		i = __osip_generic_param_parseall(&cd->gen_params, cd_params);
+		if (i != 0)
+			return i;
+	} else
+		cd_params = hvalue + strlen(hvalue);
 
-  if (cd_params - hvalue + 1 < 2)
-    return OSIP_SYNTAXERROR;
-  cd->element = (char *) osip_malloc (cd_params - hvalue + 1);
-  if (cd->element == NULL)
-    return OSIP_NOMEM;
-  osip_clrncpy (cd->element, hvalue, cd_params - hvalue);
+	if (cd_params - hvalue + 1 < 2)
+		return OSIP_SYNTAXERROR;
+	cd->element = (char *) osip_malloc(cd_params - hvalue + 1);
+	if (cd->element == NULL)
+		return OSIP_NOMEM;
+	osip_clrncpy(cd->element, hvalue, cd_params - hvalue);
 
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
 #endif

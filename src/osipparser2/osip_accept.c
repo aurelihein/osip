@@ -30,122 +30,114 @@
 /* INPUT : char *hvalue | value of header.    */
 /* OUTPUT: osip_message_t *sip | structure to save results.  */
 /* returns -1 on error. */
-int
-osip_message_set_accept (osip_message_t * sip, const char *hvalue)
+int osip_message_set_accept(osip_message_t * sip, const char *hvalue)
 {
-  osip_accept_t *accept;
-  int i;
+	osip_accept_t *accept;
+	int i;
 
-  i = accept_init (&accept);
-  if (i != 0)
-    return i;
-  i = osip_accept_parse (accept, hvalue);
-  if (i != 0)
-    {
-      osip_accept_free (accept);
-      return i;
-    }
-  sip->message_property = 2;
+	i = accept_init(&accept);
+	if (i != 0)
+		return i;
+	i = osip_accept_parse(accept, hvalue);
+	if (i != 0) {
+		osip_accept_free(accept);
+		return i;
+	}
+	sip->message_property = 2;
 
-  osip_list_add (&sip->accepts, accept, -1);
-  return OSIP_SUCCESS;
+	osip_list_add(&sip->accepts, accept, -1);
+	return OSIP_SUCCESS;
 }
 
 
 int
-osip_message_get_accept (const osip_message_t * sip, int pos,
-                         osip_accept_t ** dest)
+osip_message_get_accept(const osip_message_t * sip, int pos, osip_accept_t ** dest)
 {
-  osip_accept_t *accept;
+	osip_accept_t *accept;
 
-  *dest = NULL;
-  if (osip_list_size (&sip->accepts) <= pos)
-    return OSIP_UNDEFINED_ERROR;     /* does not exist */
-  accept = (osip_accept_t *) osip_list_get (&sip->accepts, pos);
-  *dest = accept;
-  return pos;
+	*dest = NULL;
+	if (osip_list_size(&sip->accepts) <= pos)
+		return OSIP_UNDEFINED_ERROR;	/* does not exist */
+	accept = (osip_accept_t *) osip_list_get(&sip->accepts, pos);
+	*dest = accept;
+	return pos;
 }
 
 /* returns the content_type header as a string.  */
 /* INPUT : osip_content_type_t *content_type | content_type header.   */
 /* returns null on error. */
-int
-osip_accept_to_str (const osip_accept_t * accept, char **dest)
+int osip_accept_to_str(const osip_accept_t * accept, char **dest)
 {
-  char *buf;
-  char *tmp;
-  size_t len = 0;
+	char *buf;
+	char *tmp;
+	size_t len = 0;
 
-  *dest = NULL;
-  if (accept == NULL)
-    return OSIP_BADPARAMETER;
+	*dest = NULL;
+	if (accept == NULL)
+		return OSIP_BADPARAMETER;
 
-  if (accept->type != NULL)
-    len += strlen (accept->type);
+	if (accept->type != NULL)
+		len += strlen(accept->type);
 
-  if (accept->subtype != NULL)
-    len += strlen (accept->subtype);
+	if (accept->subtype != NULL)
+		len += strlen(accept->subtype);
 
-  if (len == 0)
-    {
-      /* Empty header ! */
-      buf = (char *) osip_malloc (2);
-	  if (buf==NULL)
-		  return OSIP_NOMEM;
-      buf[0] = ' ';
-      buf[1] = '\0';
-      *dest = buf;
-      return OSIP_SUCCESS;
-    }
+	if (len == 0) {
+		/* Empty header ! */
+		buf = (char *) osip_malloc(2);
+		if (buf == NULL)
+			return OSIP_NOMEM;
+		buf[0] = ' ';
+		buf[1] = '\0';
+		*dest = buf;
+		return OSIP_SUCCESS;
+	}
 
-  /* try to guess a long enough length */
-  len += 4    /* for '/', ' ', ';' and '\0' */
-    + 10 * osip_list_size (&accept->gen_params);
+	/* try to guess a long enough length */
+	len += 4					/* for '/', ' ', ';' and '\0' */
+		+ 10 * osip_list_size(&accept->gen_params);
 
-  buf = (char *) osip_malloc (len);
-  if (buf==NULL)
-	  return OSIP_NOMEM;
-  tmp = buf;
+	buf = (char *) osip_malloc(len);
+	if (buf == NULL)
+		return OSIP_NOMEM;
+	tmp = buf;
 
-  sprintf (tmp, "%s/%s", accept->type, accept->subtype);
+	sprintf(tmp, "%s/%s", accept->type, accept->subtype);
 
-  tmp = tmp + strlen (tmp);
-  {
-    int pos = 0;
-    osip_generic_param_t *u_param;
+	tmp = tmp + strlen(tmp);
+	{
+		int pos = 0;
+		osip_generic_param_t *u_param;
 
 #if 0
-    if (!osip_list_eol (&accept->gen_params, pos))
-      {                         /* needed for cannonical form! (authentication issue of rfc2543) */
-        sprintf (tmp, " ");
-        tmp++;
-      }
+		if (!osip_list_eol(&accept->gen_params, pos)) {	/* needed for cannonical form! (authentication issue of rfc2543) */
+			sprintf(tmp, " ");
+			tmp++;
+		}
 #endif
-    while (!osip_list_eol (&accept->gen_params, pos))
-      {
-        size_t tmp_len;
+		while (!osip_list_eol(&accept->gen_params, pos)) {
+			size_t tmp_len;
 
-        u_param = (osip_generic_param_t *) osip_list_get (&accept->gen_params, pos);
-        if (u_param->gvalue == NULL)
-          {
-            osip_free (buf);
-            return OSIP_SYNTAXERROR;
-          }
-        tmp_len = strlen (buf) + 4 + strlen (u_param->gname)
-          + strlen (u_param->gvalue) + 1;
-        if (len < tmp_len)
-          {
-            buf = osip_realloc (buf, tmp_len);
-            len = tmp_len;
-            tmp = buf + strlen (buf);
-          }
-        sprintf (tmp, "; %s=%s", u_param->gname, u_param->gvalue);
-        tmp = tmp + strlen (tmp);
-        pos++;
-      }
-  }
-  *dest = buf;
-  return OSIP_SUCCESS;
+			u_param =
+				(osip_generic_param_t *) osip_list_get(&accept->gen_params, pos);
+			if (u_param->gvalue == NULL) {
+				osip_free(buf);
+				return OSIP_SYNTAXERROR;
+			}
+			tmp_len = strlen(buf) + 4 + strlen(u_param->gname)
+				+ strlen(u_param->gvalue) + 1;
+			if (len < tmp_len) {
+				buf = osip_realloc(buf, tmp_len);
+				len = tmp_len;
+				tmp = buf + strlen(buf);
+			}
+			sprintf(tmp, "; %s=%s", u_param->gname, u_param->gvalue);
+			tmp = tmp + strlen(tmp);
+			pos++;
+		}
+	}
+	*dest = buf;
+	return OSIP_SUCCESS;
 }
 
 #endif

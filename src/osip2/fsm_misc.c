@@ -24,38 +24,37 @@
 #include <osip2/osip.h>
 #include "fsm.h"
 
-static transition_t *fsm_findmethod (type_t type, state_t state,
-                                     osip_statemachine_t * statemachine);
+static transition_t *fsm_findmethod(type_t type, state_t state,
+									osip_statemachine_t * statemachine);
 
 /* find the transition for state and type in statemachine */
 /* return NULL; if transition is not found.               */
-static transition_t *
-fsm_findmethod (type_t type, state_t state, osip_statemachine_t * statemachine)
+static transition_t *fsm_findmethod(type_t type, state_t state,
+									osip_statemachine_t * statemachine)
 {
-  transition_t *transition;
-  for (transition = statemachine->transitions; transition != NULL; transition = transition->next)
-    {
-      if (transition->type == type && transition->state == state)
-        return transition;
-    }
-  return NULL;
+	transition_t *transition;
+	for (transition = statemachine->transitions; transition != NULL;
+		 transition = transition->next) {
+		if (transition->type == type && transition->state == state)
+			return transition;
+	}
+	return NULL;
 }
 
 /* call the right execution method.          */
 /*   return -1 when event must be discarded  */
 int
-fsm_callmethod (type_t type, state_t state,
-                osip_statemachine_t * statemachine, void *sipevent,
-                void *transaction)
+fsm_callmethod(type_t type, state_t state,
+			   osip_statemachine_t * statemachine, void *sipevent,
+			   void *transaction)
 {
-  transition_t *transition;
+	transition_t *transition;
 
-  transition = fsm_findmethod (type, state, statemachine);
-  if (transition == NULL)
-    {
-      /* No transition found for this event */
-      return OSIP_UNDEFINED_ERROR;                /* error */
-    }
-  transition->method (transaction, sipevent);
-  return OSIP_SUCCESS;                     /* ok */
+	transition = fsm_findmethod(type, state, statemachine);
+	if (transition == NULL) {
+		/* No transition found for this event */
+		return OSIP_UNDEFINED_ERROR;	/* error */
+	}
+	transition->method(transaction, sipevent);
+	return OSIP_SUCCESS;		/* ok */
 }

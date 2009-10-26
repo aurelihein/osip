@@ -26,332 +26,305 @@
 
 osip_statemachine_t *nist_fsm;
 
-osip_statemachine_t *
-__nist_get_fsm ()
+osip_statemachine_t *__nist_get_fsm()
 {
-  return nist_fsm;
+	return nist_fsm;
 }
 
-void
-__nist_unload_fsm ()
+void __nist_unload_fsm()
 {
-  transition_t *transition;
-  osip_statemachine_t *statemachine = __nist_get_fsm ();
+	transition_t *transition;
+	osip_statemachine_t *statemachine = __nist_get_fsm();
 
-  for (transition = statemachine->transitions; transition != NULL; transition = statemachine->transitions)
-    {
-      REMOVE_ELEMENT(statemachine->transitions, transition);
-      osip_free (transition);
-    }
+	for (transition = statemachine->transitions; transition != NULL;
+		 transition = statemachine->transitions) {
+		REMOVE_ELEMENT(statemachine->transitions, transition);
+		osip_free(transition);
+	}
 
-  osip_free (statemachine->transitions);
-  osip_free (statemachine);
+	osip_free(statemachine->transitions);
+	osip_free(statemachine);
 }
 
 
-void
-__nist_load_fsm ()
+void __nist_load_fsm()
 {
-  transition_t *transition;
+	transition_t *transition;
 
-  nist_fsm = (osip_statemachine_t *) osip_malloc (sizeof (osip_statemachine_t));
-  if (nist_fsm==NULL)
-	  return;
-  nist_fsm->transitions = NULL;
+	nist_fsm = (osip_statemachine_t *) osip_malloc(sizeof(osip_statemachine_t));
+	if (nist_fsm == NULL)
+		return;
+	nist_fsm->transitions = NULL;
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_PRE_TRYING;
-  transition->type = RCV_REQUEST;
-  transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_PRE_TRYING;
+	transition->type = RCV_REQUEST;
+	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_TRYING;
-  transition->type = SND_STATUS_1XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_TRYING;
+	transition->type = SND_STATUS_1XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_TRYING;
-  transition->type = SND_STATUS_2XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_TRYING;
+	transition->type = SND_STATUS_2XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_TRYING;
-  transition->type = SND_STATUS_3456XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_TRYING;
+	transition->type = SND_STATUS_3456XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_PROCEEDING;
-  transition->type = SND_STATUS_1XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_PROCEEDING;
+	transition->type = SND_STATUS_1XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_PROCEEDING;
-  transition->type = SND_STATUS_2XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_PROCEEDING;
+	transition->type = SND_STATUS_2XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_PROCEEDING;
-  transition->type = SND_STATUS_3456XX;
-  transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_PROCEEDING;
+	transition->type = SND_STATUS_3456XX;
+	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_PROCEEDING;
-  transition->type = RCV_REQUEST;
-  transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_PROCEEDING;
+	transition->type = RCV_REQUEST;
+	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_COMPLETED;
-  transition->type = TIMEOUT_J;
-  transition->method = (void (*)(void *, void *)) &osip_nist_timeout_j_event;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_COMPLETED;
+	transition->type = TIMEOUT_J;
+	transition->method = (void (*)(void *, void *)) &osip_nist_timeout_j_event;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
-  transition = (transition_t *) osip_malloc (sizeof (transition_t));
-  transition->state = NIST_COMPLETED;
-  transition->type = RCV_REQUEST;
-  transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-  ADD_ELEMENT (nist_fsm->transitions, transition);
+	transition = (transition_t *) osip_malloc(sizeof(transition_t));
+	transition->state = NIST_COMPLETED;
+	transition->type = RCV_REQUEST;
+	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
+	ADD_ELEMENT(nist_fsm->transitions, transition);
 
 }
 
 #else
 
-transition_t nist_transition[10] =
-  {
-    {
-      NIST_PRE_TRYING,
-      RCV_REQUEST,
-      (void (*)(void *, void *)) &nist_rcv_request,
-      &nist_transition[1], NULL
-    }
-    ,
-    {
-      NIST_TRYING,
-      SND_STATUS_1XX,
-      (void (*)(void *, void *)) &nist_snd_1xx,
-      &nist_transition[2], NULL
-    }
-    ,
-    {
-      NIST_TRYING,
-      SND_STATUS_2XX,
-      (void (*)(void *, void *)) &nist_snd_23456xx,
-      &nist_transition[3], NULL
-    }
-    ,
-    {
-      NIST_TRYING,
-      SND_STATUS_3456XX,
-      (void (*)(void *, void *)) &nist_snd_23456xx,
-      &nist_transition[4], NULL
-    }
-    ,
-    {
-      NIST_PROCEEDING,
-      SND_STATUS_1XX,
-      (void (*)(void *, void *)) &nist_snd_1xx,
-      &nist_transition[5], NULL
-    }
-    ,
-    {
-      NIST_PROCEEDING,
-      SND_STATUS_2XX,
-      (void (*)(void *, void *)) &nist_snd_23456xx,
-      &nist_transition[6], NULL
-    }
-    ,
-    {
-      NIST_PROCEEDING,
-      SND_STATUS_3456XX,
-      (void (*)(void *, void *)) &nist_snd_23456xx,
-      &nist_transition[7], NULL
-    }
-    ,
-    {
-      NIST_PROCEEDING,
-      RCV_REQUEST,
-      (void (*)(void *, void *)) &nist_rcv_request,
-      &nist_transition[8], NULL
-    }
-    ,
-    {
-      NIST_COMPLETED,
-      TIMEOUT_J,
-      (void (*)(void *, void *)) &osip_nist_timeout_j_event,
-      &nist_transition[9], NULL
-    }
-    ,
-    {
-      NIST_COMPLETED,
-      RCV_REQUEST,
-      (void (*)(void *, void *)) &nist_rcv_request,
-      NULL, NULL
-    }
-  };
+transition_t nist_transition[10] = {
+	{
+	 NIST_PRE_TRYING,
+	 RCV_REQUEST,
+	 (void (*)(void *, void *)) &nist_rcv_request,
+	 &nist_transition[1], NULL}
+	,
+	{
+	 NIST_TRYING,
+	 SND_STATUS_1XX,
+	 (void (*)(void *, void *)) &nist_snd_1xx,
+	 &nist_transition[2], NULL}
+	,
+	{
+	 NIST_TRYING,
+	 SND_STATUS_2XX,
+	 (void (*)(void *, void *)) &nist_snd_23456xx,
+	 &nist_transition[3], NULL}
+	,
+	{
+	 NIST_TRYING,
+	 SND_STATUS_3456XX,
+	 (void (*)(void *, void *)) &nist_snd_23456xx,
+	 &nist_transition[4], NULL}
+	,
+	{
+	 NIST_PROCEEDING,
+	 SND_STATUS_1XX,
+	 (void (*)(void *, void *)) &nist_snd_1xx,
+	 &nist_transition[5], NULL}
+	,
+	{
+	 NIST_PROCEEDING,
+	 SND_STATUS_2XX,
+	 (void (*)(void *, void *)) &nist_snd_23456xx,
+	 &nist_transition[6], NULL}
+	,
+	{
+	 NIST_PROCEEDING,
+	 SND_STATUS_3456XX,
+	 (void (*)(void *, void *)) &nist_snd_23456xx,
+	 &nist_transition[7], NULL}
+	,
+	{
+	 NIST_PROCEEDING,
+	 RCV_REQUEST,
+	 (void (*)(void *, void *)) &nist_rcv_request,
+	 &nist_transition[8], NULL}
+	,
+	{
+	 NIST_COMPLETED,
+	 TIMEOUT_J,
+	 (void (*)(void *, void *)) &osip_nist_timeout_j_event,
+	 &nist_transition[9], NULL}
+	,
+	{
+	 NIST_COMPLETED,
+	 RCV_REQUEST,
+	 (void (*)(void *, void *)) &nist_rcv_request,
+	 NULL, NULL}
+};
 
 osip_statemachine_t nist_fsm = { nist_transition };
 
 #endif
 
-static void
-nist_handle_transport_error (osip_transaction_t * nist, int err)
+static void nist_handle_transport_error(osip_transaction_t * nist, int err)
 {
-  __osip_transport_error_callback (OSIP_NIST_TRANSPORT_ERROR, nist, err);
-  __osip_transaction_set_state (nist, NIST_TERMINATED);
-  __osip_kill_transaction_callback (OSIP_NIST_KILL_TRANSACTION, nist);
-  /* TODO: MUST BE DELETED NOW */
+	__osip_transport_error_callback(OSIP_NIST_TRANSPORT_ERROR, nist, err);
+	__osip_transaction_set_state(nist, NIST_TERMINATED);
+	__osip_kill_transaction_callback(OSIP_NIST_KILL_TRANSACTION, nist);
+	/* TODO: MUST BE DELETED NOW */
 }
 
-void
-nist_rcv_request (osip_transaction_t * nist, osip_event_t * evt)
+void nist_rcv_request(osip_transaction_t * nist, osip_event_t * evt)
 {
-  int i;
+	int i;
 
-  if (nist->state == NIST_PRE_TRYING)   /* announce new REQUEST */
-    {
-      /* Here we have ist->orig_request == NULL */
-      nist->orig_request = evt->sip;
+	if (nist->state == NIST_PRE_TRYING) {	/* announce new REQUEST */
+		/* Here we have ist->orig_request == NULL */
+		nist->orig_request = evt->sip;
 
-      if (MSG_IS_REGISTER (evt->sip))
-        __osip_message_callback (OSIP_NIST_REGISTER_RECEIVED, nist,
-                                 nist->orig_request);
-      else if (MSG_IS_BYE (evt->sip))
-        __osip_message_callback (OSIP_NIST_BYE_RECEIVED, nist, nist->orig_request);
-      else if (MSG_IS_OPTIONS (evt->sip))
-        __osip_message_callback (OSIP_NIST_OPTIONS_RECEIVED, nist,
-                                 nist->orig_request);
-      else if (MSG_IS_INFO (evt->sip))
-        __osip_message_callback (OSIP_NIST_INFO_RECEIVED, nist,
-                                 nist->orig_request);
-      else if (MSG_IS_CANCEL (evt->sip))
-        __osip_message_callback (OSIP_NIST_CANCEL_RECEIVED, nist,
-                                 nist->orig_request);
-      else if (MSG_IS_NOTIFY (evt->sip))
-        __osip_message_callback (OSIP_NIST_NOTIFY_RECEIVED, nist,
-                                 nist->orig_request);
-      else if (MSG_IS_SUBSCRIBE (evt->sip))
-        __osip_message_callback (OSIP_NIST_SUBSCRIBE_RECEIVED, nist,
-                                 nist->orig_request);
-      else
-        __osip_message_callback (OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, nist,
-                                 nist->orig_request);
-  } else                        /* NIST_PROCEEDING or NIST_COMPLETED */
-    {
-      /* delete retransmission */
-      osip_message_free (evt->sip);
+		if (MSG_IS_REGISTER(evt->sip))
+			__osip_message_callback(OSIP_NIST_REGISTER_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_BYE(evt->sip))
+			__osip_message_callback(OSIP_NIST_BYE_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_OPTIONS(evt->sip))
+			__osip_message_callback(OSIP_NIST_OPTIONS_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_INFO(evt->sip))
+			__osip_message_callback(OSIP_NIST_INFO_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_CANCEL(evt->sip))
+			__osip_message_callback(OSIP_NIST_CANCEL_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_NOTIFY(evt->sip))
+			__osip_message_callback(OSIP_NIST_NOTIFY_RECEIVED, nist,
+									nist->orig_request);
+		else if (MSG_IS_SUBSCRIBE(evt->sip))
+			__osip_message_callback(OSIP_NIST_SUBSCRIBE_RECEIVED, nist,
+									nist->orig_request);
+		else
+			__osip_message_callback(OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, nist,
+									nist->orig_request);
+	} else {					/* NIST_PROCEEDING or NIST_COMPLETED */
 
-      __osip_message_callback (OSIP_NIST_REQUEST_RECEIVED_AGAIN, nist,
-                               nist->orig_request);
-      if (nist->last_response != NULL)  /* retransmit last response */
-        {
-	  i = __osip_transaction_snd_xxx(nist, nist->last_response);
-          if (i != 0)
-            {
-              nist_handle_transport_error (nist, i);
-              return;
-          } else
-            {
-              if (MSG_IS_STATUS_1XX (nist->last_response))
-                __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist,
-                                         nist->last_response);
-              else if (MSG_IS_STATUS_2XX (nist->last_response))
-                __osip_message_callback (OSIP_NIST_STATUS_2XX_SENT_AGAIN,
-                                         nist, nist->last_response);
-              else
-                __osip_message_callback (OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
-                                         nist, nist->last_response);
-              return;
-            }
-        }
-      /* we are already in the proper state */
-      return;
-    }
+		/* delete retransmission */
+		osip_message_free(evt->sip);
 
-  /* we come here only if it was the first REQUEST received */
-  __osip_transaction_set_state (nist, NIST_TRYING);
+		__osip_message_callback(OSIP_NIST_REQUEST_RECEIVED_AGAIN, nist,
+								nist->orig_request);
+		if (nist->last_response != NULL) {	/* retransmit last response */
+			i = __osip_transaction_snd_xxx(nist, nist->last_response);
+			if (i != 0) {
+				nist_handle_transport_error(nist, i);
+				return;
+			} else {
+				if (MSG_IS_STATUS_1XX(nist->last_response))
+					__osip_message_callback(OSIP_NIST_STATUS_1XX_SENT, nist,
+											nist->last_response);
+				else if (MSG_IS_STATUS_2XX(nist->last_response))
+					__osip_message_callback(OSIP_NIST_STATUS_2XX_SENT_AGAIN,
+											nist, nist->last_response);
+				else
+					__osip_message_callback(OSIP_NIST_STATUS_3456XX_SENT_AGAIN,
+											nist, nist->last_response);
+				return;
+			}
+		}
+		/* we are already in the proper state */
+		return;
+	}
+
+	/* we come here only if it was the first REQUEST received */
+	__osip_transaction_set_state(nist, NIST_TRYING);
 }
 
-void
-nist_snd_1xx (osip_transaction_t * nist, osip_event_t * evt)
+void nist_snd_1xx(osip_transaction_t * nist, osip_event_t * evt)
 {
-  int i;
+	int i;
 
-  if (nist->last_response != NULL)
-    {
-      osip_message_free (nist->last_response);
-    }
-  nist->last_response = evt->sip;
+	if (nist->last_response != NULL) {
+		osip_message_free(nist->last_response);
+	}
+	nist->last_response = evt->sip;
 
-  i = __osip_transaction_snd_xxx(nist, nist->last_response);
-  if (i != 0)
-    {
-      nist_handle_transport_error (nist, i);
-      return;
-  } else
-    __osip_message_callback (OSIP_NIST_STATUS_1XX_SENT, nist, nist->last_response);
+	i = __osip_transaction_snd_xxx(nist, nist->last_response);
+	if (i != 0) {
+		nist_handle_transport_error(nist, i);
+		return;
+	} else
+		__osip_message_callback(OSIP_NIST_STATUS_1XX_SENT, nist,
+								nist->last_response);
 
-  __osip_transaction_set_state (nist, NIST_PROCEEDING);
+	__osip_transaction_set_state(nist, NIST_PROCEEDING);
 }
 
-void
-nist_snd_23456xx (osip_transaction_t * nist, osip_event_t * evt)
+void nist_snd_23456xx(osip_transaction_t * nist, osip_event_t * evt)
 {
-  int i;
+	int i;
 
-  if (nist->last_response != NULL)
-    {
-      osip_message_free (nist->last_response);
-    }
-  nist->last_response = evt->sip;
+	if (nist->last_response != NULL) {
+		osip_message_free(nist->last_response);
+	}
+	nist->last_response = evt->sip;
 
-  i = __osip_transaction_snd_xxx(nist, nist->last_response);
-  if (i != 0)
-    {
-      nist_handle_transport_error (nist, i);
-      return;
-  } else
-    {
-      if (EVT_IS_SND_STATUS_2XX (evt))
-        __osip_message_callback (OSIP_NIST_STATUS_2XX_SENT, nist,
-                                 nist->last_response);
-      else if (MSG_IS_STATUS_3XX (nist->last_response))
-        __osip_message_callback (OSIP_NIST_STATUS_3XX_SENT, nist,
-                                 nist->last_response);
-      else if (MSG_IS_STATUS_4XX (nist->last_response))
-        __osip_message_callback (OSIP_NIST_STATUS_4XX_SENT, nist,
-                                 nist->last_response);
-      else if (MSG_IS_STATUS_5XX (nist->last_response))
-        __osip_message_callback (OSIP_NIST_STATUS_5XX_SENT, nist,
-                                 nist->last_response);
-      else
-        __osip_message_callback (OSIP_NIST_STATUS_6XX_SENT, nist,
-                                 nist->last_response);
-    }
+	i = __osip_transaction_snd_xxx(nist, nist->last_response);
+	if (i != 0) {
+		nist_handle_transport_error(nist, i);
+		return;
+	} else {
+		if (EVT_IS_SND_STATUS_2XX(evt))
+			__osip_message_callback(OSIP_NIST_STATUS_2XX_SENT, nist,
+									nist->last_response);
+		else if (MSG_IS_STATUS_3XX(nist->last_response))
+			__osip_message_callback(OSIP_NIST_STATUS_3XX_SENT, nist,
+									nist->last_response);
+		else if (MSG_IS_STATUS_4XX(nist->last_response))
+			__osip_message_callback(OSIP_NIST_STATUS_4XX_SENT, nist,
+									nist->last_response);
+		else if (MSG_IS_STATUS_5XX(nist->last_response))
+			__osip_message_callback(OSIP_NIST_STATUS_5XX_SENT, nist,
+									nist->last_response);
+		else
+			__osip_message_callback(OSIP_NIST_STATUS_6XX_SENT, nist,
+									nist->last_response);
+	}
 
-  if (nist->state != NIST_COMPLETED)    /* start J timer */
-    {
-      osip_gettimeofday (&nist->nist_context->timer_j_start, NULL);
-      add_gettimeofday (&nist->nist_context->timer_j_start,
-                        nist->nist_context->timer_j_length);
-    }
+	if (nist->state != NIST_COMPLETED) {	/* start J timer */
+		osip_gettimeofday(&nist->nist_context->timer_j_start, NULL);
+		add_gettimeofday(&nist->nist_context->timer_j_start,
+						 nist->nist_context->timer_j_length);
+	}
 
-  __osip_transaction_set_state (nist, NIST_COMPLETED);
+	__osip_transaction_set_state(nist, NIST_COMPLETED);
 }
 
 
-void
-osip_nist_timeout_j_event (osip_transaction_t * nist, osip_event_t * evt)
+void osip_nist_timeout_j_event(osip_transaction_t * nist, osip_event_t * evt)
 {
-  nist->nist_context->timer_j_length = -1;
-  nist->nist_context->timer_j_start.tv_sec = -1;
+	nist->nist_context->timer_j_length = -1;
+	nist->nist_context->timer_j_start.tv_sec = -1;
 
-  __osip_transaction_set_state (nist, NIST_TERMINATED);
-  __osip_kill_transaction_callback (OSIP_NIST_KILL_TRANSACTION, nist);
+	__osip_transaction_set_state(nist, NIST_TERMINATED);
+	__osip_kill_transaction_callback(OSIP_NIST_KILL_TRANSACTION, nist);
 }

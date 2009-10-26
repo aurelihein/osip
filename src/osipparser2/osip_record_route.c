@@ -25,10 +25,9 @@
 #include <osipparser2/osip_parser.h>
 
 #ifndef MINISIZE
-int
-osip_record_route_init (osip_record_route_t ** record_route)
+int osip_record_route_init(osip_record_route_t ** record_route)
 {
-  return osip_from_init ((osip_from_t **) record_route);
+	return osip_from_init((osip_from_t **) record_route);
 }
 #endif
 
@@ -36,27 +35,25 @@ osip_record_route_init (osip_record_route_t ** record_route)
 /* INPUT : const char *hvalue | value of header.    */
 /* OUTPUT: osip_message_t *sip | structure to save results.  */
 /* returns -1 on error. */
-int
-osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
+int osip_message_set_record_route(osip_message_t * sip, const char *hvalue)
 {
-  osip_record_route_t *record_route;
-  int i;
+	osip_record_route_t *record_route;
+	int i;
 
-  if (hvalue == NULL || hvalue[0] == '\0')
-    return OSIP_SUCCESS;
+	if (hvalue == NULL || hvalue[0] == '\0')
+		return OSIP_SUCCESS;
 
-  i = osip_record_route_init (&record_route);
-  if (i != 0)
-    return i;
-  i = osip_record_route_parse (record_route, hvalue);
-  if (i != 0)
-    {
-      osip_record_route_free (record_route);
-      return i;
-    }
-  sip->message_property = 2;
-  osip_list_add (&sip->record_routes, record_route, -1);
-  return OSIP_SUCCESS;
+	i = osip_record_route_init(&record_route);
+	if (i != 0)
+		return i;
+	i = osip_record_route_parse(record_route, hvalue);
+	if (i != 0) {
+		osip_record_route_free(record_route);
+		return i;
+	}
+	sip->message_property = 2;
+	osip_list_add(&sip->record_routes, record_route, -1);
+	return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -64,101 +61,97 @@ osip_message_set_record_route (osip_message_t * sip, const char *hvalue)
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_record_route (const osip_message_t * sip, int pos,
-                               osip_record_route_t ** dest)
+osip_message_get_record_route(const osip_message_t * sip, int pos,
+							  osip_record_route_t ** dest)
 {
-  osip_record_route_t *record_route;
+	osip_record_route_t *record_route;
 
-  *dest = NULL;
-  if (osip_list_size (&sip->record_routes) <= pos)
-    return OSIP_UNDEFINED_ERROR;     /* does not exist */
-  record_route = (osip_record_route_t *) osip_list_get (&sip->record_routes, pos);
-  *dest = record_route;
-  return pos;
+	*dest = NULL;
+	if (osip_list_size(&sip->record_routes) <= pos)
+		return OSIP_UNDEFINED_ERROR;	/* does not exist */
+	record_route = (osip_record_route_t *) osip_list_get(&sip->record_routes, pos);
+	*dest = record_route;
+	return pos;
 }
 #endif
 
 #ifndef MINISIZE
-int
-osip_record_route_parse (osip_record_route_t * record_route, const char *hvalue)
+int osip_record_route_parse(osip_record_route_t * record_route, const char *hvalue)
 {
-  return osip_from_parse ((osip_from_t *) record_route, hvalue);
+	return osip_from_parse((osip_from_t *) record_route, hvalue);
 }
 
 /* returns the record_route header as a string.          */
 /* INPUT : osip_record_route_t *record_route | record_route header.  */
 /* returns -1 on error. */
-int
-osip_record_route_to_str (const osip_record_route_t * record_route, char **dest)
+int osip_record_route_to_str(const osip_record_route_t * record_route, char **dest)
 {
-  char *url;
-  char *buf;
-  int i;
-  size_t len;
+	char *url;
+	char *buf;
+	int i;
+	size_t len;
 
-  *dest = NULL;
-  if ((record_route == NULL) || (record_route->url == NULL))
-    return OSIP_BADPARAMETER;
+	*dest = NULL;
+	if ((record_route == NULL) || (record_route->url == NULL))
+		return OSIP_BADPARAMETER;
 
-  i = osip_uri_to_str (record_route->url, &url);
-  if (i != 0)
-    return i;
+	i = osip_uri_to_str(record_route->url, &url);
+	if (i != 0)
+		return i;
 
-  if (record_route->displayname == NULL)
-    len = strlen (url) + 5;
-  else
-    len = strlen (url) + strlen (record_route->displayname) + 5;
+	if (record_route->displayname == NULL)
+		len = strlen(url) + 5;
+	else
+		len = strlen(url) + strlen(record_route->displayname) + 5;
 
-  buf = (char *) osip_malloc (len);
-  if (buf == NULL)
-    {
-      osip_free (url);
-      return OSIP_NOMEM;
-    }
+	buf = (char *) osip_malloc(len);
+	if (buf == NULL) {
+		osip_free(url);
+		return OSIP_NOMEM;
+	}
 
-  /* route and record-route always use brackets */
-  if (record_route->displayname != NULL)
-    sprintf (buf, "%s <%s>", record_route->displayname, url);
-  else
-    sprintf (buf, "<%s>", url);
-  osip_free (url);
+	/* route and record-route always use brackets */
+	if (record_route->displayname != NULL)
+		sprintf(buf, "%s <%s>", record_route->displayname, url);
+	else
+		sprintf(buf, "<%s>", url);
+	osip_free(url);
 
-  {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-    size_t plen;
-    char *tmp;
+	{
+		int pos = 0;
+		osip_generic_param_t *u_param;
+		size_t plen;
+		char *tmp;
 
-    while (!osip_list_eol (&record_route->gen_params, pos))
-      {
-        u_param =
-          (osip_generic_param_t *) osip_list_get (&record_route->gen_params, pos);
+		while (!osip_list_eol(&record_route->gen_params, pos)) {
+			u_param =
+				(osip_generic_param_t *) osip_list_get(&record_route->gen_params,
+													   pos);
 
-        if (u_param->gvalue == NULL)
-          plen = strlen (u_param->gname) + 2;
-        else
-          plen = strlen (u_param->gname) + strlen (u_param->gvalue) + 3;
-        len = len + plen;
-        buf = (char *) osip_realloc (buf, len);
-        tmp = buf;
-        tmp = tmp + strlen (tmp);
-        if (u_param->gvalue == NULL)
-          sprintf (tmp, ";%s", u_param->gname);
-        else
-          sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-        pos++;
-      }
-  }
-  *dest = buf;
-  return OSIP_SUCCESS;
+			if (u_param->gvalue == NULL)
+				plen = strlen(u_param->gname) + 2;
+			else
+				plen = strlen(u_param->gname) + strlen(u_param->gvalue) + 3;
+			len = len + plen;
+			buf = (char *) osip_realloc(buf, len);
+			tmp = buf;
+			tmp = tmp + strlen(tmp);
+			if (u_param->gvalue == NULL)
+				sprintf(tmp, ";%s", u_param->gname);
+			else
+				sprintf(tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+			pos++;
+		}
+	}
+	*dest = buf;
+	return OSIP_SUCCESS;
 }
 
 /* deallocates a osip_record_route_t structure.  */
 /* INPUT : osip_record_route_t *record_route | record_route header. */
-void
-osip_record_route_free (osip_record_route_t * record_route)
+void osip_record_route_free(osip_record_route_t * record_route)
 {
-  osip_from_free ((osip_from_t *) record_route);
+	osip_from_free((osip_from_t *) record_route);
 }
 
 #endif

@@ -25,10 +25,9 @@
 #include <osipparser2/osip_parser.h>
 
 #ifndef MINISIZE
-int
-osip_route_init (osip_route_t ** route)
+int osip_route_init(osip_route_t ** route)
 {
-  return osip_from_init ((osip_from_t **) route);
+	return osip_from_init((osip_from_t **) route);
 }
 #endif
 
@@ -36,31 +35,29 @@ osip_route_init (osip_route_t ** route)
 /* INPUT : const char *hvalue | value of header.    */
 /* OUTPUT: osip_message_t *sip | structure to save results.  */
 /* returns -1 on error. */
-int
-osip_message_set_route (osip_message_t * sip, const char *hvalue)
+int osip_message_set_route(osip_message_t * sip, const char *hvalue)
 {
-  osip_route_t *route;
-  int i;
+	osip_route_t *route;
+	int i;
 
-  if (hvalue == NULL || hvalue[0] == '\0')
-    return OSIP_SUCCESS;
+	if (hvalue == NULL || hvalue[0] == '\0')
+		return OSIP_SUCCESS;
 
 #ifdef __VXWORKS_OS__
-  i = osip_route_init2 (&route);
+	i = osip_route_init2(&route);
 #else
-  i = osip_route_init (&route);
+	i = osip_route_init(&route);
 #endif
-  if (i != 0)
-    return i;
-  i = osip_route_parse (route, hvalue);
-  if (i != 0)
-    {
-      osip_route_free (route);
-      return i;
-    }
-  sip->message_property = 2;
-  osip_list_add (&sip->routes, route, -1);
-  return OSIP_SUCCESS;
+	if (i != 0)
+		return i;
+	i = osip_route_parse(route, hvalue);
+	if (i != 0) {
+		osip_route_free(route);
+		return i;
+	}
+	sip->message_property = 2;
+	osip_list_add(&sip->routes, route, -1);
+	return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
@@ -68,42 +65,39 @@ osip_message_set_route (osip_message_t * sip, const char *hvalue)
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_route (const osip_message_t * sip, int pos, osip_route_t ** dest)
+osip_message_get_route(const osip_message_t * sip, int pos, osip_route_t ** dest)
 {
-  osip_route_t *route;
+	osip_route_t *route;
 
-  *dest = NULL;
-  if (osip_list_size (&sip->routes) <= pos)
-    return OSIP_UNDEFINED_ERROR;     /* does not exist */
-  route = (osip_route_t *) osip_list_get (&sip->routes, pos);
-  *dest = route;
-  return pos;
+	*dest = NULL;
+	if (osip_list_size(&sip->routes) <= pos)
+		return OSIP_UNDEFINED_ERROR;	/* does not exist */
+	route = (osip_route_t *) osip_list_get(&sip->routes, pos);
+	*dest = route;
+	return pos;
 }
 #endif
 
 #ifndef MINISIZE
-int
-osip_route_parse (osip_route_t * route, const char *hvalue)
+int osip_route_parse(osip_route_t * route, const char *hvalue)
 {
-  return osip_from_parse ((osip_from_t *) route, hvalue);
+	return osip_from_parse((osip_from_t *) route, hvalue);
 }
 
 /* returns the route header as a string.          */
 /* INPUT : osip_route_t *route | route header.  */
 /* returns null on error. */
-int
-osip_route_to_str (const osip_route_t * route, char **dest)
+int osip_route_to_str(const osip_route_t * route, char **dest)
 {
-  /* we can't use osip_from_to_str(): route and record_route */
-  /* always use brackets. */
-  return osip_record_route_to_str ((osip_record_route_t *) route, dest);
+	/* we can't use osip_from_to_str(): route and record_route */
+	/* always use brackets. */
+	return osip_record_route_to_str((osip_record_route_t *) route, dest);
 }
 
 /* deallocates a osip_route_t structure.  */
 /* INPUT : osip_route_t *route | route header. */
-void
-osip_route_free (osip_route_t * route)
+void osip_route_free(osip_route_t * route)
 {
-  osip_from_free ((osip_from_t *) route);
+	osip_from_free((osip_from_t *) route);
 }
 #endif

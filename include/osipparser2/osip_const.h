@@ -156,4 +156,4 @@
 #define OSIP_IS_SIP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
 
 
-#endif /*  _CONST_H_ */
+#endif							/*  _CONST_H_ */

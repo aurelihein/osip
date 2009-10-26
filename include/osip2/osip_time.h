@@ -21,28 +21,27 @@
 #define _OSIP_TIME_H_
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /* Common time-related functions and data types */
 
 #if defined(_WIN32_WCE)
-struct _timeb {
-  time_t time;
-  unsigned short millitm;
-  short timezone;
-  short dstflag;
-};
+	struct _timeb {
+		time_t time;
+		unsigned short millitm;
+		short timezone;
+		short dstflag;
+	};
 
 #endif
 
 /* struct timeval, as defined in <sys/time.h>, <winsock.h> or <winsock2.h> */
-  struct timeval;
+	struct timeval;
 
 /* Time manipulation functions */
-  void add_gettimeofday (struct timeval *atv, int ms);
-  void min_timercmp (struct timeval *tv1, struct timeval *tv2);
+	void add_gettimeofday(struct timeval *atv, int ms);
+	void min_timercmp(struct timeval *tv1, struct timeval *tv2);
 
 /* OS-dependent */
 #if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__) || defined(__arc__)
@@ -58,7 +57,7 @@ struct _timeb {
 #if defined(__arc__)
 #define osip_gettimeofday gettimeofday
 #else
-  int osip_gettimeofday (struct timeval *tp, void *tz);
+	int osip_gettimeofday(struct timeval *tp, void *tz);
 #endif
 
 #else
@@ -75,5 +74,4 @@ struct _timeb {
 #ifdef __cplusplus
 }
 #endif
-
 #endif

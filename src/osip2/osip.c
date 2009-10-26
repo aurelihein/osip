@@ -37,1165 +37,1056 @@ static struct osip_mutex *id_mutex;
 static struct osip_mutex *ixt_fastmutex;
 #endif
 
-static int __osip_global_init (void);
-static void __osip_global_free (void);
-static int increase_ref_count (void);
-static void decrease_ref_count (void);
+static int __osip_global_init(void);
+static void __osip_global_free(void);
+static int increase_ref_count(void);
+static void decrease_ref_count(void);
 
-static int
-__osip_global_init ()
+static int __osip_global_init()
 {
-  /* load the fsm configuration */
+	/* load the fsm configuration */
 #ifndef MINISIZE
-  __ict_load_fsm ();
-  __ist_load_fsm ();
-  __nict_load_fsm ();
-  __nist_load_fsm ();
+	__ict_load_fsm();
+	__ist_load_fsm();
+	__nict_load_fsm();
+	__nist_load_fsm();
 #endif
 
-  /* load the parser configuration */
-  parser_init ();
+	/* load the parser configuration */
+	parser_init();
 
 #ifdef OSIP_MT
-  ict_fastmutex = osip_mutex_init ();
-  ist_fastmutex = osip_mutex_init ();
-  nict_fastmutex = osip_mutex_init ();
-  nist_fastmutex = osip_mutex_init ();
+	ict_fastmutex = osip_mutex_init();
+	ist_fastmutex = osip_mutex_init();
+	nict_fastmutex = osip_mutex_init();
+	nist_fastmutex = osip_mutex_init();
 
-  ixt_fastmutex = osip_mutex_init ();
+	ixt_fastmutex = osip_mutex_init();
 
-  id_mutex = osip_mutex_init ();
+	id_mutex = osip_mutex_init();
 #endif
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-static void
-__osip_global_free ()
+static void __osip_global_free()
 {
 #ifndef MINISIZE
-  __ict_unload_fsm ();
-  __ist_unload_fsm ();
-  __nict_unload_fsm ();
-  __nist_unload_fsm ();
+	__ict_unload_fsm();
+	__ist_unload_fsm();
+	__nict_unload_fsm();
+	__nist_unload_fsm();
 #endif
 
 #ifdef OSIP_MT
-  osip_mutex_destroy (ict_fastmutex);
-  osip_mutex_destroy (ist_fastmutex);
-  osip_mutex_destroy (nict_fastmutex);
-  osip_mutex_destroy (nist_fastmutex);
+	osip_mutex_destroy(ict_fastmutex);
+	osip_mutex_destroy(ist_fastmutex);
+	osip_mutex_destroy(nict_fastmutex);
+	osip_mutex_destroy(nist_fastmutex);
 
-  osip_mutex_destroy (ixt_fastmutex);
+	osip_mutex_destroy(ixt_fastmutex);
 
-  osip_mutex_destroy (id_mutex);
+	osip_mutex_destroy(id_mutex);
 #endif
 }
 
 void
-osip_response_get_destination (osip_message_t * response, char **address,
-                               int *portnum)
+osip_response_get_destination(osip_message_t * response, char **address,
+							  int *portnum)
 {
-  osip_via_t *via;
-  char *host = NULL;
-  int port = 0;
+	osip_via_t *via;
+	char *host = NULL;
+	int port = 0;
 
-  via = (osip_via_t *) osip_list_get (&response->vias, 0);
-  if (via)
-    {
-      osip_generic_param_t *maddr;
-      osip_generic_param_t *received;
-      osip_generic_param_t *rport;
+	via = (osip_via_t *) osip_list_get(&response->vias, 0);
+	if (via) {
+		osip_generic_param_t *maddr;
+		osip_generic_param_t *received;
+		osip_generic_param_t *rport;
 
-      osip_via_param_get_byname (via, "maddr", &maddr);
-      osip_via_param_get_byname (via, "received", &received);
-      osip_via_param_get_byname (via, "rport", &rport);
-      /* 1: user should not use the provided information
-         (host and port) if they are using a reliable
-         transport. Instead, they should use the already
-         open socket attached to this transaction. */
-      /* 2: check maddr and multicast usage */
-      if (maddr != NULL)
-        host = maddr->gvalue;
-      /* we should check if this is a multicast address and use
-         set the "ttl" in this case. (this must be done in the
-         UDP message (not at the SIP layer) */
-      else if (received != NULL)
-        host = received->gvalue;
-      else
-        host = via->host;
+		osip_via_param_get_byname(via, "maddr", &maddr);
+		osip_via_param_get_byname(via, "received", &received);
+		osip_via_param_get_byname(via, "rport", &rport);
+		/* 1: user should not use the provided information
+		   (host and port) if they are using a reliable
+		   transport. Instead, they should use the already
+		   open socket attached to this transaction. */
+		/* 2: check maddr and multicast usage */
+		if (maddr != NULL)
+			host = maddr->gvalue;
+		/* we should check if this is a multicast address and use
+		   set the "ttl" in this case. (this must be done in the
+		   UDP message (not at the SIP layer) */
+		else if (received != NULL)
+			host = received->gvalue;
+		else
+			host = via->host;
 
-      if (rport == NULL || rport->gvalue == NULL)
-        {
-          if (via->port != NULL)
-            port = osip_atoi (via->port);
-          else
-            port = 5060;
-      } else
-        port = osip_atoi (rport->gvalue);
-    }
-  *portnum = port;
-  if (host != NULL)
-    *address = osip_strdup (host);
-  else
-    *address = NULL;
+		if (rport == NULL || rport->gvalue == NULL) {
+			if (via->port != NULL)
+				port = osip_atoi(via->port);
+			else
+				port = 5060;
+		} else
+			port = osip_atoi(rport->gvalue);
+	}
+	*portnum = port;
+	if (host != NULL)
+		*address = osip_strdup(host);
+	else
+		*address = NULL;
 }
 
 
-int
-osip_ixt_lock (osip_t * osip)
+int osip_ixt_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (ixt_fastmutex);
+	return osip_mutex_lock(ixt_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_ixt_unlock (osip_t * osip)
+int osip_ixt_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (ixt_fastmutex);
+	return osip_mutex_unlock(ixt_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_id_mutex_lock (osip_t * osip)
+int osip_id_mutex_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (id_mutex);
+	return osip_mutex_lock(id_mutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_id_mutex_unlock (osip_t * osip)
+int osip_id_mutex_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (id_mutex);
+	return osip_mutex_unlock(id_mutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
 /* these are for transactions that would need retransmission not handled by state machines */
-void
-osip_add_ixt (osip_t * osip, ixt_t * ixt)
+void osip_add_ixt(osip_t * osip, ixt_t * ixt)
 {
-  /* add in list osip_t->ixt */
-  osip_ixt_lock (osip);
-  osip_list_add (&osip->ixt_retransmissions, (void *) ixt, 0);
-  osip_ixt_unlock (osip);
+	/* add in list osip_t->ixt */
+	osip_ixt_lock(osip);
+	osip_list_add(&osip->ixt_retransmissions, (void *) ixt, 0);
+	osip_ixt_unlock(osip);
 }
 
-void
-osip_remove_ixt (osip_t * osip, ixt_t * ixt)
+void osip_remove_ixt(osip_t * osip, ixt_t * ixt)
 {
-  int i;
-  int found = 0;
-  ixt_t *tmp;
+	int i;
+	int found = 0;
+	ixt_t *tmp;
 
-  /* add in list osip_t->ixt */
-  osip_ixt_lock (osip);
-  for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++)
-    {
-      tmp = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-      if (tmp == ixt)
-        {
-          osip_list_remove (&osip->ixt_retransmissions, i);
-          found = 1;
-          break;
-        }
-    }
-  osip_ixt_unlock (osip);
+	/* add in list osip_t->ixt */
+	osip_ixt_lock(osip);
+	for (i = 0; !osip_list_eol(&osip->ixt_retransmissions, i); i++) {
+		tmp = (ixt_t *) osip_list_get(&osip->ixt_retransmissions, i);
+		if (tmp == ixt) {
+			osip_list_remove(&osip->ixt_retransmissions, i);
+			found = 1;
+			break;
+		}
+	}
+	osip_ixt_unlock(osip);
 }
 
-int
-ixt_init (ixt_t ** ixt)
+int ixt_init(ixt_t ** ixt)
 {
-  ixt_t *pixt;
+	ixt_t *pixt;
 
-  *ixt = pixt = (ixt_t *) osip_malloc (sizeof (ixt_t));
-  if (pixt == NULL)
-    return OSIP_NOMEM;
-  pixt->dialog = NULL;
-  pixt->msg2xx = NULL;
-  pixt->ack = NULL;
-  pixt->interval = DEFAULT_T1;
-  osip_gettimeofday(&pixt->start, NULL);
-  add_gettimeofday(&pixt->start, pixt->interval+10);
-  pixt->counter = 10;
-  pixt->dest = NULL;
-  pixt->port = 5060;
-  pixt->sock = -1;
-  return OSIP_SUCCESS;
+	*ixt = pixt = (ixt_t *) osip_malloc(sizeof(ixt_t));
+	if (pixt == NULL)
+		return OSIP_NOMEM;
+	pixt->dialog = NULL;
+	pixt->msg2xx = NULL;
+	pixt->ack = NULL;
+	pixt->interval = DEFAULT_T1;
+	osip_gettimeofday(&pixt->start, NULL);
+	add_gettimeofday(&pixt->start, pixt->interval + 10);
+	pixt->counter = 10;
+	pixt->dest = NULL;
+	pixt->port = 5060;
+	pixt->sock = -1;
+	return OSIP_SUCCESS;
 }
 
-void
-ixt_free (ixt_t * ixt)
+void ixt_free(ixt_t * ixt)
 {
-  osip_message_free (ixt->ack);
-  osip_message_free (ixt->msg2xx);
-  osip_free (ixt->dest);
-  osip_free (ixt);
+	osip_message_free(ixt->ack);
+	osip_message_free(ixt->msg2xx);
+	osip_free(ixt->dest);
+	osip_free(ixt);
 }
 
 /* usefull for UAs */
 void
-osip_start_200ok_retransmissions (osip_t * osip, osip_dialog_t * dialog,
-                                  osip_message_t * msg200ok, int sock)
+osip_start_200ok_retransmissions(osip_t * osip, osip_dialog_t * dialog,
+								 osip_message_t * msg200ok, int sock)
 {
-  ixt_t *ixt;
+	ixt_t *ixt;
 
-  ixt_init (&ixt);
-  ixt->dialog = dialog;
-  osip_message_clone (msg200ok, &ixt->msg2xx);
-  ixt->sock = sock;
-  osip_response_get_destination (msg200ok, &ixt->dest, &ixt->port);
-  osip_add_ixt (osip, ixt);
+	ixt_init(&ixt);
+	ixt->dialog = dialog;
+	osip_message_clone(msg200ok, &ixt->msg2xx);
+	ixt->sock = sock;
+	osip_response_get_destination(msg200ok, &ixt->dest, &ixt->port);
+	osip_add_ixt(osip, ixt);
 }
 
 void
-osip_start_ack_retransmissions (osip_t * osip, osip_dialog_t * dialog,
-                                osip_message_t * ack, char *dest, int port,
-                                int sock)
+osip_start_ack_retransmissions(osip_t * osip, osip_dialog_t * dialog,
+							   osip_message_t * ack, char *dest, int port,
+							   int sock)
 {
-  int i;
-  ixt_t *ixt;
+	int i;
+	ixt_t *ixt;
 
-  i = ixt_init (&ixt);
-  if (i != 0)
-    return;
-  ixt->dialog = dialog;
-  osip_message_clone (ack, &ixt->ack);
-  ixt->dest = osip_strdup (dest);
-  ixt->port = port;
-  ixt->sock = sock;
-  osip_add_ixt (osip, ixt);
+	i = ixt_init(&ixt);
+	if (i != 0)
+		return;
+	ixt->dialog = dialog;
+	osip_message_clone(ack, &ixt->ack);
+	ixt->dest = osip_strdup(dest);
+	ixt->port = port;
+	ixt->sock = sock;
+	osip_add_ixt(osip, ixt);
 }
 
 /* we stop the 200ok when receiving the corresponding ack */
-struct osip_dialog *
-osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
+struct osip_dialog *osip_stop_200ok_retransmissions(osip_t * osip,
+													osip_message_t * ack)
 {
-  osip_dialog_t *dialog = NULL;
-  int i;
-  ixt_t *ixt;
+	osip_dialog_t *dialog = NULL;
+	int i;
+	ixt_t *ixt;
 
-  osip_ixt_lock (osip);
-  for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++)
-    {
-      ixt = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-      if (osip_dialog_match_as_uas (ixt->dialog, ack) == 0)
-        {
-          osip_list_remove (&osip->ixt_retransmissions, i);
-          dialog = ixt->dialog;
-          ixt_free (ixt);
-          break;
-        }
-    }
-  osip_ixt_unlock (osip);
-  return dialog;
+	osip_ixt_lock(osip);
+	for (i = 0; !osip_list_eol(&osip->ixt_retransmissions, i); i++) {
+		ixt = (ixt_t *) osip_list_get(&osip->ixt_retransmissions, i);
+		if (osip_dialog_match_as_uas(ixt->dialog, ack) == 0) {
+			osip_list_remove(&osip->ixt_retransmissions, i);
+			dialog = ixt->dialog;
+			ixt_free(ixt);
+			break;
+		}
+	}
+	osip_ixt_unlock(osip);
+	return dialog;
 }
 
 /* when a dialog is destroyed by the application,
    it is safer to remove all ixt that are related to it */
-void
-osip_stop_retransmissions_from_dialog (osip_t * osip, osip_dialog_t * dialog)
+void osip_stop_retransmissions_from_dialog(osip_t * osip, osip_dialog_t * dialog)
 {
-  int i;
-  ixt_t *ixt;
+	int i;
+	ixt_t *ixt;
 
-  osip_ixt_lock (osip);
-  for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++)
-    {
-      ixt = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-      if (ixt->dialog == dialog)
-        {
-          osip_list_remove (&osip->ixt_retransmissions, i);
-          ixt_free (ixt);
-          i--;
-        }
-    }
-  osip_ixt_unlock (osip);
+	osip_ixt_lock(osip);
+	for (i = 0; !osip_list_eol(&osip->ixt_retransmissions, i); i++) {
+		ixt = (ixt_t *) osip_list_get(&osip->ixt_retransmissions, i);
+		if (ixt->dialog == dialog) {
+			osip_list_remove(&osip->ixt_retransmissions, i);
+			ixt_free(ixt);
+			i--;
+		}
+	}
+	osip_ixt_unlock(osip);
 }
 
-void
-ixt_retransmit (osip_t * osip, ixt_t * ixt, struct timeval *current)
+void ixt_retransmit(osip_t * osip, ixt_t * ixt, struct timeval *current)
 {
-  if (osip_timercmp(current, &ixt->start, >))
-    {
-      ixt->interval = ixt->interval * 2;
-      if (ixt->interval > 4000)
-         ixt->interval = 4000;
-      add_gettimeofday (&ixt->start, ixt->interval);
-      if (ixt->ack != NULL)
-        osip->cb_send_message (NULL, ixt->ack, ixt->dest, ixt->port, ixt->sock);
-      else if (ixt->msg2xx != NULL)
-        osip->cb_send_message (NULL, ixt->msg2xx, ixt->dest, ixt->port, ixt->sock);
-      ixt->counter--;
-    }
+	if (osip_timercmp(current, &ixt->start, >)) {
+		ixt->interval = ixt->interval * 2;
+		if (ixt->interval > 4000)
+			ixt->interval = 4000;
+		add_gettimeofday(&ixt->start, ixt->interval);
+		if (ixt->ack != NULL)
+			osip->cb_send_message(NULL, ixt->ack, ixt->dest, ixt->port, ixt->sock);
+		else if (ixt->msg2xx != NULL)
+			osip->cb_send_message(NULL, ixt->msg2xx, ixt->dest, ixt->port,
+								  ixt->sock);
+		ixt->counter--;
+	}
 }
 
-void
-osip_retransmissions_execute (osip_t * osip)
+void osip_retransmissions_execute(osip_t * osip)
 {
-  int i;
-  ixt_t *ixt;
-  struct timeval current;
+	int i;
+	ixt_t *ixt;
+	struct timeval current;
 
-  osip_gettimeofday (&current, NULL);
+	osip_gettimeofday(&current, NULL);
 
-  osip_ixt_lock (osip);
-  for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++)
-    {
-      ixt = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-      ixt_retransmit (osip, ixt, &current);
-      if (ixt->counter == 0)
-        {
-          /* remove it */
-          osip_list_remove (&osip->ixt_retransmissions, i);
-          ixt_free (ixt);
-          i--;
-        }
-    }
-  osip_ixt_unlock (osip);
+	osip_ixt_lock(osip);
+	for (i = 0; !osip_list_eol(&osip->ixt_retransmissions, i); i++) {
+		ixt = (ixt_t *) osip_list_get(&osip->ixt_retransmissions, i);
+		ixt_retransmit(osip, ixt, &current);
+		if (ixt->counter == 0) {
+			/* remove it */
+			osip_list_remove(&osip->ixt_retransmissions, i);
+			ixt_free(ixt);
+			i--;
+		}
+	}
+	osip_ixt_unlock(osip);
 }
 
-int
-osip_ict_lock (osip_t * osip)
+int osip_ict_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (ict_fastmutex);
+	return osip_mutex_lock(ict_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_ict_unlock (osip_t * osip)
+int osip_ict_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (ict_fastmutex);
+	return osip_mutex_unlock(ict_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_ist_lock (osip_t * osip)
+int osip_ist_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (ist_fastmutex);
+	return osip_mutex_lock(ist_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_ist_unlock (osip_t * osip)
+int osip_ist_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (ist_fastmutex);
+	return osip_mutex_unlock(ist_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_nict_lock (osip_t * osip)
+int osip_nict_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (nict_fastmutex);
+	return osip_mutex_lock(nict_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_nict_unlock (osip_t * osip)
+int osip_nict_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (nict_fastmutex);
+	return osip_mutex_unlock(nict_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_nist_lock (osip_t * osip)
+int osip_nist_lock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_lock (nist_fastmutex);
+	return osip_mutex_lock(nist_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
-int
-osip_nist_unlock (osip_t * osip)
+int osip_nist_unlock(osip_t * osip)
 {
 #ifdef OSIP_MT
-  return osip_mutex_unlock (nist_fastmutex);
+	return osip_mutex_unlock(nist_fastmutex);
 #else
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 #endif
 }
 
 #if defined(HAVE_DICT_DICT_H)
 #define HSIZE           200
 
-unsigned s_hash (const unsigned char *p);
+unsigned s_hash(const unsigned char *p);
 
-unsigned
-s_hash (const unsigned char *p)
+unsigned s_hash(const unsigned char *p)
 {
-  unsigned hash = 0;
+	unsigned hash = 0;
 
-  while (*p)
-    {
-      hash *= 31;
-      hash ^= *p++;
-    }
-  return hash;
+	while (*p) {
+		hash *= 31;
+		hash ^= *p++;
+	}
+	return hash;
 }
 #endif
 
-int
-__osip_add_ict (osip_t * osip, osip_transaction_t * ict)
+int __osip_add_ict(osip_t * osip, osip_transaction_t * ict)
 {
 #ifdef OSIP_MT
-  osip_mutex_lock (ict_fastmutex);
+	osip_mutex_lock(ict_fastmutex);
 #endif
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv = -99;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv = -99;
 
-    osip_via_param_get_byname (ict->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      rv = dict_insert (osip->osip_ict_hastable,
-                        b_request->gvalue, (void *) ict, FALSE);
+		osip_via_param_get_byname(ict->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL)
+			rv = dict_insert(osip->osip_ict_hastable,
+							 b_request->gvalue, (void *) ict, FALSE);
 #if 0
-    else
-      rv = dict_insert (osip->osip_ict_hastable,
-                        b_request->gvalue, (void *) ict, FALSE);
+		else
+			rv = dict_insert(osip->osip_ict_hastable,
+							 b_request->gvalue, (void *) ict, FALSE);
 #endif
 
-    if (rv == 0)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                     "New key inserted in ict hastable `%s'\n",
-                     b_request->gvalue));
-    } else if (rv != -99)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                     "already inserted `%s'\n", b_request->gvalue));
-      }
-  }
+		if (rv == 0) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+						"New key inserted in ict hastable `%s'\n",
+						b_request->gvalue));
+		} else if (rv != -99) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+						"already inserted `%s'\n", b_request->gvalue));
+		}
+	}
 #endif
-  osip_list_add (&osip->osip_ict_transactions, ict, -1);
+	osip_list_add(&osip->osip_ict_transactions, ict, -1);
 #ifdef OSIP_MT
-  osip_mutex_unlock (ict_fastmutex);
+	osip_mutex_unlock(ict_fastmutex);
 #endif
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-int
-__osip_add_ist (osip_t * osip, osip_transaction_t * ist)
+int __osip_add_ist(osip_t * osip, osip_transaction_t * ist)
 {
 #ifdef OSIP_MT
-  osip_mutex_lock (ist_fastmutex);
+	osip_mutex_lock(ist_fastmutex);
 #endif
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv = -99;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv = -99;
 
-    osip_via_param_get_byname (ist->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      rv = dict_insert (osip->osip_ist_hastable,
-                        b_request->gvalue, (void *) ist, FALSE);
-    else
+		osip_via_param_get_byname(ist->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL)
+			rv = dict_insert(osip->osip_ist_hastable,
+							 b_request->gvalue, (void *) ist, FALSE);
+		else
 #if 0
-      rv = dict_insert (osip->osip_ist_hastable,
-                        b_request->gvalue, (void *) ist, FALSE);
+			rv = dict_insert(osip->osip_ist_hastable,
+							 b_request->gvalue, (void *) ist, FALSE);
 #endif
-    if (rv == 0)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                     "New key inserted in ist hastable `%s'\n",
-                     b_request->gvalue));
-    } else if (rv != -99)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                     "already inserted `%s'\n", b_request->gvalue));
-      }
-  }
+		if (rv == 0) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+						"New key inserted in ist hastable `%s'\n",
+						b_request->gvalue));
+		} else if (rv != -99) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+						"already inserted `%s'\n", b_request->gvalue));
+		}
+	}
 #endif
-  osip_list_add (&osip->osip_ist_transactions, ist, -1);
+	osip_list_add(&osip->osip_ist_transactions, ist, -1);
 #ifdef OSIP_MT
-  osip_mutex_unlock (ist_fastmutex);
+	osip_mutex_unlock(ist_fastmutex);
 #endif
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-int
-__osip_add_nict (osip_t * osip, osip_transaction_t * nict)
+int __osip_add_nict(osip_t * osip, osip_transaction_t * nict)
 {
 #ifdef OSIP_MT
-  osip_mutex_lock (nict_fastmutex);
+	osip_mutex_lock(nict_fastmutex);
 #endif
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv = -99;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv = -99;
 
-    osip_via_param_get_byname (nict->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      rv = dict_insert (osip->osip_nict_hastable,
-                        b_request->gvalue, (void *) nict, FALSE);
+		osip_via_param_get_byname(nict->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL)
+			rv = dict_insert(osip->osip_nict_hastable,
+							 b_request->gvalue, (void *) nict, FALSE);
 #if 0
-    else
-      rv = dict_insert (osip->osip_nict_hastable,
-                        b_request->gvalue, (void *) nict, FALSE);
+		else
+			rv = dict_insert(osip->osip_nict_hastable,
+							 b_request->gvalue, (void *) nict, FALSE);
 #endif
 
-    if (rv == 0)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                     "New key inserted in nict hastable `%s'\n",
-                     b_request->gvalue));
-    } else if (rv != -99)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                     "already inserted `%s'\n", b_request->gvalue));
-      }
-  }
+		if (rv == 0) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+						"New key inserted in nict hastable `%s'\n",
+						b_request->gvalue));
+		} else if (rv != -99) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+						"already inserted `%s'\n", b_request->gvalue));
+		}
+	}
 #endif
-  osip_list_add (&osip->osip_nict_transactions, nict, -1);
+	osip_list_add(&osip->osip_nict_transactions, nict, -1);
 #ifdef OSIP_MT
-  osip_mutex_unlock (nict_fastmutex);
+	osip_mutex_unlock(nict_fastmutex);
 #endif
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-int
-__osip_add_nist (osip_t * osip, osip_transaction_t * nist)
+int __osip_add_nist(osip_t * osip, osip_transaction_t * nist)
 {
 #ifdef OSIP_MT
-  osip_mutex_lock (nist_fastmutex);
+	osip_mutex_lock(nist_fastmutex);
 #endif
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv = -99;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv = -99;
 
-    osip_via_param_get_byname (nist->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      rv = dict_insert (osip->osip_nist_hastable,
-                        b_request->gvalue, (void *) nist, FALSE);
+		osip_via_param_get_byname(nist->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL)
+			rv = dict_insert(osip->osip_nist_hastable,
+							 b_request->gvalue, (void *) nist, FALSE);
 #if 0
-    else
-      rv = dict_insert (osip->osip_nist_hastable,
-                        b_request->gvalue, (void *) nist, FALSE);
+		else
+			rv = dict_insert(osip->osip_nist_hastable,
+							 b_request->gvalue, (void *) nist, FALSE);
 #endif
-    if (rv == 0)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                     "New key inserted in ict hastable `%s'\n",
-                     b_request->gvalue));
-    } else if (rv != -99)
-      {
-        OSIP_TRACE (osip_trace
-                    (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                     "already inserted `%s'\n", b_request->gvalue));
-      }
-  }
+		if (rv == 0) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+						"New key inserted in ict hastable `%s'\n",
+						b_request->gvalue));
+		} else if (rv != -99) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+						"already inserted `%s'\n", b_request->gvalue));
+		}
+	}
 #endif
-  osip_list_add (&osip->osip_nist_transactions, nist, -1);
+	osip_list_add(&osip->osip_nist_transactions, nist, -1);
 #ifdef OSIP_MT
-  osip_mutex_unlock (nist_fastmutex);
+	osip_mutex_unlock(nist_fastmutex);
 #endif
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-int
-osip_remove_transaction (osip_t * osip, osip_transaction_t * tr)
+int osip_remove_transaction(osip_t * osip, osip_transaction_t * tr)
 {
-  int i = -1;
+	int i = -1;
 
-  if (tr == NULL)
-    return OSIP_BADPARAMETER;
-  if (tr->ctx_type == ICT)
-    i = __osip_remove_ict_transaction (osip, tr);
-  else if (tr->ctx_type == IST)
-    i = __osip_remove_ist_transaction (osip, tr);
-  else if (tr->ctx_type == NICT)
-    i = __osip_remove_nict_transaction (osip, tr);
-  else if (tr->ctx_type == NIST)
-    i = __osip_remove_nist_transaction (osip, tr);
-  else
-    return OSIP_BADPARAMETER;
-  return i;
+	if (tr == NULL)
+		return OSIP_BADPARAMETER;
+	if (tr->ctx_type == ICT)
+		i = __osip_remove_ict_transaction(osip, tr);
+	else if (tr->ctx_type == IST)
+		i = __osip_remove_ist_transaction(osip, tr);
+	else if (tr->ctx_type == NICT)
+		i = __osip_remove_nict_transaction(osip, tr);
+	else if (tr->ctx_type == NIST)
+		i = __osip_remove_nist_transaction(osip, tr);
+	else
+		return OSIP_BADPARAMETER;
+	return i;
 }
 
-int
-__osip_remove_ict_transaction (osip_t * osip, osip_transaction_t * ict)
+int __osip_remove_ict_transaction(osip_t * osip, osip_transaction_t * ict)
 {
-  osip_list_iterator_t iterator;
-  osip_transaction_t *tmp;
+	osip_list_iterator_t iterator;
+	osip_transaction_t *tmp;
 
 #ifdef OSIP_MT
-  osip_mutex_lock (ict_fastmutex);
+	osip_mutex_lock(ict_fastmutex);
 #endif
 
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv;
 
-    osip_via_param_get_byname (ict->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      {
-        rv = dict_remove (osip->osip_ict_hastable, b_request->gvalue, TRUE);
-        if (rv == 0)
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                         "New key deleted in ict hastable `%s'\n",
-                         b_request->gvalue));
-        } else
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                         "key not removed `%s'\n", b_request->gvalue));
-          }
-      }
-  }
+		osip_via_param_get_byname(ict->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			rv = dict_remove(osip->osip_ict_hastable, b_request->gvalue, TRUE);
+			if (rv == 0) {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+							"New key deleted in ict hastable `%s'\n",
+							b_request->gvalue));
+			} else {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+							"key not removed `%s'\n", b_request->gvalue));
+			}
+		}
+	}
 #endif
 
-  tmp =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tmp->transactionid == ict->transactionid)
-        {
-          osip_list_iterator_remove (&iterator);
+	tmp =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_ict_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tmp->transactionid == ict->transactionid) {
+			osip_list_iterator_remove(&iterator);
 #ifdef OSIP_MT
-          osip_mutex_unlock (ict_fastmutex);
+			osip_mutex_unlock(ict_fastmutex);
 #endif
-          return OSIP_SUCCESS;
-        }
-      tmp = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
+			return OSIP_SUCCESS;
+		}
+		tmp = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (ict_fastmutex);
+	osip_mutex_unlock(ict_fastmutex);
 #endif
-  return OSIP_UNDEFINED_ERROR;
+	return OSIP_UNDEFINED_ERROR;
 }
 
-int
-__osip_remove_ist_transaction (osip_t * osip, osip_transaction_t * ist)
+int __osip_remove_ist_transaction(osip_t * osip, osip_transaction_t * ist)
 {
-  osip_list_iterator_t iterator;
-  osip_transaction_t *tmp;
+	osip_list_iterator_t iterator;
+	osip_transaction_t *tmp;
 
 #ifdef OSIP_MT
-  osip_mutex_lock (ist_fastmutex);
+	osip_mutex_lock(ist_fastmutex);
 #endif
 
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv;
 
-    osip_via_param_get_byname (ist->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      {
-        rv = dict_remove (osip->osip_ist_hastable, b_request->gvalue, TRUE);
+		osip_via_param_get_byname(ist->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			rv = dict_remove(osip->osip_ist_hastable, b_request->gvalue, TRUE);
 
-        if (rv == 0)
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                         "New key deleted in ist hastable `%s'\n",
-                         b_request->gvalue));
-        } else
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                         "key not removed `%s'\n", b_request->gvalue));
-          }
-      }
-  }
+			if (rv == 0) {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+							"New key deleted in ist hastable `%s'\n",
+							b_request->gvalue));
+			} else {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+							"key not removed `%s'\n", b_request->gvalue));
+			}
+		}
+	}
 #endif
 
-  tmp =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tmp->transactionid == ist->transactionid)
-        {
-          osip_list_iterator_remove (&iterator);
+	tmp =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_ist_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tmp->transactionid == ist->transactionid) {
+			osip_list_iterator_remove(&iterator);
 #ifdef OSIP_MT
-          osip_mutex_unlock (ist_fastmutex);
+			osip_mutex_unlock(ist_fastmutex);
 #endif
-          return OSIP_SUCCESS;
-        }
-      tmp = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
+			return OSIP_SUCCESS;
+		}
+		tmp = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (ist_fastmutex);
+	osip_mutex_unlock(ist_fastmutex);
 #endif
-  return OSIP_UNDEFINED_ERROR;
+	return OSIP_UNDEFINED_ERROR;
 }
 
-int
-__osip_remove_nict_transaction (osip_t * osip, osip_transaction_t * nict)
+int __osip_remove_nict_transaction(osip_t * osip, osip_transaction_t * nict)
 {
-  osip_list_iterator_t iterator;
-  osip_transaction_t *tmp;
+	osip_list_iterator_t iterator;
+	osip_transaction_t *tmp;
 
 #ifdef OSIP_MT
-  osip_mutex_lock (nict_fastmutex);
+	osip_mutex_lock(nict_fastmutex);
 #endif
 
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv;
 
-    osip_via_param_get_byname (nict->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      {
-        rv = dict_remove (osip->osip_nict_hastable, b_request->gvalue, TRUE);
+		osip_via_param_get_byname(nict->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			rv = dict_remove(osip->osip_nict_hastable, b_request->gvalue, TRUE);
 
-        if (rv == 0)
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                         "New key deleted in nict hastable `%s'\n",
-                         b_request->gvalue));
-        } else
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                         "key not removed `%s'\n", b_request->gvalue));
-          }
-      }
-  }
+			if (rv == 0) {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+							"New key deleted in nict hastable `%s'\n",
+							b_request->gvalue));
+			} else {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+							"key not removed `%s'\n", b_request->gvalue));
+			}
+		}
+	}
 #endif
 
-  tmp =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tmp->transactionid == nict->transactionid)
-        {
-          osip_list_iterator_remove (&iterator);
+	tmp =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_nict_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tmp->transactionid == nict->transactionid) {
+			osip_list_iterator_remove(&iterator);
 #ifdef OSIP_MT
-          osip_mutex_unlock (nict_fastmutex);
+			osip_mutex_unlock(nict_fastmutex);
 #endif
-          return OSIP_SUCCESS;
-        }
-      tmp = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
+			return OSIP_SUCCESS;
+		}
+		tmp = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (nict_fastmutex);
+	osip_mutex_unlock(nict_fastmutex);
 #endif
-  return OSIP_UNDEFINED_ERROR;
+	return OSIP_UNDEFINED_ERROR;
 }
 
-int
-__osip_remove_nist_transaction (osip_t * osip, osip_transaction_t * nist)
+int __osip_remove_nist_transaction(osip_t * osip, osip_transaction_t * nist)
 {
-  osip_list_iterator_t iterator;
-  osip_transaction_t *tmp;
+	osip_list_iterator_t iterator;
+	osip_transaction_t *tmp;
 
 #ifdef OSIP_MT
-  osip_mutex_lock (nist_fastmutex);
+	osip_mutex_lock(nist_fastmutex);
 #endif
 
 #if defined(HAVE_DICT_DICT_H)
-  {
-    osip_generic_param_t *b_request = NULL;
-    int rv;
+	{
+		osip_generic_param_t *b_request = NULL;
+		int rv;
 
-    osip_via_param_get_byname (nist->topvia, "branch", &b_request);
-    if (b_request != NULL && b_request->gvalue != NULL)
-      {
-        rv = dict_remove (osip->osip_nist_hastable, b_request->gvalue, TRUE);
+		osip_via_param_get_byname(nist->topvia, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			rv = dict_remove(osip->osip_nist_hastable, b_request->gvalue, TRUE);
 
-        if (rv == 0)
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_INFO1, NULL,
-                         "New key deleted in ict hastable `%s'\n",
-                         b_request->gvalue));
-        } else
-          {
-            OSIP_TRACE (osip_trace
-                        (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                         "key not removed `%s'\n", b_request->gvalue));
-          }
-      }
-  }
+			if (rv == 0) {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO1, NULL,
+							"New key deleted in ict hastable `%s'\n",
+							b_request->gvalue));
+			} else {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+							"key not removed `%s'\n", b_request->gvalue));
+			}
+		}
+	}
 #endif
 
-  tmp =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tmp->transactionid == nist->transactionid)
-        {
-          osip_list_iterator_remove (&iterator);
+	tmp =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_nist_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tmp->transactionid == nist->transactionid) {
+			osip_list_iterator_remove(&iterator);
 #ifdef OSIP_MT
-          osip_mutex_unlock (nist_fastmutex);
+			osip_mutex_unlock(nist_fastmutex);
 #endif
-          return OSIP_SUCCESS;
-        }
-      tmp = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
+			return OSIP_SUCCESS;
+		}
+		tmp = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (nist_fastmutex);
+	osip_mutex_unlock(nist_fastmutex);
 #endif
-  return OSIP_UNDEFINED_ERROR;
+	return OSIP_UNDEFINED_ERROR;
 }
 
-int
-osip_find_transaction_and_add_event (osip_t * osip, osip_event_t * evt)
+int osip_find_transaction_and_add_event(osip_t * osip, osip_event_t * evt)
 {
-  osip_transaction_t *transaction = __osip_find_transaction (osip, evt, 1);
+	osip_transaction_t *transaction = __osip_find_transaction(osip, evt, 1);
 
-  if (transaction == NULL)
-    return OSIP_UNDEFINED_ERROR;
-  return OSIP_SUCCESS;
+	if (transaction == NULL)
+		return OSIP_UNDEFINED_ERROR;
+	return OSIP_SUCCESS;
 }
 
 #ifndef OSIP_MT
-osip_transaction_t *
-osip_find_transaction (osip_t * osip, osip_event_t * evt)
+osip_transaction_t *osip_find_transaction(osip_t * osip, osip_event_t * evt)
 {
-  return __osip_find_transaction (osip, evt, 0);
+	return __osip_find_transaction(osip, evt, 0);
 }
 #endif
 
-osip_transaction_t *
-__osip_find_transaction (osip_t * osip, osip_event_t * evt, int consume)
+osip_transaction_t *__osip_find_transaction(osip_t * osip, osip_event_t * evt,
+											int consume)
 {
-  osip_transaction_t *transaction = NULL;
-  osip_list_t *transactions = NULL;
+	osip_transaction_t *transaction = NULL;
+	osip_list_t *transactions = NULL;
 
 #ifdef OSIP_MT
-  struct osip_mutex *mut = NULL;
+	struct osip_mutex *mut = NULL;
 #endif
 
-  if (evt == NULL || evt->sip == NULL || evt->sip->cseq == NULL)
-    return NULL;
+	if (evt == NULL || evt->sip == NULL || evt->sip->cseq == NULL)
+		return NULL;
 
-  if (EVT_IS_INCOMINGMSG (evt))
-    {
-      if (MSG_IS_REQUEST (evt->sip))
-        {
-          if (0 == strcmp (evt->sip->cseq->method, "INVITE")
-              || 0 == strcmp (evt->sip->cseq->method, "ACK"))
-            {
-              transactions = &osip->osip_ist_transactions;
+	if (EVT_IS_INCOMINGMSG(evt)) {
+		if (MSG_IS_REQUEST(evt->sip)) {
+			if (0 == strcmp(evt->sip->cseq->method, "INVITE")
+				|| 0 == strcmp(evt->sip->cseq->method, "ACK")) {
+				transactions = &osip->osip_ist_transactions;
 #ifdef OSIP_MT
-              mut = ist_fastmutex;
+				mut = ist_fastmutex;
 #endif
-          } else
-            {
-              transactions = &osip->osip_nist_transactions;
+			} else {
+				transactions = &osip->osip_nist_transactions;
 #ifdef OSIP_MT
-              mut = nist_fastmutex;
+				mut = nist_fastmutex;
 #endif
-            }
-      } else
-        {
-          if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
-            {
-              transactions = &osip->osip_ict_transactions;
+			}
+		} else {
+			if (0 == strcmp(evt->sip->cseq->method, "INVITE")) {
+				transactions = &osip->osip_ict_transactions;
 #ifdef OSIP_MT
-              mut = ict_fastmutex;
+				mut = ict_fastmutex;
 #endif
-          } else
-            {
-              transactions = &osip->osip_nict_transactions;
+			} else {
+				transactions = &osip->osip_nict_transactions;
 #ifdef OSIP_MT
-              mut = nict_fastmutex;
+				mut = nict_fastmutex;
 #endif
-            }
-        }
-  } else if (EVT_IS_OUTGOINGMSG (evt))
-    {
-      if (MSG_IS_RESPONSE (evt->sip))
-        {
-          if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
-            {
-              transactions = &osip->osip_ist_transactions;
+			}
+		}
+	} else if (EVT_IS_OUTGOINGMSG(evt)) {
+		if (MSG_IS_RESPONSE(evt->sip)) {
+			if (0 == strcmp(evt->sip->cseq->method, "INVITE")) {
+				transactions = &osip->osip_ist_transactions;
 #ifdef OSIP_MT
-              mut = ist_fastmutex;
+				mut = ist_fastmutex;
 #endif
-          } else
-            {
-              transactions = &osip->osip_nist_transactions;
+			} else {
+				transactions = &osip->osip_nist_transactions;
 #ifdef OSIP_MT
-              mut = nist_fastmutex;
+				mut = nist_fastmutex;
 #endif
-            }
-      } else
-        {
-          if (0 == strcmp (evt->sip->cseq->method, "INVITE")
-              || 0 == strcmp (evt->sip->cseq->method, "ACK"))
-            {
-              transactions = &osip->osip_ict_transactions;
+			}
+		} else {
+			if (0 == strcmp(evt->sip->cseq->method, "INVITE")
+				|| 0 == strcmp(evt->sip->cseq->method, "ACK")) {
+				transactions = &osip->osip_ict_transactions;
 #ifdef OSIP_MT
-              mut = ict_fastmutex;
+				mut = ict_fastmutex;
 #endif
-          } else
-            {
-              transactions = &osip->osip_nict_transactions;
+			} else {
+				transactions = &osip->osip_nict_transactions;
 #ifdef OSIP_MT
-              mut = nict_fastmutex;
+				mut = nict_fastmutex;
 #endif
-            }
-        }
-    }
-  if (transactions == NULL)
-    return NULL;                /* not a message??? */
+			}
+		}
+	}
+	if (transactions == NULL)
+		return NULL;			/* not a message??? */
 
 #ifdef OSIP_MT
-  osip_mutex_lock (mut);
+	osip_mutex_lock(mut);
 #endif
-  transaction = osip_transaction_find (transactions, evt);
-  if (consume == 1)
-    {                           /* we add the event before releasing the mutex!! */
-      if (transaction != NULL)
-        {
-          osip_transaction_add_event (transaction, evt);
+	transaction = osip_transaction_find(transactions, evt);
+	if (consume == 1) {			/* we add the event before releasing the mutex!! */
+		if (transaction != NULL) {
+			osip_transaction_add_event(transaction, evt);
 #ifdef OSIP_MT
-          osip_mutex_unlock (mut);
+			osip_mutex_unlock(mut);
 #endif
-          return transaction;
-        }
-    }
+			return transaction;
+		}
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (mut);
+	osip_mutex_unlock(mut);
 #endif
 
-  return transaction;
+	return transaction;
 }
 
-osip_transaction_t *
-osip_create_transaction (osip_t * osip, osip_event_t * evt)
+osip_transaction_t *osip_create_transaction(osip_t * osip, osip_event_t * evt)
 {
-  osip_transaction_t *transaction;
-  int i;
-  osip_fsm_type_t ctx_type;
+	osip_transaction_t *transaction;
+	int i;
+	osip_fsm_type_t ctx_type;
 
-  if (evt == NULL)
-    return NULL;
-  if (evt->sip == NULL)
-    return NULL;
+	if (evt == NULL)
+		return NULL;
+	if (evt->sip == NULL)
+		return NULL;
 
-  /* make sure the request's method reflect the cseq value. */
-  if (MSG_IS_REQUEST (evt->sip))
-    {
-      /* delete request where cseq method does not match
-         the method in request-line */
-      if (evt->sip->cseq == NULL
-          || evt->sip->cseq->method == NULL || evt->sip->sip_method == NULL)
-        {
-          return NULL;
-        }
-      if (0 != strcmp (evt->sip->cseq->method, evt->sip->sip_method))
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_WARNING, NULL,
-                       "core module: Discard invalid message with method!=cseq!\n"));
-          return NULL;
-        }
-    }
+	/* make sure the request's method reflect the cseq value. */
+	if (MSG_IS_REQUEST(evt->sip)) {
+		/* delete request where cseq method does not match
+		   the method in request-line */
+		if (evt->sip->cseq == NULL
+			|| evt->sip->cseq->method == NULL || evt->sip->sip_method == NULL) {
+			return NULL;
+		}
+		if (0 != strcmp(evt->sip->cseq->method, evt->sip->sip_method)) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_WARNING, NULL,
+						"core module: Discard invalid message with method!=cseq!\n"));
+			return NULL;
+		}
+	}
 
-  if (MSG_IS_ACK (evt->sip))    /* ACK never create transactions */
-    return NULL;
+	if (MSG_IS_ACK(evt->sip))	/* ACK never create transactions */
+		return NULL;
 
-  if (EVT_IS_INCOMINGREQ (evt))
-    {
-      /* we create a new context for this incoming request */
-      if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
-        ctx_type = IST;
-      else
-        ctx_type = NIST;
-  } else if (EVT_IS_OUTGOINGREQ (evt))
-    {
-      if (0 == strcmp (evt->sip->cseq->method, "INVITE"))
-        ctx_type = ICT;
-      else
-        ctx_type = NICT;
-  } else
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "Cannot build a transction for this message!\n"));
-      return NULL;
-    }
+	if (EVT_IS_INCOMINGREQ(evt)) {
+		/* we create a new context for this incoming request */
+		if (0 == strcmp(evt->sip->cseq->method, "INVITE"))
+			ctx_type = IST;
+		else
+			ctx_type = NIST;
+	} else if (EVT_IS_OUTGOINGREQ(evt)) {
+		if (0 == strcmp(evt->sip->cseq->method, "INVITE"))
+			ctx_type = ICT;
+		else
+			ctx_type = NICT;
+	} else {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					"Cannot build a transction for this message!\n"));
+		return NULL;
+	}
 
-  i = osip_transaction_init (&transaction, ctx_type, osip, evt->sip);
-  if (i != 0)
-    {
-      return NULL;
-    }
-  evt->transactionid = transaction->transactionid;
-  return transaction;
+	i = osip_transaction_init(&transaction, ctx_type, osip, evt->sip);
+	if (i != 0) {
+		return NULL;
+	}
+	evt->transactionid = transaction->transactionid;
+	return transaction;
 }
 
-osip_transaction_t *
-osip_transaction_find (osip_list_t * transactions, osip_event_t * evt)
+osip_transaction_t *osip_transaction_find(osip_list_t * transactions,
+										  osip_event_t * evt)
 {
-  osip_list_iterator_t iterator;
-  osip_transaction_t *transaction;
-  osip_t *osip = NULL;
+	osip_list_iterator_t iterator;
+	osip_transaction_t *transaction;
+	osip_t *osip = NULL;
 
-  transaction =
-    (osip_transaction_t *) osip_list_get_first (transactions, &iterator);
-  if (transaction != NULL)
-    osip = (osip_t *) transaction->config;
-  if (osip == NULL)
-    return NULL;
+	transaction =
+		(osip_transaction_t *) osip_list_get_first(transactions, &iterator);
+	if (transaction != NULL)
+		osip = (osip_t *) transaction->config;
+	if (osip == NULL)
+		return NULL;
 
-  if (EVT_IS_INCOMINGREQ (evt))
-    {
+	if (EVT_IS_INCOMINGREQ(evt)) {
 #ifdef HAVE_DICT_DICT_H
-      /* search in hastable! */
-      osip_generic_param_t *b_request;
-      osip_via_t *topvia_request;
+		/* search in hastable! */
+		osip_generic_param_t *b_request;
+		osip_via_t *topvia_request;
 
-      topvia_request = osip_list_get (&evt->sip->vias, 0);
-      if (topvia_request == NULL)
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                       "Remote UA is not compliant: missing a Via header!\n"));
-          return NULL;
-        }
-      osip_via_param_get_byname (topvia_request, "branch", &b_request);
-      if (b_request != NULL && b_request->gvalue != NULL)
-        {
-          if (MSG_IS_INVITE (evt->sip) || MSG_IS_ACK (evt->sip))
-            {
-              transaction =
-                (osip_transaction_t *) dict_search (osip->osip_ist_hastable,
-                                                    b_request->gvalue);
-              OSIP_TRACE (osip_trace
-                          (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                           "Find matching Via header for INVITE(ACK) REQUEST!\n"));
-              if (transaction != NULL)
-                return transaction;
-          } else
-            {
-              transaction =
-                (osip_transaction_t *) dict_search (osip->osip_nist_hastable,
-                                                    b_request->gvalue);
-              OSIP_TRACE (osip_trace
-                          (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                           "Find matching Via header for NON-INVITE REQUEST!\n"));
-              if (transaction != NULL)
-                return transaction;
-            }
-        }
+		topvia_request = osip_list_get(&evt->sip->vias, 0);
+		if (topvia_request == NULL) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+						"Remote UA is not compliant: missing a Via header!\n"));
+			return NULL;
+		}
+		osip_via_param_get_byname(topvia_request, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			if (MSG_IS_INVITE(evt->sip) || MSG_IS_ACK(evt->sip)) {
+				transaction =
+					(osip_transaction_t *) dict_search(osip->osip_ist_hastable,
+													   b_request->gvalue);
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO2, NULL,
+							"Find matching Via header for INVITE(ACK) REQUEST!\n"));
+				if (transaction != NULL)
+					return transaction;
+			} else {
+				transaction =
+					(osip_transaction_t *) dict_search(osip->osip_nist_hastable,
+													   b_request->gvalue);
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO2, NULL,
+							"Find matching Via header for NON-INVITE REQUEST!\n"));
+				if (transaction != NULL)
+					return transaction;
+			}
+		}
 #endif
 
-      transaction =
-        (osip_transaction_t *) osip_list_get_first (transactions, &iterator);
-      while (osip_list_iterator_has_elem (iterator))
-        {
-          if (0 ==
-              __osip_transaction_matching_request_osip_to_xist_17_2_3
-              (transaction, evt->sip))
-            return transaction;
-          transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-        }
-  } else if (EVT_IS_INCOMINGRESP (evt))
-    {
+		transaction =
+			(osip_transaction_t *) osip_list_get_first(transactions, &iterator);
+		while (osip_list_iterator_has_elem(iterator)) {
+			if (0 ==
+				__osip_transaction_matching_request_osip_to_xist_17_2_3
+				(transaction, evt->sip))
+				return transaction;
+			transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+		}
+	} else if (EVT_IS_INCOMINGRESP(evt)) {
 #ifdef HAVE_DICT_DICT_H
-      /* search in hastable! */
-      osip_generic_param_t *b_request;
-      osip_via_t *topvia_request;
+		/* search in hastable! */
+		osip_generic_param_t *b_request;
+		osip_via_t *topvia_request;
 
-      topvia_request = osip_list_get (&evt->sip->vias, 0);
-      if (topvia_request == NULL)
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                       "Remote UA is not compliant: missing a Via header!\n"));
-          return NULL;
-        }
-      osip_via_param_get_byname (topvia_request, "branch", &b_request);
-      if (b_request != NULL && b_request->gvalue != NULL)
-        {
-          if (MSG_IS_RESPONSE_FOR (evt->sip, "INVITE"))
-            {
-              transaction =
-                (osip_transaction_t *) dict_search (osip->osip_ict_hastable,
-                                                    b_request->gvalue);
-              OSIP_TRACE (osip_trace
-                          (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                           "Find matching Via header for INVITE ANSWER!\n"));
-              if (transaction != NULL)
-                return transaction;
-          } else
-            {
-              transaction =
-                (osip_transaction_t *) dict_search (osip->osip_nict_hastable,
-                                                    b_request->gvalue);
-              OSIP_TRACE (osip_trace
-                          (__FILE__, __LINE__, OSIP_INFO2, NULL,
-                           "Find matching Via header for NON-INVITE ANSWER!\n"));
-              if (transaction != NULL)
-                return transaction;
-            }
-        }
+		topvia_request = osip_list_get(&evt->sip->vias, 0);
+		if (topvia_request == NULL) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+						"Remote UA is not compliant: missing a Via header!\n"));
+			return NULL;
+		}
+		osip_via_param_get_byname(topvia_request, "branch", &b_request);
+		if (b_request != NULL && b_request->gvalue != NULL) {
+			if (MSG_IS_RESPONSE_FOR(evt->sip, "INVITE")) {
+				transaction =
+					(osip_transaction_t *) dict_search(osip->osip_ict_hastable,
+													   b_request->gvalue);
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO2, NULL,
+							"Find matching Via header for INVITE ANSWER!\n"));
+				if (transaction != NULL)
+					return transaction;
+			} else {
+				transaction =
+					(osip_transaction_t *) dict_search(osip->osip_nict_hastable,
+													   b_request->gvalue);
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_INFO2, NULL,
+							"Find matching Via header for NON-INVITE ANSWER!\n"));
+				if (transaction != NULL)
+					return transaction;
+			}
+		}
 #endif
 
-      transaction =
-        (osip_transaction_t *) osip_list_get_first (transactions, &iterator);
-      while (osip_list_iterator_has_elem (iterator))
-        {
-          if (0 ==
-              __osip_transaction_matching_response_osip_to_xict_17_1_3
-              (transaction, evt->sip))
-            return transaction;
-          transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-        }
-  } else                        /* handle OUTGOING message */
-    {                           /* THE TRANSACTION ID MUST BE SET */
-      transaction =
-        (osip_transaction_t *) osip_list_get_first (transactions, &iterator);
-      while (osip_list_iterator_has_elem (iterator))
-        {
-          if (transaction->transactionid == evt->transactionid)
-            return transaction;
-          transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-        }
-    }
-  return NULL;
+		transaction =
+			(osip_transaction_t *) osip_list_get_first(transactions, &iterator);
+		while (osip_list_iterator_has_elem(iterator)) {
+			if (0 ==
+				__osip_transaction_matching_response_osip_to_xict_17_1_3
+				(transaction, evt->sip))
+				return transaction;
+			transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+		}
+	} else {					/* handle OUTGOING message */
+		/* THE TRANSACTION ID MUST BE SET */
+		transaction =
+			(osip_transaction_t *) osip_list_get_first(transactions, &iterator);
+		while (osip_list_iterator_has_elem(iterator)) {
+			if (transaction->transactionid == evt->transactionid)
+				return transaction;
+			transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+		}
+	}
+	return NULL;
 }
 
 static int ref_count = 0;
@@ -1204,822 +1095,742 @@ static int ref_count = 0;
 static struct osip_mutex *ref_mutex = NULL;
 #endif
 
-static int
-increase_ref_count (void)
+static int increase_ref_count(void)
 {
 #ifdef OSIP_MT
-  if (ref_count == 0)
-    ref_mutex = osip_mutex_init ();
-  /* Here we should assert() that the mutex was really generated. */
-  osip_mutex_lock (ref_mutex);
+	if (ref_count == 0)
+		ref_mutex = osip_mutex_init();
+	/* Here we should assert() that the mutex was really generated. */
+	osip_mutex_lock(ref_mutex);
 #endif
-  if (ref_count == 0)
-    __osip_global_init ();
-  ref_count++;
+	if (ref_count == 0)
+		__osip_global_init();
+	ref_count++;
 #ifdef OSIP_MT
-  osip_mutex_unlock (ref_mutex);
+	osip_mutex_unlock(ref_mutex);
 #endif
 
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
 }
 
-static void
-decrease_ref_count (void)
+static void decrease_ref_count(void)
 {
 #ifdef OSIP_MT
-  osip_mutex_lock (ref_mutex);
+	osip_mutex_lock(ref_mutex);
 #endif
-  /* assert (ref_count > 0); */
-  ref_count--;
-  if (ref_count == 0)
-    {
+	/* assert (ref_count > 0); */
+	ref_count--;
+	if (ref_count == 0) {
 #ifdef OSIP_MT
-      osip_mutex_unlock (ref_mutex);
-      osip_mutex_destroy (ref_mutex);
+		osip_mutex_unlock(ref_mutex);
+		osip_mutex_destroy(ref_mutex);
 #endif
-      __osip_global_free ();
-      return;
-    }
+		__osip_global_free();
+		return;
+	}
 #ifdef OSIP_MT
-  osip_mutex_unlock (ref_mutex);
+	osip_mutex_unlock(ref_mutex);
 #endif
 }
 
-int
-osip_init (osip_t ** osip)
+int osip_init(osip_t ** osip)
 {
-  int i;
-  i = increase_ref_count ();
-  if (i != 0)
-    return i;
+	int i;
+	i = increase_ref_count();
+	if (i != 0)
+		return i;
 
-  *osip = (osip_t *) osip_malloc (sizeof (osip_t));
-  if (*osip == NULL)
-    return OSIP_NOMEM;                  /* allocation failed */
+	*osip = (osip_t *) osip_malloc(sizeof(osip_t));
+	if (*osip == NULL)
+		return OSIP_NOMEM;		/* allocation failed */
 
-  memset (*osip, 0, sizeof (osip_t));
+	memset(*osip, 0, sizeof(osip_t));
 
-  osip_list_init (&(*osip)->osip_ict_transactions);
-  osip_list_init (&(*osip)->osip_ist_transactions);
-  osip_list_init (&(*osip)->osip_nict_transactions);
-  osip_list_init (&(*osip)->osip_nist_transactions);
-  osip_list_init (&(*osip)->ixt_retransmissions);
+	osip_list_init(&(*osip)->osip_ict_transactions);
+	osip_list_init(&(*osip)->osip_ist_transactions);
+	osip_list_init(&(*osip)->osip_nict_transactions);
+	osip_list_init(&(*osip)->osip_nist_transactions);
+	osip_list_init(&(*osip)->ixt_retransmissions);
 
 #if defined(HAVE_DICT_DICT_H)
-  (*osip)->osip_ict_hastable = hashtable_dict_new ((dict_cmp_func) strcmp,
-                                                   (dict_hsh_func) s_hash,
-                                                   NULL, NULL, HSIZE);
-  (*osip)->osip_ist_hastable = hashtable_dict_new ((dict_cmp_func) strcmp,
-                                                   (dict_hsh_func) s_hash,
-                                                   NULL, NULL, HSIZE);
-  (*osip)->osip_nict_hastable = hashtable_dict_new ((dict_cmp_func) strcmp,
-                                                    (dict_hsh_func) s_hash,
-                                                    NULL, NULL, HSIZE);
-  (*osip)->osip_nist_hastable = hashtable_dict_new ((dict_cmp_func) strcmp,
-                                                    (dict_hsh_func) s_hash,
-                                                    NULL, NULL, HSIZE);
+	(*osip)->osip_ict_hastable = hashtable_dict_new((dict_cmp_func) strcmp,
+													(dict_hsh_func) s_hash,
+													NULL, NULL, HSIZE);
+	(*osip)->osip_ist_hastable = hashtable_dict_new((dict_cmp_func) strcmp,
+													(dict_hsh_func) s_hash,
+													NULL, NULL, HSIZE);
+	(*osip)->osip_nict_hastable = hashtable_dict_new((dict_cmp_func) strcmp,
+													 (dict_hsh_func) s_hash,
+													 NULL, NULL, HSIZE);
+	(*osip)->osip_nist_hastable = hashtable_dict_new((dict_cmp_func) strcmp,
+													 (dict_hsh_func) s_hash,
+													 NULL, NULL, HSIZE);
 #elif defined(HAVE_DICT_DICT_H_HASHTABLE)
-  (*osip)->osip_ict_hastable = rb_tree_new ((dict_cmp_func) strcmp, NULL, NULL);
-  (*osip)->osip_ist_hastable = rb_tree_new ((dict_cmp_func) strcmp, NULL, NULL);
-  (*osip)->osip_nict_hastable = rb_tree_new ((dict_cmp_func) strcmp, NULL, NULL);
-  (*osip)->osip_nist_hastable = rb_tree_new ((dict_cmp_func) strcmp, NULL, NULL);
+	(*osip)->osip_ict_hastable = rb_tree_new((dict_cmp_func) strcmp, NULL, NULL);
+	(*osip)->osip_ist_hastable = rb_tree_new((dict_cmp_func) strcmp, NULL, NULL);
+	(*osip)->osip_nict_hastable = rb_tree_new((dict_cmp_func) strcmp, NULL, NULL);
+	(*osip)->osip_nist_hastable = rb_tree_new((dict_cmp_func) strcmp, NULL, NULL);
 #endif
 
-  return OSIP_SUCCESS;
+	return OSIP_SUCCESS;
+}
+
+void osip_release(osip_t * osip)
+{
+	osip_free(osip);
+	decrease_ref_count();
+}
+
+
+void osip_set_application_context(osip_t * osip, void *pointer)
+{
+	osip->application_context = pointer;
+}
+
+void *osip_get_application_context(osip_t * osip)
+{
+	if (osip == NULL)
+		return NULL;
+	return osip->application_context;
+}
+
+int osip_ict_execute(osip_t * osip)
+{
+	osip_transaction_t *transaction;
+	osip_event_t *se;
+	int more_event;
+	osip_list_iterator_t iterator;
+	void **array;
+	int len;
+	int index = 0;
+
+	/* list must be copied because osip_transaction_execute() may change it */
+#ifdef OSIP_MT
+	osip_mutex_lock(ict_fastmutex);
+#endif
+	len = osip_list_size(&osip->osip_ict_transactions);
+	if (0 >= len) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(ict_fastmutex);
+#endif
+		return OSIP_SUCCESS;
+	}
+	array = osip_malloc(sizeof(void *) * len);
+	if (array == NULL) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(ict_fastmutex);
+#endif
+		return OSIP_NOMEM;		/* OSIP_SUCCESS; */
+	}
+	transaction =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_ict_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		array[index++] = transaction;
+		transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ict_fastmutex);
+#endif
+
+	for (index = 0; index < len; ++index) {
+		transaction = (osip_transaction_t *) array[index];
+		more_event = 1;
+		do {
+			se = (osip_event_t *) osip_fifo_tryget(transaction->transactionff);
+			if (se == NULL)		/* no more event for this transaction */
+				more_event = 0;
+			else
+				osip_transaction_execute(transaction, se);
+		}
+		while (more_event == 1);
+	}
+
+	osip_free(array);
+
+	return OSIP_SUCCESS;
+}
+
+int osip_ist_execute(osip_t * osip)
+{
+	osip_transaction_t *transaction;
+	osip_event_t *se;
+	int more_event;
+	osip_list_iterator_t iterator;
+	void **array;
+	int len;
+	int index = 0;
+
+	/* list must be copied because osip_transaction_execute() may change it */
+#ifdef OSIP_MT
+	osip_mutex_lock(ist_fastmutex);
+#endif
+	len = osip_list_size(&osip->osip_ist_transactions);
+	if (0 >= len) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(ist_fastmutex);
+#endif
+		return OSIP_SUCCESS;
+	}
+	array = osip_malloc(sizeof(void *) * len);
+	if (array == NULL) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(ist_fastmutex);
+#endif
+		return OSIP_NOMEM;		/* OSIP_SUCCESS; */
+	}
+	transaction =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_ist_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		array[index++] = transaction;
+		transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ist_fastmutex);
+#endif
+
+	for (index = 0; index < len; ++index) {
+		transaction = (osip_transaction_t *) array[index];
+		more_event = 1;
+		do {
+			se = (osip_event_t *) osip_fifo_tryget(transaction->transactionff);
+			if (se == NULL)		/* no more event for this transaction */
+				more_event = 0;
+			else
+				osip_transaction_execute(transaction, se);
+		}
+		while (more_event == 1);
+
+	}
+
+	osip_free(array);
+
+	return OSIP_SUCCESS;
+}
+
+int osip_nict_execute(osip_t * osip)
+{
+	osip_transaction_t *transaction;
+	osip_event_t *se;
+	int more_event;
+	osip_list_iterator_t iterator;
+	void **array;
+	int len;
+	int index = 0;
+
+	/* list must be copied because osip_transaction_execute() may change it */
+#ifdef OSIP_MT
+	osip_mutex_lock(nict_fastmutex);
+#endif
+	len = osip_list_size(&osip->osip_nict_transactions);
+	if (0 >= len) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(nict_fastmutex);
+#endif
+		return OSIP_SUCCESS;
+	}
+	array = osip_malloc(sizeof(void *) * len);
+	if (array == NULL) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(nict_fastmutex);
+#endif
+		return OSIP_NOMEM;		/* OSIP_SUCCESS; */
+	}
+	transaction =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_nict_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		array[index++] = transaction;
+		transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nict_fastmutex);
+#endif
+
+	for (index = 0; index < len; ++index) {
+		transaction = (osip_transaction_t *) array[index];
+		more_event = 1;
+		do {
+			se = (osip_event_t *) osip_fifo_tryget(transaction->transactionff);
+			if (se == NULL)		/* no more event for this transaction */
+				more_event = 0;
+			else
+				osip_transaction_execute(transaction, se);
+		}
+		while (more_event == 1);
+	}
+
+	osip_free(array);
+
+	return OSIP_SUCCESS;
+}
+
+int osip_nist_execute(osip_t * osip)
+{
+	osip_transaction_t *transaction;
+	osip_event_t *se;
+	int more_event;
+	osip_list_iterator_t iterator;
+	void **array;
+	int len;
+	int index = 0;
+
+	/* list must be copied because osip_transaction_execute() may change it */
+#ifdef OSIP_MT
+	osip_mutex_lock(nist_fastmutex);
+#endif
+	len = osip_list_size(&osip->osip_nist_transactions);
+	if (0 >= len) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(nist_fastmutex);
+#endif
+		return OSIP_SUCCESS;
+	}
+	array = osip_malloc(sizeof(void *) * len);
+	if (array == NULL) {
+#ifdef OSIP_MT
+		osip_mutex_unlock(nist_fastmutex);
+#endif
+		return OSIP_NOMEM;		/* OSIP_SUCCESS; */
+	}
+	transaction =
+		(osip_transaction_t *) osip_list_get_first(&osip->osip_nist_transactions,
+												   &iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		array[index++] = transaction;
+		transaction = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nist_fastmutex);
+#endif
+
+	for (index = 0; index < len; ++index) {
+		transaction = (osip_transaction_t *) array[index];
+		more_event = 1;
+		do {
+			se = (osip_event_t *) osip_fifo_tryget(transaction->transactionff);
+			if (se == NULL)		/* no more event for this transaction */
+				more_event = 0;
+			else
+				osip_transaction_execute(transaction, se);
+		}
+		while (more_event == 1);
+	}
+
+	osip_free(array);
+
+	return OSIP_SUCCESS;
+}
+
+void osip_timers_gettimeout(osip_t * osip, struct timeval *lower_tv)
+{
+	struct timeval now;
+	osip_transaction_t *tr;
+	osip_list_iterator_t iterator;
+
+	osip_gettimeofday(&now, NULL);
+	lower_tv->tv_sec = now.tv_sec + 3600 * 24 * 365;	/* wake up evry year :-) */
+	lower_tv->tv_usec = now.tv_usec;
+
+#ifdef OSIP_MT
+	osip_mutex_lock(ict_fastmutex);
+#endif
+	/* handle ict timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_ict_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (1 <= osip_fifo_size(tr->transactionff)) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO4, NULL,
+						"1 Pending event already in transaction !\n"));
+			lower_tv->tv_sec = 0;
+			lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+			osip_mutex_unlock(ict_fastmutex);
+#endif
+			return;
+		} else {
+			if (tr->state == ICT_CALLING)
+				min_timercmp(lower_tv, &tr->ict_context->timer_b_start);
+			if (tr->state == ICT_CALLING)
+				min_timercmp(lower_tv, &tr->ict_context->timer_a_start);
+			if (tr->state == ICT_COMPLETED)
+				min_timercmp(lower_tv, &tr->ict_context->timer_d_start);
+			if (osip_timercmp(&now, lower_tv, >)) {
+				lower_tv->tv_sec = 0;
+				lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+				osip_mutex_unlock(ict_fastmutex);
+#endif
+				return;
+			}
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ict_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+	osip_mutex_lock(ist_fastmutex);
+#endif
+	/* handle ist timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_ist_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tr->state == IST_CONFIRMED)
+			min_timercmp(lower_tv, &tr->ist_context->timer_i_start);
+		if (tr->state == IST_COMPLETED)
+			min_timercmp(lower_tv, &tr->ist_context->timer_h_start);
+		if (tr->state == IST_COMPLETED)
+			min_timercmp(lower_tv, &tr->ist_context->timer_g_start);
+		if (osip_timercmp(&now, lower_tv, >)) {
+			lower_tv->tv_sec = 0;
+			lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+			osip_mutex_unlock(ist_fastmutex);
+#endif
+			return;
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ist_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+	osip_mutex_lock(nict_fastmutex);
+#endif
+	/* handle nict timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_nict_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tr->state == NICT_COMPLETED)
+			min_timercmp(lower_tv, &tr->nict_context->timer_k_start);
+		if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
+			min_timercmp(lower_tv, &tr->nict_context->timer_f_start);
+		if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
+			min_timercmp(lower_tv, &tr->nict_context->timer_e_start);
+		if (osip_timercmp(&now, lower_tv, >)) {
+			lower_tv->tv_sec = 0;
+			lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+			osip_mutex_unlock(nict_fastmutex);
+#endif
+			return;
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nict_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+	osip_mutex_lock(nist_fastmutex);
+#endif
+	/* handle nist timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_nist_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		if (tr->state == NIST_COMPLETED)
+			min_timercmp(lower_tv, &tr->nist_context->timer_j_start);
+		if (osip_timercmp(&now, lower_tv, >)) {
+			lower_tv->tv_sec = 0;
+			lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+			osip_mutex_unlock(nist_fastmutex);
+#endif
+			return;
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nist_fastmutex);
+#endif
+
+#ifdef OSIP_MT
+	osip_mutex_lock(ixt_fastmutex);
+#endif
+	{
+		ixt_t *ixt;
+
+		ixt = (ixt_t *) osip_list_get_first(&osip->ixt_retransmissions, &iterator);
+		while (osip_list_iterator_has_elem(iterator)) {
+			min_timercmp(lower_tv, &ixt->start);
+			if (osip_timercmp(&now, lower_tv, >)) {
+				lower_tv->tv_sec = 0;
+				lower_tv->tv_usec = 0;
+#ifdef OSIP_MT
+				osip_mutex_unlock(ixt_fastmutex);
+#endif
+				return;
+			}
+
+			ixt = (ixt_t *) osip_list_get_next(&iterator);
+		}
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ixt_fastmutex);
+#endif
+
+	lower_tv->tv_sec = lower_tv->tv_sec - now.tv_sec;
+	lower_tv->tv_usec = lower_tv->tv_usec - now.tv_usec;
+
+	/* just make sure the value is correct! */
+	if (lower_tv->tv_usec < 0) {
+		lower_tv->tv_usec = lower_tv->tv_usec + 1000000;
+		lower_tv->tv_sec--;
+	}
+	if (lower_tv->tv_sec < 0) {
+		lower_tv->tv_sec = 0;
+		lower_tv->tv_usec = 0;
+	}
+	if (lower_tv->tv_usec > 1000000) {
+		lower_tv->tv_usec = lower_tv->tv_usec - 1000000;
+		lower_tv->tv_sec++;
+	}
+	return;
+}
+
+void osip_timers_ict_execute(osip_t * osip)
+{
+	osip_transaction_t *tr;
+	osip_list_iterator_t iterator;
+
+#ifdef OSIP_MT
+	osip_mutex_lock(ict_fastmutex);
+#endif
+	/* handle ict timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_ict_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		osip_event_t *evt;
+
+		if (1 <= osip_fifo_size(tr->transactionff)) {
+			OSIP_TRACE(osip_trace
+					   (__FILE__, __LINE__, OSIP_INFO4, NULL,
+						"1 Pending event already in transaction !\n"));
+		} else {
+			evt = __osip_ict_need_timer_b_event(tr->ict_context, tr->state,
+												tr->transactionid);
+			if (evt != NULL)
+				osip_fifo_add(tr->transactionff, evt);
+			else {
+				evt = __osip_ict_need_timer_a_event(tr->ict_context, tr->state,
+													tr->transactionid);
+				if (evt != NULL)
+					osip_fifo_add(tr->transactionff, evt);
+				else {
+					evt =
+						__osip_ict_need_timer_d_event(tr->ict_context, tr->state,
+													  tr->transactionid);
+					if (evt != NULL)
+						osip_fifo_add(tr->transactionff, evt);
+				}
+			}
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ict_fastmutex);
+#endif
+}
+
+void osip_timers_ist_execute(osip_t * osip)
+{
+	osip_transaction_t *tr;
+	osip_list_iterator_t iterator;
+
+#ifdef OSIP_MT
+	osip_mutex_lock(ist_fastmutex);
+#endif
+	/* handle ist timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_ist_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		osip_event_t *evt;
+
+		evt = __osip_ist_need_timer_i_event(tr->ist_context, tr->state,
+											tr->transactionid);
+		if (evt != NULL)
+			osip_fifo_add(tr->transactionff, evt);
+		else {
+			evt = __osip_ist_need_timer_h_event(tr->ist_context, tr->state,
+												tr->transactionid);
+			if (evt != NULL)
+				osip_fifo_add(tr->transactionff, evt);
+			else {
+				evt = __osip_ist_need_timer_g_event(tr->ist_context, tr->state,
+													tr->transactionid);
+				if (evt != NULL)
+					osip_fifo_add(tr->transactionff, evt);
+			}
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(ist_fastmutex);
+#endif
+}
+
+void osip_timers_nict_execute(osip_t * osip)
+{
+	osip_transaction_t *tr;
+	osip_list_iterator_t iterator;
+
+#ifdef OSIP_MT
+	osip_mutex_lock(nict_fastmutex);
+#endif
+	/* handle nict timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_nict_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		osip_event_t *evt;
+
+		evt = __osip_nict_need_timer_k_event(tr->nict_context, tr->state,
+											 tr->transactionid);
+		if (evt != NULL)
+			osip_fifo_add(tr->transactionff, evt);
+		else {
+			evt = __osip_nict_need_timer_f_event(tr->nict_context, tr->state,
+												 tr->transactionid);
+			if (evt != NULL)
+				osip_fifo_add(tr->transactionff, evt);
+			else {
+				evt =
+					__osip_nict_need_timer_e_event(tr->nict_context, tr->state,
+												   tr->transactionid);
+				if (evt != NULL)
+					osip_fifo_add(tr->transactionff, evt);
+			}
+		}
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nict_fastmutex);
+#endif
+}
+
+
+void osip_timers_nist_execute(osip_t * osip)
+{
+	osip_transaction_t *tr;
+	osip_list_iterator_t iterator;
+
+#ifdef OSIP_MT
+	osip_mutex_lock(nist_fastmutex);
+#endif
+	/* handle nist timers */
+	tr = (osip_transaction_t *) osip_list_get_first(&osip->osip_nist_transactions,
+													&iterator);
+	while (osip_list_iterator_has_elem(iterator)) {
+		osip_event_t *evt;
+
+		evt = __osip_nist_need_timer_j_event(tr->nist_context, tr->state,
+											 tr->transactionid);
+		if (evt != NULL)
+			osip_fifo_add(tr->transactionff, evt);
+		tr = (osip_transaction_t *) osip_list_get_next(&iterator);
+	}
+#ifdef OSIP_MT
+	osip_mutex_unlock(nist_fastmutex);
+#endif
 }
 
 void
-osip_release (osip_t * osip)
+osip_set_cb_send_message(osip_t * cf,
+						 int (*cb) (osip_transaction_t *, osip_message_t *,
+									char *, int, int))
 {
-  osip_free (osip);
-  decrease_ref_count ();
+	cf->cb_send_message = cb;
 }
-
 
 void
-osip_set_application_context (osip_t * osip, void *pointer)
+__osip_message_callback(int type, osip_transaction_t * tr, osip_message_t * msg)
 {
-  osip->application_context = pointer;
+	osip_t *config = tr->config;
+
+	if (type >= OSIP_MESSAGE_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_BUG, NULL,
+					"invalid callback type %d\n", type));
+		return;
+	}
+	if (config->msg_callbacks[type] == NULL)
+		return;
+	config->msg_callbacks[type] (type, tr, msg);
 }
 
-void *
-osip_get_application_context (osip_t * osip)
+void __osip_kill_transaction_callback(int type, osip_transaction_t * tr)
 {
-  if (osip == NULL)
-    return NULL;
-  return osip->application_context;
+	osip_t *config = tr->config;
+
+	if (type >= OSIP_KILL_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_BUG, NULL,
+					"invalid callback type %d\n", type));
+		return;
+	}
+	tr->completed_time = time(NULL);
+	if (config->kill_callbacks[type] == NULL)
+		return;
+	config->kill_callbacks[type] (type, tr);
+}
+
+void __osip_transport_error_callback(int type, osip_transaction_t * tr, int error)
+{
+	osip_t *config = tr->config;
+
+	if (type >= OSIP_TRANSPORT_ERROR_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_BUG, NULL,
+					"invalid callback type %d\n", type));
+		return;
+	}
+	if (config->tp_error_callbacks[type] == NULL)
+		return;
+	config->tp_error_callbacks[type] (type, tr, error);
+}
+
+
+int osip_set_message_callback(osip_t * config, int type, osip_message_cb_t cb)
+{
+	if (type >= OSIP_MESSAGE_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					"invalid callback type %d\n", type));
+		return OSIP_BADPARAMETER;
+	}
+	config->msg_callbacks[type] = cb;
+
+	return OSIP_SUCCESS;
 }
 
 int
-osip_ict_execute (osip_t * osip)
+osip_set_kill_transaction_callback(osip_t * config, int type,
+								   osip_kill_transaction_cb_t cb)
 {
-  osip_transaction_t *transaction;
-  osip_event_t *se;
-  int more_event;
-  osip_list_iterator_t iterator;
-  void **array;
-  int len;
-  int index = 0;
-
-  /* list must be copied because osip_transaction_execute() may change it */
-#ifdef OSIP_MT
-  osip_mutex_lock (ict_fastmutex);
-#endif
-  len = osip_list_size (&osip->osip_ict_transactions);
-  if (0 >= len)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (ict_fastmutex);
-#endif
-      return OSIP_SUCCESS;
-    }
-  array = osip_malloc (sizeof (void *) * len);
-  if (array==NULL)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (ict_fastmutex);
-#endif
-      return OSIP_NOMEM; /* OSIP_SUCCESS; */
-    }
-  transaction =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      array[index++] = transaction;
-      transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ict_fastmutex);
-#endif
-
-  for (index = 0; index < len; ++index)
-    {
-      transaction = (osip_transaction_t *) array[index];
-      more_event = 1;
-      do
-        {
-          se = (osip_event_t *) osip_fifo_tryget (transaction->transactionff);
-          if (se == NULL)       /* no more event for this transaction */
-            more_event = 0;
-          else
-            osip_transaction_execute (transaction, se);
-        }
-      while (more_event == 1);
-    }
-
-  osip_free (array);
-
-  return OSIP_SUCCESS;
+	if (type >= OSIP_KILL_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					"invalid callback type %d\n", type));
+		return OSIP_BADPARAMETER;
+	}
+	config->kill_callbacks[type] = cb;
+	return OSIP_SUCCESS;
 }
 
 int
-osip_ist_execute (osip_t * osip)
+osip_set_transport_error_callback(osip_t * config, int type,
+								  osip_transport_error_cb_t cb)
 {
-  osip_transaction_t *transaction;
-  osip_event_t *se;
-  int more_event;
-  osip_list_iterator_t iterator;
-  void **array;
-  int len;
-  int index = 0;
-
-  /* list must be copied because osip_transaction_execute() may change it */
-#ifdef OSIP_MT
-  osip_mutex_lock (ist_fastmutex);
-#endif
-  len = osip_list_size (&osip->osip_ist_transactions);
-  if (0 >= len)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (ist_fastmutex);
-#endif
-      return OSIP_SUCCESS;
-    }
-  array = osip_malloc (sizeof (void *) * len);
-  if (array==NULL)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (ist_fastmutex);
-#endif
-      return OSIP_NOMEM; /* OSIP_SUCCESS; */
-    }
-  transaction =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      array[index++] = transaction;
-      transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ist_fastmutex);
-#endif
-
-  for (index = 0; index < len; ++index)
-    {
-      transaction = (osip_transaction_t *) array[index];
-      more_event = 1;
-      do
-        {
-          se = (osip_event_t *) osip_fifo_tryget (transaction->transactionff);
-          if (se == NULL)       /* no more event for this transaction */
-            more_event = 0;
-          else
-            osip_transaction_execute (transaction, se);
-        }
-      while (more_event == 1);
-
-    }
-
-  osip_free (array);
-
-  return OSIP_SUCCESS;
-}
-
-int
-osip_nict_execute (osip_t * osip)
-{
-  osip_transaction_t *transaction;
-  osip_event_t *se;
-  int more_event;
-  osip_list_iterator_t iterator;
-  void **array;
-  int len;
-  int index = 0;
-
-  /* list must be copied because osip_transaction_execute() may change it */
-#ifdef OSIP_MT
-  osip_mutex_lock (nict_fastmutex);
-#endif
-  len = osip_list_size (&osip->osip_nict_transactions);
-  if (0 >= len)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (nict_fastmutex);
-#endif
-      return OSIP_SUCCESS;
-    }
-  array = osip_malloc (sizeof (void *) * len);
-  if (array==NULL)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (nict_fastmutex);
-#endif
-      return OSIP_NOMEM; /* OSIP_SUCCESS; */
-    }
-  transaction =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      array[index++] = transaction;
-      transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nict_fastmutex);
-#endif
-
-  for (index = 0; index < len; ++index)
-    {
-      transaction = (osip_transaction_t *) array[index];
-      more_event = 1;
-      do
-        {
-          se = (osip_event_t *) osip_fifo_tryget (transaction->transactionff);
-          if (se == NULL)       /* no more event for this transaction */
-            more_event = 0;
-          else
-            osip_transaction_execute (transaction, se);
-        }
-      while (more_event == 1);
-    }
-
-  osip_free (array);
-
-  return OSIP_SUCCESS;
-}
-
-int
-osip_nist_execute (osip_t * osip)
-{
-  osip_transaction_t *transaction;
-  osip_event_t *se;
-  int more_event;
-  osip_list_iterator_t iterator;
-  void **array;
-  int len;
-  int index = 0;
-
-  /* list must be copied because osip_transaction_execute() may change it */
-#ifdef OSIP_MT
-  osip_mutex_lock (nist_fastmutex);
-#endif
-  len = osip_list_size (&osip->osip_nist_transactions);
-  if (0 >= len)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (nist_fastmutex);
-#endif
-      return OSIP_SUCCESS;
-    }
-  array = osip_malloc (sizeof (void *) * len);
-  if (array==NULL)
-    {
-#ifdef OSIP_MT
-      osip_mutex_unlock (nist_fastmutex);
-#endif
-      return OSIP_NOMEM; /* OSIP_SUCCESS; */
-    }
-  transaction =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      array[index++] = transaction;
-      transaction = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nist_fastmutex);
-#endif
-
-  for (index = 0; index < len; ++index)
-    {
-      transaction = (osip_transaction_t *) array[index];
-      more_event = 1;
-      do
-        {
-          se = (osip_event_t *) osip_fifo_tryget (transaction->transactionff);
-          if (se == NULL)       /* no more event for this transaction */
-            more_event = 0;
-          else
-            osip_transaction_execute (transaction, se);
-        }
-      while (more_event == 1);
-    }
-
-  osip_free (array);
-
-  return OSIP_SUCCESS;
-}
-
-void
-osip_timers_gettimeout (osip_t * osip, struct timeval *lower_tv)
-{
-  struct timeval now;
-  osip_transaction_t *tr;
-  osip_list_iterator_t iterator;
-
-  osip_gettimeofday (&now, NULL);
-  lower_tv->tv_sec = now.tv_sec + 3600 * 24 * 365;      /* wake up evry year :-) */
-  lower_tv->tv_usec = now.tv_usec;
-
-#ifdef OSIP_MT
-  osip_mutex_lock (ict_fastmutex);
-#endif
-  /* handle ict timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (1 <= osip_fifo_size (tr->transactionff))
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_INFO4, NULL,
-                       "1 Pending event already in transaction !\n"));
-          lower_tv->tv_sec = 0;
-          lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-          osip_mutex_unlock (ict_fastmutex);
-#endif
-          return;
-      } else
-        {
-          if (tr->state == ICT_CALLING)
-            min_timercmp (lower_tv, &tr->ict_context->timer_b_start);
-          if (tr->state == ICT_CALLING)
-            min_timercmp (lower_tv, &tr->ict_context->timer_a_start);
-          if (tr->state == ICT_COMPLETED)
-            min_timercmp (lower_tv, &tr->ict_context->timer_d_start);
-          if (osip_timercmp (&now, lower_tv, >))
-            {
-              lower_tv->tv_sec = 0;
-              lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-              osip_mutex_unlock (ict_fastmutex);
-#endif
-              return;
-            }
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ict_fastmutex);
-#endif
-
-#ifdef OSIP_MT
-  osip_mutex_lock (ist_fastmutex);
-#endif
-  /* handle ist timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tr->state == IST_CONFIRMED)
-        min_timercmp (lower_tv, &tr->ist_context->timer_i_start);
-      if (tr->state == IST_COMPLETED)
-        min_timercmp (lower_tv, &tr->ist_context->timer_h_start);
-      if (tr->state == IST_COMPLETED)
-        min_timercmp (lower_tv, &tr->ist_context->timer_g_start);
-      if (osip_timercmp (&now, lower_tv, >))
-        {
-          lower_tv->tv_sec = 0;
-          lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-          osip_mutex_unlock (ist_fastmutex);
-#endif
-          return;
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ist_fastmutex);
-#endif
-
-#ifdef OSIP_MT
-  osip_mutex_lock (nict_fastmutex);
-#endif
-  /* handle nict timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tr->state == NICT_COMPLETED)
-        min_timercmp (lower_tv, &tr->nict_context->timer_k_start);
-      if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
-        min_timercmp (lower_tv, &tr->nict_context->timer_f_start);
-      if (tr->state == NICT_PROCEEDING || tr->state == NICT_TRYING)
-        min_timercmp (lower_tv, &tr->nict_context->timer_e_start);
-      if (osip_timercmp (&now, lower_tv, >))
-        {
-          lower_tv->tv_sec = 0;
-          lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-          osip_mutex_unlock (nict_fastmutex);
-#endif
-          return;
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nict_fastmutex);
-#endif
-
-#ifdef OSIP_MT
-  osip_mutex_lock (nist_fastmutex);
-#endif
-  /* handle nist timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      if (tr->state == NIST_COMPLETED)
-        min_timercmp (lower_tv, &tr->nist_context->timer_j_start);
-      if (osip_timercmp (&now, lower_tv, >))
-        {
-          lower_tv->tv_sec = 0;
-          lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-          osip_mutex_unlock (nist_fastmutex);
-#endif
-          return;
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nist_fastmutex);
-#endif
-
-#ifdef OSIP_MT
-  osip_mutex_lock (ixt_fastmutex);
-#endif
-  {
-    ixt_t *ixt;
-
-    ixt = (ixt_t *) osip_list_get_first (&osip->ixt_retransmissions, &iterator);
-    while (osip_list_iterator_has_elem (iterator))
-      {
-        min_timercmp (lower_tv, &ixt->start);
-	if (osip_timercmp (&now, lower_tv, >))
-	  {
-	    lower_tv->tv_sec = 0;
-	    lower_tv->tv_usec = 0;
-#ifdef OSIP_MT
-	    osip_mutex_unlock (ixt_fastmutex);
-#endif
-	    return;
-	  }
-
-        ixt = (ixt_t *) osip_list_get_next (&iterator);
-      }
-  }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ixt_fastmutex);
-#endif
-
-  lower_tv->tv_sec = lower_tv->tv_sec - now.tv_sec;
-  lower_tv->tv_usec = lower_tv->tv_usec - now.tv_usec;
-
-  /* just make sure the value is correct! */
-  if (lower_tv->tv_usec < 0)
-    {
-      lower_tv->tv_usec = lower_tv->tv_usec + 1000000;
-      lower_tv->tv_sec--;
-    }
-  if (lower_tv->tv_sec < 0)
-    {
-      lower_tv->tv_sec = 0;
-      lower_tv->tv_usec = 0;
-    }
-  if (lower_tv->tv_usec > 1000000)
-    {
-      lower_tv->tv_usec = lower_tv->tv_usec - 1000000;
-      lower_tv->tv_sec++;
-    }
-  return;
-}
-
-void
-osip_timers_ict_execute (osip_t * osip)
-{
-  osip_transaction_t *tr;
-  osip_list_iterator_t iterator;
-
-#ifdef OSIP_MT
-  osip_mutex_lock (ict_fastmutex);
-#endif
-  /* handle ict timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      osip_event_t *evt;
-
-      if (1 <= osip_fifo_size (tr->transactionff))
-        {
-          OSIP_TRACE (osip_trace
-                      (__FILE__, __LINE__, OSIP_INFO4, NULL,
-                       "1 Pending event already in transaction !\n"));
-      } else
-        {
-          evt = __osip_ict_need_timer_b_event (tr->ict_context, tr->state,
-                                               tr->transactionid);
-          if (evt != NULL)
-            osip_fifo_add (tr->transactionff, evt);
-          else
-            {
-              evt = __osip_ict_need_timer_a_event (tr->ict_context, tr->state,
-                                                   tr->transactionid);
-              if (evt != NULL)
-                osip_fifo_add (tr->transactionff, evt);
-              else
-                {
-                  evt =
-                    __osip_ict_need_timer_d_event (tr->ict_context, tr->state,
-                                                   tr->transactionid);
-                  if (evt != NULL)
-                    osip_fifo_add (tr->transactionff, evt);
-                }
-            }
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ict_fastmutex);
-#endif
-}
-
-void
-osip_timers_ist_execute (osip_t * osip)
-{
-  osip_transaction_t *tr;
-  osip_list_iterator_t iterator;
-
-#ifdef OSIP_MT
-  osip_mutex_lock (ist_fastmutex);
-#endif
-  /* handle ist timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_ist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      osip_event_t *evt;
-
-      evt = __osip_ist_need_timer_i_event (tr->ist_context, tr->state,
-                                           tr->transactionid);
-      if (evt != NULL)
-        osip_fifo_add (tr->transactionff, evt);
-      else
-        {
-          evt = __osip_ist_need_timer_h_event (tr->ist_context, tr->state,
-                                               tr->transactionid);
-          if (evt != NULL)
-            osip_fifo_add (tr->transactionff, evt);
-          else
-            {
-              evt = __osip_ist_need_timer_g_event (tr->ist_context, tr->state,
-                                                   tr->transactionid);
-              if (evt != NULL)
-                osip_fifo_add (tr->transactionff, evt);
-            }
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (ist_fastmutex);
-#endif
-}
-
-void
-osip_timers_nict_execute (osip_t * osip)
-{
-  osip_transaction_t *tr;
-  osip_list_iterator_t iterator;
-
-#ifdef OSIP_MT
-  osip_mutex_lock (nict_fastmutex);
-#endif
-  /* handle nict timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nict_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      osip_event_t *evt;
-
-      evt = __osip_nict_need_timer_k_event (tr->nict_context, tr->state,
-                                            tr->transactionid);
-      if (evt != NULL)
-        osip_fifo_add (tr->transactionff, evt);
-      else
-        {
-          evt = __osip_nict_need_timer_f_event (tr->nict_context, tr->state,
-                                                tr->transactionid);
-          if (evt != NULL)
-            osip_fifo_add (tr->transactionff, evt);
-          else
-            {
-              evt =
-                __osip_nict_need_timer_e_event (tr->nict_context, tr->state,
-                                                tr->transactionid);
-              if (evt != NULL)
-                osip_fifo_add (tr->transactionff, evt);
-            }
-        }
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nict_fastmutex);
-#endif
-}
-
-
-void
-osip_timers_nist_execute (osip_t * osip)
-{
-  osip_transaction_t *tr;
-  osip_list_iterator_t iterator;
-
-#ifdef OSIP_MT
-  osip_mutex_lock (nist_fastmutex);
-#endif
-  /* handle nist timers */
-  tr =
-    (osip_transaction_t *) osip_list_get_first (&osip->osip_nist_transactions,
-                                                &iterator);
-  while (osip_list_iterator_has_elem (iterator))
-    {
-      osip_event_t *evt;
-
-      evt = __osip_nist_need_timer_j_event (tr->nist_context, tr->state,
-                                            tr->transactionid);
-      if (evt != NULL)
-        osip_fifo_add (tr->transactionff, evt);
-      tr = (osip_transaction_t *) osip_list_get_next (&iterator);
-    }
-#ifdef OSIP_MT
-  osip_mutex_unlock (nist_fastmutex);
-#endif
-}
-
-void
-osip_set_cb_send_message (osip_t * cf,
-                          int (*cb) (osip_transaction_t *, osip_message_t *,
-                                     char *, int, int))
-{
-  cf->cb_send_message = cb;
-}
-
-void
-__osip_message_callback (int type, osip_transaction_t * tr, osip_message_t * msg)
-{
-  osip_t *config = tr->config;
-
-  if (type >= OSIP_MESSAGE_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_BUG, NULL,
-                   "invalid callback type %d\n", type));
-      return;
-    }
-  if (config->msg_callbacks[type] == NULL)
-    return;
-  config->msg_callbacks[type] (type, tr, msg);
-}
-
-void
-__osip_kill_transaction_callback (int type, osip_transaction_t * tr)
-{
-  osip_t *config = tr->config;
-
-  if (type >= OSIP_KILL_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_BUG, NULL,
-                   "invalid callback type %d\n", type));
-      return;
-    }
-  tr->completed_time = time (NULL);
-  if (config->kill_callbacks[type] == NULL)
-    return;
-  config->kill_callbacks[type] (type, tr);
-}
-
-void
-__osip_transport_error_callback (int type, osip_transaction_t * tr, int error)
-{
-  osip_t *config = tr->config;
-
-  if (type >= OSIP_TRANSPORT_ERROR_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_BUG, NULL,
-                   "invalid callback type %d\n", type));
-      return;
-    }
-  if (config->tp_error_callbacks[type] == NULL)
-    return;
-  config->tp_error_callbacks[type] (type, tr, error);
-}
-
-
-int
-osip_set_message_callback (osip_t * config, int type, osip_message_cb_t cb)
-{
-  if (type >= OSIP_MESSAGE_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "invalid callback type %d\n", type));
-      return OSIP_BADPARAMETER;
-    }
-  config->msg_callbacks[type] = cb;
-
-  return OSIP_SUCCESS;
-}
-
-int
-osip_set_kill_transaction_callback (osip_t * config, int type,
-                                    osip_kill_transaction_cb_t cb)
-{
-  if (type >= OSIP_KILL_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "invalid callback type %d\n", type));
-      return OSIP_BADPARAMETER;
-    }
-  config->kill_callbacks[type] = cb;
-  return OSIP_SUCCESS;
-}
-
-int
-osip_set_transport_error_callback (osip_t * config, int type,
-                                   osip_transport_error_cb_t cb)
-{
-  if (type >= OSIP_TRANSPORT_ERROR_CALLBACK_COUNT)
-    {
-      OSIP_TRACE (osip_trace
-                  (__FILE__, __LINE__, OSIP_ERROR, NULL,
-                   "invalid callback type %d\n", type));
-      return OSIP_BADPARAMETER;
-    }
-  config->tp_error_callbacks[type] = cb;
-  return OSIP_SUCCESS;
+	if (type >= OSIP_TRANSPORT_ERROR_CALLBACK_COUNT) {
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+					"invalid callback type %d\n", type));
+		return OSIP_BADPARAMETER;
+	}
+	config->tp_error_callbacks[type] = cb;
+	return OSIP_SUCCESS;
 }

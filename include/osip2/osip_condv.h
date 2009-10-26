@@ -43,8 +43,7 @@
  */
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #if defined(__PSOS__)
@@ -63,55 +62,50 @@ extern "C"
  * timespec structure
  * @struct timespec
  */
-  struct timespec
-  {
-    long tv_sec;
-    long tv_nsec;
-  };
+	struct timespec {
+		long tv_sec;
+		long tv_nsec;
+	};
 #endif
 #endif
 
-  struct osip_cond;
+	struct osip_cond;
 
 /**
  * Allocate and Initialise a condition variable
  */
-  struct osip_cond *osip_cond_init (void);
+	struct osip_cond *osip_cond_init(void);
 /**
  * Destroy a condition variable
  * @param cond The condition variable to destroy.
  */
-  int osip_cond_destroy (struct osip_cond *cond);
+	int osip_cond_destroy(struct osip_cond *cond);
 /**
  * Signal the condition variable.
  * @param cond The condition variable to signal.
  */
-  int osip_cond_signal (struct osip_cond *cond);
+	int osip_cond_signal(struct osip_cond *cond);
 
 /**
  * Wait on the condition variable.
  * @param cond The condition variable to wait on.
  * @param mut The external mutex 
  */
-  int osip_cond_wait (struct osip_cond *cond, struct osip_mutex *mut);
+	int osip_cond_wait(struct osip_cond *cond, struct osip_mutex *mut);
 /**
  * Timed wait on the condition variable.
  * @param cond The condition variable to wait on.
  * @param mut The external mutex 
  * @param abstime time to wait until
  */
-  int osip_cond_timedwait (struct osip_cond *cond, struct osip_mutex *mut,
-                           const struct timespec *abstime);
+	int osip_cond_timedwait(struct osip_cond *cond, struct osip_mutex *mut,
+							const struct timespec *abstime);
 
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif
-
 /** @} */
-
 #endif
-
 #endif

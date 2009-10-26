@@ -39,10 +39,9 @@
 
 #if !( defined(__rtems__) || defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL) )
 /* Struct timeval */
-struct timeval
-{
-  long tv_sec;                  /* seconds */
-  long tv_usec;                 /* and microseconds */
+struct timeval {
+	long tv_sec;				/* seconds */
+	long tv_usec;				/* and microseconds */
 };
 #endif
 
@@ -53,19 +52,18 @@ struct timeval
  */
 typedef struct __payload __payload_t;
 
-struct __payload
-{
-  char *payload;
-  /*  char *port; this must be assigned by the application dynamicly */
-  char *number_of_port;
-  char *proto;
-  char *c_nettype;
-  char *c_addrtype;
-  char *c_addr;
-  char *c_addr_multicast_ttl;
-  char *c_addr_multicast_int;
-  /* rtpmap (rcvonly and other attributes are added dynamicly) */
-  char *a_rtpmap;
+struct __payload {
+	char *payload;
+	/*  char *port; this must be assigned by the application dynamicly */
+	char *number_of_port;
+	char *proto;
+	char *c_nettype;
+	char *c_addrtype;
+	char *c_addr;
+	char *c_addr_multicast_ttl;
+	char *c_addr_multicast_int;
+	/* rtpmap (rcvonly and other attributes are added dynamicly) */
+	char *a_rtpmap;
 };
 
 
@@ -73,13 +71,13 @@ struct __payload
  * Allocate a payload element.
  * @param payload The payload.
  */
-int __payload_init (__payload_t ** payload);
+int __payload_init(__payload_t ** payload);
 
 /**
  * Free a payload element.
  * @param payload The payload.
  */
-void __payload_free (__payload_t * payload);
+void __payload_free(__payload_t * payload);
 
 
 #ifdef OSIP_MT
@@ -119,30 +117,24 @@ typedef pthread_t osip_thread_t;
 #include <windows.h>
 #undef _WINSOCKAPI_
 
-typedef struct
-{
-  HANDLE h;
-  unsigned id;
-}
-osip_thread_t;
+typedef struct {
+	HANDLE h;
+	unsigned id;
+} osip_thread_t;
 #endif
 
 #ifdef __VXWORKS_OS__
 #include <taskLib.h>
-typedef struct
-{
-  int id;
-}
-osip_thread_t;
+typedef struct {
+	int id;
+} osip_thread_t;
 #endif
 
 #ifdef __PSOS__
 #include <psos.h>
-typedef struct
-{
-  unsigned long tid;
-}
-osip_thread_t;
+typedef struct {
+	unsigned long tid;
+} osip_thread_t;
 #endif
 
 
@@ -169,10 +161,9 @@ typedef pthread_mutex_t osip_mutex_t;
 
 #if defined(__arc__)
 
-typedef struct
-{
-  int _sem_counter;
-  struct osip_mutex *_sem_mutex;
+typedef struct {
+	int _sem_counter;
+	struct osip_mutex *_sem_mutex;
 } sem_t;
 
 typedef sem_t osip_sem_t;
@@ -193,20 +184,16 @@ typedef sem_t osip_sem_t;
 #include <mach/task.h>
 #include <mach/semaphore.h>
 #include <mach/mach_init.h>
-typedef struct
-	{
-		semaphore_t semid;
-	}
-	osip_sem_t;
+typedef struct {
+	semaphore_t semid;
+} osip_sem_t;
 #elif defined(HAVE_SYS_SEM_H)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-typedef struct
-{
-  int semid;
-}
-osip_sem_t;
+typedef struct {
+	int semid;
+} osip_sem_t;
 #endif
 
 /* Windows without Pthreads for Win32 */
@@ -219,25 +206,19 @@ osip_sem_t;
 #if (_WIN32_WINNT >= 0x0403)
 
 #define OSIP_CRITICALSECTION_SPIN  4000
-typedef struct
-{
-  CRITICAL_SECTION h;
-}
-osip_mutex_t;
+typedef struct {
+	CRITICAL_SECTION h;
+} osip_mutex_t;
 #else
 
-typedef struct
-{
-  HANDLE h;
-}
-osip_mutex_t;
+typedef struct {
+	HANDLE h;
+} osip_mutex_t;
 #endif
 
-typedef struct
-{
-  HANDLE h;
-}
-osip_sem_t;
+typedef struct {
+	HANDLE h;
+} osip_sem_t;
 #endif
 
 #ifdef __VXWORKS_OS__
@@ -250,16 +231,12 @@ typedef sem_t osip_sem_t;
 #ifdef __PSOS__
 #include <Types.h>
 #include <os.h>
-typedef struct
-{
-  UInt32 id;
-}
-osip_mutex_t;
-typedef struct
-{
-  UInt32 id;
-}
-osip_sem_t;
+typedef struct {
+	UInt32 id;
+} osip_mutex_t;
+typedef struct {
+	UInt32 id;
+} osip_sem_t;
 #endif
 
 
@@ -270,49 +247,43 @@ osip_sem_t;
  * @var osip_cond_t
  */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
-typedef struct osip_cond
-{
-  pthread_cond_t cv;
+typedef struct osip_cond {
+	pthread_cond_t cv;
 } osip_cond_t;
 #endif
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
-typedef struct osip_cond
-{
-  struct osip_mutex *mut;
-  struct osip_sem *sem;
+typedef struct osip_cond {
+	struct osip_mutex *mut;
+	struct osip_sem *sem;
 } osip_cond_t;
 #endif
 
 #if defined(__PSOS__) || defined(__VXWORKS_OS__)
-typedef struct osip_cond
-{
-  struct osip_sem *sem;
+typedef struct osip_cond {
+	struct osip_sem *sem;
 } osip_cond_t;
 #endif
 
-#endif 
+#endif
 
 #if defined(__rtems__)
-typedef struct
-{
-    rtems_id tid;
+typedef struct {
+	rtems_id tid;
 } osip_thread_t;
 
-typedef struct
-{
-  rtems_id id;
+typedef struct {
+	rtems_id id;
 } osip_sem_t;
 
-typedef struct
-{
-  rtems_id id;
-} osip_mutex_t ;
+typedef struct {
+	rtems_id id;
+} osip_mutex_t;
 #endif
 
 
-#endif /* #ifdef OSIP_MT */
+#endif							/* #ifdef OSIP_MT */
 
-#endif /* #ifndef DOXYGEN */
+#endif							/* #ifndef DOXYGEN */
 
-#endif /* #ifndef _INTERNAL_H_ */
+#endif							/* #ifndef _INTERNAL_H_ */
