@@ -189,6 +189,15 @@ typedef sem_t osip_sem_t;
  */
 typedef sem_t osip_sem_t;
 
+#elif defined (__APPLE_CC__)
+#include <mach/task.h>
+#include <mach/semaphore.h>
+#include <mach/mach_init.h>
+typedef struct
+	{
+		semaphore_t semid;
+	}
+	osip_sem_t;
 #elif defined(HAVE_SYS_SEM_H)
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -196,15 +205,6 @@ typedef sem_t osip_sem_t;
 typedef struct
 {
   int semid;
-}
-osip_sem_t;
-#elif defined (__APPLE_CC__)
-#include <mach/task.h>
-#include <mach/semaphore.h>
-#include <mach/mach_init.h>
-typedef struct
-{
-	semaphore_t semid;
 }
 osip_sem_t;
 #endif
