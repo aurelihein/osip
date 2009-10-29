@@ -1000,7 +1000,16 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 						   fi, li);
 
 		_vsnprintf(buffer + in, 511 - in, chfr, ap);
+#ifdef UNICODE
+		{
+			WCHAR wUnicode[1024];
+			MultiByteToWideChar(CP_UTF8, 0, buffer, -1, wUnicode,
+								1024);
+			OutputDebugString(wUnicode);
+		}
+#else
 		OutputDebugString(buffer);
+#endif
 	}
 #endif
 
