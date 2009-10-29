@@ -172,7 +172,7 @@ int osip_from_parse(osip_from_t * from, const char *hvalue)
 				return OSIP_SYNTAXERROR;	/* missing quote */
 			second = __osip_quote_find(first + 1);
 			if (second == NULL)
-				return -OSIP_SYNTAXERROR;	/* missing quote */
+				return OSIP_SYNTAXERROR;	/* missing quote */
 			if ((first > url))
 				return OSIP_SYNTAXERROR;
 
