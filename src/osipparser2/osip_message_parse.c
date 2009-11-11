@@ -877,6 +877,9 @@ _osip_message_parse(osip_message_t * sip, const char *buf, size_t length,
 	beg = tmp;
 	memcpy(tmp, buf, length);	/* may contain binary data */
 	tmp[length] = '\0';
+	/* skip initial \r\n */
+	while (tmp[0]=='\r' || tmp[0]=='\n')
+		tmp++;
 	osip_util_replace_all_lws(tmp);
 	/* parse request or status line */
 	i = __osip_message_startline_parse(sip, tmp, &next_header_index);
