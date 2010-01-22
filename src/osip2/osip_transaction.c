@@ -314,14 +314,16 @@ int osip_transaction_free2(osip_transaction_t * transaction)
 	}
 
 	/* empty the fifo */
-	evt = osip_fifo_tryget(transaction->transactionff);
-	while (evt != NULL) {
-		osip_message_free(evt->sip);
-		osip_free(evt);
+	if (transaction->transactionff!=NULL)	{
 		evt = osip_fifo_tryget(transaction->transactionff);
+		while (evt != NULL) {
+			osip_message_free(evt->sip);
+			osip_free(evt);
+			evt = osip_fifo_tryget(transaction->transactionff);
+		}
+		osip_fifo_free(transaction->transactionff);
 	}
-	osip_fifo_free(transaction->transactionff);
-
+	
 	osip_message_free(transaction->orig_request);
 	osip_message_free(transaction->last_response);
 	osip_message_free(transaction->ack);
