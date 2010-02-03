@@ -782,10 +782,10 @@ msg_osip_body_parse(osip_message_t * sip, const char *start_of_buf,
 
 		size_t len = strlen(ct_param->gvalue);
 
-		sep_boundary = (char *) osip_malloc(len + sizeof(boundary_prefix));
+		sep_boundary = (char *) osip_malloc(len + 4);
 		if (sep_boundary == NULL)
 			return OSIP_NOMEM;
-		sprintf(sep_boundary, boundary_prefix);
+		strcpy(sep_boundary, boundary_prefix);
 		if (ct_param->gvalue[0] == '"' && ct_param->gvalue[len - 1] == '"')
 			strncat(sep_boundary, ct_param->gvalue + 1, len - 2);
 		else
