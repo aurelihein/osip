@@ -90,7 +90,7 @@ int osip_snprintf(char *buf, int max, const char *fmt, ...);
 #else							/* end of __VXWORKS_OS__ */
 
 #if defined (HAVE_CONFIG_H)
-#include <osip2-config.h>
+#include <config.h>
 #  if defined (HAVE_STRING_H)
 #    include <string.h>
 #  else
