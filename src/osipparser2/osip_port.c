@@ -903,6 +903,24 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	f = stdout;
 #endif
 
+#ifdef ANDROID
+	if (1) {
+		int lev;
+
+		switch(level){
+	case OSIP_INFO3:	lev = ANDROID_LOG_DEBUG;	break;
+	case OSIP_INFO4:	lev = ANDROID_LOG_DEBUG;	break;
+	case OSIP_INFO2:	lev = ANDROID_LOG_INFO;	break;
+	case OSIP_INFO1:	lev = ANDROID_LOG_INFO;	break;
+	case OSIP_WARNING:	lev = ANDROID_LOG_WARN;	break;
+	case OSIP_ERROR:	lev = ANDROID_LOG_ERROR;	break;
+	case OSIP_BUG:	lev = ANDROID_LOG_FATAL;	break;
+	case OSIP_FATAL:	lev = ANDROID_LOG_FATAL;	break;
+	default:		lev = ANDROID_LOG_DEFAULT;	break;
+		}
+		__android_log_vprint(lev, "osip2", chfr, ap);
+	}
+#else
 	if (f && use_syslog == 0) {
 		if (level == OSIP_FATAL)
 			fprintf(f, "| FATAL | %i <%s: %i> ", relative_time, fi, li);
@@ -927,24 +945,8 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	} else if (trace_func) {
 		trace_func(fi, li, level, chfr, ap);
 	}
-#ifdef ANDROID
-	else if (1) {
-		int lev;
-
-		switch(level){
-	case OSIP_INFO3:	lev = ANDROID_LOG_DEBUG;	break;
-	case OSIP_INFO4:	lev = ANDROID_LOG_DEBUG;	break;
-	case OSIP_INFO2:	lev = ANDROID_LOG_INFO;	break;
-	case OSIP_INFO1:	lev = ANDROID_LOG_INFO;	break;
-	case OSIP_WARNING:	lev = ANDROID_LOG_WARN;	break;
-	case OSIP_ERROR:	lev = ANDROID_LOG_ERROR;	break;
-	case OSIP_BUG:	lev = ANDROID_LOG_FATAL;	break;
-	case OSIP_FATAL:	lev = ANDROID_LOG_FATAL;	break;
-	default:		lev = ANDROID_LOG_DEFAULT;	break;
-		}
-		__android_log_vprint(lev, "osip2", chfr, ap);
-	}
-#elif defined (HAVE_SYSLOG_H) && !defined(__arc__)
+#endif
+#if defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	else if (use_syslog == 1) {
 		char buffer[512];
 		int in = 0;
