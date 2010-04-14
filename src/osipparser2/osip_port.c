@@ -857,6 +857,10 @@ int __osip_port_gettimeofday(struct timeval *tp, void *tz)
 #define __osip_port_gettimeofday gettimeofday
 #endif
 
+#ifdef ANDROID
+#include <android/log.h>
+#endif
+
 int
 osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
 {
@@ -923,7 +927,24 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	} else if (trace_func) {
 		trace_func(fi, li, level, chfr, ap);
 	}
-#if defined (HAVE_SYSLOG_H) && !defined(__arc__)
+#ifdef ANDROID
+	else if (1) {
+		int lev;
+
+		switch(level){
+	case OSIP_INFO3:	lev = ANDROID_LOG_DEBUG;	break;
+	case OSIP_INFO4:	lev = ANDROID_LOG_DEBUG;	break;
+	case OSIP_INFO2:	lev = ANDROID_LOG_INFO;	break;
+	case OSIP_INFO1:	lev = ANDROID_LOG_INFO;	break;
+	case OSIP_WARNING:	lev = ANDROID_LOG_WARN;	break;
+	case OSIP_ERROR:	lev = ANDROID_LOG_ERROR;	break;
+	case OSIP_BUG:	lev = ANDROID_LOG_FATAL;	break;
+	case OSIP_FATAL:	lev = ANDROID_LOG_FATAL;	break;
+	default:		lev = ANDROID_LOG_DEFAULT;	break;
+		}
+		__android_log_vprint(lev, _antisipc.syslog_name, chfr, ap);
+	}
+#elif defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	else if (use_syslog == 1) {
 		char buffer[512];
 		int in = 0;
