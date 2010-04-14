@@ -942,7 +942,7 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	case OSIP_FATAL:	lev = ANDROID_LOG_FATAL;	break;
 	default:		lev = ANDROID_LOG_DEFAULT;	break;
 		}
-		__android_log_vprint(lev, _antisipc.syslog_name, chfr, ap);
+		__android_log_vprint(lev, "osip2", chfr, ap);
 	}
 #elif defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	else if (use_syslog == 1) {
