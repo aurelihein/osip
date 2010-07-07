@@ -236,6 +236,7 @@ int osip_sem_destroy(struct osip_sem *_sem)
 	if (semaphore_destroy(task, sem->semid) == KERN_SUCCESS)
 		return OSIP_SUCCESS;
 
+	osip_free(sem);
 	return OSIP_SUCCESS;
 }
 
