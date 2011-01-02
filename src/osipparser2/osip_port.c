@@ -751,7 +751,7 @@ int osip_is_trace_level_activate(osip_trace_level_t level)
 /* all lower levels of level are logged in file. */
 void osip_trace_initialize(osip_trace_level_t level, FILE * file)
 {
-	osip_trace_level_t i = 0;
+	osip_trace_level_t i = TRACE_LEVEL0;
 
 	/* enable trace in log file by default */
 	logfile = NULL;
@@ -774,7 +774,7 @@ void osip_trace_initialize(osip_trace_level_t level, FILE * file)
 
 void osip_trace_initialize_syslog(osip_trace_level_t level, char *ident)
 {
-	osip_trace_level_t i = 0;
+	osip_trace_level_t i = TRACE_LEVEL0;
 
 #if defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	openlog(ident, LOG_CONS | LOG_PID, LOG_DAEMON);

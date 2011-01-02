@@ -315,21 +315,21 @@ extern "C" {
 /* levels */
 	typedef enum _trace_level {
 		TRACE_LEVEL0 = 0,
-#define OSIP_FATAL    0
+#define OSIP_FATAL    TRACE_LEVEL0
 		TRACE_LEVEL1 = 1,
-#define OSIP_BUG      1
+#define OSIP_BUG      TRACE_LEVEL1
 		TRACE_LEVEL2 = 2,
-#define OSIP_ERROR    2
+#define OSIP_ERROR    TRACE_LEVEL2
 		TRACE_LEVEL3 = 3,
-#define OSIP_WARNING  3
+#define OSIP_WARNING  TRACE_LEVEL3
 		TRACE_LEVEL4 = 4,
-#define OSIP_INFO1    4
+#define OSIP_INFO1    TRACE_LEVEL4
 		TRACE_LEVEL5 = 5,
-#define OSIP_INFO2    5
+#define OSIP_INFO2    TRACE_LEVEL5
 		TRACE_LEVEL6 = 6,
-#define OSIP_INFO3    6
+#define OSIP_INFO3    TRACE_LEVEL6
 		TRACE_LEVEL7 = 7,
-#define OSIP_INFO4    7
+#define OSIP_INFO4    TRACE_LEVEL7
 		END_TRACE_LEVEL = 8
 	} osip_trace_level_t;
 
