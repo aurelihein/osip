@@ -203,7 +203,7 @@ typedef struct {
 #include <windows.h>
 #undef _WINSOCKAPI_
 
-#if (_WIN32_WINNT >= 0x0403)
+#if (_WIN32_WINNT >= 0x0403) && (!defined(_WIN32_WCE))
 
 #define OSIP_CRITICALSECTION_SPIN  4000
 typedef struct {
