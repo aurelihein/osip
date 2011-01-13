@@ -788,7 +788,7 @@ struct osip_naptr {
  * @param transaction The element to work on.
  * @param record The NAPTR lookup results for this transaction.
  */
-	osip_transaction_set_naptr_record(osip_transaction_t * transaction,
+	int osip_transaction_set_naptr_record(osip_transaction_t * transaction,
 		osip_naptr_t * record);
 
 /**
