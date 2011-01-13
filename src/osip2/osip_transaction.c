@@ -448,6 +448,16 @@ osip_transaction_set_srv_record(osip_transaction_t * transaction,
 }
 
 int
+osip_transaction_set_naptr_record(osip_transaction_t * transaction,
+								  osip_naptr_t * record)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->naptr_record = record;
+	return OSIP_SUCCESS;
+}
+
+int
 osip_transaction_set_your_instance(osip_transaction_t * transaction,
 								   void *instance)
 {
