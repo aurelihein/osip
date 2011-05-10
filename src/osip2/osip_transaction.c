@@ -563,6 +563,15 @@ __osip_transaction_matching_response_osip_to_xict_17_1_3(osip_transaction_t *
 #endif
 	}
 
+	if ((b_request->gvalue == NULL)
+		|| (b_response->gvalue == NULL))
+	{
+		OSIP_TRACE(osip_trace
+				   (__FILE__, __LINE__, OSIP_BUG, NULL,
+					"Remote UA is not compliant: missing a branch parameter in  Via header!\n"));
+		return OSIP_SYNTAXERROR;
+	}
+
 	/*
 	   A response matches a client transaction under two
 	   conditions:
