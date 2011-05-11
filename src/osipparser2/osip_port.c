@@ -862,7 +862,7 @@ int __osip_port_gettimeofday(struct timeval *tp, void *tz)
 #endif
 
 #ifndef MAX_LENGTH_TR
-#define MAX_LENGTH_TR 512
+#define MAX_LENGTH_TR 512 /* NEVER DEFINE MORE THAN 2024 */
 #endif
 
 int
