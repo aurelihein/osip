@@ -861,6 +861,10 @@ int __osip_port_gettimeofday(struct timeval *tp, void *tz)
 #include <android/log.h>
 #endif
 
+#ifndef MAX_LENGTH_TR
+#define MAX_LENGTH_TR 512
+#endif
+
 int
 osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
 {
@@ -948,28 +952,28 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 #endif
 #if defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	else if (use_syslog == 1) {
-		char buffer[512];
+		char buffer[MAX_LENGTH_TR];
 		int in = 0;
 
 		memset(buffer, 0, sizeof(buffer));
 		if (level == OSIP_FATAL)
-			in = snprintf(buffer, 511, "| FATAL | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| FATAL | <%s: %i> ", fi, li);
 		else if (level == OSIP_BUG)
-			in = snprintf(buffer, 511, "|  BUG  | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "|  BUG  | <%s: %i> ", fi, li);
 		else if (level == OSIP_ERROR)
-			in = snprintf(buffer, 511, "| ERROR | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| ERROR | <%s: %i> ", fi, li);
 		else if (level == OSIP_WARNING)
-			in = snprintf(buffer, 511, "|WARNING| <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "|WARNING| <%s: %i> ", fi, li);
 		else if (level == OSIP_INFO1)
-			in = snprintf(buffer, 511, "| INFO1 | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO1 | <%s: %i> ", fi, li);
 		else if (level == OSIP_INFO2)
-			in = snprintf(buffer, 511, "| INFO2 | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO2 | <%s: %i> ", fi, li);
 		else if (level == OSIP_INFO3)
-			in = snprintf(buffer, 511, "| INFO3 | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO3 | <%s: %i> ", fi, li);
 		else if (level == OSIP_INFO4)
-			in = snprintf(buffer, 511, "| INFO4 | <%s: %i> ", fi, li);
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO4 | <%s: %i> ", fi, li);
 
-		vsnprintf(buffer + in, 511 - in, chfr, ap);
+		vsnprintf(buffer + in, MAX_LENGTH_TR-1 - in, chfr, ap);
 		if (level == OSIP_FATAL)
 			syslog(LOG_ERR, "%s", buffer);
 		else if (level == OSIP_BUG)
@@ -990,7 +994,7 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 #endif
 #ifdef SYSTEM_LOGGER_ENABLED
 	else {
-		char buffer[512];
+		char buffer[MAX_LENGTH_TR];
 		int in = 0;
 #ifdef DISPLAY_TIME
 		int relative_time;
@@ -998,36 +1002,36 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 
 		memset(buffer, 0, sizeof(buffer));
 		if (level == OSIP_FATAL)
-			in = _snprintf(buffer, 511, "| FATAL | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| FATAL | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_BUG)
-			in = _snprintf(buffer, 511, "|  BUG  | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "|  BUG  | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_ERROR)
-			in = _snprintf(buffer, 511, "| ERROR | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| ERROR | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_WARNING)
-			in = _snprintf(buffer, 511, "|WARNING| %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "|WARNING| %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_INFO1)
-			in = _snprintf(buffer, 511, "| INFO1 | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| INFO1 | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_INFO2)
-			in = _snprintf(buffer, 511, "| INFO2 | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| INFO2 | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_INFO3)
-			in = _snprintf(buffer, 511, "| INFO3 | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| INFO3 | %i <%s: %i> ", relative_time,
 						   fi, li);
 		else if (level == OSIP_INFO4)
-			in = _snprintf(buffer, 511, "| INFO4 | %i <%s: %i> ", relative_time,
+			in = _snprintf(buffer, MAX_LENGTH_TR-1, "| INFO4 | %i <%s: %i> ", relative_time,
 						   fi, li);
 
-		_vsnprintf(buffer + in, 511 - in, chfr, ap);
+		_vsnprintf(buffer + in, MAX_LENGTH_TR-1 - in, chfr, ap);
 #ifdef UNICODE
 		{
-			WCHAR wUnicode[1024];
+			WCHAR wUnicode[MAX_LENGTH_TR*2];
 			MultiByteToWideChar(CP_UTF8, 0, buffer, -1, wUnicode,
-								1024);
+								MAX_LENGTH_TR*2);
 			OutputDebugString(wUnicode);
 		}
 #else
