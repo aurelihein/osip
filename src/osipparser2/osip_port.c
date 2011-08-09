@@ -907,8 +907,9 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	f = stdout;
 #endif
 
+	if (0) {}
 #ifdef ANDROID
-	if (1) {
+	else if (trace_func == 0) {
 		int lev;
 
 		switch(level){
@@ -924,8 +925,8 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 		}
 		__android_log_vprint(lev, "osip2", chfr, ap);
 	}
-#else
-	if (f && use_syslog == 0) {
+#endif
+	else if (f && use_syslog == 0) {
 		if (level == OSIP_FATAL)
 			fprintf(f, "| FATAL | %i <%s: %i> ", relative_time, fi, li);
 		else if (level == OSIP_BUG)
@@ -949,7 +950,7 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 	} else if (trace_func) {
 		trace_func(fi, li, level, chfr, ap);
 	}
-#endif
+
 #if defined (HAVE_SYSLOG_H) && !defined(__arc__)
 	else if (use_syslog == 1) {
 		char buffer[MAX_LENGTH_TR];
