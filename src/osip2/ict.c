@@ -105,7 +105,7 @@ int __osip_ict_init(osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 		}
 	}
 
-	if (route != NULL) {
+	if (route != NULL && route->url != NULL) {
 		int port = 5060;
 
 		if (route->url->port != NULL)

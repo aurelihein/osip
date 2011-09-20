@@ -608,9 +608,9 @@ int osip_uri_to_str(const osip_uri_t * url, char **dest)
 			tmp = buf;
 			tmp = tmp + strlen(tmp);
 			if (pos == 0)
-				sprintf(tmp, "?%s=%s", tmp1, tmp2);
+				snprintf(tmp, len - (tmp-buf), "?%s=%s", tmp1, tmp2);
 			else
-				sprintf(tmp, "&%s=%s", tmp1, tmp2);
+				snprintf(tmp, len - (tmp-buf), "&%s=%s", tmp1, tmp2);
 			osip_free(tmp1);
 			osip_free(tmp2);
 			pos++;

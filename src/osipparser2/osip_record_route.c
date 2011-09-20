@@ -137,9 +137,9 @@ int osip_record_route_to_str(const osip_record_route_t * record_route, char **de
 			tmp = buf;
 			tmp = tmp + strlen(tmp);
 			if (u_param->gvalue == NULL)
-				sprintf(tmp, ";%s", u_param->gname);
+				snprintf(tmp, len - (tmp-buf), ";%s", u_param->gname);
 			else
-				sprintf(tmp, ";%s=%s", u_param->gname, u_param->gvalue);
+				snprintf(tmp, len - (tmp-buf), ";%s=%s", u_param->gname, u_param->gvalue);
 			pos++;
 		}
 	}

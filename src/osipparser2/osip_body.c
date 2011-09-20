@@ -87,8 +87,10 @@ int osip_body_clone(const osip_body_t * body, osip_body_t ** dest)
 
 
 	copy->body = (char *) osip_malloc(body->length + 2);
-	if (copy->body == NULL)
+	if (copy->body == NULL) {
+		osip_body_free(copy);
 		return OSIP_NOMEM;
+	}
 	copy->length = body->length;
 	memcpy(copy->body, body->body, body->length);
 	copy->body[body->length] = '\0';
@@ -353,8 +355,10 @@ int osip_body_to_str(const osip_body_t * body, char **dest, size_t * str_length)
 	int i;
 	size_t length;
 
-	*dest = NULL;
-	*str_length = 0;
+	if (dest)
+		*dest = NULL;
+	if (str_length)
+		*str_length = 0;
 	if (body == NULL)
 		return OSIP_BADPARAMETER;
 	if (body->body == NULL)

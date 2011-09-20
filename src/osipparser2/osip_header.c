@@ -228,24 +228,24 @@ void osip_header_free(osip_header_t * header)
 /* returns null on error. */
 int osip_header_to_str(const osip_header_t * header, char **dest)
 {
-	size_t len;
+	size_t len, hlen;
 
 	*dest = NULL;
 	if ((header == NULL) || (header->hname == NULL))
 		return OSIP_BADPARAMETER;
 
-	len = 0;
+	len = 0; hlen = strlen(header->hname);
 	if (header->hvalue != NULL)
 		len = strlen(header->hvalue);
 
-	*dest = (char *) osip_malloc(strlen(header->hname) + len + 3);
+	*dest = (char *) osip_malloc(hlen + len + 3);
 	if (*dest == NULL)
 		return OSIP_NOMEM;
 
 	if (header->hvalue != NULL)
-		sprintf(*dest, "%s: %s", header->hname, header->hvalue);
+		snprintf(*dest, hlen+len+3, "%s: %s", header->hname, header->hvalue);
 	else
-		sprintf(*dest, "%s: ", header->hname);
+		snprintf(*dest, hlen + len + 3, "%s: ", header->hname);
 
 	if (*dest[0] > 'a' && *dest[0] < 'z')
 		*dest[0] = (*dest[0] - 32);

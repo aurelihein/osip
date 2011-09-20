@@ -804,7 +804,7 @@ _osip_message_to_str(osip_message_t * sip, char **dest,
 		char tmp2[15];
 
 		total_length += size;
-		sprintf(tmp2, "%i", size);
+		snprintf(tmp2, 15, "%i", size);
 		/* do not use osip_strncpy here! */
 		strncpy(content_length_to_modify + 5 - strlen(tmp2), tmp2, strlen(tmp2));
 	}

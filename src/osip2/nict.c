@@ -99,7 +99,7 @@ int __osip_nict_init(osip_nict_t ** nict, osip_t * osip, osip_message_t * reques
 		}
 	}
 
-	if (route != NULL) {
+	if (route != NULL && route->url != NULL) {
 		int port = 5060;
 
 		if (route->url->port != NULL)

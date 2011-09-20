@@ -131,7 +131,7 @@ int osip_accept_to_str(const osip_accept_t * accept, char **dest)
 				len = tmp_len;
 				tmp = buf + strlen(buf);
 			}
-			sprintf(tmp, "; %s=%s", u_param->gname, u_param->gvalue);
+			snprintf(tmp, len - (tmp-buf), "; %s=%s", u_param->gname, u_param->gvalue);
 			tmp = tmp + strlen(tmp);
 			pos++;
 		}
