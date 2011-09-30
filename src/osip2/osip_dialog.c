@@ -269,6 +269,14 @@ int osip_dialog_match_as_uas(osip_dialog_t * dlg, osip_message_t * request)
 		/* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
 		return OSIP_SYNTAXERROR;
 
+	/* VR-2785: use line param to distinguish between two registrations by the same user */
+	if (dlg->line_param) {
+		osip_uri_param_t *line_param;
+		i = osip_uri_param_get_byname(&request->req_uri->url_params, "line", &line_param);
+		if (i == 0 && strcmp (dlg->line_param, line_param->gvalue))
+			return OSIP_UNDEFINED_ERROR;/* both dlg and req_uri have line params and they do not match */
+	}
+
 	i = osip_from_get_tag(request->from, &tag_param_remote);
 	if (i != 0 && dlg->remote_tag != NULL)	/* no tag in request but tag in dialog */
 		return OSIP_SYNTAXERROR;	/* impossible... */
@@ -356,6 +364,14 @@ __osip_dialog_init(osip_dialog_t ** dialog,
 	i = osip_from_get_tag(remote, &tag);
 	if (i == 0)
 		(*dialog)->remote_tag = osip_strdup(tag->gvalue);
+
+	/* VR-2785: remember line value */
+	if (invite) {
+		osip_uri_param_t *line_param;
+		i = osip_uri_param_get_byname(&invite->req_uri->url_params, "line", &line_param);
+		if (i == 0 && line_param!=NULL && line_param->gvalue!=NULL )
+			(*dialog)->line_param = osip_strdup(line_param->gvalue);
+	}
 
 	osip_list_init(&(*dialog)->route_set);
 
@@ -514,6 +530,7 @@ void osip_dialog_free(osip_dialog_t * dialog)
 	osip_to_free(dialog->remote_uri);
 	osip_list_special_free(&dialog->route_set,
 						   (void (*)(void *)) &osip_record_route_free);
+	osip_free(dialog->line_param);
 	osip_free(dialog->remote_tag);
 	osip_free(dialog->local_tag);
 	osip_free(dialog->call_id);
