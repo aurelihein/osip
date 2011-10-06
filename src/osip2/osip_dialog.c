@@ -269,6 +269,7 @@ int osip_dialog_match_as_uas(osip_dialog_t * dlg, osip_message_t * request)
 		/* NOT POSSIBLE BECAUSE I MANAGE REMOTE_TAG AND I ALWAYS ADD IT! */
 		return OSIP_SYNTAXERROR;
 
+#if 0
 	/* VR-2785: use line param to distinguish between two registrations by the same user */
 	if (dlg->line_param) {
 		osip_uri_param_t *line_param;
@@ -276,6 +277,7 @@ int osip_dialog_match_as_uas(osip_dialog_t * dlg, osip_message_t * request)
 		if (i == 0 && strcmp (dlg->line_param, line_param->gvalue))
 			return OSIP_UNDEFINED_ERROR;/* both dlg and req_uri have line params and they do not match */
 	}
+#endif
 
 	i = osip_from_get_tag(request->from, &tag_param_remote);
 	if (i != 0 && dlg->remote_tag != NULL)	/* no tag in request but tag in dialog */
