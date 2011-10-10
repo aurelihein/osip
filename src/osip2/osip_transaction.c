@@ -459,20 +459,118 @@ osip_transaction_set_naptr_record(osip_transaction_t * transaction,
 
 int
 osip_transaction_set_your_instance(osip_transaction_t * transaction,
-								   void *instance)
+								   void *ptr)
 {
 	if (transaction == NULL)
 		return OSIP_BADPARAMETER;
-	transaction->your_instance = instance;
+	transaction->reserved1 = ptr;
 	return OSIP_SUCCESS;
 }
 
+int osip_transaction_set_reserved1(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved1 = ptr;
+	return OSIP_SUCCESS;
+}
+
+int osip_transaction_set_reserved2(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved2 = ptr;
+	return OSIP_SUCCESS;
+}
+
+int osip_transaction_set_reserved3(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved3 = ptr;
+	return OSIP_SUCCESS;
+}
+
+int osip_transaction_set_reserved4(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved4 = ptr;
+	return OSIP_SUCCESS;
+}
+
+int osip_transaction_set_reserved5(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved5 = ptr;
+	return OSIP_SUCCESS;
+}
+
+int osip_transaction_set_reserved6(osip_transaction_t * transaction,
+	void *ptr)
+{
+	if (transaction == NULL)
+		return OSIP_BADPARAMETER;
+	transaction->reserved6 = ptr;
+	return OSIP_SUCCESS;
+}
+
+	
 void *osip_transaction_get_your_instance(osip_transaction_t * transaction)
 {
 	if (transaction == NULL)
 		return NULL;
-	return transaction->your_instance;
+	return transaction->reserved1;
 }
+
+void *osip_transaction_get_reserved1(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved1;
+}
+
+void *osip_transaction_get_reserved2(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved2;
+}
+
+void *osip_transaction_get_reserved3(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved3;
+}
+
+void *osip_transaction_get_reserved4(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved4;
+}
+
+void *osip_transaction_get_reserved5(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved5;
+}
+
+void *osip_transaction_get_reserved6(osip_transaction_t * transaction)
+{
+	if (transaction == NULL)
+		return NULL;
+	return transaction->reserved6;
+}
+
 
 int __osip_transaction_set_state(osip_transaction_t * transaction, state_t state)
 {

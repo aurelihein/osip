@@ -424,6 +424,12 @@ struct osip_naptr {
 		osip_srv_record_t record;
 		osip_naptr_t *naptr_record;
 								/**@internal */
+		void *reserved1;	/**< User Defined Pointer. */
+		void *reserved2;	/**< User Defined Pointer. */
+		void *reserved3;	/**< User Defined Pointer. */
+		void *reserved4;	/**< User Defined Pointer. */
+		void *reserved5;	/**< User Defined Pointer. */
+		void *reserved6;	/**< User Defined Pointer. */
 	};
 
 
@@ -745,6 +751,7 @@ struct osip_naptr {
 								 osip_event_t * evt);
 /**
  * Set a pointer to your personal context associated with this transaction.
+ * OBSOLETE: see osip_transaction_set_reserved1...
  * NOTE: this is a very useful method that allow you to avoid searching
  * for your personal context inside the registered callbacks.
  * You can initialise this pointer to your context right after
@@ -752,15 +759,111 @@ struct osip_naptr {
  * able to get the address of your context by calling
  * osip_transaction_get_your_instance().
  * @param transaction The element to work on.
- * @param instance The address of your context.
+ * @param ptr The address of your context.
  */
 	int osip_transaction_set_your_instance(osip_transaction_t * transaction,
-										   void *instance);
+										   void *ptr);
+	
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: this is a very useful method that allow you to avoid searching
+ * for your personal context inside the registered callbacks.
+ * You can initialise this pointer to your context right after
+ * the creation of the osip_transaction_t element. Then, you'll be
+ * able to get the address of your context by calling
+ * osip_transaction_get_reserved1().
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved1(osip_transaction_t * transaction,
+										   void *ptr);
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: see osip_transaction_set_reserved1
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved2(osip_transaction_t * transaction,
+										   void *ptr);
+
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: see osip_transaction_set_reserved1
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved3(osip_transaction_t * transaction,
+										   void *ptr);
+
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: see osip_transaction_set_reserved1
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved4(osip_transaction_t * transaction,
+										   void *ptr);
+
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: see osip_transaction_set_reserved1
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved5(osip_transaction_t * transaction,
+										   void *ptr);
+
+/**
+ * Set a pointer to your personal context associated with this transaction.
+ * NOTE: see osip_transaction_set_reserved1
+ * @param transaction The element to work on.
+ * @param ptr The address of your context.
+ */
+	int osip_transaction_set_reserved6(osip_transaction_t * transaction,
+										   void *ptr);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * OBSOLETE: see osip_transaction_get_reserved1...
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_your_instance(osip_transaction_t * transaction);
+
 /**
  * Get a pointer to your personal context associated with this transaction.
  * @param transaction The element to work on.
  */
-	void *osip_transaction_get_your_instance(osip_transaction_t * transaction);
+	void *osip_transaction_get_reserved1(osip_transaction_t * transaction);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_reserved2(osip_transaction_t * transaction);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_reserved3(osip_transaction_t * transaction);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_reserved4(osip_transaction_t * transaction);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_reserved5(osip_transaction_t * transaction);
+
+/**
+ * Get a pointer to your personal context associated with this transaction.
+ * @param transaction The element to work on.
+ */
+	void *osip_transaction_get_reserved6(osip_transaction_t * transaction);
 
 /**
  * Get target ip and port for this request.
