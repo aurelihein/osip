@@ -260,7 +260,7 @@ int osip_list_remove(osip_list_t * li, int pos)
 
 	ntmp = li->node;			/* exist because nb_elt>0 */
 
-	if ((pos == 0)) {			/* special case  */
+	if (pos == 0) {			/* special case  */
 		li->node = ntmp->next;
 		li->nb_elt--;
 		osip_free(ntmp);
