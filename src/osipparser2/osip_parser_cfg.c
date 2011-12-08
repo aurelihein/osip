@@ -147,10 +147,10 @@ int parser_init(void)
 	pconfig[i].ignored_when_invalid = 1;
 	pconfig[i++].setheader = (&osip_message_set_proxy_authorization);
 	pconfig[i].hname = RECORD_ROUTE;
-	pconfig[i].ignored_when_invalid = 0;
+	pconfig[i].ignored_when_invalid = 1; /* best effort - but should be 0 */
 	pconfig[i++].setheader = (&osip_message_set_record_route);
 	pconfig[i].hname = ROUTE;
-	pconfig[i].ignored_when_invalid = 0;
+	pconfig[i].ignored_when_invalid = 1; /* best effort - but should be 0 */
 	pconfig[i++].setheader = (&osip_message_set_route);
 	pconfig[i].hname = TO_SHORT;
 	pconfig[i].ignored_when_invalid = 0;
