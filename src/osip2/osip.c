@@ -1,6 +1,6 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
-  Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Aymeric MOIZARD jack@atosc.org
+  Copyright (C) 2001-2012 Aymeric MOIZARD amoizard_at_osip.org
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -187,7 +187,6 @@ static void osip_add_ixt(osip_t * osip, ixt_t * ixt)
 static void osip_remove_ixt(osip_t * osip, ixt_t * ixt)
 {
 	int i;
-	int found = 0;
 	ixt_t *tmp;
 
 	/* add in list osip_t->ixt */
@@ -196,7 +195,6 @@ static void osip_remove_ixt(osip_t * osip, ixt_t * ixt)
 		tmp = (ixt_t *) osip_list_get(&osip->ixt_retransmissions, i);
 		if (tmp == ixt) {
 			osip_list_remove(&osip->ixt_retransmissions, i);
-			found = 1;
 			break;
 		}
 	}
