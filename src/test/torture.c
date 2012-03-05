@@ -22,12 +22,10 @@
 #include <mpatrol.h>
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <osipparser2/internal.h>
+#include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
 #include <osipparser2/sdp_message.h>
-#include <osip2/internal.h>
 
 int test_message(char *msg, size_t len, int verbose, int clone);
 static void usage(void);

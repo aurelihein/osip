@@ -23,9 +23,8 @@
 #endif
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <osip2/internal.h>
+#include <osipparser2/internal.h>
+#include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
 
 

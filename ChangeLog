@@ -1,3 +1,15 @@
+libosip2 (4.0.0)
+	* major API update: several "struct eXosip_t" can be
+	  handled in parallele. This can be used to have several
+	  transport layer running at the same time.
+	* To compile/use osip based application in multi threaded
+	  env, you don't need to define -DOSIP_MT any more. Instead,
+	  if you wish to disable the feature, you can compile with
+	  -DOSIP_MONOTHREAD.
+	* A few other clean up were made inside osip to avoid any
+	  define to appear in include files. Also to avoid conflict,
+	  config.h has been renamed to osip-config.h.
+
 libosip2 (3.6.0)
 	* minor improvments. The git on savannah will bring you all details!
 

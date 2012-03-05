@@ -1,6 +1,6 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
-  Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Aymeric MOIZARD jack@atosc.org
+  Copyright (C) 2001-2012 Aymeric MOIZARD jack@atosc.org
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,8 @@
 #include <mpatrol.h>
 #endif
 
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <osip2/internal.h>
+#include <osipparser2/internal.h>
+#include <osipparser2/osip_port.h>
 #include <osipparser2/osip_uri.h>
 
 int osip_uri_test_accessor_api(osip_uri_t * url);
