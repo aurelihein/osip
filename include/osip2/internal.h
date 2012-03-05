@@ -20,14 +20,6 @@
 #ifndef _INTERNAL_H_
 #define _INTERNAL_H_
 
-#if defined(WIN32)
-#if !defined(_WIN32_WINNT) && defined(WINVER)
-#define _WIN32_WINNT WINVER
-#elif !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x0403
-#endif
-#endif
-
 #if defined (HAVE_CONFIG_H)
 #include <osip-config.h>
 #endif
@@ -54,7 +46,6 @@
 #define HAVE_STDARG_H 1
 
 #define snprintf  _snprintf
-#define EBUSY           16
 
 #elif defined(WIN32)
 

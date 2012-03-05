@@ -55,7 +55,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	DWORD timemillis = GetTickCount();
 	tp->tv_sec = timemillis / 1000;
 	tp->tv_usec = (timemillis - (tp->tv_sec * 1000)) * 1000;
-	return OSIP_SUCCESS;
+	return 0;
 }
 
 time_t time(time_t * t)
@@ -80,7 +80,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	_ftime(&timebuffer);
 	tp->tv_sec = (long) timebuffer.time;
 	tp->tv_usec = timebuffer.millitm * 1000;
-	return OSIP_SUCCESS;
+	return 0;
 }
 
 #endif

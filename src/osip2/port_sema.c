@@ -527,7 +527,7 @@ int osip_mutex_lock(struct osip_mutex *_mut)
 		return OSIP_BADPARAMETER;
 	if ((err = WaitForSingleObject(mut->h, INFINITE)) == WAIT_OBJECT_0)
 		return (0);
-	return (EBUSY);
+	return (-1);
 }
 
 int osip_mutex_unlock(struct osip_mutex *_mut)
@@ -585,8 +585,8 @@ int osip_sem_wait(struct osip_sem *_sem)
 	if ((err = WaitForSingleObject(sem->h, INFINITE)) == WAIT_OBJECT_0)
 		return (0);
 	if (err == WAIT_TIMEOUT)
-		return (EBUSY);
-	return (EBUSY);
+		return (-1);
+	return (-1);
 }
 
 int osip_sem_trywait(struct osip_sem *_sem)
@@ -598,7 +598,7 @@ int osip_sem_trywait(struct osip_sem *_sem)
 		return OSIP_BADPARAMETER;
 	if ((err = WaitForSingleObject(sem->h, 0)) == WAIT_OBJECT_0)
 		return (0);
-	return (EBUSY);
+	return (-1);
 }
 #endif
 
