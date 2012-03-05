@@ -17,10 +17,10 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <osipparser2/internal.h>
+
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 /* allocate a new url structure */
 /* OUTPUT: osip_uri_t *url | structure to save results.   */

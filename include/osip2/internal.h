@@ -17,6 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#ifndef _INTERNAL_H_
+#define _INTERNAL_H_
+
 #if defined(WIN32)
 #if !defined(_WIN32_WINNT) && defined(WINVER)
 #define _WIN32_WINNT WINVER
@@ -25,10 +28,94 @@
 #endif
 #endif
 
-#include <osipparser2/osip_port.h>
+#if defined (HAVE_CONFIG_H)
+#include <osip-config.h>
+#endif
 
-#ifndef _INTERNAL_H_
-#define _INTERNAL_H_
+#if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
+#	define HAVE_CTYPE_H 1
+#	define HAVE_STRING_H 1
+#	define HAVE_SYS_TYPES_H 1
+#	define HAVE_TIME_H 1
+#	define HAVE_STDARG_H 1
+
+#elif defined(__VXWORKS_OS__) || defined(__rtems__)
+#define HAVE_STRING_H 1
+#define HAVE_TIME_H 1
+#define HAVE_SYS_TIME_H 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_STDARG_H 1
+
+#elif defined _WIN32_WCE
+
+#define HAVE_CTYPE_H 1
+#define HAVE_STRING_H 1
+#define HAVE_TIME_H 1
+#define HAVE_STDARG_H 1
+
+#define snprintf  _snprintf
+#define EBUSY           16
+
+#elif defined(WIN32)
+
+#define HAVE_CTYPE_H 1
+#define HAVE_STRING_H 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_TIME_H 1
+#define HAVE_STDARG_H 1
+
+#define snprintf _snprintf
+
+/* use win32 crypto routines for random number generation */
+/* only use for vs .net (compiler v. 1300) or greater */
+#if _MSC_VER >= 1300
+#define WIN32_USE_CRYPTO 1
+#endif
+
+#endif
+
+#if defined (HAVE_STRING_H)
+#include <string.h>
+#elif defined (HAVE_STRINGS_H)
+#include <strings.h>
+#else
+#include <string.h>
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#if defined (HAVE_SYS_TYPES_H)
+#  include <sys/types.h>
+#endif
+
+#ifdef HAVE_TIME_H
+#  include <time.h>
+#endif
+
+#if defined (HAVE_SYS_TIME_H)
+#  include <sys/time.h>
+#endif
+
+#if defined(__arc__)
+#include "includes_api.h"
+#include "os_cfg_pub.h"
+#include <posix_time_pub.h>
+#endif
+
+#ifdef __PSOS__
+#define VA_START(a, f)  va_start(a, f)
+#include "pna.h"
+#include "stdlib.h"
+#include "time.h"
+#define timercmp(tvp, uvp, cmp) \
+((tvp)->tv_sec cmp (uvp)->tv_sec || \
+(tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
+#define snprintf  osip_snprintf
+#ifndef INT_MAX
+#define INT_MAX 0x7FFFFFFF
+#endif
+#endif
 
 #ifdef __BORLANDC__
 #define _timeb timeb
@@ -45,42 +132,7 @@ struct timeval {
 };
 #endif
 
-/**
- * Structure for payload management. Each payload element
- * represents one codec of a media line.
- * @var __payload_t
- */
-typedef struct __payload __payload_t;
-
-struct __payload {
-	char *payload;
-	/*  char *port; this must be assigned by the application dynamicly */
-	char *number_of_port;
-	char *proto;
-	char *c_nettype;
-	char *c_addrtype;
-	char *c_addr;
-	char *c_addr_multicast_ttl;
-	char *c_addr_multicast_int;
-	/* rtpmap (rcvonly and other attributes are added dynamicly) */
-	char *a_rtpmap;
-};
-
-
-/**
- * Allocate a payload element.
- * @param payload The payload.
- */
-int __payload_init(__payload_t ** payload);
-
-/**
- * Free a payload element.
- * @param payload The payload.
- */
-void __payload_free(__payload_t * payload);
-
-
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 
 /* Thread abstraction layer definition */
 #if defined(__rtems__)
@@ -282,7 +334,7 @@ typedef struct {
 #endif
 
 
-#endif							/* #ifdef OSIP_MT */
+#endif							/* #ifndef OSIP_MONOTHREAD */
 
 #endif							/* #ifndef DOXYGEN */
 

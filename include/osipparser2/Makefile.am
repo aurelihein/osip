@@ -1,6 +1,8 @@
 
 SUBDIRS = headers
 
+EXTRA_DIST = internal.h
+
 osipparser2_includedir=$(includedir)/osipparser2
 
 osipparser2_include_HEADERS=\

@@ -17,13 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_const.h>
 #include <osipparser2/osip_port.h>
 #include <osipparser2/sdp_message.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 
 int sdp_message_v_version_set(sdp_message_t * sdp, char *v_version)
 {

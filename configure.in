@@ -3,19 +3,19 @@ AC_REVISION($Revision: 1.82 $)dnl
 AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
-AC_MSG_NOTICE([osip2                                       The GNU Open SIP library.])
-AC_MSG_NOTICE([Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Aymeric MOIZARD - <jack@atosc.org>])
+AC_MSG_NOTICE([osip2                   The GNU Open SIP library.])
+AC_MSG_NOTICE([Copyright (C) 2001-2012 Aymeric MOIZARD - <jack@atosc.org>])
 
 
 dnl *********************************************************************
 dnl Source packaging numbers
-OSIP_MAJOR_VERSION=3
-OSIP_MINOR_VERSION=6
+OSIP_MAJOR_VERSION=4
+OSIP_MINOR_VERSION=0
 OSIP_MICRO_VERSION=0
 
-SONAME_MAJOR_VERSION=9
+SONAME_MAJOR_VERSION=10
 SONAME_MINOR_VERSION=0
-SONAME_MICRO_VERSION=2
+SONAME_MICRO_VERSION=0
 
 OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
 
@@ -42,7 +42,7 @@ AC_MSG_RESULT([Building Package on ${OS}])
 dnl *********************************************************************
 dnl Initialize automake stuff
 AC_CONFIG_AUX_DIR(scripts)
-AC_CONFIG_HEADERS(config.h)
+AC_CONFIG_HEADERS(osip-config.h)
 AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
 AM_ACLOCAL_INCLUDE(scripts)
 
@@ -121,12 +121,12 @@ enable_minisize=$enableval,enable_minisize="no")
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then
   if test "x$enable_pthread" = "xyes"; then
-    SIP_FSM_FLAGS="-DOSIP_MT -DHAVE_PTHREAD"
-    dnl FSM_LIB="-lpthread"
+    SIP_FSM_FLAGS="-DHAVE_PTHREAD"
   else
-    SIP_FSM_FLAGS="-DOSIP_MT"
     ACX_PTHREAD()
   fi
+else
+  SIP_FSM_FLAGS="-DOSIP_MONOTHREAD"
 fi
 
 AM_CONDITIONAL(BUILD_MT, test x$enable_mt = xyes)

@@ -17,10 +17,9 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-
 #include <osip2/internal.h>
+
+#include <osipparser2/osip_port.h>
 #include <osip2/osip_fifo.h>
 
 
@@ -28,7 +27,7 @@
 */
 void osip_fifo_init(osip_fifo_t * ff)
 {
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	ff->qislocked = osip_mutex_init();
 	/*INIT SEMA TO BLOCK ON GET() WHEN QUEUE IS EMPTY */
 	ff->qisempty = osip_sem_init(0);
@@ -40,7 +39,7 @@ void osip_fifo_init(osip_fifo_t * ff)
 
 int osip_fifo_add(osip_fifo_t * ff, void *el)
 {
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_lock(ff->qislocked);
 #endif
 
@@ -51,7 +50,7 @@ int osip_fifo_add(osip_fifo_t * ff, void *el)
 		OSIP_TRACE(osip_trace
 				   (__FILE__, __LINE__, OSIP_WARNING, NULL,
 					"too much traffic in fifo.\n"));
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 		osip_mutex_unlock(ff->qislocked);
 #endif
 		return OSIP_UNDEFINED_ERROR;	/* stack is full */
@@ -62,7 +61,7 @@ int osip_fifo_add(osip_fifo_t * ff, void *el)
 	else
 		ff->state = osip_ok;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_sem_post(ff->qisempty);
 	osip_mutex_unlock(ff->qislocked);
 #endif
@@ -72,7 +71,7 @@ int osip_fifo_add(osip_fifo_t * ff, void *el)
 
 int osip_fifo_insert(osip_fifo_t * ff, void *el)
 {
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_lock(ff->qislocked);
 #endif
 
@@ -83,7 +82,7 @@ int osip_fifo_insert(osip_fifo_t * ff, void *el)
 		OSIP_TRACE(osip_trace
 				   (__FILE__, __LINE__, OSIP_WARNING, NULL,
 					"too much traffic in fifo.\n"));
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 		osip_mutex_unlock(ff->qislocked);
 #endif
 		return OSIP_UNDEFINED_ERROR;	/* stack is full */
@@ -94,7 +93,7 @@ int osip_fifo_insert(osip_fifo_t * ff, void *el)
 	else
 		ff->state = osip_ok;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_sem_post(ff->qisempty);
 	osip_mutex_unlock(ff->qislocked);
 #endif
@@ -106,12 +105,12 @@ int osip_fifo_size(osip_fifo_t * ff)
 {
 	int i;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_lock(ff->qislocked);
 #endif
 
 	i = osip_list_size(&ff->queue);
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_unlock(ff->qislocked);
 #endif
 	return i;
@@ -122,7 +121,7 @@ void *osip_fifo_get(osip_fifo_t * ff)
 {
 	void *el = NULL;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	int i = osip_sem_wait(ff->qisempty);
 
 	if (i != 0)
@@ -138,7 +137,7 @@ void *osip_fifo_get(osip_fifo_t * ff)
 		OSIP_TRACE(osip_trace
 				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
 					"no element in fifo.\n"));
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 		osip_mutex_unlock(ff->qislocked);
 #endif
 		return OSIP_SUCCESS;	/* pile vide */
@@ -149,7 +148,7 @@ void *osip_fifo_get(osip_fifo_t * ff)
 	else
 		ff->state = osip_ok;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_unlock(ff->qislocked);
 #endif
 	return el;
@@ -159,7 +158,7 @@ void *osip_fifo_tryget(osip_fifo_t * ff)
 {
 	void *el = NULL;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	if (0 != osip_sem_trywait(ff->qisempty)) {	/* no elements... */
 		return NULL;
 	}
@@ -174,7 +173,7 @@ void *osip_fifo_tryget(osip_fifo_t * ff)
 		osip_list_remove(&ff->queue, 0);
 		/* ff->nb_elt--; */
 	}
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	else {						/* this case MUST never happen... */
 		OSIP_TRACE(osip_trace
 				   (__FILE__, __LINE__, OSIP_INFO4, NULL,
@@ -190,7 +189,7 @@ void *osip_fifo_tryget(osip_fifo_t * ff)
 	else
 		ff->state = osip_ok;
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_unlock(ff->qislocked);
 #endif
 	return el;
@@ -200,7 +199,7 @@ void osip_fifo_free(osip_fifo_t * ff)
 {
 	if (ff == NULL)
 		return;
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 	osip_mutex_destroy(ff->qislocked);
 	/* seems that pthread_mutex_destroy does not free space by itself */
 	osip_sem_destroy(ff->qisempty);

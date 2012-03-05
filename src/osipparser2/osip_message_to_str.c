@@ -17,9 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-#include <stdio.h>
-#include <stdlib.h>
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
@@ -804,7 +802,7 @@ _osip_message_to_str(osip_message_t * sip, char **dest,
 		char tmp2[15];
 
 		total_length += size;
-		snprintf(tmp2, 15, "%i", size);
+		snprintf(tmp2, 15, "%i", (int)size);
 		/* do not use osip_strncpy here! */
 		strncpy(content_length_to_modify + 5 - strlen(tmp2), tmp2, strlen(tmp2));
 	}

@@ -21,62 +21,7 @@
 #ifndef _OSIP_PORT_H_
 #define _OSIP_PORT_H_
 
-/* Include necessary headers for osip */
-
 #include <stdio.h>
-
-#if defined(__arc__)
-#include "includes_api.h"
-#include "os_cfg_pub.h"
-#include <posix_time_pub.h>
-#endif
-
-#if defined(__PALMOS__) && (__PALMOS__ >= 0x06000000)
-#	define STDC_HEADERS 1
-#	define HAVE_CTYPE_H 1
-#	define HAVE_STRING_H 1
-#	define HAVE_SYS_TYPES_H 1
-#	define HAVE_TIME_H 1
-#	define HAVE_STDARG_H 1
-
-#elif defined _WIN32_WCE
-
-#define STDC_HEADERS 1
-#define HAVE_CTYPE_H 1
-#define HAVE_STRING_H 1
-#define HAVE_TIME_H 1
-#define HAVE_STDARG_H 1
-
-#define snprintf  _snprintf
-#define EBUSY           16
-
-#elif defined(WIN32)
-
-#define STDC_HEADERS 1
-#define HAVE_CTYPE_H 1
-#define HAVE_STRING_H 1
-#define HAVE_SYS_TYPES_H 1
-#define HAVE_TIME_H 1
-#define HAVE_STDARG_H 1
-
-#define snprintf _snprintf
-
-/* use win32 crypto routines for random number generation */
-/* only use for vs .net (compiler v. 1300) or greater */
-#if _MSC_VER >= 1300
-#define WIN32_USE_CRYPTO 1
-#endif
-
-#endif
-
-#if defined(__VXWORKS_OS__) || defined(__rtems__)
-#include <string.h>
-#include <time.h>
-#include <sys/times.h>
-#include <stdarg.h>
-#include <sys/types.h>
-#include <stdlib.h>
-#define VA_START(a, f)  va_start(a, f)
 
 #if defined(__VXWORKS_OS__)
 /* VxWorks lacks support for snprintf */
@@ -85,84 +30,6 @@ int osip_snprintf(char *buf, int max, const char *fmt, ...);
 
 #define snprintf  osip_snprintf
 #define vsnprintf osip_vsnprintf
-#endif
-
-#else							/* end of __VXWORKS_OS__ */
-
-#if defined (HAVE_CONFIG_H)
-#include <config.h>
-#  if defined (HAVE_STRING_H)
-#    include <string.h>
-#  else
-#    include <strings.h>
-#  endif						/* HAVE_STRING_H */
-#else
-#  include <string.h>
-#endif							/* !HAVE_CONFIG_H */
-
-#if defined (HAVE_SYS_TYPES_H)
-#  include <sys/types.h>
-#endif
-
-#ifdef STDC_HEADERS
-#    include <stdlib.h>
-#endif							/* !STDC_HEADERS */
-
-#if defined(HAVE_STDARG_H) || defined(WIN32)
-#  include <stdarg.h>
-#  define VA_START(a, f)  va_start(a, f)
-#else
-#  if defined(HAVE_VARARGS_H)
-#    include <varargs.h>
-#    define VA_START(a, f) va_start(a)
-#  else
-#    include <stdarg.h>
-#    define VA_START(a, f)  va_start(a, f)
-#  endif
-#endif
-
-#ifdef HAVE_TIME_H
-#  include <time.h>
-#endif
-
-#if defined (HAVE_SYS_TIME_H)
-#  include <sys/time.h>
-#endif
-
-#endif							/* end of !__VXWORKS_OS__ */
-
-#ifdef _WIN32_WCE
-#define VA_START(a, f)  va_start(a, f)
-#endif
-
-#ifdef WIN32
-#define VA_START(a, f)  va_start(a, f)
-#endif
-
-#ifdef __PSOS__
-#define VA_START(a, f)  va_start(a, f)
-#include "pna.h"
-#include "stdlib.h"
-#include "time.h"
-#define timercmp(tvp, uvp, cmp) \
-        ((tvp)->tv_sec cmp (uvp)->tv_sec || \
-         (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
-#define snprintf  osip_snprintf
-#ifndef INT_MAX
-#define INT_MAX 0x7FFFFFFF
-#endif
-
-#endif
-
-
-#if __STDC__
-#  ifndef NOPROTOS
-#    define PARAMS(args)   args
-#  endif
-#endif
-
-#ifndef PARAMS
-#  define PARAMS(args)     ()
 #endif
 
 #include <osipparser2/osip_const.h>

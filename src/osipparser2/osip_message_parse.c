@@ -17,8 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
@@ -736,7 +735,7 @@ msg_osip_body_parse(osip_message_t * sip, const char *start_of_buf,
 			if (0 == osip_strcasecmp(sip->content_type->type, "application")
 				&& 0 == osip_strcasecmp(sip->content_type->subtype, "sdp")) {
 				osip_body_len = strlen(start_of_body);
-				sprintf(tmp, "%i", osip_body_len);
+				sprintf(tmp, "%i", (int)osip_body_len);
 				i = osip_message_set_content_length(sip, tmp);
 				if (i != 0)
 					return i;
@@ -748,7 +747,7 @@ msg_osip_body_parse(osip_message_t * sip, const char *start_of_buf,
 			OSIP_TRACE(osip_trace
 					   (__FILE__, __LINE__, OSIP_ERROR, NULL,
 						"Message was not receieved enterely. length=%i osip_body_len=%i\n",
-						length, osip_body_len));
+						(int)length, (int)osip_body_len));
 			return OSIP_SYNTAXERROR;
 		}
 

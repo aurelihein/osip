@@ -20,7 +20,7 @@
 #ifndef _FIFO_H_
 #define _FIFO_H_
 
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 #include <osip2/osip_mt.h>
 #endif
 #include <osipparser2/osip_list.h>
@@ -62,7 +62,7 @@ extern "C" {
  * @struct osip_fifo
  */
 	struct osip_fifo {
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 		struct osip_mutex *qislocked;
 								   /**@internal */
 		struct osip_sem *qisempty; /**@internal */
@@ -104,7 +104,7 @@ extern "C" {
  * @param ff The element to work on.
  */
 	int osip_fifo_size(osip_fifo_t * ff);
-#ifdef OSIP_MT
+#ifndef OSIP_MONOTHREAD
 /**
  * Get an element from a fifo or block until one is added.
  * @param ff The element to work on.

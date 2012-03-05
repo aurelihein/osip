@@ -17,17 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-/* HISTORY:
-
-   v0.5.0: created.
-
-   v0.6.0: 16/07/2001 complete support for from:
-   new structure
-   new osip_from_parse() method
-*/
-
-#include <stdlib.h>
-#include <stdio.h>
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>

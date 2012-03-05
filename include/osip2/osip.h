@@ -1017,7 +1017,7 @@ struct osip_naptr {
  * @param osip The element to work on.
  * @param evt The element representing the SIP MESSAGE.
  */
-#ifndef OSIP_MT
+#ifdef OSIP_MONOTHREAD
 	osip_transaction_t *osip_find_transaction(osip_t * osip, osip_event_t * evt);
 #endif
 

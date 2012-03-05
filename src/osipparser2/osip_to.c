@@ -17,10 +17,8 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <osipparser2/internal.h>
 
-#include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
 #include <osipparser2/osip_parser.h>
 

@@ -22,11 +22,7 @@
 
 #include <stdio.h>
 
-#ifdef OSIP_MT
-
-#ifdef ENABLE_MPATROL
-#include <mpatrol.h>
-#endif
+#ifndef OSIP_MONOTHREAD
 
 /**
  * @file osip_condv.h

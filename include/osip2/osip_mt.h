@@ -20,16 +20,9 @@
 #ifndef _OSIP_MT_H_
 #define _OSIP_MT_H_
 
-#ifdef OSIP_MT
-
-#ifdef ENABLE_MPATROL
-#include <mpatrol.h>
-#endif
+#ifndef OSIP_MONOTHREAD
 
 #include <stdio.h>
-#ifndef _WIN32_WCE
-#include <errno.h>
-#endif
 
 /**
  * @file osip_mt.h
@@ -170,5 +163,5 @@ extern "C" {
 }
 #endif
 /** @} */
-#endif							/* OSIP_MT */
+#endif							/* OSIP_MONOTHREAD */
 #endif							/* end of _THREAD_H_ */

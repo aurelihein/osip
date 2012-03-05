@@ -17,13 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifdef OSIP_MT
-
-#ifdef ENABLE_MPATROL
-#include <mpatrol.h>
-#endif
-
 #include <osip2/internal.h>
+
+#ifndef OSIP_MONOTHREAD
+
+#include <osipparser2/osip_port.h>
 #include <osip2/osip_mt.h>
 #include <osip2/osip_condv.h>
 
@@ -369,4 +367,4 @@ osip_cond_timedwait(struct osip_cond *_cond, struct osip_mutex *_mut,
 
 #endif
 
-#endif							/* #ifdef OSIP_MT */
+#endif							/* #ifndef OSIP_MONOTHREAD */

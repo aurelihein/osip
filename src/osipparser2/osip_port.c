@@ -22,10 +22,7 @@
 #include <windows.h>
 #endif
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_port.h>
 
@@ -41,6 +38,19 @@
 
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
+#endif
+
+#if defined(HAVE_STDARG_H)
+#  include <stdarg.h>
+#  define VA_START(a, f)  va_start(a, f)
+#else
+#  if defined(HAVE_VARARGS_H)
+#    include <varargs.h>
+#    define VA_START(a, f) va_start(a)
+#  else
+#    include <stdarg.h>
+#    define VA_START(a, f)  va_start(a, f)
+#  endif
 #endif
 
 #if defined(__PALMOS__) && (__PALMOS__ < 0x06000000)
@@ -229,7 +239,7 @@ static unsigned int osip_fallback_random_number()
 		int fd;
 
 		gettimeofday(&tv, NULL);
-		ticks = tv.tv_sec + tv.tv_usec;
+		ticks = (unsigned int)(tv.tv_sec + tv.tv_usec);
 		fd = open("/dev/urandom", O_RDONLY);
 		if (fd > 0) {
 			unsigned int r;
@@ -252,14 +262,14 @@ static unsigned int osip_fallback_random_number()
 	}
 #ifdef HAVE_LRAND48
 	{
-		int val = lrand48();
+		int val = (int)lrand48();
 		if (val == 0) {
 			unsigned int ticks;
 			struct timeval tv;
 			gettimeofday(&tv, NULL);
-			ticks = tv.tv_sec + tv.tv_usec;
+			ticks = (unsigned int)(tv.tv_sec + tv.tv_usec);
 			srand48(ticks);
-			return lrand48();
+			return (unsigned int)lrand48();
 		}
 
 		return val;
@@ -1238,7 +1248,7 @@ unsigned long osip_hash(const char *str)
 	unsigned int hash = 5381;
 	int c;
 
-	while (c = *str++)
+	while ((c = *str++))
 		hash = ((hash << 5) + hash) + c;
 
 	return hash & 0xFFFFFFFFu;

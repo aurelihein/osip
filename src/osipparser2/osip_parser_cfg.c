@@ -17,6 +17,7 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <osipparser2/internal.h>
 
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_parser.h>
@@ -176,7 +177,7 @@ int parser_init(void)
 	}
 
 	for (i = 0; i < NUMBER_OF_HEADERS; i++) {
-		unsigned int hash;
+		unsigned long hash;
 
 		/* calculate hash value using lower case */
 		/* Fixed: do not lower constant... osip_tolower( pconfig[i].hname ); */
@@ -203,7 +204,7 @@ int parser_init(void)
    precondition: hname is all lowercase */
 int __osip_message_is_known_header(const char *hname)
 {
-	unsigned int hash;
+	unsigned long hash;
 	int result = -1;
 
 	int index;

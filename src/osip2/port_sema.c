@@ -17,14 +17,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifdef OSIP_MT
-
-#include <stdlib.h>
-#include <stdio.h>
-
 #include <osip2/internal.h>
 
-#include <osip2/internal.h>
+#ifndef OSIP_MONOTHREAD
+
+#include <osipparser2/osip_port.h>
 #include <osip2/osip_mt.h>
 
 #if defined(__rtems__)
@@ -822,4 +819,4 @@ int osip_sem_trywait(struct osip_sem *_sem)
 
 
 #endif
-#endif							/* #ifdef OSIP_MT */
+#endif							/* #ifndef OSIP_MONOTHREAD */
