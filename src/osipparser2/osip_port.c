@@ -935,6 +935,32 @@ osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...
 		}
 		__android_log_vprint(lev, "osip2", chfr, ap);
 	}
+#elif defined(__APPLE__)  && defined(__OBJC__)
+	else if (trace_func == 0) {
+		char buffer[MAX_LENGTH_TR];
+		int in = 0;
+		
+		memset(buffer, 0, sizeof(buffer));
+		if (level == OSIP_FATAL)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| FATAL | <%s: %i> ", fi, li);
+		else if (level == OSIP_BUG)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "|  BUG  | <%s: %i> ", fi, li);
+		else if (level == OSIP_ERROR)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| ERROR | <%s: %i> ", fi, li);
+		else if (level == OSIP_WARNING)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "|WARNING| <%s: %i> ", fi, li);
+		else if (level == OSIP_INFO1)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO1 | <%s: %i> ", fi, li);
+		else if (level == OSIP_INFO2)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO2 | <%s: %i> ", fi, li);
+		else if (level == OSIP_INFO3)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO3 | <%s: %i> ", fi, li);
+		else if (level == OSIP_INFO4)
+			in = snprintf(buffer, MAX_LENGTH_TR-1, "| INFO4 | <%s: %i> ", fi, li);
+		
+		vsnprintf(buffer + in, MAX_LENGTH_TR-1 - in, chfr, ap);
+		NSLog(@"%s", buffer);
+	}
 #endif
 	else if (f && use_syslog == 0) {
 		if (level == OSIP_FATAL)
