@@ -23,6 +23,18 @@
 
 #include <stdio.h>
 
+/* on android, va_list is only defined if stdarg.h is included before */
+/* on other platform, it doesn't harm to have it */
+#if defined(HAVE_STDARG_H)
+#  include <stdarg.h>
+#else
+#  if defined(HAVE_VARARGS_H)
+#    include <varargs.h>
+#  else
+#    include <stdarg.h>
+#  endif
+#endif
+
 #if defined(__VXWORKS_OS__)
 /* VxWorks lacks support for snprintf */
 int osip_vsnprintf(char *buf, int max, const char *fmt, va_list ap);
