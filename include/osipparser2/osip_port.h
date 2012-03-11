@@ -125,9 +125,25 @@ extern "C" {
 
 #else
 
+#if 0 // for windows test purpose
+#ifndef osip_malloc
+#define osip_malloc(S) _osip_malloc(S,__FILE__,__LINE__)
+#endif
+#ifndef osip_realloc
+#define osip_realloc(P,S) _osip_realloc(P,S,__FILE__,__LINE__)
+#endif
+#ifndef osip_free
+#define osip_free(P) { if (P!=NULL) { _osip_free(P); } }
+#endif
+
+	void *_osip_malloc(size_t size, char *file, unsigned short line);
+	void _osip_free(void *ptr);
+	void *_osip_realloc(void *ptr, size_t size, char *file, unsigned short line);
+#else
 	void *osip_malloc(size_t size);
 	void *osip_realloc(void *, size_t size);
 	void osip_free(void *);
+#endif
 
 #endif
 

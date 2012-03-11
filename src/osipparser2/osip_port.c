@@ -1266,6 +1266,31 @@ void *_osip_realloc(void *ptr, size_t size, char *file, unsigned short line)
 
 #endif
 
+#if 0 // for windows test purpose
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+/*
+  This is a debug facility for detecting memory leaks.
+  I recommend to use external tools such as mpatrol
+  when possible. On some fancy platform, you may not
+  have any usefull tools: in this case, use this code!
+ */
+
+void *_osip_malloc(size_t size, char *file, unsigned short line)
+{
+	return _malloc_dbg( size, _NORMAL_BLOCK, file, line );
+}
+
+void _osip_free(void *ptr)
+{
+	_free_dbg(ptr, _NORMAL_BLOCK);
+}
+
+void *_osip_realloc(void *ptr, size_t size, char *file, unsigned short line)
+{
+	return _realloc_dbg( ptr, size, _NORMAL_BLOCK, file, line );
+}
+#endif
 
 /* ---For better performance---
    Calculates a hash value for the given string */
@@ -1350,7 +1375,19 @@ char *osip_clrncpy(char *dst, const char *src, size_t len)
 	spaceless_length = pend - pbeg + 1;	/* excluding any '\0' */
 	memmove(dst, pbeg, spaceless_length);
 	p = dst + spaceless_length;
-
+	
+#if defined(__GNUC__)
+	/* terminate the string and pad dest with zeros until len.
+ 	   99% of the time (SPACELESS_LENGTH == LEN) or
+ 	   (SPACELESS_LENGHT + 1 == LEN). We handle these cases efficiently.  */
+ 	*p = '\0';
+ 	if (__builtin_expect (++spaceless_length < len, 0))
+ 	  {
+ 	    do
+ 	      *++p = '\0';
+ 	    while (++spaceless_length < len);
+ 	  }
+#else
 	/* terminate the string and pad dest with zeros until len */
 	do {
 		*p = '\0';
@@ -1358,6 +1395,7 @@ char *osip_clrncpy(char *dst, const char *src, size_t len)
 		spaceless_length++;
 	}
 	while (spaceless_length < len);
+#endif
 
 	return dst;
 }
