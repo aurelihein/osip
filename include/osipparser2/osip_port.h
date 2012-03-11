@@ -125,7 +125,7 @@ extern "C" {
 
 #else
 
-#if 0 // for windows test purpose
+#if 0 /* for windows test purpose */
 #ifndef osip_malloc
 #define osip_malloc(S) _osip_malloc(S,__FILE__,__LINE__)
 #endif

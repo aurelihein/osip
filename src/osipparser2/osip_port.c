@@ -1266,7 +1266,7 @@ void *_osip_realloc(void *ptr, size_t size, char *file, unsigned short line)
 
 #endif
 
-#if 0 // for windows test purpose
+#if 0 /* for windows test purpose */
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 /*
