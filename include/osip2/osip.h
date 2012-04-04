@@ -603,7 +603,8 @@ struct osip_naptr {
 		void *nict_fastmutex; /**< mutex for NICT transaction */
 		void *nist_fastmutex; /**< mutex for NIST transaction */
 		void *ixt_fastmutex; /**< mutex for IXT transaction */
-    void *id_mutex; /**< mutex for unique id generation */
+		void *id_mutex; /**< mutex for unique transaction id generation */
+		int transactionid; /**< previous unique transaction id generation */
 
 		/* list of transactions for ict, ist, nict, nist */
 		osip_list_t osip_ict_transactions;

@@ -1109,6 +1109,8 @@ int osip_init(osip_t ** osip)
 	osip_list_init(&(*osip)->osip_nist_transactions);
 	osip_list_init(&(*osip)->ixt_retransmissions);
 
+	(*osip)->transactionid = 1;
+
 #if defined(HAVE_DICT_DICT_H)
 	(*osip)->osip_ict_hastable = hashtable_dict_new((dict_cmp_func) strcmp,
 													(dict_hsh_func) s_hash,

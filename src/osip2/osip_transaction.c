@@ -121,7 +121,6 @@ osip_transaction_init(osip_transaction_t ** transaction,
 					  osip_fsm_type_t ctx_type, osip_t * osip,
 					  osip_message_t * request)
 {
-	static int transactionid = 1;
 	osip_via_t *topvia;
 
 	int i;
@@ -135,11 +134,6 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	if (request->call_id->number == NULL)
 		return OSIP_BADPARAMETER;
 
-	OSIP_TRACE(osip_trace
-			   (__FILE__, __LINE__, OSIP_INFO2, NULL,
-				"allocating transaction ressource %i %s\n", transactionid,
-				request->call_id->number));
-
 	*transaction = (osip_transaction_t *) osip_malloc(sizeof(osip_transaction_t));
 	if (*transaction == NULL)
 		return OSIP_NOMEM;
@@ -151,9 +145,12 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	(*transaction)->birth_time = now;
 
 	osip_id_mutex_lock(osip);
-	(*transaction)->transactionid = transactionid;
-	transactionid++;
+	(*transaction)->transactionid = osip->transactionid++;
 	osip_id_mutex_unlock(osip);
+	OSIP_TRACE(osip_trace
+			   (__FILE__, __LINE__, OSIP_INFO2, NULL,
+				"allocating transaction ressource %i %s\n", (*transaction)->transactionid,
+				request->call_id->number));
 
 	topvia = osip_list_get(&request->vias, 0);
 	if (topvia == NULL) {
