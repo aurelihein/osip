@@ -598,11 +598,12 @@ struct osip_naptr {
 		void *application_context;
 								/**< User defined Pointer */
 
-		struct osip_mutex *ict_fastmutex; /**< mutex for ICT transaction */
-		struct osip_mutex *ist_fastmutex; /**< mutex for IST transaction */
-		struct osip_mutex *nict_fastmutex; /**< mutex for NICT transaction */
-		struct osip_mutex *nist_fastmutex; /**< mutex for NIST transaction */
-		struct osip_mutex *ixt_fastmutex; /**< mutex for IXT transaction */
+		void *ict_fastmutex; /**< mutex for ICT transaction */
+		void *ist_fastmutex; /**< mutex for IST transaction */
+		void *nict_fastmutex; /**< mutex for NICT transaction */
+		void *nist_fastmutex; /**< mutex for NIST transaction */
+		void *ixt_fastmutex; /**< mutex for IXT transaction */
+    void *id_mutex; /**< mutex for unique id generation */
 
 		/* list of transactions for ict, ist, nict, nist */
 		osip_list_t osip_ict_transactions;

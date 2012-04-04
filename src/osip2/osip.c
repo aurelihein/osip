@@ -23,10 +23,6 @@
 #include "fsm.h"
 #include "xixt.h"
 
-#ifndef OSIP_MONOTHREAD
-static struct osip_mutex *id_mutex; /**< mutex for unique id generation */
-#endif
-
 #include <osip2/osip_dialog.h>
 
 static int __osip_global_init(void);
@@ -47,9 +43,6 @@ static int __osip_global_init()
 	/* load the parser configuration */
 	parser_init();
 
-#ifndef OSIP_MONOTHREAD
-	id_mutex = osip_mutex_init();
-#endif
 	return OSIP_SUCCESS;
 }
 
@@ -60,10 +53,6 @@ static void __osip_global_free()
 	__ist_unload_fsm();
 	__nict_unload_fsm();
 	__nist_unload_fsm();
-#endif
-
-#ifndef OSIP_MONOTHREAD
-	osip_mutex_destroy(id_mutex);
 #endif
 }
 
@@ -138,7 +127,7 @@ int osip_id_mutex_unlock(osip_t * osip);
 int osip_id_mutex_lock(osip_t * osip)
 {
 #ifndef OSIP_MONOTHREAD
-	return osip_mutex_lock(id_mutex);
+	return osip_mutex_lock(osip->id_mutex);
 #else
 	return OSIP_SUCCESS;
 #endif
@@ -147,7 +136,7 @@ int osip_id_mutex_lock(osip_t * osip)
 int osip_id_mutex_unlock(osip_t * osip)
 {
 #ifndef OSIP_MONOTHREAD
-	return osip_mutex_unlock(id_mutex);
+	return osip_mutex_unlock(osip->id_mutex);
 #else
 	return OSIP_SUCCESS;
 #endif
@@ -1111,6 +1100,7 @@ int osip_init(osip_t ** osip)
 	(*osip)->nist_fastmutex = osip_mutex_init();
 
 	(*osip)->ixt_fastmutex = osip_mutex_init();
+	(*osip)->id_mutex = osip_mutex_init();
 #endif
 
 	osip_list_init(&(*osip)->osip_ict_transactions);
@@ -1146,6 +1136,7 @@ void osip_release(osip_t * osip)
 	osip_mutex_destroy(osip->nist_fastmutex);
 
 	osip_mutex_destroy(osip->ixt_fastmutex);
+	osip_mutex_destroy(osip->id_mutex);
 #endif
 
 	osip_free(osip);
