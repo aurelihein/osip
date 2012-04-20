@@ -20,6 +20,11 @@
 #include <osip2/internal.h>
 #include <osip2/osip_time.h>
 
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 void add_gettimeofday(struct timeval *atv, int ms)
 {
 	int m;
@@ -95,6 +100,20 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	}
 	tp->tv_sec = ts.tv_sec;
 	tp->tv_usec = ts.tv_nsec / 1000;
+	return 0;
+}
+
+#elif defined(__MACH__)
+
+int osip_gettimeofday(struct timeval *tp, void *tz)
+{
+  clock_serv_t cclock;
+  mach_timespec_t mts;
+  host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
+  clock_get_time(cclock, &mts);
+  mach_port_deallocate(mach_task_self(), cclock);
+	tp->tv_sec = mts.tv_sec;
+	tp->tv_usec = mts.tv_nsec / 1000;
 	return 0;
 }
 
