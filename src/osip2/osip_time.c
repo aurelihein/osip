@@ -91,7 +91,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 
 	if (clock_gettime(CLOCK_MONOTONIC,&ts)<0){
 		gettimeofday(tp, tz);
-		return;
+		return 0;
 	}
 	tp->tv_sec = ts.tv_sec;
 	tp->tv_usec = ts.tv_nsec / 1000;
