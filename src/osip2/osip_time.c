@@ -95,7 +95,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	}
 	tp->tv_sec = ts.tv_sec;
 	tp->tv_usec = ts.tv_nsec / 1000;
-	return;
+	return 0;
 }
 
 #else
@@ -103,7 +103,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 int osip_gettimeofday(struct timeval *tp, void *tz)
 {
 	gettimeofday(tp, tz);
-	return;
+	return 0;
 }
 
 #endif
