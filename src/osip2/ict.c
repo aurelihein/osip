@@ -27,7 +27,6 @@ int __osip_ict_init(osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 {
 	osip_route_t *route;
 	int i;
-	time_t now;
 
 	OSIP_TRACE(osip_trace
 			   (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating ICT context\n"));
@@ -36,7 +35,6 @@ int __osip_ict_init(osip_ict_t ** ict, osip_t * osip, osip_message_t * invite)
 	if (*ict == NULL)
 		return OSIP_NOMEM;
 
-	now = time(NULL);
 	memset(*ict, 0, sizeof(osip_ict_t));
 	/* for INVITE retransmissions */
 	{

@@ -83,6 +83,29 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	return 0;
 }
 
+#elif defined(__linux) || defined(__linux__) || defined(HAVE_CLOCK_GETTIME_MONOTONIC)
+
+int osip_gettimeofday(struct timeval *tp, void *tz)
+{
+	struct timespec ts;
+
+	if (clock_gettime(CLOCK_MONOTONIC,&ts)<0){
+		gettimeofday(tp, tz);
+		return;
+	}
+	tp->tv_sec = ts.tv_sec;
+	tp->tv_usec = ts.tv_nsec / 1000;
+	return;
+}
+
+#else
+
+int osip_gettimeofday(struct timeval *tp, void *tz)
+{
+	gettimeofday(tp, tz);
+	return;
+}
+
 #endif
 
 #if defined(__arc__)
@@ -100,3 +123,14 @@ time_t time(time_t * t)
 }
 
 #endif
+
+time_t osip_getsystemtime(time_t *t) {
+	struct timeval now;
+
+	osip_gettimeofday(&now, NULL);
+	if (t != NULL) {
+		*t = now.tv_sec;
+	}
+
+	return now.tv_sec;
+}

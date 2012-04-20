@@ -287,6 +287,15 @@ unsigned int osip_build_random_number()
 	BOOL err;
 	unsigned int num;
 
+	if (!random_seed_set) {
+		unsigned int ticks;
+		LARGE_INTEGER lCount;
+		QueryPerformanceCounter(&lCount);
+		ticks = lCount.LowPart + lCount.HighPart;
+		srand(ticks);
+		random_seed_set = 1;
+	}
+
 	err =
 		CryptAcquireContext(&crypto, NULL, NULL, PROV_RSA_FULL,
 							CRYPT_VERIFYCONTEXT);

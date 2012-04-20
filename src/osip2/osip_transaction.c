@@ -124,7 +124,6 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	osip_via_t *topvia;
 
 	int i;
-	time_t now;
 
 	*transaction = NULL;
 	if (request == NULL)
@@ -138,11 +137,9 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	if (*transaction == NULL)
 		return OSIP_NOMEM;
 
-	now = time(NULL);
-
 	memset(*transaction, 0, sizeof(osip_transaction_t));
 
-	(*transaction)->birth_time = now;
+	(*transaction)->birth_time = osip_getsystemtime(NULL);
 
 	osip_id_mutex_lock(osip);
 	(*transaction)->transactionid = osip->transactionid++;

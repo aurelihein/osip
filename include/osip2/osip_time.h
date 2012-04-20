@@ -53,23 +53,16 @@ extern "C" {
    ((a)->tv_sec CMP (b)->tv_sec))
 #define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
 
-/* osip_gettimeofday() for Windows */
-#if defined(__arc__)
-#define osip_gettimeofday gettimeofday
-#else
-	int osip_gettimeofday(struct timeval *tp, void *tz);
-#endif
-
 #else
 /* Operations on struct timeval */
 #define osip_timerisset(tvp)            timerisset(tvp)
 #define osip_timercmp(tvp, uvp, cmp)    timercmp(tvp,uvp,cmp)
 #define osip_timerclear(tvp)            timerclear(tvp)
 
-/* osip_gettimeofday() == gettimeofday() */
-#define osip_gettimeofday gettimeofday
-
 #endif
+
+	int osip_gettimeofday(struct timeval *tp, void *tz);
+	time_t osip_getsystemtime(time_t *t);
 
 #ifdef __cplusplus
 }

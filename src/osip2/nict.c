@@ -27,7 +27,6 @@ int __osip_nict_init(osip_nict_t ** nict, osip_t * osip, osip_message_t * reques
 {
 	osip_route_t *route;
 	int i;
-	time_t now;
 
 	OSIP_TRACE(osip_trace
 			   (__FILE__, __LINE__, OSIP_INFO2, NULL,
@@ -36,7 +35,7 @@ int __osip_nict_init(osip_nict_t ** nict, osip_t * osip, osip_message_t * reques
 	*nict = (osip_nict_t *) osip_malloc(sizeof(osip_nict_t));
 	if (*nict == NULL)
 		return OSIP_NOMEM;
-	now = time(NULL);
+
 	memset(*nict, 0, sizeof(osip_nict_t));
 	/* for REQUEST retransmissions */
 	{
