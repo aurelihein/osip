@@ -57,6 +57,7 @@ struct osip_thread *osip_thread_create(int stacksize, void *(*func) (void *),
 		OSIP_TRACE(osip_trace
 				   (__FILE__, __LINE__, OSIP_ERROR, NULL,
 					"Error while creating a new thread\n"));
+		osip_free(thread);
 		return NULL;
 	}
 	return (struct osip_thread *) thread;

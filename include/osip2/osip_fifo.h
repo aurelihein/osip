@@ -46,8 +46,7 @@ extern "C" {
 
 #ifndef DOXYGEN
 
-#define MAX_LEN 1000
-	typedef enum { osip_ok, osip_full, osip_empty } osip_fifo_state;
+	typedef enum { osip_ok, osip_empty } osip_fifo_state;
 
 #endif
 

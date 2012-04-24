@@ -43,23 +43,8 @@ int osip_fifo_add(osip_fifo_t * ff, void *el)
 	osip_mutex_lock(ff->qislocked);
 #endif
 
-	if (ff->state != osip_full) {
-		/* ff->nb_elt++; */
-		osip_list_add(&ff->queue, el, -1);	/* insert at end of queue */
-	} else {
-		OSIP_TRACE(osip_trace
-				   (__FILE__, __LINE__, OSIP_WARNING, NULL,
-					"too much traffic in fifo.\n"));
-#ifndef OSIP_MONOTHREAD
-		osip_mutex_unlock(ff->qislocked);
-#endif
-		return OSIP_UNDEFINED_ERROR;	/* stack is full */
-	}
-	/* if (ff->nb_elt >= MAX_LEN) */
-	if (osip_list_size(&ff->queue) >= MAX_LEN)
-		ff->state = osip_full;
-	else
-		ff->state = osip_ok;
+	osip_list_add(&ff->queue, el, -1);	/* insert at end of queue */
+	ff->state = osip_ok;
 
 #ifndef OSIP_MONOTHREAD
 	osip_sem_post(ff->qisempty);
@@ -75,23 +60,8 @@ int osip_fifo_insert(osip_fifo_t * ff, void *el)
 	osip_mutex_lock(ff->qislocked);
 #endif
 
-	if (ff->state != osip_full) {
-		/* ff->nb_elt++; */
-		osip_list_add(&ff->queue, el, 0);	/* insert at end of queue */
-	} else {
-		OSIP_TRACE(osip_trace
-				   (__FILE__, __LINE__, OSIP_WARNING, NULL,
-					"too much traffic in fifo.\n"));
-#ifndef OSIP_MONOTHREAD
-		osip_mutex_unlock(ff->qislocked);
-#endif
-		return OSIP_UNDEFINED_ERROR;	/* stack is full */
-	}
-	/* if (ff->nb_elt >= MAX_LEN) */
-	if (osip_list_size(&ff->queue) >= MAX_LEN)
-		ff->state = osip_full;
-	else
-		ff->state = osip_ok;
+	osip_list_add(&ff->queue, el, 0);	/* insert at end of queue */
+	ff->state = osip_ok;
 
 #ifndef OSIP_MONOTHREAD
 	osip_sem_post(ff->qisempty);
