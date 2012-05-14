@@ -22,137 +22,6 @@
 
 #include "fsm.h"
 
-#ifndef MINISIZE
-
-osip_statemachine_t *nict_fsm;
-
-osip_statemachine_t *__nict_get_fsm()
-{
-	return nict_fsm;
-}
-
-void __nict_unload_fsm()
-{
-	transition_t *transition;
-	osip_statemachine_t *statemachine = __nict_get_fsm();
-
-	for (transition = statemachine->transitions; transition != NULL;
-		 transition = statemachine->transitions) {
-		REMOVE_ELEMENT(statemachine->transitions, transition);
-		osip_free(transition);
-	}
-
-	osip_free(statemachine->transitions);
-	osip_free(statemachine);
-}
-
-void __nict_load_fsm()
-{
-	transition_t *transition;
-
-	nict_fsm = (osip_statemachine_t *) osip_malloc(sizeof(osip_statemachine_t));
-	if (nict_fsm == NULL)
-		return;
-	nict_fsm->transitions = NULL;
-
-	/* to avoid race conditions between timers and first request */
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PRE_TRYING;
-	transition->type = SND_REQUEST;
-	transition->method = (void (*)(void *, void *)) &nict_snd_request;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-	/*
-	   transition         = (transition_t *) osip_malloc(sizeof(transition_t));
-	   transition->state  = NICT_TRYING;
-	   transition->type   = SND_REQUEST;
-	   transition->method = (void(*)(void *,void *))&nict_snd_request;
-	   osip_list_add(nict_fsm->transitions,transition,-1);
-	 */
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_TRYING;
-	transition->type = TIMEOUT_F;
-	transition->method = (void (*)(void *, void *)) &osip_nict_timeout_f_event;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_TRYING;
-	transition->type = TIMEOUT_E;
-	transition->method = (void (*)(void *, void *)) &osip_nict_timeout_e_event;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_TRYING;
-	transition->type = RCV_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_1xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_TRYING;
-	transition->type = RCV_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_23456xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_TRYING;
-	transition->type = RCV_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_23456xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PROCEEDING;
-	transition->type = TIMEOUT_F;
-	transition->method = (void (*)(void *, void *)) &osip_nict_timeout_f_event;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PROCEEDING;
-	transition->type = TIMEOUT_E;
-	transition->method = (void (*)(void *, void *)) &osip_nict_timeout_e_event;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PROCEEDING;
-	transition->type = RCV_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_1xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PROCEEDING;
-	transition->type = RCV_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_23456xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_PROCEEDING;
-	transition->type = RCV_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &nict_rcv_23456xx;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NICT_COMPLETED;
-	transition->type = TIMEOUT_K;
-	transition->method = (void (*)(void *, void *)) &osip_nict_timeout_k_event;
-	ADD_ELEMENT(nict_fsm->transitions, transition);
-
-	/* these ccan be used to announce retransmission of 2xx and 3456xx
-	   For the state machine, it is completely useless...
-	   transition         = (transition_t *) osip_malloc(sizeof(transition_t));
-	   transition->state  = NICT_COMPLETED;
-	   transition->type   = RCV_STATUS_2XX;
-	   transition->method = (void(*)(void *,void *))&nict_rcv_23456xx2;
-	   osip_list_add(nict_fsm->transitions,transition,-1);
-
-	   transition         = (transition_t *) osip_malloc(sizeof(transition_t));
-	   transition->state  = NICT_COMPLETED;
-	   transition->type   = RCV_STATUS_3456XX;
-	   transition->method = (void(*)(void *,void *))&nict_rcv_23456xx2;
-	   osip_list_add(nict_fsm->transitions,transition,-1);
-	 */
-
-}
-
-#else
-
 transition_t nict_transition[12] = {
 	{
 	 NICT_PRE_TRYING,
@@ -227,10 +96,7 @@ transition_t nict_transition[12] = {
 	 NULL, NULL}
 };
 
-
 osip_statemachine_t nict_fsm = { nict_transition };
-
-#endif
 
 static void nict_handle_transport_error(osip_transaction_t * nict, int err)
 {

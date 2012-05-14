@@ -23,12 +23,10 @@
 #include "fsm.h"
 #include "xixt.h"
 
-#ifdef MINISIZE
 extern osip_statemachine_t ict_fsm;
 extern osip_statemachine_t ist_fsm;
 extern osip_statemachine_t nict_fsm;
 extern osip_statemachine_t nist_fsm;
-#endif
 
 int osip_id_mutex_lock(osip_t * osip);
 int osip_id_mutex_unlock(osip_t * osip);
@@ -372,16 +370,6 @@ int osip_transaction_execute(osip_transaction_t * transaction, osip_event_t * ev
 			   (__FILE__, __LINE__, OSIP_INFO4, NULL,
 				"sipevent evt->sip: %x\n", evt->sip));
 
-#ifndef MINISIZE
-	if (transaction->ctx_type == ICT)
-		statemachine = __ict_get_fsm();
-	else if (transaction->ctx_type == IST)
-		statemachine = __ist_get_fsm();
-	else if (transaction->ctx_type == NICT)
-		statemachine = __nict_get_fsm();
-	else
-		statemachine = __nist_get_fsm();
-#else
 	if (transaction->ctx_type == ICT)
 		statemachine = &ict_fsm;
 	else if (transaction->ctx_type == IST)
@@ -390,7 +378,6 @@ int osip_transaction_execute(osip_transaction_t * transaction, osip_event_t * ev
 		statemachine = &nict_fsm;
 	else
 		statemachine = &nist_fsm;
-#endif
 
 	if (0 != fsm_callmethod(evt->type,
 							transaction->state, statemachine, evt, transaction)) {

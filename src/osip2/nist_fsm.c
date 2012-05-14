@@ -22,104 +22,6 @@
 
 #include "fsm.h"
 
-#ifndef MINISIZE
-
-osip_statemachine_t *nist_fsm;
-
-osip_statemachine_t *__nist_get_fsm()
-{
-	return nist_fsm;
-}
-
-void __nist_unload_fsm()
-{
-	transition_t *transition;
-	osip_statemachine_t *statemachine = __nist_get_fsm();
-
-	for (transition = statemachine->transitions; transition != NULL;
-		 transition = statemachine->transitions) {
-		REMOVE_ELEMENT(statemachine->transitions, transition);
-		osip_free(transition);
-	}
-
-	osip_free(statemachine->transitions);
-	osip_free(statemachine);
-}
-
-
-void __nist_load_fsm()
-{
-	transition_t *transition;
-
-	nist_fsm = (osip_statemachine_t *) osip_malloc(sizeof(osip_statemachine_t));
-	if (nist_fsm == NULL)
-		return;
-	nist_fsm->transitions = NULL;
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_PRE_TRYING;
-	transition->type = RCV_REQUEST;
-	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_TRYING;
-	transition->type = SND_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_TRYING;
-	transition->type = SND_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_TRYING;
-	transition->type = SND_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_PROCEEDING;
-	transition->type = SND_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_1xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_PROCEEDING;
-	transition->type = SND_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_PROCEEDING;
-	transition->type = SND_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &nist_snd_23456xx;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_PROCEEDING;
-	transition->type = RCV_REQUEST;
-	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_COMPLETED;
-	transition->type = TIMEOUT_J;
-	transition->method = (void (*)(void *, void *)) &osip_nist_timeout_j_event;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = NIST_COMPLETED;
-	transition->type = RCV_REQUEST;
-	transition->method = (void (*)(void *, void *)) &nist_rcv_request;
-	ADD_ELEMENT(nist_fsm->transitions, transition);
-
-}
-
-#else
-
 transition_t nist_transition[10] = {
 	{
 	 NIST_PRE_TRYING,
@@ -183,8 +85,6 @@ transition_t nist_transition[10] = {
 };
 
 osip_statemachine_t nist_fsm = { nist_transition };
-
-#endif
 
 static void nist_handle_transport_error(osip_transaction_t * nist, int err)
 {

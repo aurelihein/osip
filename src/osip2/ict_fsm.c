@@ -23,119 +23,6 @@
 #include "fsm.h"
 #include "xixt.h"
 
-#ifndef MINISIZE
-
-osip_statemachine_t *ict_fsm;
-
-osip_statemachine_t *__ict_get_fsm()
-{
-	return ict_fsm;
-}
-
-void __ict_unload_fsm()
-{
-	transition_t *transition;
-	osip_statemachine_t *statemachine = __ict_get_fsm();
-
-	for (transition = statemachine->transitions; transition != NULL;
-		 transition = statemachine->transitions) {
-		REMOVE_ELEMENT(statemachine->transitions, transition);
-		osip_free(transition);
-	}
-
-	osip_free(statemachine->transitions);
-	osip_free(statemachine);
-}
-
-void __ict_load_fsm()
-{
-	transition_t *transition;
-
-	ict_fsm = (osip_statemachine_t *) osip_malloc(sizeof(osip_statemachine_t));
-	if (ict_fsm == NULL)
-		return;
-	ict_fsm->transitions = NULL;
-
-	/* a new state is needed because a race can happen between
-	   the timer and the timeout event!
-	   One day to find out this bug  ;-)
-	 */
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_PRE_CALLING;
-	transition->type = SND_REQINVITE;
-	transition->method = (void (*)(void *, void *)) &ict_snd_invite;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-	/*
-	   transition         = (transition_t *) osip_malloc(sizeof(transition_t));
-	   transition->state  = ICT_CALLING;
-	   transition->type   = SND_REQINVITE;
-	   transition->method = (void(*)(void *,void *))&ict_snd_invite;
-	   osip_list_add(ict_fsm->transitions,transition,-1);
-	 */
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_CALLING;
-	transition->type = TIMEOUT_A;
-	transition->method = (void (*)(void *, void *)) &osip_ict_timeout_a_event;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_CALLING;
-	transition->type = TIMEOUT_B;
-	transition->method = (void (*)(void *, void *)) &osip_ict_timeout_b_event;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_CALLING;
-	transition->type = RCV_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_1xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_CALLING;
-	transition->type = RCV_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_2xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_CALLING;
-	transition->type = RCV_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_3456xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_PROCEEDING;
-	transition->type = RCV_STATUS_1XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_1xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_PROCEEDING;
-	transition->type = RCV_STATUS_2XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_2xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_PROCEEDING;
-	transition->type = RCV_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &ict_rcv_3456xx;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_COMPLETED;
-	transition->type = RCV_STATUS_3456XX;
-	transition->method = (void (*)(void *, void *)) &ict_retransmit_ack;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-	transition = (transition_t *) osip_malloc(sizeof(transition_t));
-	transition->state = ICT_COMPLETED;
-	transition->type = TIMEOUT_D;
-	transition->method = (void (*)(void *, void *)) &osip_ict_timeout_d_event;
-	ADD_ELEMENT(ict_fsm->transitions, transition);
-
-}
-
-#else
-
 transition_t ict_transition[11] = {
 	{
 	 ICT_PRE_CALLING,
@@ -197,8 +84,6 @@ transition_t ict_transition[11] = {
 };
 
 osip_statemachine_t ict_fsm = { ict_transition };
-
-#endif
 
 static void ict_handle_transport_error(osip_transaction_t * ict, int err)
 {

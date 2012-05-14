@@ -25,37 +25,6 @@
 
 #include <osip2/osip_dialog.h>
 
-static int __osip_global_init(void);
-static void __osip_global_free(void);
-static int increase_ref_count(void);
-static void decrease_ref_count(void);
-
-static int __osip_global_init()
-{
-	/* load the fsm configuration */
-#ifndef MINISIZE
-	__ict_load_fsm();
-	__ist_load_fsm();
-	__nict_load_fsm();
-	__nist_load_fsm();
-#endif
-
-	/* load the parser configuration */
-	parser_init();
-
-	return OSIP_SUCCESS;
-}
-
-static void __osip_global_free()
-{
-#ifndef MINISIZE
-	__ict_unload_fsm();
-	__ist_unload_fsm();
-	__nict_unload_fsm();
-	__nist_unload_fsm();
-#endif
-}
-
 void
 osip_response_get_destination(osip_message_t * response, char **address,
 							  int *portnum)
@@ -1036,56 +1005,15 @@ osip_transaction_t *osip_transaction_find(osip_list_t * transactions,
 	return NULL;
 }
 
-static int ref_count = 0;
-
-#ifndef OSIP_MONOTHREAD
-static struct osip_mutex *ref_mutex = NULL;
-#endif
-
-static int increase_ref_count(void)
-{
-#ifndef OSIP_MONOTHREAD
-	if (ref_count == 0)
-		ref_mutex = osip_mutex_init();
-	/* Here we should assert() that the mutex was really generated. */
-	osip_mutex_lock(ref_mutex);
-#endif
-	if (ref_count == 0)
-		__osip_global_init();
-	ref_count++;
-#ifndef OSIP_MONOTHREAD
-	osip_mutex_unlock(ref_mutex);
-#endif
-
-	return OSIP_SUCCESS;
-}
-
-static void decrease_ref_count(void)
-{
-#ifndef OSIP_MONOTHREAD
-	osip_mutex_lock(ref_mutex);
-#endif
-	/* assert (ref_count > 0); */
-	ref_count--;
-	if (ref_count == 0) {
-#ifndef OSIP_MONOTHREAD
-		osip_mutex_unlock(ref_mutex);
-		osip_mutex_destroy(ref_mutex);
-#endif
-		__osip_global_free();
-		return;
-	}
-#ifndef OSIP_MONOTHREAD
-	osip_mutex_unlock(ref_mutex);
-#endif
-}
-
 int osip_init(osip_t ** osip)
 {
-	int i;
-	i = increase_ref_count();
-	if (i != 0)
-		return i;
+  static int ref_count = 0;
+	if (ref_count == 0)
+	{
+    ref_count++;
+	  /* load the parser configuration */
+	  parser_init();
+  }
 
 	*osip = (osip_t *) osip_malloc(sizeof(osip_t));
 	if (*osip == NULL)
@@ -1142,9 +1070,7 @@ void osip_release(osip_t * osip)
 #endif
 
 	osip_free(osip);
-	decrease_ref_count();
 }
-
 
 void osip_set_application_context(osip_t * osip, void *pointer)
 {
