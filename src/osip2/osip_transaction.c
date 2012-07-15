@@ -147,6 +147,14 @@ osip_transaction_init(osip_transaction_t ** transaction,
 				"allocating transaction ressource %i %s\n", (*transaction)->transactionid,
 				request->call_id->number));
 
+  /* those lines must be called before "osip_transaction_free" */
+	(*transaction)->ctx_type = ctx_type;
+	(*transaction)->ict_context = NULL;
+	(*transaction)->ist_context = NULL;
+	(*transaction)->nict_context = NULL;
+	(*transaction)->nist_context = NULL;
+	(*transaction)->config = osip;
+
 	topvia = osip_list_get(&request->vias, 0);
 	if (topvia == NULL) {
 		osip_transaction_free(*transaction);
@@ -191,8 +199,6 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	/* (*transaction)->orig_request = request; */
 	(*transaction)->orig_request = NULL;
 
-	(*transaction)->config = osip;
-
 	(*transaction)->transactionff =
 		(osip_fifo_t *) osip_malloc(sizeof(osip_fifo_t));
 	if ((*transaction)->transactionff == NULL) {
@@ -202,11 +208,6 @@ osip_transaction_init(osip_transaction_t ** transaction,
 	}
 	osip_fifo_init((*transaction)->transactionff);
 
-	(*transaction)->ctx_type = ctx_type;
-	(*transaction)->ict_context = NULL;
-	(*transaction)->ist_context = NULL;
-	(*transaction)->nict_context = NULL;
-	(*transaction)->nist_context = NULL;
 	if (ctx_type == ICT) {
 		(*transaction)->state = ICT_PRE_CALLING;
 		i = __osip_ict_init(&((*transaction)->ict_context), osip, request);
