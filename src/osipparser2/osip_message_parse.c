@@ -111,10 +111,46 @@ __osip_message_startline_parsereq(osip_message_t * dest, const char *buf,
 	{
 		const char *hp = p1;
 
+    hp++; /* skip space */
+    if (*hp == '\0' || *(hp+1) == '\0' || *(hp+2) == '\0' || *(hp+3) == '\0' || *(hp+4) == '\0' || *(hp+5) == '\0' || *(hp+6) == '\0') {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+							"Uncomplete request line\n"));
+				osip_free(dest->sip_method);
+				dest->sip_method = NULL;
+				osip_uri_free(dest->req_uri);
+				dest->req_uri = NULL;
+				return OSIP_SYNTAXERROR;
+    }
+    if (*hp != 'S' || *(hp+1)!= 'I' || *(hp+2)!= 'P' || *(hp+3)!= '/' ) {
+				OSIP_TRACE(osip_trace
+						   (__FILE__, __LINE__, OSIP_ERROR, NULL,
+							"No crlf found/No SIP/2.0 found\n"));
+				osip_free(dest->sip_method);
+				dest->sip_method = NULL;
+				osip_uri_free(dest->req_uri);
+				dest->req_uri = NULL;
+				return OSIP_SYNTAXERROR;
+    }
+    hp=hp+4; /* SIP/ */
+
 		while ((*hp != '\r') && (*hp != '\n')) {
-			if (*hp)
-				hp++;
-			else {
+			if (*hp) {
+        if ((*hp >= '0') && (*hp <= '9'))
+  				hp++;
+        else if (*hp == '.')
+  				hp++;
+        else {
+				  OSIP_TRACE(osip_trace
+						     (__FILE__, __LINE__, OSIP_ERROR, NULL,
+							  "incorrect sip version string\n"));
+				  osip_free(dest->sip_method);
+				  dest->sip_method = NULL;
+				  osip_uri_free(dest->req_uri);
+				  dest->req_uri = NULL;
+				  return OSIP_SYNTAXERROR;
+			  }
+      } else {
 				OSIP_TRACE(osip_trace
 						   (__FILE__, __LINE__, OSIP_ERROR, NULL,
 							"No crlf found\n"));
