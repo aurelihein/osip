@@ -885,12 +885,24 @@ int __osip_port_gettimeofday(struct timeval *tp, void *tz)
 #endif
 
 int
-osip_trace(char *fi, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
+osip_trace(char *filename_long, int li, osip_trace_level_t level, FILE * f, char *chfr, ...)
 {
 #ifdef ENABLE_TRACE
 	va_list ap;
 	int relative_time = 0;
 
+  char *fi=NULL;
+  
+  if (filename_long!=NULL) {
+    fi = strrchr(filename_long, '/');
+    if (fi==NULL)
+      fi = strrchr(filename_long, '\\');
+    if (fi!=NULL)
+      fi++;
+    if (fi==NULL)
+      fi=filename_long;
+  }
+                              
 #if (defined(WIN32)  && !defined(_WIN32_WCE)) || defined(__linux)
 	static struct timeval start = { 0, 0 };
 	struct timeval now;
