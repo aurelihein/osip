@@ -893,16 +893,6 @@ osip_trace(char *filename_long, int li, osip_trace_level_t level, FILE * f, char
 
   char *fi=NULL;
   
-  if (filename_long!=NULL) {
-    fi = strrchr(filename_long, '/');
-    if (fi==NULL)
-      fi = strrchr(filename_long, '\\');
-    if (fi!=NULL)
-      fi++;
-    if (fi==NULL)
-      fi=filename_long;
-  }
-                              
 #if (defined(WIN32)  && !defined(_WIN32_WCE)) || defined(__linux)
 	static struct timeval start = { 0, 0 };
 	struct timeval now;
@@ -918,6 +908,16 @@ osip_trace(char *filename_long, int li, osip_trace_level_t level, FILE * f, char
 	else
 		relative_time = relative_time - 1 + ((now.tv_usec - start.tv_usec) / 1000);
 #endif
+
+  if (filename_long!=NULL) {
+    fi = strrchr(filename_long, '/');
+    if (fi==NULL)
+      fi = strrchr(filename_long, '\\');
+    if (fi!=NULL)
+      fi++;
+    if (fi==NULL)
+      fi=filename_long;
+  }
 
 #if !defined(WIN32) && !defined(SYSTEM_LOGGER_ENABLED)
 	if (logfile == NULL && use_syslog == 0 && trace_func == NULL) {	/* user did not initialize logger.. */
