@@ -19,6 +19,7 @@
 
 #include <osip2/internal.h>
 #include <osip2/osip_time.h>
+#include <osipparser2/osip_port.h>
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -63,6 +64,13 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	return 0;
 }
 
+static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
+{
+	tp->tv_sec = 0;
+	tp->tv_usec = 0;
+	return 0;
+}
+
 time_t time(time_t * t)
 {
 	DWORD timemillis = GetTickCount();
@@ -88,6 +96,18 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	return 0;
 }
 
+static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
+{
+	FILETIME lSystemTimeAsFileTime;
+	LONGLONG ll_now;
+	GetSystemTimeAsFileTime(&lSystemTimeAsFileTime);
+	ll_now = (LONGLONG)lSystemTimeAsFileTime.dwLowDateTime + ((LONGLONG)(lSystemTimeAsFileTime.dwHighDateTime) << 32LL);
+	ll_now = ll_now/10; /* in us */
+	tp->tv_sec = (long) ll_now/1000000;
+	tp->tv_usec = (long) ll_now%1000000;
+	return 0;
+}
+
 #elif defined(__linux) || defined(__linux__) || defined(HAVE_CLOCK_GETTIME_MONOTONIC)
 
 int osip_gettimeofday(struct timeval *tp, void *tz)
@@ -95,6 +115,19 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	struct timespec ts;
 
 	if (clock_gettime(CLOCK_MONOTONIC,&ts)<0){
+		gettimeofday(tp, tz);
+		return 0;
+	}
+	tp->tv_sec = ts.tv_sec;
+	tp->tv_usec = ts.tv_nsec / 1000;
+	return 0;
+}
+
+static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
+{
+	struct timespec ts;
+
+	if (clock_gettime(CLOCK_REALTIME,&ts)<0){
 		gettimeofday(tp, tz);
 		return 0;
 	}
@@ -117,11 +150,27 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	return 0;
 }
 
+static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
+{
+  /* TODO */
+	tp->tv_sec = 0;
+	tp->tv_usec = 0;
+	return 0;
+}
+
 #else
 
+/* Should never be compiled: missing monotonic clock */
 int osip_gettimeofday(struct timeval *tp, void *tz)
 {
 	gettimeofday(tp, tz);
+	return 0;
+}
+
+static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
+{
+	tp->tv_sec = 0;
+	tp->tv_usec = 0;
 	return 0;
 }
 
@@ -143,13 +192,74 @@ time_t time(time_t * t)
 
 #endif
 
-time_t osip_getsystemtime(time_t *t) {
+static time_t osip_getrealtime(time_t *t) {
 	struct timeval now;
 
-	osip_gettimeofday(&now, NULL);
+	_osip_gettimeofday_realtime(&now, NULL);
 	if (t != NULL) {
 		*t = now.tv_sec;
 	}
 
 	return now.tv_sec;
 }
+
+static struct timeval offset = {0, 0};
+
+void osip_compensatetime() {
+  static struct timeval last_now_monotonic = {0, 0};
+  static struct timeval last_now_real = {0, 0};
+  struct timeval now_monotonic;
+  struct timeval now_real;
+  struct timeval diff_monotonic;
+  struct timeval diff_real;
+
+#ifndef ANDROID
+  return;
+#endif
+
+  _osip_gettimeofday_realtime(&now_real, NULL);
+  osip_gettimeofday(&now_monotonic, NULL);
+
+  if (now_real.tv_sec==0)
+    return; /* no compensation */
+
+  /* monotonic clock may doesn't include deep sleep time */
+  /* the goal is to compensate that time by looking at the real time */
+
+  /* initial call: initialize */
+  if (last_now_monotonic.tv_sec==0) {
+    _osip_gettimeofday_realtime(&last_now_real, NULL);
+    osip_gettimeofday(&last_now_monotonic, NULL);
+
+    return;
+  }
+
+  diff_monotonic.tv_sec = now_monotonic.tv_sec-last_now_monotonic.tv_sec;
+  diff_real.tv_sec = now_real.tv_sec-last_now_real.tv_sec;
+
+  /* reset for later use */
+  _osip_gettimeofday_realtime(&last_now_real, NULL);
+  osip_gettimeofday(&last_now_monotonic, NULL);
+
+  if (diff_real.tv_sec<5)
+    return; /* skip any "back in time" operation or small interval */
+  if (diff_real.tv_sec>3600)
+    return;
+  if (diff_real.tv_sec<diff_monotonic.tv_sec+2)
+    return;  /* only large gap needs to be taken into accounts for this program... */
+
+  OSIP_TRACE(osip_trace (__FILE__, __LINE__, OSIP_WARNING, NULL, "adjusting exosip monotonic time (%i)!\n", diff_real.tv_sec-diff_monotonic.tv_sec));
+  offset.tv_sec+=diff_real.tv_sec-diff_monotonic.tv_sec;
+}
+
+time_t osip_getsystemtime(time_t *t) {
+  struct timeval now_monotonic;
+
+  osip_gettimeofday(&now_monotonic, NULL);
+  if (t != NULL) {
+    *t = now_monotonic.tv_sec+offset.tv_sec;
+  }
+
+  return now_monotonic.tv_sec+offset.tv_sec;
+}
+

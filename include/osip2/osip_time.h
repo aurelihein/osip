@@ -63,6 +63,7 @@ extern "C" {
 
 	int osip_gettimeofday(struct timeval *tp, void *tz);
 	time_t osip_getsystemtime(time_t *t);
+	void osip_compensatetime();
 
 #ifdef __cplusplus
 }
