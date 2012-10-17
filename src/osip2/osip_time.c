@@ -26,6 +26,8 @@
 #include <mach/mach.h>
 #endif
 
+static struct timeval offset = {0, 0};
+
 void add_gettimeofday(struct timeval *atv, int ms)
 {
 	int m;
@@ -59,7 +61,7 @@ void min_timercmp(struct timeval *tv1, struct timeval *tv2)
 int osip_gettimeofday(struct timeval *tp, void *tz)
 {
 	DWORD timemillis = GetTickCount();
-	tp->tv_sec = timemillis / 1000;
+	tp->tv_sec = (timemillis / 1000) +offset.tv_sec;
 	tp->tv_usec = (timemillis - (tp->tv_sec * 1000)) * 1000;
 	return 0;
 }
@@ -91,7 +93,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 	struct _timeb timebuffer;
 
 	_ftime(&timebuffer);
-	tp->tv_sec = (long) timebuffer.time;
+	tp->tv_sec = (long) timebuffer.time + offset.tv_sec;
 	tp->tv_usec = timebuffer.millitm * 1000;
 	return 0;
 }
@@ -118,7 +120,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
 		gettimeofday(tp, tz);
 		return 0;
 	}
-	tp->tv_sec = ts.tv_sec;
+	tp->tv_sec = ts.tv_sec + offset.tv_sec;
 	tp->tv_usec = ts.tv_nsec / 1000;
 	return 0;
 }
@@ -145,7 +147,7 @@ int osip_gettimeofday(struct timeval *tp, void *tz)
   host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);
   clock_get_time(cclock, &mts);
   mach_port_deallocate(mach_task_self(), cclock);
-	tp->tv_sec = mts.tv_sec;
+	tp->tv_sec = mts.tv_sec + offset.tv_sec;
 	tp->tv_usec = mts.tv_nsec / 1000;
 	return 0;
 }
@@ -164,6 +166,7 @@ static int _osip_gettimeofday_realtime(struct timeval *tp, void *tz)
 int osip_gettimeofday(struct timeval *tp, void *tz)
 {
 	gettimeofday(tp, tz);
+	tp->tv_sec += offset.tv_sec;
 	return 0;
 }
 
@@ -202,8 +205,6 @@ static time_t osip_getrealtime(time_t *t) {
 
 	return now.tv_sec;
 }
-
-static struct timeval offset = {0, 0};
 
 void osip_compensatetime() {
   static struct timeval last_now_monotonic = {0, 0};
@@ -257,9 +258,9 @@ time_t osip_getsystemtime(time_t *t) {
 
   osip_gettimeofday(&now_monotonic, NULL);
   if (t != NULL) {
-    *t = now_monotonic.tv_sec+offset.tv_sec;
+    *t = now_monotonic.tv_sec;
   }
 
-  return now_monotonic.tv_sec+offset.tv_sec;
+  return now_monotonic.tv_sec;
 }
 
