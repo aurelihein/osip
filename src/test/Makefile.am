@@ -53,7 +53,7 @@ check:
 
 	@echo ""
 	@echo "In case you have a doubt, send the generated"
-	@echo "log file with your comment to <jack@atosc.org>."
+	@echo "log file with your comment to <amoizard@antisip.com>."
 else
 check:
 	@echo " ************************************"

@@ -1,12 +1,12 @@
 Package: libosip2
-This package was debianized by Aymeric Moizard <jack@atosc.org>
+This package was debianized by Aymeric Moizard <amoizard@antisip.com>
 
 Obtained from: It was downloaded from ftp://ftp.gnu.org/gnu/osip/
 
 Debian copyright/license:
 
 # The oSIP library implements the Session Initiation Protocol (SIP -rfc3261)
-# Copyright (C) 2001,2002,2003,2004  Aymeric MOIZARD jack@atosc.org
+# Copyright (C) 2001-2012  Aymeric MOIZARD amoizard@antisip.com
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,5 +25,5 @@ Debian copyright/license:
 On Debian systems, the complete text of the GNU General Public
 License can be found in the file `/usr/share/common-licenses/LGPL`
 
-Upstream Author: Aymeric Moizard <jack@atosc.org>
+Upstream Author: Aymeric Moizard <amoizard@antisip.com>
 

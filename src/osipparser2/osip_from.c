@@ -1,6 +1,6 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
-  Copyright (C) 2001-2012 Aymeric MOIZARD amoizard_at_osip.org
+  Copyright (C) 2001-2012 Aymeric MOIZARD amoizard@antisip.com
   
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -119,10 +119,10 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
 
      examples:
 
-     jack <sip:jack@atosc.org>;tag=34erZ
+     jack <sip:amoizard@antisip.com>;tag=34erZ
      ^     ^                ^ ^
 
-     sip:jack@atosc.org;tag=34erZ
+     sip:amoizard@antisip.com;tag=34erZ
      ^                ^^      
    */
 
@@ -195,7 +195,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
 
   url_end = strchr (url, '>');
 
-  if (url_end == NULL) {        /* sip:jack@atosc.org;tag=023 *//* We are sure ';' is the delimiter for from-parameters */
+  if (url_end == NULL) {        /* sip:amoizard@antisip.com;tag=023 *//* We are sure ';' is the delimiter for from-parameters */
     char *host = strchr (url, '@');
 
     if (host != NULL)
@@ -207,7 +207,7 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
     else
       url_end = url + strlen (url);
   }
-  else {                        /* jack <sip:jack@atosc.org;user=phone>;tag=azer */
+  else {                        /* jack <sip:amoizard@antisip.com;user=phone>;tag=azer */
 
     gen_params = strchr (url_end, ';');
     url_end--;                  /* place pointer on the beginning of url */

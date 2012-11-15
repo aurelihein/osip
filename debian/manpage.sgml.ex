@@ -5,7 +5,7 @@
   <!ENTITY dhsurname   "<surname>MOIZARD</surname>">
   <!ENTITY dhdate      "<date>May 15, 2002</date>">
   <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
-  <!ENTITY dhemail     "<email>jack@atosc.org</email>">
+  <!ENTITY dhemail     "<email>amoizard@antisip.com</email>">
   <!ENTITY dhusername  "Aymeric Moizard">
   <!ENTITY dhucpackage "<refentrytitle>LIBOSIP</refentrytitle>">
   <!ENTITY dhpackage   "libosip">

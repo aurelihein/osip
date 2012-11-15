@@ -5,7 +5,7 @@ libosip2 (2.2.3-1) unstable; urgency=low
  * fix 64-bit (amd64) issue with hash.
  * remove SDP negotiation (much better to do it in your applications)
 
- -- Aymeric MOIZARD <jack@atosc.org>  Tue, 18 Apr 2006 13:04:32 +0100
+ -- Aymeric MOIZARD <amoizard@antisip.com>  Tue, 18 Apr 2006 13:04:32 +0100
 
 libosip2 (2.2.2-1) unstable; urgency=low
  * parser speed improvements
@@ -16,7 +16,7 @@ libosip2 (2.2.2-1) unstable; urgency=low
  * add NULL checks (uris...).
  * patch for PSOS support.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Thu, 24 Nov 2005 13:04:32 +0100
+ -- Aymeric MOIZARD <amoizard@antisip.com>  Thu, 24 Nov 2005 13:04:32 +0100
 
 libosip2 (2.2.1-1) unstable; urgency=low
   * fix a potential mem leak content_type and osip_message_parse.
@@ -26,7 +26,7 @@ libosip2 (2.2.1-1) unstable; urgency=low
   * avoid <winsock.h> inclusion so user can (and must) now include either
     <winsock.h> or <winsock2.h> before including <osip/osip2.h>
 
- -- Aymeric MOIZARD <jack@atosc.org>  Tue, 12 Jul 2005 13:04:32 +0100
+ -- Aymeric MOIZARD <amoizard@antisip.com>  Tue, 12 Jul 2005 13:04:32 +0100
 
 libosip2 (2.2.0-1) unstable; urgency=low
   * remove #ifdef OSIP_RETRANSMIT_2XX to always compile it.
@@ -40,4 +40,4 @@ libosip2 (2.2.0-1) unstable; urgency=low
   * API slightly broken to enable support for binary data.
   * improvements of the sip message test suite.
 
- -- Aymeric MOIZARD <jack@atosc.org>  Thu, 3 Feb 2005 13:04:32 +0100
+ -- Aymeric MOIZARD <amoizard@antisip.com>  Thu, 3 Feb 2005 13:04:32 +0100

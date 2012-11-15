@@ -126,8 +126,8 @@ and mutex.
 You still have the choice to compile osip without thread
 support which you may be required on some embedded platforms.
 
-Please report any porting issue to the mailing list <osip@atosc.org>
-(subscribe first!) or directly to me <jack@atosc.org>.
+Please report any porting issue to the mailing list <osip-dev@gnu.org>
+(subscribe first!) or directly to me <amoizard@antisip.com>.
 
 If you are building a new port, I'll certainly think about merging
 it.

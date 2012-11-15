@@ -1,6 +1,6 @@
 Source: libosip2
 Priority: optional
-Maintainer: Aymeric Moizard <jack@atosc.org>
+Maintainer: Aymeric Moizard <amoizard@antisip.com>
 Build-Depends: debhelper (>> 3.0.0)
 Standards-Version: 3.5.2
 

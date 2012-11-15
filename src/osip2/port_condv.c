@@ -1,6 +1,6 @@
 /*
   The oSIP library implements the Session Initiation Protocol (SIP -rfc3261-)
-  Copyright (C) 2001-2012 Aymeric MOIZARD amoizard_at_osip.org
+  Copyright (C) 2001-2012 Aymeric MOIZARD amoizard@antisip.com
  
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

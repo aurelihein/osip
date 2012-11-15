@@ -4,7 +4,7 @@ AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
 AC_MSG_NOTICE([osip2                   The GNU Open SIP library.])
-AC_MSG_NOTICE([Copyright (C) 2001-2012 Aymeric MOIZARD - <jack@atosc.org>])
+AC_MSG_NOTICE([Copyright (C) 2001-2012 Aymeric MOIZARD - <amoizard@antisip.com>])
 
 
 dnl *********************************************************************
