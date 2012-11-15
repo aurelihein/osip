@@ -29,39 +29,39 @@
 /* content-Encoding = token
    token possible values are gzip,compress,deflate
 */
-int osip_message_set_content_encoding(osip_message_t * sip, const char *hvalue)
+int
+osip_message_set_content_encoding (osip_message_t * sip, const char *hvalue)
 {
-	osip_content_encoding_t *content_encoding;
-	int i;
+  osip_content_encoding_t *content_encoding;
+  int i;
 
-	if (hvalue == NULL || hvalue[0] == '\0')
-		return OSIP_SUCCESS;
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return OSIP_SUCCESS;
 
-	i = osip_content_encoding_init(&content_encoding);
-	if (i != 0)
-		return i;
-	i = osip_content_encoding_parse(content_encoding, hvalue);
-	if (i != 0) {
-		osip_content_encoding_free(content_encoding);
-		return i;
-	}
-	sip->message_property = 2;
-	osip_list_add(&sip->content_encodings, content_encoding, -1);
-	return OSIP_SUCCESS;
+  i = osip_content_encoding_init (&content_encoding);
+  if (i != 0)
+    return i;
+  i = osip_content_encoding_parse (content_encoding, hvalue);
+  if (i != 0) {
+    osip_content_encoding_free (content_encoding);
+    return i;
+  }
+  sip->message_property = 2;
+  osip_list_add (&sip->content_encodings, content_encoding, -1);
+  return OSIP_SUCCESS;
 }
 
 int
-osip_message_get_content_encoding(const osip_message_t * sip, int pos,
-								  osip_content_encoding_t ** dest)
+osip_message_get_content_encoding (const osip_message_t * sip, int pos, osip_content_encoding_t ** dest)
 {
-	osip_content_encoding_t *ce;
+  osip_content_encoding_t *ce;
 
-	*dest = NULL;
-	if (osip_list_size(&sip->content_encodings) <= pos)
-		return OSIP_UNDEFINED_ERROR;	/* does not exist */
-	ce = (osip_content_encoding_t *) osip_list_get(&sip->content_encodings, pos);
-	*dest = ce;
-	return pos;
+  *dest = NULL;
+  if (osip_list_size (&sip->content_encodings) <= pos)
+    return OSIP_UNDEFINED_ERROR;        /* does not exist */
+  ce = (osip_content_encoding_t *) osip_list_get (&sip->content_encodings, pos);
+  *dest = ce;
+  return pos;
 }
 
 #endif

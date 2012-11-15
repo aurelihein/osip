@@ -26,39 +26,39 @@
 
 #ifndef MINISIZE
 
-int osip_message_set_error_info(osip_message_t * sip, const char *hvalue)
+int
+osip_message_set_error_info (osip_message_t * sip, const char *hvalue)
 {
-	osip_error_info_t *error_info;
-	int i;
+  osip_error_info_t *error_info;
+  int i;
 
-	if (hvalue == NULL || hvalue[0] == '\0')
-		return OSIP_SUCCESS;
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return OSIP_SUCCESS;
 
-	i = osip_error_info_init(&error_info);
-	if (i != 0)
-		return i;
-	i = osip_error_info_parse(error_info, hvalue);
-	if (i != 0) {
-		osip_error_info_free(error_info);
-		return i;
-	}
-	sip->message_property = 2;
-	osip_list_add(&sip->error_infos, error_info, -1);
-	return OSIP_SUCCESS;
+  i = osip_error_info_init (&error_info);
+  if (i != 0)
+    return i;
+  i = osip_error_info_parse (error_info, hvalue);
+  if (i != 0) {
+    osip_error_info_free (error_info);
+    return i;
+  }
+  sip->message_property = 2;
+  osip_list_add (&sip->error_infos, error_info, -1);
+  return OSIP_SUCCESS;
 }
 
 int
-osip_message_get_error_info(const osip_message_t * sip, int pos,
-							osip_error_info_t ** dest)
+osip_message_get_error_info (const osip_message_t * sip, int pos, osip_error_info_t ** dest)
 {
-	osip_error_info_t *error_info;
+  osip_error_info_t *error_info;
 
-	*dest = NULL;
-	if (osip_list_size(&sip->error_infos) <= pos)
-		return OSIP_UNDEFINED_ERROR;	/* does not exist */
-	error_info = (osip_error_info_t *) osip_list_get(&sip->error_infos, pos);
-	*dest = error_info;
-	return pos;
+  *dest = NULL;
+  if (osip_list_size (&sip->error_infos) <= pos)
+    return OSIP_UNDEFINED_ERROR;        /* does not exist */
+  error_info = (osip_error_info_t *) osip_list_get (&sip->error_infos, pos);
+  *dest = error_info;
+  return pos;
 }
 
 #endif

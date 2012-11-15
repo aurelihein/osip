@@ -27,27 +27,27 @@ extern "C" {
 /* Common time-related functions and data types */
 
 #if defined(_WIN32_WCE)
-	struct _timeb {
-		time_t time;
-		unsigned short millitm;
-		short timezone;
-		short dstflag;
-	};
+  struct _timeb {
+    time_t time;
+    unsigned short millitm;
+    short timezone;
+    short dstflag;
+  };
 
 #endif
 
 /* struct timeval, as defined in <sys/time.h>, <winsock.h> or <winsock2.h> */
-	struct timeval;
+  struct timeval;
 
 /* Time manipulation functions */
-	void add_gettimeofday(struct timeval *atv, int ms);
-	void min_timercmp(struct timeval *tv1, struct timeval *tv2);
+  void add_gettimeofday (struct timeval *atv, int ms);
+  void min_timercmp (struct timeval *tv1, struct timeval *tv2);
 
 /* OS-dependent */
 #if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__) || defined(__arc__)
 /* Operations on struct timeval */
 #define osip_timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
-# define osip_timercmp(a, b, CMP)                          \
+#define osip_timercmp(a, b, CMP)                          \
   (((a)->tv_sec == (b)->tv_sec) ?                          \
    ((a)->tv_usec CMP (b)->tv_usec) :                       \
    ((a)->tv_sec CMP (b)->tv_sec))
@@ -61,9 +61,9 @@ extern "C" {
 
 #endif
 
-	int osip_gettimeofday(struct timeval *tp, void *tz);
-	time_t osip_getsystemtime(time_t *t);
-	void osip_compensatetime();
+  int osip_gettimeofday (struct timeval *tp, void *tz);
+  time_t osip_getsystemtime (time_t * t);
+  void osip_compensatetime ();
 
 #ifdef __cplusplus
 }

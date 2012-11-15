@@ -46,11 +46,11 @@ typedef struct osip_body osip_body_t;
  * @struct osip_body
  */
 struct osip_body {
-	char *body;						 /**< buffer containing data */
-	size_t length;					 /**< length of data */
-	osip_list_t *headers;			 /**< List of headers (when mime is used) */
-	osip_content_type_t *content_type;
-									 /**< Content-Type (when mime is used) */
+  char *body;                                                    /**< buffer containing data */
+  size_t length;                                         /**< length of data */
+  osip_list_t *headers;                          /**< List of headers (when mime is used) */
+  osip_content_type_t *content_type;
+                                                                         /**< Content-Type (when mime is used) */
 };
 
 
@@ -62,46 +62,46 @@ extern "C" {
  * Allocate a osip_body_t element.
  * @param body The element to work on.
  */
-	int osip_body_init(osip_body_t ** body);
+  int osip_body_init (osip_body_t ** body);
 /**
  * Free a osip_body_t element.
  * @param body The element to work on.
  */
-	void osip_body_free(osip_body_t * body);
+  void osip_body_free (osip_body_t * body);
 /**
  * Parse a osip_body_t element.
  * @param body The element to work on.
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-	int osip_body_parse(osip_body_t * body, const char *buf, size_t length);
+  int osip_body_parse (osip_body_t * body, const char *buf, size_t length);
 /**
  * Clone a osip_body_t element.
  * @param body The element to clone.
  * @param dest The cloned element.
  */
-	int osip_body_clone(const osip_body_t * body, osip_body_t ** dest);
+  int osip_body_clone (const osip_body_t * body, osip_body_t ** dest);
 /**
  * Parse a osip_body_t element. (for mime message format) (NOT TESTED, use with care)
  * @param body The element to work on.
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-	int osip_body_parse_mime(osip_body_t * body, const char *buf, size_t length);
+  int osip_body_parse_mime (osip_body_t * body, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_body_t element.
  * @param body The element to work on.
  * @param dest The resulting buffer.
  * @param length The length of the returned buffer.
  */
-	int osip_body_to_str(const osip_body_t * body, char **dest, size_t * length);
+  int osip_body_to_str (const osip_body_t * body, char **dest, size_t * length);
 
 /**
  * Set the Content-Type header in the osip_body_t element.
  * @param body The element to work on.
  * @param hvalue The content type string value.
  */
-	int osip_body_set_contenttype(osip_body_t * body, const char *hvalue);
+  int osip_body_set_contenttype (osip_body_t * body, const char *hvalue);
 
 /**
  * Add a header in the osip_body_t element.
@@ -109,8 +109,7 @@ extern "C" {
  * @param hname The header string name.
  * @param hvalue The header string value.
  */
-	int osip_body_set_header(osip_body_t * body, const char *hname,
-							 const char *hvalue);
+  int osip_body_set_header (osip_body_t * body, const char *hname, const char *hvalue);
 
 #ifdef __cplusplus
 }

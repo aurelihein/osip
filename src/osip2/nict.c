@@ -23,160 +23,150 @@
 #include "fsm.h"
 #include "xixt.h"
 
-int __osip_nict_init(osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
+int
+__osip_nict_init (osip_nict_t ** nict, osip_t * osip, osip_message_t * request)
 {
-	osip_route_t *route;
-	int i;
+  osip_route_t *route;
+  int i;
 
-	OSIP_TRACE(osip_trace
-			   (__FILE__, __LINE__, OSIP_INFO2, NULL,
-				"allocating NICT context\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NICT context\n"));
 
-	*nict = (osip_nict_t *) osip_malloc(sizeof(osip_nict_t));
-	if (*nict == NULL)
-		return OSIP_NOMEM;
+  *nict = (osip_nict_t *) osip_malloc (sizeof (osip_nict_t));
+  if (*nict == NULL)
+    return OSIP_NOMEM;
 
-	memset(*nict, 0, sizeof(osip_nict_t));
-	/* for REQUEST retransmissions */
-	{
-		osip_via_t *via;
-		char *proto;
+  memset (*nict, 0, sizeof (osip_nict_t));
+  /* for REQUEST retransmissions */
+  {
+    osip_via_t *via;
+    char *proto;
 
-		i = osip_message_get_via(request, 0, &via);	/* get top via */
-		if (i < 0) {
-			osip_free(*nict);
-			*nict = NULL;
-			return i;
-		}
-		proto = via_get_protocol(via);
-		if (proto == NULL) {
-			osip_free(*nict);
-			*nict = NULL;
-			return OSIP_UNDEFINED_ERROR;
-		}
+    i = osip_message_get_via (request, 0, &via);        /* get top via */
+    if (i < 0) {
+      osip_free (*nict);
+      *nict = NULL;
+      return i;
+    }
+    proto = via_get_protocol (via);
+    if (proto == NULL) {
+      osip_free (*nict);
+      *nict = NULL;
+      return OSIP_UNDEFINED_ERROR;
+    }
 #ifdef USE_BLOCKINGSOCKET
-		if (osip_strcasecmp(proto, "TCP") != 0
-			&& osip_strcasecmp(proto, "TLS") != 0
-			&& osip_strcasecmp(proto, "SCTP") != 0) {
-			(*nict)->timer_e_length = DEFAULT_T1;
-			(*nict)->timer_k_length = DEFAULT_T4;
-			(*nict)->timer_e_start.tv_sec = -1;
-			(*nict)->timer_k_start.tv_sec = -1;	/* not started */
-		} else {				/* reliable protocol is used: */
-			(*nict)->timer_e_length = -1;	/* E is not ACTIVE */
-			(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
-			(*nict)->timer_e_start.tv_sec = -1;
-			(*nict)->timer_k_start.tv_sec = -1;	/* not started */
-		}
-	}
+    if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
+      (*nict)->timer_e_length = DEFAULT_T1;
+      (*nict)->timer_k_length = DEFAULT_T4;
+      (*nict)->timer_e_start.tv_sec = -1;
+      (*nict)->timer_k_start.tv_sec = -1;       /* not started */
+    }
+    else {                      /* reliable protocol is used: */
+      (*nict)->timer_e_length = -1;     /* E is not ACTIVE */
+      (*nict)->timer_k_length = 0;      /* MUST do the transition immediatly */
+      (*nict)->timer_e_start.tv_sec = -1;
+      (*nict)->timer_k_start.tv_sec = -1;       /* not started */
+    }
+  }
 #else
-		if (osip_strcasecmp(proto, "TCP") != 0
-			&& osip_strcasecmp(proto, "TLS") != 0
-			&& osip_strcasecmp(proto, "SCTP") != 0) {
-			(*nict)->timer_e_length = DEFAULT_T1;
-			(*nict)->timer_k_length = DEFAULT_T4;
-			(*nict)->timer_e_start.tv_sec = -1;
-			(*nict)->timer_k_start.tv_sec = -1;	/* not started */
-		} else {				/* reliable protocol is used: */
-			(*nict)->timer_e_length = DEFAULT_T1;
-			(*nict)->timer_k_length = 0;	/* MUST do the transition immediatly */
-			(*nict)->timer_e_start.tv_sec = -1;
-			(*nict)->timer_k_start.tv_sec = -1;	/* not started */
-		}
-	}
+    if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
+      (*nict)->timer_e_length = DEFAULT_T1;
+      (*nict)->timer_k_length = DEFAULT_T4;
+      (*nict)->timer_e_start.tv_sec = -1;
+      (*nict)->timer_k_start.tv_sec = -1;       /* not started */
+    }
+    else {                      /* reliable protocol is used: */
+      (*nict)->timer_e_length = DEFAULT_T1;
+      (*nict)->timer_k_length = 0;      /* MUST do the transition immediatly */
+      (*nict)->timer_e_start.tv_sec = -1;
+      (*nict)->timer_k_start.tv_sec = -1;       /* not started */
+    }
+  }
 #endif
-	/* for PROXY, the destination MUST be set by the application layer,
-	   this one may not be correct. */
-	osip_message_get_route(request, 0, &route);
-	if (route != NULL && route->url != NULL) {
-		osip_uri_param_t *lr_param;
+  /* for PROXY, the destination MUST be set by the application layer,
+     this one may not be correct. */
+  osip_message_get_route (request, 0, &route);
+  if (route != NULL && route->url != NULL) {
+    osip_uri_param_t *lr_param;
 
-		osip_uri_uparam_get_byname(route->url, "lr", &lr_param);
-		if (lr_param == NULL) {
-			/* using uncompliant proxy: destination is the request-uri */
-			route = NULL;
-		}
-	}
+    osip_uri_uparam_get_byname (route->url, "lr", &lr_param);
+    if (lr_param == NULL) {
+      /* using uncompliant proxy: destination is the request-uri */
+      route = NULL;
+    }
+  }
 
-	if (route != NULL && route->url != NULL) {
-		int port = 5060;
+  if (route != NULL && route->url != NULL) {
+    int port = 5060;
 
-		if (route->url->port != NULL)
-			port = osip_atoi(route->url->port);
-		osip_nict_set_destination((*nict), osip_strdup(route->url->host), port);
-	} else {
-		int port = 5060;
-		/* search for maddr parameter */
-		osip_uri_param_t *maddr_param = NULL;
+    if (route->url->port != NULL)
+      port = osip_atoi (route->url->port);
+    osip_nict_set_destination ((*nict), osip_strdup (route->url->host), port);
+  }
+  else {
+    int port = 5060;
 
-		port = 5060;
-		if (request->req_uri->port != NULL)
-			port = osip_atoi(request->req_uri->port);
+    /* search for maddr parameter */
+    osip_uri_param_t *maddr_param = NULL;
 
-		osip_uri_uparam_get_byname(request->req_uri, "maddr", &maddr_param);
-		if (maddr_param != NULL && maddr_param->gvalue != NULL)
-			osip_nict_set_destination((*nict),
-									  osip_strdup(maddr_param->gvalue), port);
-		else
-			osip_nict_set_destination((*nict),
-									  osip_strdup(request->req_uri->host), port);
-	}
+    port = 5060;
+    if (request->req_uri->port != NULL)
+      port = osip_atoi (request->req_uri->port);
 
-	(*nict)->timer_f_length = 64 * DEFAULT_T1;
-	osip_gettimeofday(&(*nict)->timer_f_start, NULL);
-	add_gettimeofday(&(*nict)->timer_f_start, (*nict)->timer_f_length);
+    osip_uri_uparam_get_byname (request->req_uri, "maddr", &maddr_param);
+    if (maddr_param != NULL && maddr_param->gvalue != NULL)
+      osip_nict_set_destination ((*nict), osip_strdup (maddr_param->gvalue), port);
+    else
+      osip_nict_set_destination ((*nict), osip_strdup (request->req_uri->host), port);
+  }
 
-	/* Oups! a Bug! */
-	/*  (*nict)->port  = 5060; */
+  (*nict)->timer_f_length = 64 * DEFAULT_T1;
+  osip_gettimeofday (&(*nict)->timer_f_start, NULL);
+  add_gettimeofday (&(*nict)->timer_f_start, (*nict)->timer_f_length);
 
-	return OSIP_SUCCESS;
+  /* Oups! a Bug! */
+  /*  (*nict)->port  = 5060; */
+
+  return OSIP_SUCCESS;
 }
 
-int __osip_nict_free(osip_nict_t * nict)
+int
+__osip_nict_free (osip_nict_t * nict)
 {
-	if (nict == NULL)
-		return OSIP_SUCCESS;
-	OSIP_TRACE(osip_trace
-			   (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
+  if (nict == NULL)
+    return OSIP_SUCCESS;
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
 
-	osip_free(nict->destination);
-	osip_free(nict);
-	return OSIP_SUCCESS;
+  osip_free (nict->destination);
+  osip_free (nict);
+  return OSIP_SUCCESS;
 }
 
-int osip_nict_set_destination(osip_nict_t * nict, char *destination, int port)
+int
+osip_nict_set_destination (osip_nict_t * nict, char *destination, int port)
 {
-	if (nict == NULL)
-		return OSIP_BADPARAMETER;
-	if (nict->destination != NULL)
-		osip_free(nict->destination);
-	nict->destination = destination;
-	nict->port = port;
-	return OSIP_SUCCESS;
+  if (nict == NULL)
+    return OSIP_BADPARAMETER;
+  if (nict->destination != NULL)
+    osip_free (nict->destination);
+  nict->destination = destination;
+  nict->port = port;
+  return OSIP_SUCCESS;
 }
 
-osip_event_t *__osip_nict_need_timer_e_event(osip_nict_t * nict, state_t state,
-											 int transactionid)
+osip_event_t *
+__osip_nict_need_timer_e_event (osip_nict_t * nict, state_t state, int transactionid)
 {
-	return __osip_transaction_need_timer_x_event(nict, &nict->timer_e_start,
-												 state == NICT_PROCEEDING
-												 || state == NICT_TRYING,
-												 transactionid, TIMEOUT_E);
+  return __osip_transaction_need_timer_x_event (nict, &nict->timer_e_start, state == NICT_PROCEEDING || state == NICT_TRYING, transactionid, TIMEOUT_E);
 }
 
-osip_event_t *__osip_nict_need_timer_f_event(osip_nict_t * nict, state_t state,
-											 int transactionid)
+osip_event_t *
+__osip_nict_need_timer_f_event (osip_nict_t * nict, state_t state, int transactionid)
 {
-	return __osip_transaction_need_timer_x_event(nict, &nict->timer_f_start,
-												 state == NICT_PROCEEDING
-												 || state == NICT_TRYING,
-												 transactionid, TIMEOUT_F);
+  return __osip_transaction_need_timer_x_event (nict, &nict->timer_f_start, state == NICT_PROCEEDING || state == NICT_TRYING, transactionid, TIMEOUT_F);
 }
 
-osip_event_t *__osip_nict_need_timer_k_event(osip_nict_t * nict, state_t state,
-											 int transactionid)
+osip_event_t *
+__osip_nict_need_timer_k_event (osip_nict_t * nict, state_t state, int transactionid)
 {
-	return __osip_transaction_need_timer_x_event(nict, &nict->timer_k_start,
-												 state == NICT_COMPLETED,
-												 transactionid, TIMEOUT_K);
+  return __osip_transaction_need_timer_x_event (nict, &nict->timer_k_start, state == NICT_COMPLETED, transactionid, TIMEOUT_K);
 }

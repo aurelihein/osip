@@ -23,67 +23,63 @@
 #include "fsm.h"
 #include "xixt.h"
 
-int __osip_nist_init(osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
+int
+__osip_nist_init (osip_nist_t ** nist, osip_t * osip, osip_message_t * invite)
 {
-	int i;
+  int i;
 
-	OSIP_TRACE(osip_trace
-			   (__FILE__, __LINE__, OSIP_INFO2, NULL,
-				"allocating NIST context\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating NIST context\n"));
 
-	*nist = (osip_nist_t *) osip_malloc(sizeof(osip_nist_t));
-	if (*nist == NULL)
-		return OSIP_NOMEM;
-	memset(*nist, 0, sizeof(osip_nist_t));
-	/* for INVITE retransmissions */
-	{
-		osip_via_t *via;
-		char *proto;
+  *nist = (osip_nist_t *) osip_malloc (sizeof (osip_nist_t));
+  if (*nist == NULL)
+    return OSIP_NOMEM;
+  memset (*nist, 0, sizeof (osip_nist_t));
+  /* for INVITE retransmissions */
+  {
+    osip_via_t *via;
+    char *proto;
 
-		i = osip_message_get_via(invite, 0, &via);	/* get top via */
-		if (i < 0) {
-			osip_free(*nist);
-			*nist = NULL;
-			return i;
-		}
-		proto = via_get_protocol(via);
-		if (proto == NULL) {
-			osip_free(*nist);
-			*nist = NULL;
-			return OSIP_UNDEFINED_ERROR;
-		}
+    i = osip_message_get_via (invite, 0, &via); /* get top via */
+    if (i < 0) {
+      osip_free (*nist);
+      *nist = NULL;
+      return i;
+    }
+    proto = via_get_protocol (via);
+    if (proto == NULL) {
+      osip_free (*nist);
+      *nist = NULL;
+      return OSIP_UNDEFINED_ERROR;
+    }
 
-		if (osip_strcasecmp(proto, "TCP") != 0
-			&& osip_strcasecmp(proto, "TLS") != 0
-			&& osip_strcasecmp(proto, "SCTP") != 0) {
-			(*nist)->timer_j_length = 64 * DEFAULT_T1;
-			(*nist)->timer_j_start.tv_sec = -1;	/* not started */
-		} else {				/* reliable protocol is used: */
-			(*nist)->timer_j_length = 0;	/* MUST do the transition immediatly */
-			(*nist)->timer_j_start.tv_sec = -1;	/* not started */
-		}
-	}
+    if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
+      (*nist)->timer_j_length = 64 * DEFAULT_T1;
+      (*nist)->timer_j_start.tv_sec = -1;       /* not started */
+    }
+    else {                      /* reliable protocol is used: */
+      (*nist)->timer_j_length = 0;      /* MUST do the transition immediatly */
+      (*nist)->timer_j_start.tv_sec = -1;       /* not started */
+    }
+  }
 
-	return OSIP_SUCCESS;
+  return OSIP_SUCCESS;
 }
 
-int __osip_nist_free(osip_nist_t * nist)
+int
+__osip_nist_free (osip_nist_t * nist)
 {
-	if (nist == NULL)
-		return OSIP_SUCCESS;
-	OSIP_TRACE(osip_trace
-			   (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
+  if (nist == NULL)
+    return OSIP_SUCCESS;
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
 
-	osip_free(nist);
-	return OSIP_SUCCESS;
+  osip_free (nist);
+  return OSIP_SUCCESS;
 }
 
 
 
-osip_event_t *__osip_nist_need_timer_j_event(osip_nist_t * nist, state_t state,
-											 int transactionid)
+osip_event_t *
+__osip_nist_need_timer_j_event (osip_nist_t * nist, state_t state, int transactionid)
 {
-	return __osip_transaction_need_timer_x_event(nist, &nist->timer_j_start,
-												 state == NIST_COMPLETED,
-												 transactionid, TIMEOUT_J);
+  return __osip_transaction_need_timer_x_event (nist, &nist->timer_j_start, state == NIST_COMPLETED, transactionid, TIMEOUT_J);
 }

@@ -27,25 +27,26 @@
 /* INPUT :  char *hvalue | value of header.   */
 /* OUTPUT: osip_message_t *sip | structure to save results. */
 /* returns -1 on error. */
-int osip_message_set_proxy_authenticate(osip_message_t * sip, const char *hvalue)
+int
+osip_message_set_proxy_authenticate (osip_message_t * sip, const char *hvalue)
 {
-	osip_proxy_authenticate_t *proxy_authenticate;
-	int i;
+  osip_proxy_authenticate_t *proxy_authenticate;
+  int i;
 
-	if (hvalue == NULL || hvalue[0] == '\0')
-		return OSIP_SUCCESS;
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return OSIP_SUCCESS;
 
-	i = osip_proxy_authenticate_init(&(proxy_authenticate));
-	if (i != 0)
-		return i;
-	i = osip_proxy_authenticate_parse(proxy_authenticate, hvalue);
-	if (i != 0) {
-		osip_proxy_authenticate_free(proxy_authenticate);
-		return i;
-	}
-	sip->message_property = 2;
-	osip_list_add(&sip->proxy_authenticates, proxy_authenticate, -1);
-	return OSIP_SUCCESS;
+  i = osip_proxy_authenticate_init (&(proxy_authenticate));
+  if (i != 0)
+    return i;
+  i = osip_proxy_authenticate_parse (proxy_authenticate, hvalue);
+  if (i != 0) {
+    osip_proxy_authenticate_free (proxy_authenticate);
+    return i;
+  }
+  sip->message_property = 2;
+  osip_list_add (&sip->proxy_authenticates, proxy_authenticate, -1);
+  return OSIP_SUCCESS;
 }
 
 
@@ -54,19 +55,18 @@ int osip_message_set_proxy_authenticate(osip_message_t * sip, const char *hvalue
 /* INPUT : osip_message_t *sip | sip message.   */
 /* returns null on error. */
 int
-osip_message_get_proxy_authenticate(const osip_message_t * sip, int pos,
-									osip_proxy_authenticate_t ** dest)
+osip_message_get_proxy_authenticate (const osip_message_t * sip, int pos, osip_proxy_authenticate_t ** dest)
 {
-	osip_proxy_authenticate_t *proxy_authenticate;
+  osip_proxy_authenticate_t *proxy_authenticate;
 
-	*dest = NULL;
-	if (osip_list_size(&sip->proxy_authenticates) <= pos)
-		return OSIP_UNDEFINED_ERROR;	/* does not exist */
+  *dest = NULL;
+  if (osip_list_size (&sip->proxy_authenticates) <= pos)
+    return OSIP_UNDEFINED_ERROR;        /* does not exist */
 
-	proxy_authenticate = (osip_proxy_authenticate_t *)
-		osip_list_get(&sip->proxy_authenticates, pos);
+  proxy_authenticate = (osip_proxy_authenticate_t *)
+    osip_list_get (&sip->proxy_authenticates, pos);
 
-	*dest = proxy_authenticate;
-	return pos;
+  *dest = proxy_authenticate;
+  return pos;
 }
 #endif

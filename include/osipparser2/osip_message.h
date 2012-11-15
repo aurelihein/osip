@@ -46,78 +46,78 @@ extern "C" {
  * Structure for SIP Message (REQUEST and RESPONSE).
  * @var osip_message_t
  */
-	typedef struct osip_message osip_message_t;
+  typedef struct osip_message osip_message_t;
 
 /**
  * Structure for SIP Message (REQUEST and RESPONSE).
  * @struct osip_message
  */
-	struct osip_message {
-		char *sip_version;			  /**< SIP version (SIP request only) */
-		osip_uri_t *req_uri;		  /**< Request-Uri (SIP request only) */
-		char *sip_method;			  /**< METHOD (SIP request only) */
+  struct osip_message {
+    char *sip_version;                                    /**< SIP version (SIP request only) */
+    osip_uri_t *req_uri;                          /**< Request-Uri (SIP request only) */
+    char *sip_method;                                     /**< METHOD (SIP request only) */
 
-		int status_code;			  /**< Status Code (SIP answer only) */
-		char *reason_phrase;		  /**< Reason Phrase (SIP answer only) */
+    int status_code;                                      /**< Status Code (SIP answer only) */
+    char *reason_phrase;                          /**< Reason Phrase (SIP answer only) */
 
 #ifndef MINISIZE
-		osip_list_t accepts;		 /**< Accept headers */
-		osip_list_t accept_encodings;/**< Accept-Encoding headers */
-		osip_list_t accept_languages;/**< Accept-Language headers */
-		osip_list_t alert_infos;	 /**< Alert-Info headers */
-		osip_list_t allows;			 /**< Allows headers */
-		osip_list_t authentication_infos;
-									 /**< authentication_info headers */
+    osip_list_t accepts;                         /**< Accept headers */
+    osip_list_t accept_encodings;            /**< Accept-Encoding headers */
+    osip_list_t accept_languages;            /**< Accept-Language headers */
+    osip_list_t alert_infos;                     /**< Alert-Info headers */
+    osip_list_t allows;                                  /**< Allows headers */
+    osip_list_t authentication_infos;
+                                                                         /**< authentication_info headers */
 #endif
-		osip_list_t authorizations;	 /**< Authorizations headers */
-		osip_call_id_t *call_id;	  /**< Call-ID header */
+    osip_list_t authorizations;                  /**< Authorizations headers */
+    osip_call_id_t *call_id;                      /**< Call-ID header */
 #ifndef MINISIZE
-		osip_list_t call_infos;		 /**< Call-Infos header */
+    osip_list_t call_infos;                      /**< Call-Infos header */
 #endif
-		osip_list_t contacts;		 /**< Contacts headers */
+    osip_list_t contacts;                        /**< Contacts headers */
 #ifndef MINISIZE
-		osip_list_t content_encodings;
-									 /**< Content-Encodings headers */
+    osip_list_t content_encodings;
+                                                                         /**< Content-Encodings headers */
 #endif
-		osip_content_length_t *content_length;
-											 /**< Content-Length header */
-		osip_content_type_t *content_type;	 /**< Content-Type header */
-		osip_cseq_t *cseq;			  /**< CSeq header */
+    osip_content_length_t *content_length;
+                                                                                         /**< Content-Length header */
+    osip_content_type_t *content_type;                   /**< Content-Type header */
+    osip_cseq_t *cseq;                                    /**< CSeq header */
 #ifndef MINISIZE
-		osip_list_t error_infos;	 /**< Error-Info headers */
+    osip_list_t error_infos;                     /**< Error-Info headers */
 #endif
-		osip_from_t *from;			  /**< From header */
-		osip_mime_version_t *mime_version;
-									  /**< Mime-Version header */
-		osip_list_t proxy_authenticates;
-									 /**< Proxy-Authenticate headers */
+    osip_from_t *from;                                    /**< From header */
+    osip_mime_version_t *mime_version;
+                                                                          /**< Mime-Version header */
+    osip_list_t proxy_authenticates;
+                                                                         /**< Proxy-Authenticate headers */
 #ifndef MINISIZE
-		osip_list_t proxy_authentication_infos;
-											/**< P-Authentication-Info headers */
+    osip_list_t proxy_authentication_infos;
+                                                                                        /**< P-Authentication-Info headers */
 #endif
-		osip_list_t proxy_authorizations;
-									 /**< Proxy-authorization headers */
-		osip_list_t record_routes;	 /**< Record-Route headers */
-		osip_list_t routes;			 /**< Route headers */
-		osip_to_t *to;				  /**< To header */
-		osip_list_t vias;			 /**< Vias headers */
-		osip_list_t www_authenticates;
-									 /**< WWW-Authenticate headers */
+    osip_list_t proxy_authorizations;
+                                                                         /**< Proxy-authorization headers */
+    osip_list_t record_routes;                   /**< Record-Route headers */
+    osip_list_t routes;                                  /**< Route headers */
+    osip_to_t *to;                                        /**< To header */
+    osip_list_t vias;                                    /**< Vias headers */
+    osip_list_t www_authenticates;
+                                                                         /**< WWW-Authenticate headers */
 
-		osip_list_t headers;		 /**< Other headers */
+    osip_list_t headers;                         /**< Other headers */
 
-		osip_list_t bodies;			 /**< List of attachements */
+    osip_list_t bodies;                                  /**< List of attachements */
 
-		/*
-		   1: structure and buffer "message" are identical.
-		   2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
-		 */
-		int message_property;		  /**@internal */
-		char *message;				  /**@internal */
-		size_t message_length;		  /**@internal */
+    /*
+       1: structure and buffer "message" are identical.
+       2: buffer "message" is not up to date with the structure info (call osip_message_to_str to update it).
+     */
+    int message_property;                         /**@internal */
+    char *message;                                        /**@internal */
+    size_t message_length;                        /**@internal */
 
-		void *application_data;		  /**can be used by upper layer*/
-	};
+    void *application_data;                       /**can be used by upper layer*/
+  };
 
 #ifndef SIP_MESSAGE_MAX_LENGTH
 /**
@@ -137,35 +137,33 @@ extern "C" {
  * Allocate a osip_message_t element.
  * @param sip The element to allocate.
  */
-	int osip_message_init(osip_message_t ** sip);
+  int osip_message_init (osip_message_t ** sip);
 /**
  * Free all resource in a osip_message_t element.
  * @param sip The element to free.
  */
-	void osip_message_free(osip_message_t * sip);
+  void osip_message_free (osip_message_t * sip);
 /**
  * Parse a osip_message_t element.
  * @param sip The resulting element.
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-	int osip_message_parse(osip_message_t * sip, const char *buf, size_t length);
+  int osip_message_parse (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Parse a message/sipfrag part and store it in an osip_message_t element.
  * @param sip The resulting element.
  * @param buf The buffer to parse.
  * @param length The length of the buffer to parse.
  */
-	int osip_message_parse_sipfrag(osip_message_t * sip, const char *buf,
-								   size_t length);
+  int osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_message_t element.
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
  */
-	int osip_message_to_str(osip_message_t * sip, char **dest,
-							size_t * message_length);
+  int osip_message_to_str (osip_message_t * sip, char **dest, size_t * message_length);
 /**
  * Get a string representation of a message/sipfrag part
  * stored in an osip_message_t element.
@@ -173,70 +171,69 @@ extern "C" {
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
  */
-	int osip_message_to_str_sipfrag(osip_message_t * sip, char **dest,
-									size_t * message_length);
+  int osip_message_to_str_sipfrag (osip_message_t * sip, char **dest, size_t * message_length);
 /**
  * Clone a osip_message_t element.
  * @param sip The element to clone.
  * @param dest The new allocated element cloned.
  */
-	int osip_message_clone(const osip_message_t * sip, osip_message_t ** dest);
+  int osip_message_clone (const osip_message_t * sip, osip_message_t ** dest);
 
 /**
  * Set the reason phrase. This is entirely free in SIP.
  * @param sip The element to work on.
  * @param reason The reason phrase.
  */
-	void osip_message_set_reason_phrase(osip_message_t * sip, char *reason);
+  void osip_message_set_reason_phrase (osip_message_t * sip, char *reason);
 /**
  * Get the reason phrase. This is entirely free in SIP.
  * @param sip The element to work on.
  */
-	char *osip_message_get_reason_phrase(const osip_message_t * sip);
+  char *osip_message_get_reason_phrase (const osip_message_t * sip);
 /**
  * Set the status code. This is entirely free in SIP.
  * @param sip The element to work on.
  * @param statuscode The status code.
  */
-	void osip_message_set_status_code(osip_message_t * sip, int statuscode);
+  void osip_message_set_status_code (osip_message_t * sip, int statuscode);
 /**
  * Get the status code.
  * @param sip The element to work on.
  */
-	int osip_message_get_status_code(const osip_message_t * sip);
+  int osip_message_get_status_code (const osip_message_t * sip);
 /**
  * Set the method. You can set any string here.
  * @param sip The element to work on.
  * @param method The method name.
  */
-	void osip_message_set_method(osip_message_t * sip, char *method);
+  void osip_message_set_method (osip_message_t * sip, char *method);
 /**
  * Get the method name.
  * @param sip The element to work on.
  */
-	char *osip_message_get_method(const osip_message_t * sip);
+  char *osip_message_get_method (const osip_message_t * sip);
 /**
  * Set the SIP version used. (default is "SIP/2.0")
  * @param sip The element to work on.
  * @param version The version of SIP.
  */
-	void osip_message_set_version(osip_message_t * sip, char *version);
+  void osip_message_set_version (osip_message_t * sip, char *version);
 /**
  * Get the SIP version.
  * @param sip The element to work on.
  */
-	char *osip_message_get_version(const osip_message_t * sip);
+  char *osip_message_get_version (const osip_message_t * sip);
 /**
  * Set the Request-URI.
  * @param sip The element to work on.
  * @param uri The uri to set.
  */
-	void osip_message_set_uri(osip_message_t * sip, osip_uri_t * uri);
+  void osip_message_set_uri (osip_message_t * sip, osip_uri_t * uri);
 /**
  * Get the Request-URI.
  * @param sip The element to work on.
  */
-	osip_uri_t *osip_message_get_uri(const osip_message_t * sip);
+  osip_uri_t *osip_message_get_uri (const osip_message_t * sip);
 
 
 /*
@@ -445,25 +442,23 @@ extern "C" {
  * @param generic_param The element to work on.
  * @param name the token name to set.
  */
-	void osip_generic_param_set_name(osip_generic_param_t * generic_param,
-									 char *name);
+  void osip_generic_param_set_name (osip_generic_param_t * generic_param, char *name);
 /**
  * Get the name of a generic parameter element.
  * @param generic_param The element to work on.
  */
-	char *osip_generic_param_get_name(const osip_generic_param_t * generic_param);
+  char *osip_generic_param_get_name (const osip_generic_param_t * generic_param);
 /**
  * Set the value of a generic parameter element.
  * @param generic_param The element to work on.
  * @param value the token name to set.
  */
-	void osip_generic_param_set_value(osip_generic_param_t * generic_param,
-									  char *value);
+  void osip_generic_param_set_value (osip_generic_param_t * generic_param, char *value);
 /**
  * Get the value of a generic parameter element.
  * @param generic_param The element to work on.
  */
-	char *osip_generic_param_get_value(const osip_generic_param_t * generic_param);
+  char *osip_generic_param_get_value (const osip_generic_param_t * generic_param);
 
 
 /**
@@ -472,8 +467,7 @@ extern "C" {
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-	int osip_message_get_knownheaderlist(osip_list_t * header_list,
-										 int pos, void **dest);
+  int osip_message_get_knownheaderlist (osip_list_t * header_list, int pos, void **dest);
 
 /** @} */
 

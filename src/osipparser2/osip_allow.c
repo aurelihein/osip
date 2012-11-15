@@ -26,38 +26,39 @@
 
 #ifndef MINISIZE
 
-int osip_message_set_allow(osip_message_t * sip, const char *hvalue)
+int
+osip_message_set_allow (osip_message_t * sip, const char *hvalue)
 {
-	osip_allow_t *allow;
-	int i;
+  osip_allow_t *allow;
+  int i;
 
-	if (hvalue == NULL || hvalue[0] == '\0')
-		return OSIP_SUCCESS;
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return OSIP_SUCCESS;
 
-	i = osip_allow_init(&allow);
-	if (i != 0)
-		return i;
-	i = osip_allow_parse(allow, hvalue);
-	if (i != 0) {
-		osip_allow_free(allow);
-		return i;
-	}
-	sip->message_property = 2;
-	osip_list_add(&sip->allows, allow, -1);
-	return OSIP_SUCCESS;
+  i = osip_allow_init (&allow);
+  if (i != 0)
+    return i;
+  i = osip_allow_parse (allow, hvalue);
+  if (i != 0) {
+    osip_allow_free (allow);
+    return i;
+  }
+  sip->message_property = 2;
+  osip_list_add (&sip->allows, allow, -1);
+  return OSIP_SUCCESS;
 }
 
 int
-osip_message_get_allow(const osip_message_t * sip, int pos, osip_allow_t ** dest)
+osip_message_get_allow (const osip_message_t * sip, int pos, osip_allow_t ** dest)
 {
-	osip_allow_t *allow;
+  osip_allow_t *allow;
 
-	*dest = NULL;
-	if (osip_list_size(&sip->allows) <= pos)
-		return OSIP_UNDEFINED_ERROR;	/* does not exist */
-	allow = (osip_allow_t *) osip_list_get(&sip->allows, pos);
-	*dest = allow;
-	return pos;
+  *dest = NULL;
+  if (osip_list_size (&sip->allows) <= pos)
+    return OSIP_UNDEFINED_ERROR;        /* does not exist */
+  allow = (osip_allow_t *) osip_list_get (&sip->allows, pos);
+  *dest = allow;
+  return pos;
 }
 
 #endif

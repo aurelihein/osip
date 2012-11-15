@@ -29,41 +29,39 @@
 /* INPUT :  char *hvalue | value of header.   */
 /* OUTPUT: osip_message_t *sip | structure to save results. */
 /* returns -1 on error. */
-int osip_message_set_proxy_authorization(osip_message_t * sip, const char *hvalue)
+int
+osip_message_set_proxy_authorization (osip_message_t * sip, const char *hvalue)
 {
-	osip_proxy_authorization_t *proxy_authorization;
-	int i;
+  osip_proxy_authorization_t *proxy_authorization;
+  int i;
 
-	if (hvalue == NULL || hvalue[0] == '\0')
-		return OSIP_SUCCESS;
+  if (hvalue == NULL || hvalue[0] == '\0')
+    return OSIP_SUCCESS;
 
-	i = osip_proxy_authorization_init(&proxy_authorization);
-	if (i != 0)
-		return i;
-	i = osip_proxy_authorization_parse(proxy_authorization, hvalue);
-	if (i != 0) {
-		osip_proxy_authorization_free(proxy_authorization);
-		return i;
-	}
-	sip->message_property = 2;
-	osip_list_add(&sip->proxy_authorizations, proxy_authorization, -1);
-	return OSIP_SUCCESS;
+  i = osip_proxy_authorization_init (&proxy_authorization);
+  if (i != 0)
+    return i;
+  i = osip_proxy_authorization_parse (proxy_authorization, hvalue);
+  if (i != 0) {
+    osip_proxy_authorization_free (proxy_authorization);
+    return i;
+  }
+  sip->message_property = 2;
+  osip_list_add (&sip->proxy_authorizations, proxy_authorization, -1);
+  return OSIP_SUCCESS;
 }
 
 #ifndef MINISIZE
 int
-osip_message_get_proxy_authorization(const osip_message_t * sip, int pos,
-									 osip_proxy_authorization_t ** dest)
+osip_message_get_proxy_authorization (const osip_message_t * sip, int pos, osip_proxy_authorization_t ** dest)
 {
-	osip_proxy_authorization_t *proxy_authorization;
+  osip_proxy_authorization_t *proxy_authorization;
 
-	*dest = NULL;
-	if (osip_list_size(&sip->proxy_authorizations) <= pos)
-		return OSIP_UNDEFINED_ERROR;	/* does not exist */
-	proxy_authorization =
-		(osip_proxy_authorization_t *) osip_list_get(&sip->proxy_authorizations,
-													 pos);
-	*dest = proxy_authorization;
-	return pos;
+  *dest = NULL;
+  if (osip_list_size (&sip->proxy_authorizations) <= pos)
+    return OSIP_UNDEFINED_ERROR;        /* does not exist */
+  proxy_authorization = (osip_proxy_authorization_t *) osip_list_get (&sip->proxy_authorizations, pos);
+  *dest = proxy_authorization;
+  return pos;
 }
 #endif

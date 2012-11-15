@@ -28,51 +28,52 @@
 #include <osipparser2/osip_message.h>
 
 
-int main(int argc, char **argv)
+int
+main (int argc, char **argv)
 {
-	FILE *vias_file;
+  FILE *vias_file;
 
 
-	osip_via_t *via;
-	char *a_via;
-	char *dest;
-	char *res;
+  osip_via_t *via;
+  char *a_via;
+  char *dest;
+  char *res;
 
-	vias_file = fopen(argv[1], "r");
-	if (vias_file == NULL) {
-		fprintf(stdout, "Failed to open %s file.\nUsage: tvia vias.txt\n",
-				argv[1]);
-		exit(0);
-	}
+  vias_file = fopen (argv[1], "r");
+  if (vias_file == NULL) {
+    fprintf (stdout, "Failed to open %s file.\nUsage: tvia vias.txt\n", argv[1]);
+    exit (0);
+  }
 
-	a_via = (char *) osip_malloc(200);
-	res = fgets(a_via, 200, vias_file);	/* lines are under 200 */
-	while (res != NULL) {
+  a_via = (char *) osip_malloc (200);
+  res = fgets (a_via, 200, vias_file);  /* lines are under 200 */
+  while (res != NULL) {
 
-		int errcode;
+    int errcode;
 
-		/* remove the last '\n' before parsing */
-		osip_strncpy(a_via + strlen(a_via) - 1, "\0", 1);
+    /* remove the last '\n' before parsing */
+    osip_strncpy (a_via + strlen (a_via) - 1, "\0", 1);
 
-		if (0 != strncmp(a_via, "#", 1)) {
-			/* allocate & init via */
-			osip_via_init(&via);
-			printf("=================================================\n");
-			printf("VIA TO PARSE: |%s|\n", a_via);
-			errcode = osip_via_parse(via, a_via);
-			if (errcode != -1) {
-				if (osip_via_to_str(via, &dest) != -1) {
-					printf("result:       |%s|\n", dest);
-					osip_free(dest);
-				}
-			} else
-				printf("Bad via format: %s\n", a_via);
-			osip_via_free(via);
-			printf("=================================================\n");
-		}
-		res = fgets(a_via, 200, vias_file);	/* lines are under 200 */
-	}
-	osip_free(a_via);
+    if (0 != strncmp (a_via, "#", 1)) {
+      /* allocate & init via */
+      osip_via_init (&via);
+      printf ("=================================================\n");
+      printf ("VIA TO PARSE: |%s|\n", a_via);
+      errcode = osip_via_parse (via, a_via);
+      if (errcode != -1) {
+        if (osip_via_to_str (via, &dest) != -1) {
+          printf ("result:       |%s|\n", dest);
+          osip_free (dest);
+        }
+      }
+      else
+        printf ("Bad via format: %s\n", a_via);
+      osip_via_free (via);
+      printf ("=================================================\n");
+    }
+    res = fgets (a_via, 200, vias_file);        /* lines are under 200 */
+  }
+  osip_free (a_via);
 
-	return 0;
+  return 0;
 }

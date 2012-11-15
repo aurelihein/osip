@@ -77,15 +77,15 @@
 #include <stdlib.h>
 
 #if defined (HAVE_SYS_TYPES_H)
-#  include <sys/types.h>
+#include <sys/types.h>
 #endif
 
 #ifdef HAVE_TIME_H
-#  include <time.h>
+#include <time.h>
 #endif
 
 #if defined (HAVE_SYS_TIME_H)
-#  include <sys/time.h>
+#include <sys/time.h>
 #endif
 
 #if defined(__arc__)
@@ -118,8 +118,8 @@
 #if !( defined(__rtems__) || defined(__PALMOS__) || defined(HAVE_STRUCT_TIMEVAL) )
 /* Struct timeval */
 struct timeval {
-	long tv_sec;				/* seconds */
-	long tv_usec;				/* and microseconds */
+  long tv_sec;                  /* seconds */
+  long tv_usec;                 /* and microseconds */
 };
 #endif
 
@@ -161,22 +161,22 @@ typedef pthread_t osip_thread_t;
 #undef _WINSOCKAPI_
 
 typedef struct {
-	HANDLE h;
-	unsigned id;
+  HANDLE h;
+  unsigned id;
 } osip_thread_t;
 #endif
 
 #ifdef __VXWORKS_OS__
 #include <taskLib.h>
 typedef struct {
-	int id;
+  int id;
 } osip_thread_t;
 #endif
 
 #ifdef __PSOS__
 #include <psos.h>
 typedef struct {
-	unsigned long tid;
+  unsigned long tid;
 } osip_thread_t;
 #endif
 
@@ -205,8 +205,8 @@ typedef pthread_mutex_t osip_mutex_t;
 #if defined(__arc__)
 
 typedef struct {
-	int _sem_counter;
-	struct osip_mutex *_sem_mutex;
+  int _sem_counter;
+  struct osip_mutex *_sem_mutex;
 } sem_t;
 
 typedef sem_t osip_sem_t;
@@ -228,14 +228,14 @@ typedef sem_t osip_sem_t;
 #include <mach/semaphore.h>
 #include <mach/mach_init.h>
 typedef struct {
-	semaphore_t semid;
+  semaphore_t semid;
 } osip_sem_t;
 #elif defined(HAVE_SYS_SEM_H)
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
 typedef struct {
-	int semid;
+  int semid;
 } osip_sem_t;
 #endif
 
@@ -250,17 +250,17 @@ typedef struct {
 
 #define OSIP_CRITICALSECTION_SPIN  4000
 typedef struct {
-	CRITICAL_SECTION h;
+  CRITICAL_SECTION h;
 } osip_mutex_t;
 #else
 
 typedef struct {
-	HANDLE h;
+  HANDLE h;
 } osip_mutex_t;
 #endif
 
 typedef struct {
-	HANDLE h;
+  HANDLE h;
 } osip_sem_t;
 #endif
 
@@ -275,10 +275,10 @@ typedef sem_t osip_sem_t;
 #include <Types.h>
 #include <os.h>
 typedef struct {
-	UInt32 id;
+  UInt32 id;
 } osip_mutex_t;
 typedef struct {
-	UInt32 id;
+  UInt32 id;
 } osip_sem_t;
 #endif
 
@@ -291,20 +291,20 @@ typedef struct {
  */
 #if defined(HAVE_PTHREAD) || defined(HAVE_PTH_PTHREAD_H) || defined(HAVE_PTHREAD_WIN32)
 typedef struct osip_cond {
-	pthread_cond_t cv;
+  pthread_cond_t cv;
 } osip_cond_t;
 #endif
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 typedef struct osip_cond {
-	struct osip_mutex *mut;
-	struct osip_sem *sem;
+  struct osip_mutex *mut;
+  struct osip_sem *sem;
 } osip_cond_t;
 #endif
 
 #if defined(__PSOS__) || defined(__VXWORKS_OS__)
 typedef struct osip_cond {
-	struct osip_sem *sem;
+  struct osip_sem *sem;
 } osip_cond_t;
 #endif
 
@@ -312,21 +312,21 @@ typedef struct osip_cond {
 
 #if defined(__rtems__)
 typedef struct {
-	rtems_id tid;
+  rtems_id tid;
 } osip_thread_t;
 
 typedef struct {
-	rtems_id id;
+  rtems_id id;
 } osip_sem_t;
 
 typedef struct {
-	rtems_id id;
+  rtems_id id;
 } osip_mutex_t;
 #endif
 
 
-#endif							/* #ifndef OSIP_MONOTHREAD */
+#endif /* #ifndef OSIP_MONOTHREAD */
 
-#endif							/* #ifndef DOXYGEN */
+#endif /* #ifndef DOXYGEN */
 
-#endif							/* #ifndef _INTERNAL_H_ */
+#endif /* #ifndef _INTERNAL_H_ */

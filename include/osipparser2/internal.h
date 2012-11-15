@@ -77,15 +77,15 @@
 #include <stdlib.h>
 
 #if defined (HAVE_SYS_TYPES_H)
-#  include <sys/types.h>
+#include <sys/types.h>
 #endif
 
 #ifdef HAVE_TIME_H
-#  include <time.h>
+#include <time.h>
 #endif
 
 #if defined (HAVE_SYS_TIME_H)
-#  include <sys/time.h>
+#include <sys/time.h>
 #endif
 
 #if defined(__arc__)
@@ -108,4 +108,4 @@
 #endif
 #endif
 
-#endif							/* #ifndef _INTERNAL_H_ */
+#endif /* #ifndef _INTERNAL_H_ */

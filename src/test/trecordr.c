@@ -28,51 +28,51 @@
 #include <osipparser2/osip_message.h>
 
 
-int main(int argc, char **argv)
+int
+main (int argc, char **argv)
 {
-	FILE *record_routes_file;
+  FILE *record_routes_file;
 
 
-	osip_record_route_t *record_route;
-	char *a_record_route;
-	char *dest;
-	char *res;
+  osip_record_route_t *record_route;
+  char *a_record_route;
+  char *dest;
+  char *res;
 
-	record_routes_file = fopen(argv[1], "r");
-	if (record_routes_file == NULL) {
-		fprintf(stdout,
-				"Failed to open %s file.\nUsage: trecord_route record_routes.txt\n",
-				argv[1]);
-		exit(0);
-	}
+  record_routes_file = fopen (argv[1], "r");
+  if (record_routes_file == NULL) {
+    fprintf (stdout, "Failed to open %s file.\nUsage: trecord_route record_routes.txt\n", argv[1]);
+    exit (0);
+  }
 
-	a_record_route = (char *) osip_malloc(200);
-	res = fgets(a_record_route, 200, record_routes_file);	/* lines are under 200 */
-	while (res != NULL) {
+  a_record_route = (char *) osip_malloc (200);
+  res = fgets (a_record_route, 200, record_routes_file);        /* lines are under 200 */
+  while (res != NULL) {
 
-		int errcode;
+    int errcode;
 
-		/* remove the last '\n' before parsing */
-		strncpy(a_record_route + strlen(a_record_route) - 1, "\0", 1);
+    /* remove the last '\n' before parsing */
+    strncpy (a_record_route + strlen (a_record_route) - 1, "\0", 1);
 
-		if (0 != strncmp(a_record_route, "#", 1)) {
-			/* allocate & init record_route */
-			osip_record_route_init(&record_route);
-			printf("=================================================\n");
-			printf("RECORD_ROUTE TO PARSE: |%s|\n", a_record_route);
-			errcode = osip_record_route_parse(record_route, a_record_route);
-			if (errcode != -1) {
-				if (osip_record_route_to_str(record_route, &dest) != -1) {
-					printf("result:                |%s|\n", dest);
-					osip_free(dest);
-				}
-			} else
-				printf("Bad record_route format: %s\n", a_record_route);
-			osip_record_route_free(record_route);
-			printf("=================================================\n");
-		}
-		res = fgets(a_record_route, 200, record_routes_file);	/* lines are under 200 */
-	}
-	osip_free(a_record_route);
-	return 0;
+    if (0 != strncmp (a_record_route, "#", 1)) {
+      /* allocate & init record_route */
+      osip_record_route_init (&record_route);
+      printf ("=================================================\n");
+      printf ("RECORD_ROUTE TO PARSE: |%s|\n", a_record_route);
+      errcode = osip_record_route_parse (record_route, a_record_route);
+      if (errcode != -1) {
+        if (osip_record_route_to_str (record_route, &dest) != -1) {
+          printf ("result:                |%s|\n", dest);
+          osip_free (dest);
+        }
+      }
+      else
+        printf ("Bad record_route format: %s\n", a_record_route);
+      osip_record_route_free (record_route);
+      printf ("=================================================\n");
+    }
+    res = fgets (a_record_route, 200, record_routes_file);      /* lines are under 200 */
+  }
+  osip_free (a_record_route);
+  return 0;
 }
