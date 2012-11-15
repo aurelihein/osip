@@ -1,7 +1,11 @@
 libosip2 (4.0.0)
-	* major API update: several "struct eXosip_t" can be
-	  handled in parallele. This can be used to have several
-	  transport layer running at the same time.
+	* implement time compensation for android.
+	* reduce path len // remove path in front of logs.
+	* accept only SIP/D.D format message.
+	* fix bug when releasing request with missing major headers.
+	* fix minor memory leak // remove limitation on fifo size.
+	* add system time support for macosx and ios.
+	* use system independant time for osip_gettimeofday on unix platform.
 	* To compile/use osip based application in multi threaded
 	  env, you don't need to define -DOSIP_MT any more. Instead,
 	  if you wish to disable the feature, you can compile with
@@ -26,7 +30,7 @@ libosip2 (3.4.0)
 	* osip_list improvements.
 	* osip_list prototypes and warnings fix.
 	* new osip_strcasestr method.
-	
+
 libosip2 (3.3.0)
 	* new APPLE native interface for semaphore
 	* add relative time in log information on linux/windows
@@ -34,7 +38,7 @@ libosip2 (3.3.0)
 
 libosip2 (3.2.0)
 	* return new error code for all API.
-	
+
 libosip2 (3.1.0)
 	* Windows Mobile 5/6 improvments.
 	* allow uncompliant/IMS authentication headers.
@@ -43,11 +47,11 @@ libosip2 (3.1.0)
 
 libosip2 (3.0.3)
 	* initial support for rtems.
-	
+
 libosip2 (3.0.2)
 	* initial support for ucos.
 	* fix to ignore broken optionnal header when parsing.
-	
+
 libosip2 (3.0.1)
 	* add Windows CE support with Visual Studio 2005
 	  (WM5.0,PocketPC 2003/2005, Smartphone)
@@ -57,11 +61,11 @@ libosip2 (3.0.1)
 	  to decrease number of allocations.
 	  Changes: osip_message_t/osip_dialog_t/sdp_message_t/osip_fifo_t
 	* save route headers in the same order (CALLER or CALLER) in dialogs.
-	
+
 libosip2 (2.2.3)
 	* fix 64-bit (amd64) issue with hash.
 	* remove SDP negotiation (much better to do it in your applications)
-	
+
 libosip2 (2.2.2)
 	* parser speed improvements
 	* replace mutex with critical section on windows for performance.
@@ -70,7 +74,7 @@ libosip2 (2.2.2)
 	* improve sipfrag support.
 	* add NULL checks (uris...).
 	* patch for PSOS support.
-	
+
 libosip2 (2.2.1)
 	* fix a potential mem leak content_type and osip_message_parse.
 	* fix osip_body_clone method (add terminating NULL)
@@ -85,7 +89,7 @@ libosip2 (2.2.0)
 	* allow very short attachements.
 	* new macros allocators.
 	* remove use of alloca in the parser.
-	* fix memory bug when realloc is needed on large message.	
+	* fix memory bug when realloc is needed on large message.
 	* remove useless prototypes.
 	* fix memory access in parser.
 	* API slightly broken to enable support for binary data.
@@ -97,19 +101,19 @@ libosip2 (2.0.9)
 	* fix a few memory leak in parser.
 	* improvements for the new sdp negociator.
 	* fix trace mode.
-	
+
 libosip2 (2.0.8)
 	* Fix lookup of generic/uri parameter (use case-insensitive comparison)
 	* Initial release of the new SDP negociator. (old one will be removed)
 	* fix bug in parser (windows)
 	* fix lookup of generic_paramter and uri_parameter.
 	* fix memory leak in condition variable (windows).
-	
+
 libosip2 (2.0.7)
 	* Fix a parser bug for uncomplete request line.
 	* Update timer facility for windows.
 	* Remove useless #define.
-	
+
 libosip2 (2.0.6)
 	* Fix a memory access in authentication headers.
 	* Fix possible buffer overflow in uri.
@@ -118,17 +122,17 @@ libosip2 (2.0.6)
 	* reindentation of all code.
 	* improve configure.in file
 	* tiny other fix (doxygen, prototypes, warnings)
-	
+
 libosip2 (2.0.5)
 	* Fix for content-type header.
 	* New optionnal timer interface. (will become the default)
 	* fix the sent-by check for matching response with transaction.
-	
+
 libosip2 (2.0.4)
 	* fix random number generation on windows.
 	* fix for MingGw compiler
 	* set paramter of sdp_negociation_t structure to NULL on init.
-	
+
 libosip2 (2.0.3)
 	* new method to create dialog from NOTIFY requests.
 	* fix random number generation to avoid possible guess of random numbers.
@@ -140,7 +144,7 @@ libosip2 (2.0.2)
 	* fix a bug when response contains a code set to "0".
 	* fix a bug when Mime-version is present but Content-type is undefined.
 	* fix when Call-Id is missing.
-	
+
 libosip2 (2.0.1)
 	* fix bug in osip_message_to_str() for too long messages.
 	* improve robustness when parsing empty headers.
@@ -149,11 +153,11 @@ libosip2 (2.0.1)
 
 libosip2 (2.0.0)
 	* initial release of libosip2
-	
+
 libosip2 (1.99.6)
         * complete new organization of files and directories.
         * become libosip2.
-        
+
 libosip (1.99.4)
         * fix a bug when ACK for 3456xx can't be built.
         * complete reorganisation of includes, files and directories.
@@ -167,25 +171,25 @@ libosip (0.9.7)
 	* extra free removed for pSOS (smutex_destroy/ssem_destroy)
 	* fix crash when osip can't build ACK for 3456xx to INVITEs.
 	* Extra spaces now appear before content-length digits.
-	
+
 libosip (0.9.6)
 	* fix transaction_init for request without mandatory headers.
 	* refuse to create transactions with cseq and method that differs.
 	* check minimum authorized length for method name of request.
 	* fix the state when a retransmission of INVITE is received.
 	* Minor changes in #define definitions just for clarity.
-	
+
 libosip (0.9.5)
-	* fix a memory leak for retransmissions in msg_2char. 
+	* fix a memory leak for retransmissions in msg_2char.
 	* fix a bug when startline end with CRCRLF.
-	
+
 libosip (0.9.4)
 	* fix win32 compilation for Debug release.
 	* re-fix(?) the parsing of the Date header.
 	* verify log strings are NULL terminated.
 	* add syslog support.
 	* continue WINCE port.
-	
+
 libosip (0.9.3)
 	* fix a bug for quoted strings starting with an escaped char '\'.
 	* initial commit for WinCE support. (uncomplete)
@@ -199,7 +203,7 @@ libosip (0.9.2)
 	* hdr_authorization.c: improve end of header detection.
 	* hdr_callinfo.c: fix a bug when realloc happen here.
 	* hdr_from.c: accept empty parameter.
-	
+
 libosip (0.9.1)
 	* fix non multi-threaded version. (fifo_size was broken)
 	* Add win32 system logger feature. (compile with SYSTEM_LOGGER_ENABLED)
@@ -214,7 +218,7 @@ libosip (0.9.0)
 	* remove DEBUG() macros
 	* move TRACE -> OSIP_TRACE
 	* move trace -> osip_trace   to avoid duplicate definitions
-	
+
 libosip (0.8.9)
 	* smsg.h: fix max_forward to max_forwards.
 	* osip/osip.h: you can now attach an application pointer to osip_t
@@ -222,7 +226,7 @@ libosip (0.8.9)
 	* fsm/transaction.c: add transaction_free2(). A usefull method to
 	  free a transaction without removing it from the osip stack. (To
 	  be used when it has been already removed earlier.)
-	
+
 libosip (0.8.8)
 	* windows: The windows contributions was wrong. Thread were killed
 	  instead of joined. I changed that...
@@ -242,7 +246,7 @@ libosip (0.8.8)
 	* new optional algo using gperf (thanks to <chenshx@mail.datang.com>)
 	  use ./configure --enable-gperf
 	* new debugging tools with mpatrol: ./configure --enable-mpatrol
-	
+
 libosip (0.8.7)
 	* reject message with 2 call-id, 2cseq, 2 from, 2 to...
 	* allow generic_param can have a NULL value!.
@@ -265,7 +269,7 @@ libosip (0.8.5)
 	  application! This way, you can re-use data before releasing the context..
 	* add a failure case when there is no '>' char when '<' is found.
 	* fix compilations issue with --disable-mt.
-	
+
 libosip (0.8.4)
 	* ist_fsm.c: start timer i while entering CONFIRMED state.
 	* urls.c: bug in line 210.
@@ -276,18 +280,18 @@ libosip (0.8.4)
 	  and osip_create_transaction() instead.
 	* msg_write.c: add msg_clone()
 	* smsg.h: fix MACROS
-	
+
 libosip (0.8.3)
 	* add lock/unlock methods for searching in transactions
 	* improve reliability when a NULL pointer is given to *_free methods.
 	* many bugs fixes in fsm/*
 	* parser/hdr_via.c: support for ipv6. Previous version are not compliant.
-	
+
 libosip (0.8.2)
 	* ipv6 support (need more testing.)  - Thanks to tomohide.
 	* support for any scheme in url. (Use with care with applications.)
 	* support for sysv semaphore.
-	
+
 libosip (0.8.1) testing ;urgency=high
 	* new finite state machines for TRANSACTION LAYER compliant with
 	  the rfc2543bis-09.txt. This is a total rewrite. Those new
@@ -297,11 +301,11 @@ libosip (0.8.1) testing ;urgency=high
 	* some bug fixes and one memory leak in the parser.
 	* COMPATIBILITY WITH PREVIOUS RELEASE IS NOT KEPT!
 	* test in ./example and ./example_mt are deprecated and removed.
-	
+
 libosip (0.8.0) testing ;urgency=high
 	* new SDP parser
 	* new SDP automtic negociation facility (for User Agent)
-	
+
 libosip (0.7.9) testing ;urgency=low
         * hdr_authorization.c/hdr_wwwauthenticate.c:
           Interoperability issue with Vovida.
