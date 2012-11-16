@@ -76,7 +76,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-                          /** @} *//**
+/** @}
  * @defgroup oSIP_SEMA oSIP semaphore definitions
  * @ingroup osip2_port
  * @{
@@ -123,7 +123,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-                          /** @} *//**
+/** @}
  * @defgroup oSIP_MUTEX oSIP mutex definitions
  * @ingroup osip2_port
  * @{
