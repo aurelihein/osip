@@ -1,8 +1,8 @@
 /**
  * @ingroup libosip2 The GNU oSIP stack
- * @defgroup howto3_transaction How-To manage transactions.
+ * @defgroup howto_transaction How-To manage transactions.
 
- * @section howto3_1 Description.
+ * @section howto_transaction1 Description.
 
 The interesting and somewhat complex feature implemented
 by osip is the 4 states machines that applied to the different
@@ -11,12 +11,10 @@ transactions defined by the SIP rfc.
 SIP defines the following 4 state machines, abreviations
 used in osip are provided below:
 
-<UL>
-  <LI>ICT : Invite Client Transaction (Section 17.1.1) </LI>
-  <LI>NICT: Non Invite Client Transaction (Section 17.1.2) </LI>
-  <LI>IST : Invite Server Transaction (Section 17.2.1) </LI>
-  <LI>NIST: Non Invite Server Transaction (Section 17.2.2) </LI>
-</UL>
++ **ICT** : Invite Client Transaction (Section 17.1.1)
++ **NICT**: Non Invite Client Transaction (Section 17.1.2)
++ **IST** : Invite Server Transaction (Section 17.2.1)
++ **NIST**: Non Invite Server Transaction (Section 17.2.2)
 
 As you can notice if you have read the rfc (do it!), those
 4 state machines are provided as drawings within the SIP
@@ -68,7 +66,6 @@ resp. to TU |  1xx             V                     |
                  Figure 5: INVITE client transaction
 </PRE>
 
-
 As you can expect, with osip an Invite Client Transaction may be
 in the CALLING, PROCEEDING, COMPLETED or TERMINATED state. To
 "execute" the state machine, you will build events, provide them
@@ -78,23 +75,22 @@ state.
 
 Events are divided in three categories:
 
-<UL>
-<LI>SIP messages</LI>
-<LI>Timers</LI>
-<LI>transport errors</LI>
-</UL>
++ **SIP messages**
++ **Timers**
++ **Transport Errors**
 
-* @section howto3_2 Managing a new transaction.
+* @section howto_transaction2 Managing a new transaction.
 
 Let's assume you want to implement a User Agent and you want to
 start a REGISTER transaction. Using the parser library, you will first
 have to build a SIP compliant message. (oSIP, as a low layer library
 provides an interface to build SIP messages, but it's up to you to
 correctly fill all the required fields.)
+
 As soon as you have build the SIP message, you are ready to start a new
 transaction. Here is the code:
 
-<PRE>
+~~~~~~~{.c}
 	osip_t *osip       = your_global_osip_context;
 	osip_transaction_t *transaction;
 	osip_message_t     *sip_register_message;
@@ -119,11 +115,11 @@ transaction. Here is the code:
 	osip_transaction_add_event (transaction, sipevent);
 	// at this point, the event will be handled by oSIP. (The memory resource will
 	// also be handled by oSIP). Note that no action is taken there. 
-</PRE>
+~~~~~~~
 
 Adding new events in the fsm is made with similar code.
 
-* @section howto3_3 Consuming events.
+* @section howto_transaction3 Consuming events.
 
 The previous step show how to create a transaction and one possible way
 to add a new event. (Note, that some events -the TIMEOUT_* ones- will be
@@ -136,7 +132,7 @@ this method again with the same transaction context until the first call
 has returned. In a multi threaded application, if one thread handles one
 transaction, the code will be the following:
 
-<PRE>
+~~~~~~~{.c}
   while (1)
     {
       se = (osip_event_t *) osip_fifo_get (transaction->transactionff);
@@ -147,7 +143,7 @@ transaction, the code will be the following:
   }
 </pre>
 
-* @section howto3_4 Announcing events to the application layer.
+* @section howto_transaction4 Announcing events to the application layer.
 
 Looking at the case of a usual outgoing REGISTER transaction, this behaviour
 is expected.
@@ -171,7 +167,7 @@ is up to you.
 When the transaction reach the TERMINATED state (when the *kill* callback
 is called, you must remove it from the list of known transactions with
 
-<PRE>
+~~~~~~~{.c}
 	static void cb_ict_kill_transaction(int type, osip_transaction_t *tr) 
 	{
 	  int i;
@@ -179,7 +175,7 @@ is called, you must remove it from the list of known transactions with
 	  i = osip_remove_transaction (_osip, tr);
 	  if (i!=0) fprintf(stderr, "testosip: cannot remove transaction\n");
 	}
-</PRE>
+~~~~~~~
 
 
 */

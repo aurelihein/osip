@@ -58,13 +58,6 @@
  */
 
 /**
- * @defgroup osip2_sdp The SDP modules
- * @brief SDP API.
- *
- * XXX
- */
-
-/**
  * @defgroup osip2_port The OS port modules
  * @brief Thread/Semaphore/Mutex API in libosip2-@VERSION@.
  *
@@ -99,11 +92,6 @@
  */
 
 /** 
- * @page osip2_license ChangeLog 
+ * @page osip2_changelog ChangeLog 
  * @verbinclude ChangeLog
- */
-
-/**
- * @page osip2_faq FAQ
- * @htmlinclude FAQ.html
  */

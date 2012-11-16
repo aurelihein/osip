@@ -1,8 +1,8 @@
 /**
  * @ingroup libosip2 The GNU oSIP stack
- * @defgroup howto4_dialog How-To manage dialogs.
+ * @defgroup howto_dialog How-To manage dialogs.
 
- * @section howto4_1 Description.
+ * @section howto_dialog1 Description.
 
 Dialog management is a powerful facility given by oSIP. This feature is
 needed by SIP end point who has the capability to answer calls. (i.e.
@@ -17,7 +17,7 @@ this case won't probably happen several times a month...
 There is two ways of creating a dialog. In one case, you are the CALLER
 and in the other case, you will be the CALLEE.
 
- * @section howto4_2 Creating a dialog as a CALLER.
+ * @section howto_dialog2 Creating a dialog as a CALLER.
 
 In this case, you have to create a dialog each time you receive
 an answer with a code between 101 and 299. The best place in oSIP to
@@ -27,7 +27,7 @@ to check for an existing dialog associated to this INVITE that can have
 been created by earlier SIP answer coming from the same User Agent. The
 code in the callback will look like the following:
 
-<PRE>
+~~~~~~~{.c}
 	void cb_rcv1xx(osip_transaction_t *tr,osip_message_t *sip)
 	{
 		osip_dialog_t *dialog;
@@ -45,9 +45,9 @@ code in the callback will look like the following:
 			// no dialog establishment for other REQUEST
 		}
 	}
-</PRE>
+~~~~~~~
 
- * @section howto4_3 Creating a dialog as a CALLEE
+ * @section howto_dialog3 Creating a dialog as a CALLEE
 
 In this case, you will have to create a dialog upon receiving the first
 transmission of the INVITE request. The correct place to do that is inside
@@ -61,7 +61,7 @@ To make things working, you MUST create a VALID response: do not
 forget to create a new tag and put it in the 'To' header. The dialog
 management heavily depends on this tag.
 
- * @section howto4_4 Compliance issue with rfc2543 & forking.
+ * @section howto_dialog4 Compliance issue with rfc2543 & forking.
 
 The dialog management is compliant with the latest SIP draft
 (rfc2543bis-09). It should handle successfully most cases where

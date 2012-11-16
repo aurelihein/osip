@@ -16,6 +16,9 @@ upload: dist
 	@echo "building: $(PACKAGE)-$(VERSION).tar.gz.directive.asc";
 	gpg --clearsign $(PACKAGE)-$(VERSION).tar.gz.directive
 
+doxygen:
+	doxygen help/doxygen/DoxyFile
+
 indent:
 	indent */*/*.c
 	indent */*/*.h

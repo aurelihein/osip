@@ -214,19 +214,6 @@ time (time_t * t)
 
 #endif
 
-static time_t
-osip_getrealtime (time_t * t)
-{
-  struct timeval now;
-
-  _osip_gettimeofday_realtime (&now, NULL);
-  if (t != NULL) {
-    *t = now.tv_sec;
-  }
-
-  return now.tv_sec;
-}
-
 void
 osip_compensatetime ()
 {

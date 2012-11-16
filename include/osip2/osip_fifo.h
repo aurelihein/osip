@@ -62,13 +62,12 @@ extern "C" {
  */
   struct osip_fifo {
 #ifndef OSIP_MONOTHREAD
-    struct osip_mutex *qislocked;
-                                                                   /**@internal */
-    struct osip_sem *qisempty;             /**@internal */
+    struct osip_mutex *qislocked;          /**< mutex for fifo */
+    struct osip_sem *qisempty;             /**< semaphore for fifo */
 #endif
-    osip_list_t queue;                             /**< list of nodes containing elements */
-    int nb_elt;                                            /**< nb of elements */
-    osip_fifo_state state;                       /**@internal state of the fifo */
+    osip_list_t queue;                     /**< list of nodes containing elements */
+    int nb_elt;                            /**< nb of elements */
+    osip_fifo_state state;                 /**< state of the fifo */
   };
 
 /**

@@ -29,11 +29,7 @@
  * @file osip_list.h
  * @brief oSIP list Routines
  *
- * This is a very simple implementation of a linked list.
- * <BR>There is not much to say about it... Except that it
- * could be a lot improved. Sadly, it would be difficult
- * to improve it without breaking the compatibility with
- * older version!
+ * This is a simple implementation of a linked list.
  */
 
 /**
@@ -57,8 +53,8 @@ extern "C" {
  * @struct __node
  */
   struct __node {
-    __node_t *next;                                     /**< next __node_t containing element */
-    void *element;                              /**< element in Current node */
+    __node_t *next;         /**< next __node_t containing element */
+    void *element;          /**< element in Current node */
   };
 #endif
 
@@ -73,10 +69,10 @@ extern "C" {
  * @var osip_list_iterator_t
  */
   typedef struct {
-    __node_t *actual;
-    __node_t **prev;
-    osip_list_t *li;
-    int pos;
+    __node_t *actual; /**< actual */
+    __node_t **prev;  /**< prev */
+    osip_list_t *li;  /**< li */
+    int pos;          /**< pos */
   } osip_list_iterator_t;
 
 /**
@@ -85,7 +81,7 @@ extern "C" {
  */
   struct osip_list {
 
-    int nb_elt;                         /**< Number of element in the list */
+    int nb_elt;                 /**< Number of element in the list */
     __node_t *node;             /**< Next node containing element  */
 
   };

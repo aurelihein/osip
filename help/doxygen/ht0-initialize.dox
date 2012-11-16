@@ -1,13 +1,14 @@
 /**
  * @ingroup libosip2 The GNU oSIP stack
- * @defgroup howto0_initialize How-To initialize libosip2.
+ * @defgroup howto_initialize How-To initialize libosip2.
+
+ * @section howto_initialize1 Initialize osip.
 
 When using osip, your first task is to initialize
 the parser and the state machine. This must be done
 prior to any use of libosip2.
 
-<PRE>
-	#include <sys/time.h>
+~~~~~~~{.c}
 	#include <osip2/osip.h>
 
 	int i;
@@ -15,20 +16,7 @@ prior to any use of libosip2.
 	i=osip_init(&osip);
 	if (i!=0)
 	  return -1;
-</PRE>
-
-On windows, you should write
-
-<PRE>
-	#include <winsock2.h>
-	#include <osip2/osip.h>
-
-	int i;
-	osip_t *osip;
-	i=osip_init(&osip);
-	if (i!=0)
-	  return -1;
-</PRE>
+~~~~~~~
 
 In case you want to use the state machines (transaction management),
 the second step will be to set a few callbacks which will inform
@@ -37,7 +25,7 @@ you of any change in the state of a SIP transaction.
 Most of the following callbacks are optional. The following ones are
 usefull.
 
-<PRE>
+~~~~~~~{.c}
 	// callback called when a SIP message must be sent.
 	osip_set_cb_send_message(osip, &cb_udp_snd_message);
 	
@@ -90,6 +78,6 @@ usefull.
 	osip_set_message_callback(osip ,OSIP_NIST_UNKNOWN_REQUEST_RECEIVED, &cb_rcvreq);
 
 	// other callbacks exists... They are optionnal.
-</PRE>
+~~~~~~~
 
 */

@@ -86,7 +86,7 @@ extern "C" {
 /**
  * Retrieve application instance from dialog
  * @param dialog The osip dialog
- * @param instance The application instance
+ * @return instance The application instance
  */
 #define osip_dialog_get_instance(dialog)          (dialog)->your_instance
 
@@ -185,13 +185,11 @@ extern "C" {
   int osip_dialog_match_as_uas (osip_dialog_t * dialog, osip_message_t * request);
 
 /**
- * @internal
  * Is dialog initiated by as CALLER
  * @param dialog The element to work on.
  */
   int osip_dialog_is_originator (osip_dialog_t * dialog);
 /**
- * @internal
  * Is dialog initiated by as CALLEE
  * @param dialog The element to work on.
  */
