@@ -1,9 +1,8 @@
 NAME_BUILD_DIR='libosip2GIP'
 APPLI='libosip2GIP'
-VERSION='3.4.0'
 AUTOCONF='autogen'
 
 set -x
-. `pwd`/../common_GIP/common.sh $NAME_BUILD_DIR $APPLI $VERSION $AUTOCONF
+. `pwd`/../common_GIP/common.sh 
 exit
  

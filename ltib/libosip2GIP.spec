@@ -2,8 +2,8 @@
 
 Summary         : SIP stack library
 Name            : libosip2GIP
-Version         : 3.4.0
-Release         : 810
+Version         : 3.5.0
+Release         : 0
 License         : GPL
 Vendor          : CASTEL
 Packager        : Aurelien BOUIN
