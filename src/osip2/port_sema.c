@@ -236,6 +236,7 @@ osip_sem_init (unsigned int value)
   if (semaphore_create (task, &sem->semid, policy, value) == KERN_SUCCESS)
     return (struct osip_sem *) sem;
 
+  osip_free (sem);
   return NULL;
 }
 
@@ -248,7 +249,10 @@ osip_sem_destroy (struct osip_sem *_sem)
   if (sem == NULL)
     return OSIP_SUCCESS;
   if (semaphore_destroy (task, sem->semid) == KERN_SUCCESS)
-    return OSIP_SUCCESS;
+    {
+      osip_free (sem);
+      return OSIP_SUCCESS;
+    }
 
   osip_free (sem);
   return OSIP_SUCCESS;
