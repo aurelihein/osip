@@ -79,9 +79,19 @@
 #include <sys/time.h>
 #elif defined(WIN32)
 #include <windows.h>
+#if _MSC_VER >= 1700
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#else
 #ifdef WIN32_USE_CRYPTO
 #include <Wincrypt.h>
 #endif
+#endif
+#else
+#ifdef WIN32_USE_CRYPTO
+#include <Wincrypt.h>
+#endif
+#endif
+
 #endif
 
 #if defined (__rtems__)
@@ -302,7 +312,6 @@ osip_build_random_number ()
     srand (ticks);
     random_seed_set = 1;
   }
-
   err = CryptAcquireContext (&crypto, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT);
   if (err) {
     err = CryptGenRandom (crypto, sizeof (num), (BYTE *) & num);
@@ -386,6 +395,12 @@ __osip_sdp_append_string (char *string, size_t size, char *cur, char *string_osi
   return cur + strlen (cur);
 }
 
+#if _MSC_VER >= 1700
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#define HAVE_WINAPPSTORE_API
+#endif
+#endif
+
 void
 osip_usleep (int useconds)
 {
@@ -400,6 +415,8 @@ osip_usleep (int useconds)
   while (stoptime > TimGetTicks ())
     /* I wish there was some type of yield function here */
     ;
+#elif defined(HAVE_WINAPPSTORE_API)
+	TODO
 #elif defined(WIN32)
   Sleep (useconds / 1000);
 #elif defined(__rtems__)

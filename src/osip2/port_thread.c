@@ -91,6 +91,50 @@ osip_thread_exit ()
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#include <iostream>
+#include <thread>
+
+struct osip_thread *
+osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
+{
+  osip_thread_t *thread = (osip_thread_t *) osip_malloc (sizeof (osip_thread_t));
+
+  if (thread == NULL)
+    return NULL;
+  thread->h = new std::thread(func, arg);
+  if (thread->h == 0) {
+    osip_free (thread);
+    return NULL;
+  }
+  return (struct osip_thread *) thread;
+}
+
+int
+osip_thread_join (struct osip_thread *_thread)
+{
+  osip_thread_t *thread = (osip_thread_t *) _thread;
+  std::thread *th;
+  if (thread == NULL)
+    return OSIP_BADPARAMETER;
+  th = (std::thread*)thread->h;
+  th->join();
+  return (0);
+}
+
+void
+osip_thread_exit ()
+{
+}
+
+int
+osip_thread_set_priority (struct osip_thread *thread, int priority)
+{
+  return OSIP_SUCCESS;
+}
+
+#else
+
 struct osip_thread *
 osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 {
@@ -141,6 +185,7 @@ osip_thread_set_priority (struct osip_thread *thread, int priority)
   return OSIP_SUCCESS;
 }
 
+#endif
 
 #endif
 

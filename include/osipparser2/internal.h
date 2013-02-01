@@ -57,10 +57,19 @@
 
 #define snprintf _snprintf
 
+#if _MSC_VER >= 1700
+#include <winapifamily.h>
+#endif
+
 /* use win32 crypto routines for random number generation */
 /* only use for vs .net (compiler v. 1300) or greater */
 #if _MSC_VER >= 1300
 #define WIN32_USE_CRYPTO 1
+#if _MSC_VER >= 1700
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#undef WIN32_USE_CRYPTO
+#endif
+#endif
 #endif
 
 #endif

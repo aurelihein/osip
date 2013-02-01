@@ -152,8 +152,24 @@ struct timeval {
 typedef pthread_t osip_thread_t;
 #endif
 
+#if _MSC_VER >= 1700
+#include <winapifamily.h>
+#endif
+
 /* Windows without Pthreads for Win32 */
-#if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
+#if _MSC_VER >= 1700
+#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#define HAVE_CPP11_THREAD
+#endif
+#endif
+
+#if defined(HAVE_CPP11_THREAD)
+
+typedef struct {
+  void *h;
+} osip_thread_t;
+
+#elif (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 
 /* Prevent the inclusion of winsock.h */
 #define _WINSOCKAPI_
