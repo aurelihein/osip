@@ -158,7 +158,9 @@ typedef pthread_t osip_thread_t;
 
 /* Windows without Pthreads for Win32 */
 #if _MSC_VER >= 1700
-#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+#define HAVE_CPP11_THREAD
+#elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
 #define HAVE_CPP11_THREAD
 #endif
 #endif

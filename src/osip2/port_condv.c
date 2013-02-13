@@ -238,7 +238,7 @@ osip_cond_timedwait (struct osip_cond *_cond, struct osip_mutex *_mut, const str
   if (i != 0)
     return i;
 
-  dwRet = WaitForSingleObject (sem, timeout_ms);
+  dwRet = WaitForSingleObjectEx (sem, timeout_ms, FALSE);
 
   i = osip_mutex_lock (_mut);
   if (i != 0)

@@ -91,7 +91,7 @@ osip_thread_exit ()
 
 #if (defined(WIN32) || defined(_WIN32_WCE)) && !defined(HAVE_PTHREAD_WIN32)
 
-#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#if defined(HAVE_CPP11_THREAD)
 #include <iostream>
 #include <thread>
 
@@ -119,6 +119,8 @@ osip_thread_join (struct osip_thread *_thread)
     return OSIP_BADPARAMETER;
   th = (std::thread*)thread->h;
   th->join();
+  delete th;
+  thread->h=NULL;
   return (0);
 }
 

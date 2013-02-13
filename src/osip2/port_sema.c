@@ -499,8 +499,14 @@ osip_mutex_init ()
 
   if (mut == NULL)
     return NULL;
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+  if (InitializeCriticalSectionEx (&mut->h, OSIP_CRITICALSECTION_SPIN, CRITICAL_SECTION_NO_DEBUG_INFO) != 0) {
+    return (struct osip_mutex *) (mut);
+  }
+#else
   if (InitializeCriticalSectionAndSpinCount (&mut->h, OSIP_CRITICALSECTION_SPIN) != 0)
     return (struct osip_mutex *) (mut);
+#endif
   osip_free (mut);
   return (NULL);
 }
@@ -597,8 +603,13 @@ osip_sem_init (unsigned int value)
   if (sem == NULL)
     return NULL;
 
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+  if ((sem->h = CreateSemaphoreExW (NULL, value, LONG_MAX, NULL, 0, (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|SEMAPHORE_MODIFY_STATE))) != NULL)
+	  return (struct osip_sem *) (sem);
+#else
   if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
     return (struct osip_sem *) (sem);
+#endif
   osip_free (sem);
   return (NULL);
 }
@@ -634,7 +645,7 @@ osip_sem_wait (struct osip_sem *_sem)
 
   if (sem == NULL)
     return OSIP_BADPARAMETER;
-  if ((err = WaitForSingleObject (sem->h, INFINITE)) == WAIT_OBJECT_0)
+  if ((err = WaitForSingleObjectEx (sem->h, INFINITE, FALSE)) == WAIT_OBJECT_0)
     return (0);
   if (err == WAIT_TIMEOUT)
     return (-1);
@@ -649,7 +660,7 @@ osip_sem_trywait (struct osip_sem *_sem)
 
   if (sem == NULL)
     return OSIP_BADPARAMETER;
-  if ((err = WaitForSingleObject (sem->h, 0)) == WAIT_OBJECT_0)
+  if ((err = WaitForSingleObjectEx (sem->h, 0, FALSE)) == WAIT_OBJECT_0)
     return (0);
   return (-1);
 }

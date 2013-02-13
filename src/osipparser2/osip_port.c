@@ -80,7 +80,9 @@
 #elif defined(WIN32)
 #include <windows.h>
 #if _MSC_VER >= 1700
-#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+#include <winsock2.h>
+#elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
 #else
 #ifdef WIN32_USE_CRYPTO
 #include <Wincrypt.h>
@@ -396,7 +398,9 @@ __osip_sdp_append_string (char *string, size_t size, char *cur, char *string_osi
 }
 
 #if _MSC_VER >= 1700
-#if defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
+#define HAVE_WINDOWSPHONE_API
+#elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
 #define HAVE_WINAPPSTORE_API
 #endif
 #endif
@@ -415,6 +419,20 @@ osip_usleep (int useconds)
   while (stoptime > TimGetTicks ())
     /* I wish there was some type of yield function here */
     ;
+#elif defined(HAVE_WINDOWSPHONE_API)
+  struct timeval delay;
+  int sec;
+
+  sec = (int) useconds / 1000000;
+  if (sec > 0) {
+    delay.tv_sec = sec;
+    delay.tv_usec = 0;
+  }
+  else {
+    delay.tv_sec = 0;
+    delay.tv_usec = useconds;
+  }
+  select (0, 0, 0, 0, &delay);
 #elif defined(HAVE_WINAPPSTORE_API)
 	TODO
 #elif defined(WIN32)
