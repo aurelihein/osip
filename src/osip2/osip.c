@@ -251,8 +251,8 @@ ixt_retransmit (osip_t * osip, ixt_t * ixt, struct timeval *current)
 {
   if (osip_timercmp (current, &ixt->start, >)) {
     ixt->interval = ixt->interval * 2;
-    if (ixt->interval > 4000)
-      ixt->interval = 4000;
+    if (ixt->interval > DEFAULT_T2)
+      ixt->interval = DEFAULT_T2;
     add_gettimeofday (&ixt->start, ixt->interval);
     if (ixt->ack != NULL)
       osip->cb_send_message (NULL, ixt->ack, ixt->dest, ixt->port, ixt->sock);
