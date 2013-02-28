@@ -183,11 +183,11 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
   /* reset timer */
   if (nict->state == NICT_TRYING) {
     nict->nict_context->timer_e_length = nict->nict_context->timer_e_length * 2;
-    if (nict->nict_context->timer_e_length > 4000)
-      nict->nict_context->timer_e_length = 4000;
+    if (nict->nict_context->timer_e_length > DEFAULT_T2)
+      nict->nict_context->timer_e_length = DEFAULT_T2;
   }
-  else                          /* in PROCEEDING STATE, TIMER is always 4000 */
-    nict->nict_context->timer_e_length = 4000;
+  else                          /* in PROCEEDING STATE, TIMER is always DEFAULT_T2 */
+    nict->nict_context->timer_e_length = DEFAULT_T2;
 
   osip_gettimeofday (&nict->nict_context->timer_e_start, NULL);
   add_gettimeofday (&nict->nict_context->timer_e_start, nict->nict_context->timer_e_length);

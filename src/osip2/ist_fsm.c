@@ -146,8 +146,8 @@ osip_ist_timeout_g_event (osip_transaction_t * ist, osip_event_t * evt)
   int i;
 
   ist->ist_context->timer_g_length = ist->ist_context->timer_g_length * 2;
-  if (ist->ist_context->timer_g_length > 4000)
-    ist->ist_context->timer_g_length = 4000;
+  if (ist->ist_context->timer_g_length > DEFAULT_T2)
+    ist->ist_context->timer_g_length = DEFAULT_T2;
   osip_gettimeofday (&ist->ist_context->timer_g_start, NULL);
   add_gettimeofday (&ist->ist_context->timer_g_start, ist->ist_context->timer_g_length);
 
