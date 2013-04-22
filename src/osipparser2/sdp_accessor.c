@@ -454,12 +454,15 @@ sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype, char *
 {
   sdp_key_t *key;
   sdp_media_t *med;
+  int i;
 
   if (sdp == NULL)
     return OSIP_BADPARAMETER;
   if ((pos_media != -1) && (osip_list_size (&sdp->m_medias) < pos_media + 1))
     return OSIP_UNDEFINED_ERROR;
-  sdp_key_init (&key);
+  i = sdp_key_init (&key);
+  if (i!=0)
+    return i;
   key->k_keytype = keytype;
   key->k_keydata = keydata;
   if (pos_media == -1) {

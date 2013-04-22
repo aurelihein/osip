@@ -177,9 +177,12 @@ ixt_free (ixt_t * ixt)
 void
 osip_start_200ok_retransmissions (osip_t * osip, osip_dialog_t * dialog, osip_message_t * msg200ok, int sock)
 {
+  int i;
   ixt_t *ixt;
 
-  ixt_init (&ixt);
+  i = ixt_init (&ixt);
+  if (i != 0)
+    return;
   ixt->dialog = dialog;
   osip_message_clone (msg200ok, &ixt->msg2xx);
   ixt->sock = sock;

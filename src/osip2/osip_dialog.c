@@ -177,7 +177,10 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
      Personnaly, I would recommend to discard 1xx>=101 answers without To tags!
      Just my own feelings.
    */
-  osip_call_id_to_str (answer->call_id, &tmp);
+  i = osip_call_id_to_str (answer->call_id, &tmp);
+  if (i!=0)
+    return i;
+
   if (0 != strcmp (dlg->call_id, tmp)) {
     osip_free (tmp);
     return OSIP_UNDEFINED_ERROR;
@@ -236,7 +239,9 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
   if (request == NULL || request->call_id == NULL || request->from == NULL || request->to == NULL)
     return OSIP_BADPARAMETER;
 
-  osip_call_id_to_str (request->call_id, &tmp);
+  i = osip_call_id_to_str (request->call_id, &tmp);
+  if (i!=0)
+    return i;
   if (0 != strcmp (dlg->call_id, tmp)) {
     osip_free (tmp);
     return OSIP_UNDEFINED_ERROR;

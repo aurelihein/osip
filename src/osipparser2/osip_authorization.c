@@ -554,7 +554,7 @@ osip_authorization_clone (const osip_authorization_t * auth, osip_authorization_
    */
 
   i = osip_authorization_init (&au);
-  if (i == -1)                  /* allocation failed */
+  if (i != 0)                  /* allocation failed */
     return i;
   if (auth->auth_type != NULL) {
     au->auth_type = osip_strdup (auth->auth_type);
