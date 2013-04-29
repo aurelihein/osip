@@ -466,6 +466,7 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
 int
 __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
 {
+  int i;
   char *pname;
   char *pvalue;
 
@@ -513,7 +514,12 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
     }
     osip_strncpy (pname, params + 1, equal - params - 1);
 
-    osip_generic_param_add (gen_params, pname, pvalue);
+    i = osip_generic_param_add (gen_params, pname, pvalue);
+    if (i != OSIP_SUCCESS) {
+      osip_free (pname);
+      osip_free (pvalue);
+      return OSIP_NOMEM;
+    }
 
     params = comma;
     equal = next_separator (params + 1, '=', ';');
@@ -560,7 +566,12 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
   }
   osip_strncpy (pname, params + 1, equal - params - 1);
 
-  osip_generic_param_add (gen_params, pname, pvalue);
+  i = osip_generic_param_add (gen_params, pname, pvalue);
+  if (i != OSIP_SUCCESS) {
+    osip_free (pname);
+    osip_free (pvalue);
+    return OSIP_NOMEM;
+  }
 
   return OSIP_SUCCESS;
 }

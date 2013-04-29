@@ -29,9 +29,6 @@ extern const char *osip_protocol_version;
 static int strcat_simple_header (char **_string, size_t * malloc_size, char **_message, void *ptr_header, char *header_name, size_t size_of_header, int (*xxx_to_str) (void *, char **), char **next);
 static int strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_message, osip_list_t * headers, char *header, size_t size_of_header, int (*xxx_to_str) (void *, char **), char **next);
 
-#if 0
-static int strcat_headers_all_on_one_line (char **_string, size_t * malloc_size, char **_message, osip_list_t * headers, char *header, size_t size_of_header, int (*xxx_to_str) (void *, char **), char **next);
-#endif
 
 static int
 __osip_message_startline_to_strreq (osip_message_t * sip, char **dest)
@@ -174,10 +171,12 @@ strcat_simple_header (char **_string, size_t * malloc_size, char **_message, voi
       *malloc_size = message - string + size_of_header + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
+        osip_free(*_string); /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
       }
+      *_string = string;
       message = string + size;
     }
     message = osip_strn_append (message, header_name, size_of_header);
@@ -195,10 +194,12 @@ strcat_simple_header (char **_string, size_t * malloc_size, char **_message, voi
       *malloc_size = message - string + strlen (tmp) + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
+        osip_free(*_string); /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
       }
+      *_string = string;
       message = string + size;
     }
 
@@ -237,10 +238,12 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_messa
       *malloc_size = message - string + size_of_header + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
+        osip_free(*_string); /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
       }
+      *_string = string;
       message = string + size;
     }
     osip_strncpy (message, header, size_of_header);
@@ -259,10 +262,12 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_messa
       *malloc_size = message - string + strlen (tmp) + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
+        osip_free(*_string); /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
       }
+      *_string = string;
       message = string + size;
     }
     message = osip_str_append (message, tmp);
@@ -275,78 +280,6 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_messa
   *next = message;
   return OSIP_SUCCESS;
 }
-
-#if 0
-static int
-strcat_headers_all_on_one_line (char **_string, size_t * malloc_size, char **_message, osip_list_t * headers, char *header, size_t size_of_header, int (*xxx_to_str) (void *, char **), char **next)
-{
-  char *string;
-  char *message;
-  char *tmp;
-  int pos = 0;
-  int i;
-
-  string = *_string;
-  message = *_message;
-
-  pos = 0;
-  while (!osip_list_eol (headers, pos)) {
-    if (*malloc_size < message - string + 100 + size_of_header)
-      /* take some memory avoid to osip_realloc too much often */
-    {                           /* should not happen often */
-      size_t size = message - string;
-
-      *malloc_size = message - string + size_of_header + 100;
-      string = osip_realloc (string, *malloc_size);
-      if (string == NULL) {
-        *_string = NULL;
-        *_message = NULL;
-        return OSIP_NOMEM;
-      }
-      message = string + size;
-    }
-    message = osip_strn_append (message, header, size_of_header);
-
-    while (!osip_list_eol (headers, pos)) {
-      void *elt;
-
-      elt = (void *) osip_list_get (headers, pos);
-      i = xxx_to_str (elt, &tmp);
-      if (i != 0) {
-        *_string = string;
-        *_message = message;
-        *next = NULL;
-        return i;
-      }
-      if (*malloc_size < message - string + strlen (tmp) + 100) {
-        size_t size = message - string;
-
-        *malloc_size = message - string + (int) strlen (tmp) + 100;
-        string = osip_realloc (string, *malloc_size);
-        if (string == NULL) {
-          *_string = NULL;
-          *_message = NULL;
-          return OSIP_NOMEM;
-        }
-        message = string + size;
-      }
-
-      message = osip_str_append (message, tmp);
-      osip_free (tmp);
-
-      pos++;
-      if (!osip_list_eol (headers, pos)) {
-        message = osip_strn_append (message, ", ", 2);
-      }
-    }
-    message = osip_strn_append (message, CRLF, 2);
-  }
-  *_string = string;
-  *_message = message;
-  *next = message;
-  return OSIP_SUCCESS;
-}
-#endif
 
  /* return values:
     1: structure and buffer "message" are identical.
