@@ -533,7 +533,6 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
     sprintf (buf, "%s:", scheme);
     buf = buf + strlen (scheme) + 1;
     sprintf (buf, "%s", url->string);
-    //useless: buf = buf + strlen (url->string);
     return OSIP_SUCCESS;
   }
 
