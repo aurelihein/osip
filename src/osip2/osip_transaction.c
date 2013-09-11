@@ -762,7 +762,9 @@ __osip_transaction_matching_request_osip_to_xist_17_2_3 (osip_transaction_t * tr
     }
   }
   else {
-    if (0 != osip_to_tag_match (tr->to, request->to))
+    if (tr->orig_request==NULL || tr->orig_request->to==NULL)
+      return OSIP_UNDEFINED_ERROR;
+    if (0 != osip_to_tag_match (tr->orig_request->to, request->to))
       return OSIP_UNDEFINED_ERROR;
   }
   if (0 != osip_from_tag_match (tr->from, request->from))
