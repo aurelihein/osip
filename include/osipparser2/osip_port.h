@@ -185,7 +185,6 @@ extern "C" {
   char *osip_strdup_without_quote (const char *ch);
   int osip_tolower (char *word);
   int osip_clrspace (char *word);
-  char *__osip_sdp_append_string (char **string, size_t *size, char *cur, char *string_osip_to_append);
   int __osip_set_next_token (char **dest, char *buf, int end_separator, char **next);
   /* find the next unescaped quote and return its index. */
   char *__osip_quote_find (const char *qstring);

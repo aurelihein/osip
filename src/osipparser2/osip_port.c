@@ -378,26 +378,6 @@ osip_atoi (const char *number)
 
 #endif
 
-/* append string_osip_to_append to string at position cur
-   size is the current allocated size of the element
-*/
-char *
-__osip_sdp_append_string (char **string, size_t *size, char *cur, char *string_osip_to_append)
-{
-  size_t length = strlen (string_osip_to_append);
-
-  if (cur - (*string) + length > *size) {
-    size_t length2;
-
-    length2 = cur - *string;
-    (*string) = osip_realloc ((*string), *size + length + 10);
-    *size = *size + length + 10;
-    cur = (*string) + length2;     /* the initial allocation may have changed! */
-  }
-  osip_strncpy (cur, string_osip_to_append, length);
-  return cur + strlen (cur);
-}
-
 #if _MSC_VER >= 1700
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
 #define HAVE_WINDOWSPHONE_API

@@ -51,6 +51,8 @@ static int sdp_append_time_descr (char **string, int *size, char *tmp, sdp_time_
 static int sdp_append_bandwidth (char **string, int *size, char *tmp, sdp_bandwidth_t * bandwidth, char **next_tmp);
 static int sdp_append_connection (char **string, int *size, char *tmp, sdp_connection_t * conn, char **next_tmp);
 
+static char *__osip_sdp_append_string (char **string, int *size, char *cur, char *string_osip_to_append);
+
 int
 sdp_bandwidth_init (sdp_bandwidth_t ** b)
 {
@@ -313,6 +315,26 @@ sdp_message_init (sdp_message_t ** sdp)
     return OSIP_NOMEM;
   }
   return OSIP_SUCCESS;
+}
+
+/* append string_osip_to_append to string at position cur
+   size is the current allocated size of the element
+*/
+static char *
+__osip_sdp_append_string (char **string, int *size, char *cur, char *string_osip_to_append)
+{
+  int length = strlen (string_osip_to_append);
+
+  if (cur - (*string) + length > *size) {
+    int length2;
+
+    length2 = cur - *string;
+    (*string) = osip_realloc ((*string), *size + length + 10);
+    *size = *size + length + 10;
+    cur = (*string) + length2;     /* the initial allocation may have changed! */
+  }
+  osip_strncpy (cur, string_osip_to_append, length);
+  return cur + strlen (cur);
 }
 
 static int
