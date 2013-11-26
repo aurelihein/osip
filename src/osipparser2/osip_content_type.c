@@ -244,7 +244,6 @@ osip_content_type_clone (const osip_content_type_t * ctt, osip_content_type_t **
       i = osip_generic_param_clone (u_param, &dest_param);
       if (i != 0) {
         osip_content_type_free (ct);
-        //osip_free(ct);
         return i;
       }
       osip_list_add (&ct->gen_params, dest_param, -1);
