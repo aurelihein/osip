@@ -382,16 +382,17 @@ osip_atoi (const char *number)
    size is the current allocated size of the element
 */
 char *
-__osip_sdp_append_string (char *string, size_t size, char *cur, char *string_osip_to_append)
+__osip_sdp_append_string (char **string, size_t *size, char *cur, char *string_osip_to_append)
 {
   size_t length = strlen (string_osip_to_append);
 
-  if (cur - string + length > size) {
+  if (cur - (*string) + length > *size) {
     size_t length2;
 
-    length2 = cur - string;
-    string = osip_realloc (string, size + length + 10);
-    cur = string + length2;     /* the initial allocation may have changed! */
+    length2 = cur - *string;
+    (*string) = osip_realloc ((*string), *size + length + 10);
+    *size = *size + length + 10;
+    cur = (*string) + length2;     /* the initial allocation may have changed! */
   }
   osip_strncpy (cur, string_osip_to_append, length);
   return cur + strlen (cur);
@@ -952,7 +953,11 @@ __osip_port_gettimeofday (struct timeval *tp, void *tz)
 #endif
 
 #ifndef MAX_LENGTH_TR
+#ifdef SYSTEM_LOGGER_ENABLED
+#define MAX_LENGTH_TR 2024       /* NEVER DEFINE MORE THAN 2024 */
+#else
 #define MAX_LENGTH_TR 512       /* NEVER DEFINE MORE THAN 2024 */
+#endif
 #endif
 
 int
@@ -1172,8 +1177,10 @@ osip_trace (char *filename_long, int li, osip_trace_level_t level, FILE * f, cha
 #ifdef UNICODE
     {
       WCHAR wUnicode[MAX_LENGTH_TR * 2];
-
-      MultiByteToWideChar (CP_UTF8, 0, buffer, -1, wUnicode, MAX_LENGTH_TR * 2);
+      int size;
+      size = MultiByteToWideChar (CP_UTF8, 0, buffer, -1, wUnicode, MAX_LENGTH_TR * 2);
+      wUnicode[size-2]='\n';
+      wUnicode[size-1]='\0';
       OutputDebugString (wUnicode);
     }
 #else

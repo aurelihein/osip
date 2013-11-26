@@ -44,12 +44,12 @@ static int sdp_message_parse_k (sdp_message_t * sdp, char *buf, char **next);
 static int sdp_message_parse_a (sdp_message_t * sdp, char *buf, char **next);
 static int sdp_message_parse_m (sdp_message_t * sdp, char *buf, char **next);
 
-static int sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media, char **next_tmp);
-static int sdp_append_attribute (char *string, int size, char *tmp, sdp_attribute_t * attribute, char **next_tmp);
-static int sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key, char **next_tmp);
-static int sdp_append_time_descr (char *string, int size, char *tmp, sdp_time_descr_t * time_descr, char **next_tmp);
-static int sdp_append_bandwidth (char *string, int size, char *tmp, sdp_bandwidth_t * bandwidth, char **next_tmp);
-static int sdp_append_connection (char *string, int size, char *tmp, sdp_connection_t * conn, char **next_tmp);
+static int sdp_append_media (char **string, int *size, char *tmp, sdp_media_t * media, char **next_tmp);
+static int sdp_append_attribute (char **string, int *size, char *tmp, sdp_attribute_t * attribute, char **next_tmp);
+static int sdp_append_key (char **string, int *size, char *tmp, sdp_key_t * key, char **next_tmp);
+static int sdp_append_time_descr (char **string, int *size, char *tmp, sdp_time_descr_t * time_descr, char **next_tmp);
+static int sdp_append_bandwidth (char **string, int *size, char *tmp, sdp_bandwidth_t * bandwidth, char **next_tmp);
+static int sdp_append_connection (char **string, int *size, char *tmp, sdp_connection_t * conn, char **next_tmp);
 
 int
 sdp_bandwidth_init (sdp_bandwidth_t ** b)
@@ -1615,7 +1615,7 @@ sdp_message_parse (sdp_message_t * sdp, const char *buf)
 }
 
 static int
-sdp_append_connection (char *string, int size, char *tmp, sdp_connection_t * conn, char **next_tmp)
+sdp_append_connection (char **string, int *size, char *tmp, sdp_connection_t * conn, char **next_tmp)
 {
   if (conn->c_nettype == NULL)
     return -1;
@@ -1644,7 +1644,7 @@ sdp_append_connection (char *string, int size, char *tmp, sdp_connection_t * con
 }
 
 static int
-sdp_append_bandwidth (char *string, int size, char *tmp, sdp_bandwidth_t * bandwidth, char **next_tmp)
+sdp_append_bandwidth (char **string, int *size, char *tmp, sdp_bandwidth_t * bandwidth, char **next_tmp)
 {
   if (bandwidth->b_bwtype == NULL)
     return -1;
@@ -1662,7 +1662,7 @@ sdp_append_bandwidth (char *string, int size, char *tmp, sdp_bandwidth_t * bandw
 }
 
 static int
-sdp_append_time_descr (char *string, int size, char *tmp, sdp_time_descr_t * time_descr, char **next_tmp)
+sdp_append_time_descr (char **string, int *size, char *tmp, sdp_time_descr_t * time_descr, char **next_tmp)
 {
   int pos;
 
@@ -1694,7 +1694,7 @@ sdp_append_time_descr (char *string, int size, char *tmp, sdp_time_descr_t * tim
 }
 
 static int
-sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key, char **next_tmp)
+sdp_append_key (char **string, int *size, char *tmp, sdp_key_t * key, char **next_tmp)
 {
   if (key->k_keytype == NULL)
     return -1;
@@ -1711,7 +1711,7 @@ sdp_append_key (char *string, int size, char *tmp, sdp_key_t * key, char **next_
 }
 
 static int
-sdp_append_attribute (char *string, int size, char *tmp, sdp_attribute_t * attribute, char **next_tmp)
+sdp_append_attribute (char **string, int *size, char *tmp, sdp_attribute_t * attribute, char **next_tmp)
 {
   if (attribute->a_att_field == NULL)
     return -1;
@@ -1730,7 +1730,7 @@ sdp_append_attribute (char *string, int size, char *tmp, sdp_attribute_t * attri
 
 /* internal facility */
 static int
-sdp_append_media (char *string, int size, char *tmp, sdp_media_t * media, char **next_tmp)
+sdp_append_media (char **string, int *size, char *tmp, sdp_media_t * media, char **next_tmp)
 {
   int pos;
 
@@ -1847,60 +1847,60 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     return OSIP_NOMEM;
   string = tmp;
 
-  tmp = __osip_sdp_append_string (string, size, tmp, "v=");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->v_version);
-  tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
-  tmp = __osip_sdp_append_string (string, size, tmp, "o=");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_username);
-  tmp = __osip_sdp_append_string (string, size, tmp, " ");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_sess_id);
-  tmp = __osip_sdp_append_string (string, size, tmp, " ");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_sess_version);
-  tmp = __osip_sdp_append_string (string, size, tmp, " ");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_nettype);
-  tmp = __osip_sdp_append_string (string, size, tmp, " ");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_addrtype);
-  tmp = __osip_sdp_append_string (string, size, tmp, " ");
-  tmp = __osip_sdp_append_string (string, size, tmp, sdp->o_addr);
-  tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, "v=");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->v_version);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, "o=");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_username);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, " ");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_sess_id);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, " ");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_sess_version);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, " ");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_nettype);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, " ");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_addrtype);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, " ");
+  tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->o_addr);
+  tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
   if (sdp->s_name != NULL) {
-    tmp = __osip_sdp_append_string (string, size, tmp, "s=");
-    tmp = __osip_sdp_append_string (string, size, tmp, sdp->s_name);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "s=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->s_name);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
   }
   if (sdp->i_info != NULL) {
-    tmp = __osip_sdp_append_string (string, size, tmp, "i=");
-    tmp = __osip_sdp_append_string (string, size, tmp, sdp->i_info);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "i=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->i_info);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
   }
   if (sdp->u_uri != NULL) {
-    tmp = __osip_sdp_append_string (string, size, tmp, "u=");
-    tmp = __osip_sdp_append_string (string, size, tmp, sdp->u_uri);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "u=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->u_uri);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
   }
   pos = 0;
   while (!osip_list_eol (&sdp->e_emails, pos)) {
     char *email = (char *) osip_list_get (&sdp->e_emails, pos);
 
-    tmp = __osip_sdp_append_string (string, size, tmp, "e=");
-    tmp = __osip_sdp_append_string (string, size, tmp, email);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "e=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, email);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
     pos++;
   }
   pos = 0;
   while (!osip_list_eol (&sdp->p_phones, pos)) {
     char *phone = (char *) osip_list_get (&sdp->p_phones, pos);
 
-    tmp = __osip_sdp_append_string (string, size, tmp, "p=");
-    tmp = __osip_sdp_append_string (string, size, tmp, phone);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "p=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, phone);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
     pos++;
   }
   if (sdp->c_connection != NULL) {
     char *next_tmp;
     int i;
 
-    i = sdp_append_connection (string, size, tmp, sdp->c_connection, &next_tmp);
+    i = sdp_append_connection (&string, &size, tmp, sdp->c_connection, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
@@ -1913,7 +1913,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     char *next_tmp;
     int i;
 
-    i = sdp_append_bandwidth (string, size, tmp, header, &next_tmp);
+    i = sdp_append_bandwidth (&string, &size, tmp, header, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
@@ -1928,7 +1928,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     char *next_tmp;
     int i;
 
-    i = sdp_append_time_descr (string, size, tmp, header, &next_tmp);
+    i = sdp_append_time_descr (&string, &size, tmp, header, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
@@ -1938,16 +1938,16 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
   }
 
   if (sdp->z_adjustments != NULL) {
-    tmp = __osip_sdp_append_string (string, size, tmp, "z=");
-    tmp = __osip_sdp_append_string (string, size, tmp, sdp->z_adjustments);
-    tmp = __osip_sdp_append_string (string, size, tmp, CRLF);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, "z=");
+    tmp = __osip_sdp_append_string (&string, &size, tmp, sdp->z_adjustments);
+    tmp = __osip_sdp_append_string (&string, &size, tmp, CRLF);
   }
 
   if (sdp->k_key != NULL) {
     char *next_tmp;
     int i;
 
-    i = sdp_append_key (string, size, tmp, sdp->k_key, &next_tmp);
+    i = sdp_append_key (&string, &size, tmp, sdp->k_key, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
@@ -1961,7 +1961,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     char *next_tmp;
     int i;
 
-    i = sdp_append_attribute (string, size, tmp, header, &next_tmp);
+    i = sdp_append_attribute (&string, &size, tmp, header, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
@@ -1976,7 +1976,7 @@ sdp_message_to_str (sdp_message_t * sdp, char **dest)
     char *next_tmp;
     int i;
 
-    i = sdp_append_media (string, size, tmp, header, &next_tmp);
+    i = sdp_append_media (&string, &size, tmp, header, &next_tmp);
     if (i != 0) {
       osip_free (string);
       return -1;
