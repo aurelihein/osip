@@ -152,12 +152,12 @@ struct timeval {
 typedef pthread_t osip_thread_t;
 #endif
 
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #include <winapifamily.h>
 #endif
 
 /* Windows without Pthreads for Win32 */
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
 #define HAVE_CPP11_THREAD
 #elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )

@@ -20,7 +20,7 @@
 #ifndef _INTERNALOSIPPARSER_H_
 #define _INTERNALOSIPPARSER_H_
 
-#if defined (HAVE_CONFIG_H)
+#if defined (ud)
 #include <osip-config.h>
 #endif
 
@@ -57,7 +57,7 @@
 
 #define snprintf _snprintf
 
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #include <winapifamily.h>
 #endif
 
@@ -65,7 +65,7 @@
 /* only use for vs .net (compiler v. 1300) or greater */
 #if _MSC_VER >= 1300
 #define WIN32_USE_CRYPTO 1
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
 #undef WIN32_USE_CRYPTO
 #elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )

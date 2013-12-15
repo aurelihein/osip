@@ -79,7 +79,7 @@
 #include <sys/time.h>
 #elif defined(WIN32)
 #include <windows.h>
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
 #include <winsock2.h>
 #elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
@@ -378,7 +378,7 @@ osip_atoi (const char *number)
 
 #endif
 
-#if _MSC_VER >= 1700
+#if (_MSC_VER >= 1700) && !defined(_USING_V110_SDK71_)
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
 #define HAVE_WINDOWSPHONE_API
 #elif defined(WINAPI_FAMILY) && WINAPI_FAMILY_ONE_PARTITION( WINAPI_FAMILY, WINAPI_PARTITION_APP )
@@ -787,9 +787,10 @@ osip_trace_initialize_syslog (osip_trace_level_t level, char *ident)
 {
 }
 
-void
+int
 osip_trace_initialize (osip_trace_level_t level, FILE * file)
 {
+  return OSIP_UNDEFINED_ERROR;
 }
 
 void
@@ -812,7 +813,7 @@ osip_is_trace_level_activate (osip_trace_level_t level)
 
 /* initialize log */
 /* all lower levels of level are logged in file. */
-void
+int
 osip_trace_initialize (osip_trace_level_t level, FILE * file)
 {
   osip_trace_level_t i = TRACE_LEVEL0;
@@ -834,6 +835,7 @@ osip_trace_initialize (osip_trace_level_t level, FILE * file)
       tracing_table[i] = LOG_FALSE;
     i++;
   }
+  return 0;
 }
 
 void
