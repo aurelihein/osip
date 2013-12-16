@@ -323,12 +323,12 @@ sdp_message_init (sdp_message_t ** sdp)
 static char *
 __osip_sdp_append_string (char **string, int *size, char *cur, char *string_osip_to_append)
 {
-  int length = strlen (string_osip_to_append);
+  int length = (int)strlen (string_osip_to_append);
 
   if (cur - (*string) + length > *size) {
     int length2;
 
-    length2 = cur - *string;
+    length2 = (int)(cur - *string);
     (*string) = osip_realloc ((*string), *size + length + 10);
     *size = *size + length + 10;
     cur = (*string) + length2;     /* the initial allocation may have changed! */
