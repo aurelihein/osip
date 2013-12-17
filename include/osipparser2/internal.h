@@ -20,7 +20,7 @@
 #ifndef _INTERNALOSIPPARSER_H_
 #define _INTERNALOSIPPARSER_H_
 
-#if defined (ud)
+#if defined (HAVE_CONFIG_H)
 #include <osip-config.h>
 #endif
 
