@@ -21,7 +21,7 @@
 #include <osip2/osip_time.h>
 #include <osipparser2/osip_port.h>
 
-#ifdef __MACH__
+#ifdef __APPLE__
 #include <mach/clock.h>
 #include <mach/mach.h>
 #endif
@@ -151,7 +151,7 @@ _osip_gettimeofday_realtime (struct timeval *tp, void *tz)
   return 0;
 }
 
-#elif defined(__MACH__)
+#elif defined(__APPLE__)
 
 int
 osip_gettimeofday (struct timeval *tp, void *tz)
