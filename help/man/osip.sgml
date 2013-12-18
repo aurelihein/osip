@@ -4,8 +4,8 @@
   <!ENTITY dhfirstname "<firstname>Aymeric</firstname>">
   <!ENTITY dhsurname   "<surname>MOIZARD</surname>">
   <!ENTITY dhdate      "<date>Jan 15, 2005</date>">
-  <!ENTITY dhsection   "<manvolnum>SECTION</manvolnum>">
-  <!ENTITY dhemail     "<email>jack at atosc.org</email>">
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhemail     "<email>amoizard at antisip.com</email>">
   <!ENTITY dhusername  "Aymeric Moizard">
   <!ENTITY dhucpackage "<refentrytitle>libosip</refentrytitle>">
   <!ENTITY dhpackage   "libosip2">
