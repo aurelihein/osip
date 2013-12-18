@@ -10,10 +10,10 @@ AC_MSG_NOTICE([Copyright (C) 2001-2012 Aymeric MOIZARD - <amoizard@antisip.com>]
 dnl *********************************************************************
 dnl Source packaging numbers
 OSIP_MAJOR_VERSION=4
-OSIP_MINOR_VERSION=0
+OSIP_MINOR_VERSION=1
 OSIP_MICRO_VERSION=0
 
-SONAME_MAJOR_VERSION=10
+SONAME_MAJOR_VERSION=11
 SONAME_MINOR_VERSION=0
 SONAME_MICRO_VERSION=0
 

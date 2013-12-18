@@ -178,7 +178,7 @@ osip_dialog_match_as_uac (osip_dialog_t * dlg, osip_message_t * answer)
      Just my own feelings.
    */
   i = osip_call_id_to_str (answer->call_id, &tmp);
-  if (i!=0)
+  if (i != 0)
     return i;
 
   if (0 != strcmp (dlg->call_id, tmp)) {
@@ -240,7 +240,7 @@ osip_dialog_match_as_uas (osip_dialog_t * dlg, osip_message_t * request)
     return OSIP_BADPARAMETER;
 
   i = osip_call_id_to_str (request->call_id, &tmp);
-  if (i!=0)
+  if (i != 0)
     return i;
   if (0 != strcmp (dlg->call_id, tmp)) {
     osip_free (tmp);

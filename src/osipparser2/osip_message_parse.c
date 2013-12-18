@@ -111,7 +111,7 @@ __osip_message_startline_parsereq (osip_message_t * dest, const char *buf, const
       dest->req_uri = NULL;
       return OSIP_SYNTAXERROR;
     }
-    if (((hp[0] != 'S') && (hp[0] != 's')) || ((hp[1] != 'I') && (hp[1] != 'i')) || ((hp[2] != 'P') && (hp[2] != 'p'))|| (hp[3] != '/') ) {
+    if (((hp[0] != 'S') && (hp[0] != 's')) || ((hp[1] != 'I') && (hp[1] != 'i')) || ((hp[2] != 'P') && (hp[2] != 'p')) || (hp[3] != '/')) {
       OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_ERROR, NULL, "No crlf found/No SIP/2.0 found\n"));
       osip_free (dest->sip_method);
       dest->sip_method = NULL;

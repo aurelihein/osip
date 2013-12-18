@@ -389,9 +389,9 @@ osip_uri_parse_headers (osip_uri_t * url, const char *headers)
     }
 
     i = osip_uri_uheader_add (url, hname, hvalue);
-    if (i!=OSIP_SUCCESS) {
-      osip_free(hname);
-      osip_free(hvalue);
+    if (i != OSIP_SUCCESS) {
+      osip_free (hname);
+      osip_free (hvalue);
       return i;
     }
 
@@ -454,7 +454,7 @@ osip_uri_parse_params (osip_uri_t * url, const char *params)
     __osip_uri_unescape (pname);
 
     i = osip_uri_uparam_add (url, pname, pvalue);
-    if (i!=OSIP_SUCCESS) {
+    if (i != OSIP_SUCCESS) {
       osip_free (pname);
       osip_free (pvalue);
       return OSIP_NOMEM;
@@ -495,7 +495,7 @@ osip_uri_parse_params (osip_uri_t * url, const char *params)
   __osip_uri_unescape (pname);
 
   i = osip_uri_uparam_add (url, pname, pvalue);
-  if (i!=OSIP_SUCCESS) {
+  if (i != OSIP_SUCCESS) {
     osip_free (pname);
     osip_free (pvalue);
     return OSIP_NOMEM;
@@ -554,8 +554,9 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 
   if (url->username != NULL) {
     char *tmp2 = __osip_uri_escape_userinfo (url->username);
-    if (tmp2==NULL) {
-      osip_free(buf);
+
+    if (tmp2 == NULL) {
+      osip_free (buf);
       return OSIP_NOMEM;
     }
 
@@ -565,8 +566,9 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
   }
   if ((url->password != NULL) && (url->username != NULL)) {     /* be sure that when a password is given, a username is also given */
     char *tmp2 = __osip_uri_escape_password (url->password);
-    if (tmp2==NULL) {
-      osip_free(buf);
+
+    if (tmp2 == NULL) {
+      osip_free (buf);
       return OSIP_NOMEM;
     }
 
@@ -621,10 +623,10 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
       len = len + plen;
       previous_buf = buf;
       buf = (char *) osip_realloc (buf, len);
-      if (buf==NULL) {
-        osip_free(previous_buf);
-        osip_free(tmp1);
-        osip_free(tmp2);
+      if (buf == NULL) {
+        osip_free (previous_buf);
+        osip_free (tmp1);
+        osip_free (tmp2);
         return OSIP_NOMEM;
       }
       tmp = buf;
@@ -669,10 +671,10 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
       len = len + plen;
       previous_buf = buf;
       buf = (char *) osip_realloc (buf, len);
-      if (buf==NULL) {
-        osip_free(previous_buf);
-        osip_free(tmp1);
-        osip_free(tmp2);
+      if (buf == NULL) {
+        osip_free (previous_buf);
+        osip_free (tmp1);
+        osip_free (tmp2);
         return OSIP_NOMEM;
       }
       tmp = buf;
@@ -925,11 +927,12 @@ __osip_uri_escape_nonascii_and_nondef (const char *string, const char *def)
       newlen += 2;              /* the size grows with two, since this'll become a %XX */
       if (newlen > alloc) {
         char *previous_ns;
+
         alloc *= 2;
-        previous_ns=ns;
+        previous_ns = ns;
         ns = osip_realloc (ns, alloc);
         if (!ns) {
-          osip_free(previous_ns);
+          osip_free (previous_ns);
           return NULL;
         }
       }

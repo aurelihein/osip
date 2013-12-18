@@ -1,3 +1,16 @@
+libosip2 (4.1.0)
+	* fix sdp re-allocation
+	* increase max length size
+	* support for Visual Studio 2012 (v110 and v110 for XP)
+	* support for Windows Phone 8
+	* osip_trace_initialize returns 0 if log are compiled.
+	* timer e and timer g will use #define DEFAULT_T2 instead of 4000.
+	* handle additionnal possible malloc failure.
+	* fix compatibility with old UA for INVITE retransmission.
+	* fix osip_sem_destroy leak on apple.
+	* accept lowercase sip/2.0.
+	* increase max default size for logs on windows.
+
 libosip2 (4.0.0)
 	* implement time compensation for android.
 	* reduce path len // remove path in front of logs.

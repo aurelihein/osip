@@ -461,7 +461,7 @@ sdp_message_k_key_set (sdp_message_t * sdp, int pos_media, char *keytype, char *
   if ((pos_media != -1) && (osip_list_size (&sdp->m_medias) < pos_media + 1))
     return OSIP_UNDEFINED_ERROR;
   i = sdp_key_init (&key);
-  if (i!=0)
+  if (i != 0)
     return i;
   key->k_keytype = keytype;
   key->k_keydata = keydata;

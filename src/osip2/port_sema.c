@@ -248,11 +248,10 @@ osip_sem_destroy (struct osip_sem *_sem)
 
   if (sem == NULL)
     return OSIP_SUCCESS;
-  if (semaphore_destroy (task, sem->semid) == KERN_SUCCESS)
-    {
-      osip_free (sem);
-      return OSIP_SUCCESS;
-    }
+  if (semaphore_destroy (task, sem->semid) == KERN_SUCCESS) {
+    osip_free (sem);
+    return OSIP_SUCCESS;
+  }
 
   osip_free (sem);
   return OSIP_SUCCESS;
@@ -604,8 +603,8 @@ osip_sem_init (unsigned int value)
     return NULL;
 
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
-  if ((sem->h = CreateSemaphoreExW (NULL, value, LONG_MAX, NULL, 0, (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE|SEMAPHORE_MODIFY_STATE))) != NULL)
-	  return (struct osip_sem *) (sem);
+  if ((sem->h = CreateSemaphoreExW (NULL, value, LONG_MAX, NULL, 0, (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | SEMAPHORE_MODIFY_STATE))) != NULL)
+    return (struct osip_sem *) (sem);
 #else
   if ((sem->h = CreateSemaphore (NULL, value, LONG_MAX, NULL)) != NULL)
     return (struct osip_sem *) (sem);

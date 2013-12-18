@@ -415,7 +415,7 @@ osip_usleep (int useconds)
   }
   select (0, 0, 0, 0, &delay);
 #elif defined(HAVE_WINAPPSTORE_API)
-	TODO
+  TODO
 #elif defined(WIN32)
   Sleep (useconds / 1000);
 #elif defined(__rtems__)
@@ -936,7 +936,7 @@ __osip_port_gettimeofday (struct timeval *tp, void *tz)
 
 #ifndef MAX_LENGTH_TR
 #ifdef SYSTEM_LOGGER_ENABLED
-#define MAX_LENGTH_TR 2024       /* NEVER DEFINE MORE THAN 2024 */
+#define MAX_LENGTH_TR 2024      /* NEVER DEFINE MORE THAN 2024 */
 #else
 #define MAX_LENGTH_TR 512       /* NEVER DEFINE MORE THAN 2024 */
 #endif
@@ -1160,9 +1160,10 @@ osip_trace (char *filename_long, int li, osip_trace_level_t level, FILE * f, cha
     {
       WCHAR wUnicode[MAX_LENGTH_TR * 2];
       int size;
+
       size = MultiByteToWideChar (CP_UTF8, 0, buffer, -1, wUnicode, MAX_LENGTH_TR * 2);
-      wUnicode[size-2]='\n';
-      wUnicode[size-1]='\0';
+      wUnicode[size - 2] = '\n';
+      wUnicode[size - 1] = '\0';
       OutputDebugString (wUnicode);
     }
 #else

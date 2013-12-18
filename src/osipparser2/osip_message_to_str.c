@@ -171,7 +171,7 @@ strcat_simple_header (char **_string, size_t * malloc_size, char **_message, voi
       *malloc_size = message - string + size_of_header + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
-        osip_free(*_string); /* pointer for string */
+        osip_free (*_string);   /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
@@ -194,7 +194,7 @@ strcat_simple_header (char **_string, size_t * malloc_size, char **_message, voi
       *malloc_size = message - string + strlen (tmp) + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
-        osip_free(*_string); /* pointer for string */
+        osip_free (*_string);   /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
@@ -238,7 +238,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_messa
       *malloc_size = message - string + size_of_header + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
-        osip_free(*_string); /* pointer for string */
+        osip_free (*_string);   /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;
@@ -262,7 +262,7 @@ strcat_headers_one_per_line (char **_string, size_t * malloc_size, char **_messa
       *malloc_size = message - string + strlen (tmp) + 100;
       string = osip_realloc (string, *malloc_size);
       if (string == NULL) {
-        osip_free(*_string); /* pointer for string */
+        osip_free (*_string);   /* pointer for string */
         *_string = NULL;
         *_message = NULL;
         return OSIP_NOMEM;

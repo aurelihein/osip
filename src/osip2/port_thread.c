@@ -102,7 +102,7 @@ osip_thread_create (int stacksize, void *(*func) (void *), void *arg)
 
   if (thread == NULL)
     return NULL;
-  thread->h = new std::thread(func, arg);
+  thread->h = new std::thread (func, arg);
   if (thread->h == 0) {
     osip_free (thread);
     return NULL;
@@ -114,13 +114,15 @@ int
 osip_thread_join (struct osip_thread *_thread)
 {
   osip_thread_t *thread = (osip_thread_t *) _thread;
-  std::thread *th;
+
+  std::thread * th;
   if (thread == NULL)
     return OSIP_BADPARAMETER;
-  th = (std::thread*)thread->h;
-  th->join();
+  th = (std::thread *) thread->h;
+  th->join ();
   delete th;
-  thread->h=NULL;
+
+  thread->h = NULL;
   return (0);
 }
 
