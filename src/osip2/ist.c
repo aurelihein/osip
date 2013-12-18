@@ -77,7 +77,7 @@ __osip_ist_free (osip_ist_t * ist)
 {
   if (ist == NULL)
     return OSIP_SUCCESS;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ist ressource\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ist resource\n"));
   osip_free (ist);
   return OSIP_SUCCESS;
 }

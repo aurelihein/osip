@@ -70,7 +70,7 @@ __osip_nist_free (osip_nist_t * nist)
 {
   if (nist == NULL)
     return OSIP_SUCCESS;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist ressource\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nist resource\n"));
 
   osip_free (nist);
   return OSIP_SUCCESS;

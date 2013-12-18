@@ -133,7 +133,7 @@ osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_ty
   osip_id_mutex_lock (osip);
   (*transaction)->transactionid = osip->transactionid++;
   osip_id_mutex_unlock (osip);
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating transaction ressource %i %s\n", (*transaction)->transactionid, request->call_id->number));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "allocating transaction resource %i %s\n", (*transaction)->transactionid, request->call_id->number));
 
   /* those lines must be called before "osip_transaction_free" */
   (*transaction)->ctx_type = ctx_type;
@@ -243,7 +243,7 @@ osip_transaction_init (osip_transaction_t ** transaction, osip_fsm_type_t ctx_ty
    when a transaction goes in the TERMINATED STATE.
    However the user might want to just take the context out of
    the SIP stack andf keep it for future use without freeing
-   all ressource.... This way the transaction context can be
+   all resource.... This way the transaction context can be
    kept without being used by the oSIP stack.
 
    new methods that replace this one:
@@ -278,7 +278,7 @@ osip_transaction_free2 (osip_transaction_t * transaction)
   if (transaction == NULL)
     return OSIP_BADPARAMETER;
   if (transaction->orig_request != NULL && transaction->orig_request->call_id != NULL && transaction->orig_request->call_id->number != NULL) {
-    OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free transaction ressource %i %s\n", transaction->transactionid, transaction->orig_request->call_id->number));
+    OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free transaction resource %i %s\n", transaction->transactionid, transaction->orig_request->call_id->number));
   }
   if (transaction->ctx_type == ICT) {
     __osip_ict_free (transaction->ict_context);

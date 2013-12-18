@@ -134,7 +134,7 @@ __osip_nict_free (osip_nict_t * nict)
 {
   if (nict == NULL)
     return OSIP_SUCCESS;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict ressource\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free nict resource\n"));
 
   osip_free (nict->destination);
   osip_free (nict);

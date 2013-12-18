@@ -144,7 +144,7 @@ __osip_ict_free (osip_ict_t * ict)
 {
   if (ict == NULL)
     return OSIP_SUCCESS;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict ressource\n"));
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_INFO2, NULL, "free ict resource\n"));
 
   osip_free (ict->destination);
   osip_free (ict);

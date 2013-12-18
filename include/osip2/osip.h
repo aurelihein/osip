@@ -1030,7 +1030,7 @@ extern "C" {
   osip_event_t *osip_new_outgoing_sipmessage (osip_message_t * sip);
 
 /**
- * Free all ressource in a sipevent.
+ * Free all resource in a sipevent.
  * @param event The event to free.
  */
   void osip_event_free (osip_event_t * event);
