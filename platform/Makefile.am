@@ -1,5 +1,5 @@
 
-SUBDIRS = rpm vsnet wince
+SUBDIRS = rpm vsnet
 
 rpm-package:
 	cd rpm && $(MAKE) rpm-package

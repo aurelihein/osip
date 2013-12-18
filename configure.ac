@@ -386,6 +386,5 @@ help/doxygen/Makefile
 platform/Makefile
 platform/rpm/Makefile
 platform/vsnet/Makefile
-platform/wince/Makefile
 include/osip2/doxygen.dox)
 
