@@ -230,6 +230,7 @@ osip_compensatetime ()
 
   _osip_gettimeofday_realtime (&now_real, NULL);
   osip_gettimeofday (&now_monotonic, NULL);
+  now_monotonic.tv_sec -= offset.tv_sec;
 
   if (now_real.tv_sec == 0)
     return;                     /* no compensation */
@@ -241,16 +242,14 @@ osip_compensatetime ()
   if (last_now_monotonic.tv_sec == 0) {
     _osip_gettimeofday_realtime (&last_now_real, NULL);
     osip_gettimeofday (&last_now_monotonic, NULL);
+    last_now_monotonic.tv_sec -= offset.tv_sec;
 
     return;
   }
 
   diff_monotonic.tv_sec = now_monotonic.tv_sec - last_now_monotonic.tv_sec;
   diff_real.tv_sec = now_real.tv_sec - last_now_real.tv_sec;
-
-  /* reset for later use */
-  _osip_gettimeofday_realtime (&last_now_real, NULL);
-  osip_gettimeofday (&last_now_monotonic, NULL);
+  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_WARNING, NULL, "adjusting exosip monotonic time (mono_diff=%i, real_diff=%i)!\n",  diff_monotonic.tv_sec, diff_real.tv_sec));
 
   if (diff_real.tv_sec < 5)
     return;                     /* skip any "back in time" operation or small interval */
@@ -261,6 +260,11 @@ osip_compensatetime ()
 
   OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_WARNING, NULL, "adjusting exosip monotonic time (%i)!\n", diff_real.tv_sec - diff_monotonic.tv_sec));
   offset.tv_sec += diff_real.tv_sec - diff_monotonic.tv_sec;
+
+  /* reset for later use */
+  _osip_gettimeofday_realtime (&last_now_real, NULL);
+  osip_gettimeofday (&last_now_monotonic, NULL);
+  last_now_monotonic.tv_sec -= offset.tv_sec;
 }
 
 time_t
