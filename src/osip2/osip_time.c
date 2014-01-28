@@ -249,7 +249,6 @@ osip_compensatetime ()
 
   diff_monotonic.tv_sec = now_monotonic.tv_sec - last_now_monotonic.tv_sec;
   diff_real.tv_sec = now_real.tv_sec - last_now_real.tv_sec;
-  OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_WARNING, NULL, "adjusting exosip monotonic time (mono_diff=%i, real_diff=%i)!\n",  diff_monotonic.tv_sec, diff_real.tv_sec));
 
   if (diff_real.tv_sec < 5)
     return;                     /* skip any "back in time" operation or small interval */
