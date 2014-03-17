@@ -271,6 +271,10 @@ osip_getsystemtime (time_t * t)
 {
   struct timeval now_monotonic;
 
+#ifdef ANDROID
+  osip_compensatetime ();
+#endif
+
   osip_gettimeofday (&now_monotonic, NULL);
   if (t != NULL) {
     *t = now_monotonic.tv_sec;
