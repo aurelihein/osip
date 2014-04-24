@@ -141,12 +141,12 @@ nict_snd_request (osip_transaction_t * nict, osip_event_t * evt)
        stop timer E in reliable transport - non blocking socket: 
        the message was just sent
      */
-    if (i == 0) {               /* but message was really sent */
+    {
       osip_via_t *via;
       char *proto;
-
-      i = osip_message_get_via (nict->orig_request, 0, &via);   /* get top via */
-      if (i < 0) {
+      int k;
+      k = osip_message_get_via (nict->orig_request, 0, &via);   /* get top via */
+      if (k < 0) {
         nict_handle_transport_error (nict, -1);
         return;
       }
@@ -155,11 +155,19 @@ nict_snd_request (osip_transaction_t * nict, osip_event_t * evt)
         nict_handle_transport_error (nict, -1);
         return;
       }
-      if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
-      }
-      else {                    /* reliable protocol is used: */
-        nict->nict_context->timer_e_length = -1;        /* E is not ACTIVE */
-        nict->nict_context->timer_e_start.tv_sec = -1;
+      if (i == 0) {               /* but message was really sent */
+        if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
+        }
+        else {                    /* reliable protocol is used: */
+          nict->nict_context->timer_e_length = -1;        /* E is not ACTIVE */
+          nict->nict_context->timer_e_start.tv_sec = -1;
+        }
+      } else {
+        if (osip_strcasecmp (proto, "TCP") != 0 && osip_strcasecmp (proto, "TLS") != 0 && osip_strcasecmp (proto, "SCTP") != 0) {
+        }
+        else {                    /* reliable protocol is used: */
+          nict->nict_context->timer_e_length = DEFAULT_T1_TCP_PROGRESS;
+        }
       }
     }
 #endif
@@ -182,7 +190,10 @@ osip_nict_timeout_e_event (osip_transaction_t * nict, osip_event_t * evt)
 
   /* reset timer */
   if (nict->state == NICT_TRYING) {
-    nict->nict_context->timer_e_length = nict->nict_context->timer_e_length * 2;
+    if (nict->nict_context->timer_e_length < DEFAULT_T1)
+      nict->nict_context->timer_e_length = nict->nict_context->timer_e_length + DEFAULT_T1_TCP_PROGRESS;
+    else
+      nict->nict_context->timer_e_length = nict->nict_context->timer_e_length * 2;
     if (nict->nict_context->timer_e_length > DEFAULT_T2)
       nict->nict_context->timer_e_length = DEFAULT_T2;
   }

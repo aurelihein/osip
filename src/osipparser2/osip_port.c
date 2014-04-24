@@ -928,6 +928,9 @@ __osip_port_gettimeofday (struct timeval *tp, void *tz)
 #elif defined(__linux)
 #include <sys/time.h>
 #define __osip_port_gettimeofday gettimeofday
+#elif defined(__APPLE__)
+#include <sys/time.h>
+#define __osip_port_gettimeofday gettimeofday
 #endif
 
 #ifdef ANDROID
@@ -951,7 +954,7 @@ osip_trace (char *filename_long, int li, osip_trace_level_t level, FILE * f, cha
 
   char *fi = NULL;
 
-#if (defined(WIN32)  && !defined(_WIN32_WCE)) || defined(__linux)
+#if (defined(WIN32)  && !defined(_WIN32_WCE)) || defined(__linux) || defined(__APPLE__)
   static struct timeval start = { 0, 0 };
   struct timeval now;
 
@@ -960,7 +963,7 @@ osip_trace (char *filename_long, int li, osip_trace_level_t level, FILE * f, cha
   }
   __osip_port_gettimeofday (&now, NULL);
 
-  relative_time = 1000 * (now.tv_sec - start.tv_sec);
+  relative_time = (int)(1000 * (now.tv_sec - start.tv_sec));
   if (now.tv_usec - start.tv_usec > 0)
     relative_time = relative_time + ((now.tv_usec - start.tv_usec) / 1000);
   else
