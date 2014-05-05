@@ -450,8 +450,11 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
   hname_len = strlen (hname);
 
   if (comma == NULL || (hname_len == 4 && strncmp (hname, "date", 4) == 0)
+      || (hname_len == 1 && strncmp (hname, "t", 1) == 0)
       || (hname_len == 2 && strncmp (hname, "to", 2) == 0)
+      || (hname_len == 1 && strncmp (hname, "f", 1) == 0)
       || (hname_len == 4 && strncmp (hname, "from", 4) == 0)
+      || (hname_len == 1 && strncmp (hname, "i", 1) == 0)
       || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
       || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
       || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
@@ -464,7 +467,11 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
       || (hname_len == 19 && strncmp (hname, "proxy-authorization", 19) == 0)
       || (hname_len == 25 && strncmp (hname, "proxy-authentication-info", 25) == 0)
       || (hname_len == 12 && strncmp (hname, "organization", 12) == 0)
-      || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0))
+      || (hname_len == 13 && strncmp (hname, "authorization", 13) == 0)
+      || (hname_len == 1 && strncmp (hname, "r", 1) == 0) /* refer-to */
+      || (hname_len == 8 && strncmp (hname, "refer-to", 8) == 0)
+      || (hname_len == 1 && strncmp (hname, "b", 1) == 0) /* referred-by */
+      || (hname_len == 11 && strncmp (hname, "referred-by", 11) == 0))
     /* there is no multiple header! likely      */
     /* to happen most of the time...            */
     /* or hname is a TEXT-UTF8-TRIM and may     */
