@@ -426,12 +426,11 @@ int
 osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalue)
 {
   int i;
-  char *ptr;                    /* current location of the search */
+  char *ptr, *p;                /* current location of the search */
   char *comma;                  /* This is the separator we are elooking for */
   char *beg;                    /* beg of a header */
   char *end;                    /* end of a header */
-  char *quote1;                 /* first quote of a pair of quotes   */
-  char *quote2;                 /* second quuote of a pair of quotes */
+  int inquotes, inuri;          /* state for inside/outside of double-qoutes or URI */
   size_t hname_len;
 
   /* Find header based upon lowercase comparison */
@@ -457,6 +456,7 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
       || (hname_len == 1 && strncmp (hname, "i", 1) == 0)
       || (hname_len == 7 && strncmp (hname, "call-id", 7) == 0)
       || (hname_len == 4 && strncmp (hname, "cseq", 4) == 0)
+      || (hname_len == 1 && strncmp (hname, "s", 1) == 0)
       || (hname_len == 7 && strncmp (hname, "subject", 7) == 0)
       || (hname_len == 7 && strncmp (hname, "expires", 7) == 0)
       || (hname_len == 6 && strncmp (hname, "server", 6) == 0)
@@ -485,115 +485,88 @@ osip_message_set_multiple_header (osip_message_t * sip, char *hname, char *hvalu
   }
 
   beg = hvalue;
-  end = NULL;
-  quote2 = NULL;
-  while (comma != NULL) {
-    quote1 = __osip_quote_find (ptr);
-    if (quote1 != NULL) {
-      quote2 = __osip_quote_find (quote1 + 1);
-      if (quote2 == NULL)
-        return OSIP_SYNTAXERROR;        /* quotes comes by pair */
-      ptr = quote2 + 1;
-    }
+  inquotes = 0;
+  inuri = 0;
+  /* Seach for a comma that is not within quotes or a URI */
+  for (;; ptr++)
+  {
+    switch (*ptr)
+    {
+    case '"':
+      /* Check that the '"' is not escaped */
+      for (i = 0, p = ptr; p >= beg && *p == '\\'; p--, i++);
+      if (i % 2 == 0)
+        inquotes = !inquotes; /* the '"' was not escaped */
+      break;
 
-    if ((quote1 == NULL) || (quote1 > comma)) {
-      /* We must search for the next comma which is not
-         within quotes! */
-      end = comma;
-
-      if (quote1 != NULL && quote1 > comma) {
-        /* comma may be within the quotes */
-        /* ,<sip:usera@host.example.com>;methods=\"INVITE,BYE,OPTIONS,ACK,CANCEL\",<sip:userb@host.blah.com> */
-        /* we want the next comma after the quotes */
-        char *tmp_comma;
-        char *tmp_quote1;
-        char *tmp_quote2;
-
-        tmp_quote1 = quote1;
-        tmp_quote2 = quote2;
-        tmp_comma = strchr (comma + 1, ',');
-        while (1) {
-          if (tmp_comma < tmp_quote1)
-            break;              /* ok (before to quotes) */
-          if (tmp_comma < tmp_quote2) {
-            tmp_comma = strchr (tmp_quote2 + 1, ',');
-          }
-          tmp_quote1 = __osip_quote_find (tmp_quote2 + 1);
-          if (tmp_quote1 == NULL)
-            break;
-          tmp_quote2 = __osip_quote_find (tmp_quote1 + 1);
-          if (tmp_quote2 == NULL)
-            break;              /* probably a malformed message? */
+    case '<':
+      if (!inquotes)
+      {
+        if (!inuri)
+        {
+          if((osip_strncasecmp(ptr+1, "sip:", 4) == 0
+              || osip_strncasecmp(ptr+1, "sips:", 5) == 0
+              || osip_strncasecmp(ptr+1, "http:", 5) == 0
+              || osip_strncasecmp(ptr+1, "https:", 6) == 0
+              || osip_strncasecmp(ptr+1, "tel:", 4) == 0)
+              && strchr(ptr, '>'))
+            inuri = 1;
         }
-        comma = tmp_comma;      /* this one is not enclosed within quotes */
+	/*
+	  else {
+	  if we found such sequence: "<sip:" "<sip:" ">"
+	  It might be a valid header containing data and not URIs.
+	  Thus, we ignore inuri
+	  }
+	*/
       }
-      else
-        comma = strchr (comma + 1, ',');
-      if (comma != NULL)
-        ptr = comma + 1;
+      break;
 
-    }
-    else if ((quote1 < comma) && (quote2 < comma)) {    /* quotes are located before the comma, */
-      /* continue the search for next quotes  */
-      ptr = quote2 + 1;
-    }
-    else if ((quote1 < comma) && (comma < quote2)) {    /* if comma is inside the quotes... */
-      /* continue with the next comma.    */
-      ptr = quote2 + 1;
-      comma = strchr (ptr, ',');
-      if (comma == NULL)
-        /* this header last at the end of the line! */
-      {                         /* this one does not need an allocation... */
-#if 0
-        if (strlen (beg) < 2)
-          return OSIP_SUCCESS;  /* empty header */
-#else
-        if (beg[0] == '\0' || beg[1] == '\0')
-          return OSIP_SUCCESS;  /* empty header */
-#endif
-        osip_clrspace (beg);
-        i = osip_message_set__header (sip, hname, beg);
+    case '>':
+      if (!inquotes)
+      {
+        if (inuri)
+          inuri = 0;
+      }
+      break;
+
+    case '\0':
+      /* we discard any validation we tried: no valid uri detected */
+      inquotes=0;
+      inuri=0;
+    case ',':
+      if (!inquotes && !inuri)
+      {
+        char *avalue;
+
+        if (beg[0] == '\0')
+          return OSIP_SUCCESS; /* empty header */
+
+        end = ptr;
+        if (end - beg + 1 < 2)
+	  {
+	    beg=end+1;
+	    break; /* skip empty header */
+	  }
+        avalue = (char *) osip_malloc (end - beg + 1);
+        if (avalue==NULL)
+          return OSIP_NOMEM;
+        osip_clrncpy (avalue, beg, end - beg);
+        /* really store the header in the sip structure */
+        i = osip_message_set__header (sip, hname, avalue);
+        osip_free (avalue);
         if (i != 0)
           return i;
-        return OSIP_SUCCESS;
+        beg = end + 1;
       }
-    }
-
-    if (end != NULL) {
-      char *avalue;
-
-      if (end - beg + 1 < 2)
-        return OSIP_SYNTAXERROR;
-      avalue = (char *) osip_malloc (end - beg + 1);
-      if (avalue == NULL)
-        return OSIP_NOMEM;
-      osip_clrncpy (avalue, beg, end - beg);
-      /* really store the header in the sip structure */
-      i = osip_message_set__header (sip, hname, avalue);
-      osip_free (avalue);
-      if (i != 0)
-        return i;
-      beg = end + 1;
-      end = NULL;
-      if (comma == NULL)
-        /* this header last at the end of the line! */
-      {                         /* this one does not need an allocation... */
-#if 0
-        if (strlen (beg) < 2)
-          return OSIP_SUCCESS;  /* empty header */
-#else
-        if (beg[0] == '\0' || beg[1] == '\0')
-          return OSIP_SUCCESS;  /* empty header */
-#endif
-        osip_clrspace (beg);
-        i = osip_message_set__header (sip, hname, beg);
-        if (i != 0)
-          return i;
+      if (*ptr == '\0')
         return OSIP_SUCCESS;
-      }
+      break;
+
+    default:
+      break;
     }
   }
-  return OSIP_SYNTAXERROR;      /* if comma is NULL, we should have already return 0 */
 }
 
 /* set all headers */
