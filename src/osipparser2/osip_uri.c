@@ -65,11 +65,11 @@ osip_uri_init (osip_uri_t ** url)
 /* this method search for the separator and   */
 /* return it only if it is located before the */
 /* second separator. */
-char *
+const char *
 next_separator (const char *ch, int separator_osip_to_find, int before_separator)
 {
-  char *ind;
-  char *tmp;
+  const char *ind;
+  const char *tmp;
 
   ind = strchr (ch, separator_osip_to_find);
   if (ind == NULL)
@@ -97,9 +97,9 @@ next_separator (const char *ch, int separator_osip_to_find, int before_separator
 int
 osip_uri_parse (osip_uri_t * url, const char *buf)
 {
-  char *username;
-  char *password;
-  char *host;
+  const char *username;
+  const char *password;
+  const char *host;
   const char *port;
   const char *params;
   const char *headers;
@@ -339,14 +339,14 @@ int
 osip_uri_parse_headers (osip_uri_t * url, const char *headers)
 {
   int i;
-  char *and;
-  char *equal;
+  const char *_and;
+  const char *equal;
 
   /* find '=' wich is the separator for one header */
   /* find ';' wich is the separator for multiple headers */
 
   equal = strchr (headers, '=');
-  and = strchr (headers + 1, '&');
+  _and = strchr (headers + 1, '&');
 
   if (equal == NULL)            /* each header MUST have a value */
     return OSIP_SYNTAXERROR;
@@ -361,20 +361,20 @@ osip_uri_parse_headers (osip_uri_t * url, const char *headers)
     osip_strncpy (hname, headers + 1, equal - headers - 1);
     __osip_uri_unescape (hname);
 
-    if (and != NULL) {
-      if (and - equal < 2) {
+    if (_and != NULL) {
+      if (_and - equal < 2) {
         osip_free (hname);
         return OSIP_SYNTAXERROR;
       }
-      hvalue = (char *) osip_malloc (and - equal);
+      hvalue = (char *) osip_malloc (_and - equal);
       if (hvalue == NULL) {
         osip_free (hname);
         return OSIP_NOMEM;
       }
-      osip_strncpy (hvalue, equal + 1, and - equal - 1);
+      osip_strncpy (hvalue, equal + 1, _and - equal - 1);
       __osip_uri_unescape (hvalue);
     }
-    else {                      /* this is for the last header (no and...) */
+    else {                      /* this is for the last header (no _and...) */
       if (headers + strlen (headers) - equal + 1 < 2) {
         osip_free (hname);
         return OSIP_SYNTAXERROR;
@@ -395,13 +395,13 @@ osip_uri_parse_headers (osip_uri_t * url, const char *headers)
       return i;
     }
 
-    if (and == NULL)            /* we just set the last header */
+    if (_and == NULL)            /* we just set the last header */
       equal = NULL;
     else {                      /* continue on next header */
 
-      headers = and;
+      headers = _and;
       equal = strchr (headers, '=');
-      and = strchr (headers + 1, '&');
+      _and = strchr (headers + 1, '&');
       if (equal == NULL)        /* each header MUST have a value */
         return OSIP_SYNTAXERROR;
     }
