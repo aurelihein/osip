@@ -136,7 +136,7 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *
       parse_ok++;
     }
     if (0 == parse_ok) {
-      char *quote1, *quote2, *tmp;
+      const char *quote1, *quote2, *tmp;
 
       /* CAUTION */
       /* parameter not understood!!! I'm too lazy to handle IT */

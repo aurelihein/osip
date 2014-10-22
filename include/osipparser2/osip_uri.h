@@ -404,7 +404,7 @@ extern "C" {
 
 #ifndef DOXYGEN
 /* internal method */
-  char *next_separator (const char *ch, int separator_osip_to_find, int before_separator);
+  const char *next_separator (const char *ch, int separator_osip_to_find, int before_separator);
 
   char *__osip_uri_escape_nonascii_and_nondef (const char *string, const char *def);
   char *__osip_uri_escape_userinfo (const char *string);

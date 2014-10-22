@@ -658,10 +658,10 @@ __osip_set_next_token_better (char **dest, char *buf, int end_separator, int *fo
 
 /* in quoted-string, many characters can be escaped...   */
 /* __osip_quote_find returns the next quote that is not escaped */
-char *
+const char *
 __osip_quote_find (const char *qstring)
 {
-  char *quote;
+  const char *quote;
 
   quote = strchr (qstring, '"');
   if (quote == qstring)         /* the first char matches and is not escaped... */

@@ -187,7 +187,7 @@ extern "C" {
   int osip_clrspace (char *word);
   int __osip_set_next_token (char **dest, char *buf, int end_separator, char **next);
   /* find the next unescaped quote and return its index. */
-  char *__osip_quote_find (const char *qstring);
+  const char *__osip_quote_find (const char *qstring);
   char *osip_enquote (const char *s);
   void osip_dequote (char *s);
 
