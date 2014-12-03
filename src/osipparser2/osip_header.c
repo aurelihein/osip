@@ -248,7 +248,7 @@ osip_header_to_str (const osip_header_t * header, char **dest)
   else
     snprintf (*dest, hlen + len + 3, "%s: ", header->hname);
 
-  if (*dest[0] > 'a' && *dest[0] < 'z')
+  if (*dest[0] >= 'a' && *dest[0] <= 'z')
     *dest[0] = (*dest[0] - 32);
   return OSIP_SUCCESS;
 }
