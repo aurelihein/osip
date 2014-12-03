@@ -101,10 +101,11 @@ osip_from_free (osip_from_t * from)
 int
 osip_from_parse (osip_from_t * from, const char *hvalue)
 {
-  const char *displayname;
-  const char *url;
-  const char *url_end;
+  const char *displayname=NULL;
+  const char *url=NULL;
+  const char *url_end=NULL;
   const char *gen_params;
+  const char *ptr;
   int i;
 
   if (from == NULL || hvalue == NULL)
@@ -125,92 +126,137 @@ osip_from_parse (osip_from_t * from, const char *hvalue)
      sip:amoizard@antisip.com;tag=34erZ
      ^                ^^      
    */
-
-  displayname = strchr (hvalue, '"');
-
-  url = strchr (hvalue, '<');
-  if (url != NULL) {
-    url_end = strchr (url, '>');
-    if (url_end == NULL)
-      return OSIP_SYNTAXERROR;
+  /* search for first char */
+  ptr = hvalue;
+  while (ptr[0]!='\0') {
+    if (ptr[0]==' ') {
+      ptr++;
+      continue;
+    }
+    if (ptr[0]=='"') {
+      displayname = ptr;
+      break;
+    }
+    break;
   }
 
-  /* SIPit day2: this case was not supported
-     first '"' is placed after '<' and after '>'
-     <sip:ixion@62.254.248.117;method=INVITE>;description="OPEN";expires=28800
-     if the fisrt quote is after '<' then
-     this is not a quote for a displayname.
-   */
-  if (displayname != NULL) {
-    if (displayname > url)
-      displayname = NULL;
-  }
+  if (ptr[0]=='\0')
+    return OSIP_SUCCESS; /* empty header allowed? */
 
-  if ((displayname == NULL) && (url != NULL)) { /* displayname IS A '*token' (not a quoted-string) */
-    if (hvalue != url) {        /* displayname exists */
-      if (url - hvalue + 1 < 2)
-        return OSIP_SYNTAXERROR;
-      from->displayname = (char *) osip_malloc (url - hvalue + 1);
+  if (displayname!=NULL) {
+    /* displayname IS A quoted-string (not a '*token') */
+    const char *second = NULL;
+
+    /* search for quotes */
+    second = __osip_quote_find (displayname + 1);
+    if (second == NULL)
+      return OSIP_SYNTAXERROR;        /* missing quote */
+
+    if (second - displayname + 2 >= 2) {
+      from->displayname = (char *) osip_malloc (second - displayname + 2);
       if (from->displayname == NULL)
         return OSIP_NOMEM;
-      osip_clrncpy (from->displayname, hvalue, url - hvalue);
+      osip_strncpy (from->displayname, displayname, second - displayname + 1);
+      /* osip_clrspace(from->displayname); *//*should we do that? */
+
+      /* special case: "<sip:joe@big.org>" <sip:joe@really.big.com> */
+    }                         /* else displayname is empty? */
+
+    ptr=second+1;
+    while (ptr[0]!='\0') {
+      if (ptr[0]==' ') {
+        ptr++;
+        continue;
+      }
+      if (ptr[0]=='<') {
+        url = ptr;
+        break;
+      }
+      break;
     }
-    url++;                      /* place pointer on the beginning of url */
-  }
-  else {
-    if ((displayname != NULL) && (url != NULL)) {       /* displayname IS A quoted-string (not a '*token') */
-      const char *first;
-      const char *second = NULL;
 
-      /* search for quotes */
-      first = __osip_quote_find (hvalue);
-      if (first == NULL)
-        return OSIP_SYNTAXERROR;        /* missing quote */
-      second = __osip_quote_find (first + 1);
-      if (second == NULL)
-        return OSIP_SYNTAXERROR;        /* missing quote */
-      if ((first > url))
-        return OSIP_SYNTAXERROR;
+    if (url == NULL)
+      return OSIP_SYNTAXERROR;        /* '<' MUST exist */
+    if (ptr[1] == '\0')
+      return OSIP_SYNTAXERROR;        /* '<' MUST contain something */
+  } else {
+    /* 1*(alphanum / "-" / "." / "!" / "%" / "*" / "_" / "+" / "`" / "'" / "~" ) */
+    /* search for URL -> continue until non allowed element is found */
+    const char *beg=ptr;
+    while (ptr[0]!='\0') {
+      if (ptr[0]==' ') {
+        ptr++;
+        continue;
+      }
+      if (ptr[0] >= 'a' && ptr[0] <= 'z') {
+        ptr++;
+        continue;
+      }
+      if (ptr[0] >= 'A' && ptr[0] <= 'Z') {
+        ptr++;
+        continue;
+      }
+      if (ptr[0] >= '0' && ptr[0] <= '9') {
+        ptr++;
+        continue;
+      }
+      if (ptr[0]=='-' || ptr[0]=='.' || ptr[0]=='!' || ptr[0]=='%' || ptr[0]=='*' || ptr[0]=='_' || ptr[0]=='+' || ptr[0]=='`' || ptr[0]=='\'' || ptr[0]=='~') {
+        ptr++;
+        continue;
+      }
+      url = ptr;
+      break;
+    }
 
-      if (second - first + 2 >= 2) {
-        from->displayname = (char *) osip_malloc (second - first + 2);
+    if (ptr[0]=='\0' || url==NULL)
+      return OSIP_SYNTAXERROR; /* not special char found? broken header? */
+
+    if (ptr[0]=='<') {
+      /* "<" found for URI */
+      if (ptr[1] == '\0')
+        return OSIP_SYNTAXERROR;        /* '<' MUST contain something */
+
+      if (url - beg>0) {
+        from->displayname = (char *) osip_malloc (url - beg + 1);
         if (from->displayname == NULL)
           return OSIP_NOMEM;
-        osip_strncpy (from->displayname, first, second - first + 1);
-        /* osip_clrspace(from->displayname); *//*should we do that? */
+        osip_clrncpy (from->displayname, hvalue, url - beg);
+      }
 
-        /* special case: "<sip:joe@big.org>" <sip:joe@really.big.com> */
-      }                         /* else displayname is empty? */
-      url = strchr (second + 1, '<');
-      if (url == NULL)
-        return OSIP_SYNTAXERROR;        /* '<' MUST exist */
-      url++;
+    } else if (ptr[0]==':') {
+      /* this was a scheme for a URL? */
+      url=beg;
+    } else {
+      /* this is some non URL header? */
+      url=beg;
     }
-    else
-      url = hvalue;             /* field does not contains '<' and '>' */
   }
 
-  /* DISPLAY-NAME SET   */
-  /* START of URL KNOWN */
+  /* define url_end and gen_params for name-addr */
+  if (url[0]=='<') {
+    url++;
+    ptr=url;
+    /* first occurence of ">" is the end of url */
+    url_end = strchr (ptr, '>');
+    if (url_end==NULL)
+      return OSIP_SYNTAXERROR;
+    url_end--;
+    gen_params = strchr (url_end, ';');
+  }
 
-  url_end = strchr (url, '>');
-
-  if (url_end == NULL) {        /* sip:amoizard@antisip.com;tag=023 *//* We are sure ';' is the delimiter for from-parameters */
-    char *host = strchr (url, '@');
-
-    if (host != NULL)
-      gen_params = strchr (host, ';');
-    else
-      gen_params = strchr (url, ';');
+  /* define url_end and gen_params for addr-spec */
+  if (url_end==NULL) {
+    /* rfc3261 // 20.10 Contact:
+    Even if the "display-name" is empty, the "name-addr" form MUST be
+    used if the "addr-spec" contains a comma, semicolon, or question
+    mark.  There may or may not be LWS between the display-name and the
+    "<". 
+    Conclusion: there is no semicolon (in username) before the semicolon generic param delimiter... */
+    gen_params = strchr (url, ';');
     if (gen_params != NULL)
       url_end = gen_params - 1;
     else
       url_end = url + strlen (url);
-  }
-  else {                        /* jack <sip:amoizard@antisip.com;user=phone>;tag=azer */
-
-    gen_params = strchr (url_end, ';');
-    url_end--;                  /* place pointer on the beginning of url */
   }
 
   if (gen_params != NULL) {     /* now we are sure a param exist */

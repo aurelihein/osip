@@ -65,6 +65,8 @@ sip:alice@registrar.com:5080
 sip:+1234@po4x80.com
 sip:+1254353534@0.cxcsqn.qscr4n.suisacro.fr
 sip:MDU@1.kn_5.tn_1.suisacro.fr
+sip:1234@192.168.1.10;expires=3600;reg-id=1;+sip.instance="<urn:uuid:12345678-1234-1234-1234-1234567890ab>"
+sip:ixion@62.254.248.117;description="OPEN";expires=28800
 #
 # Valid from fields without display names and brackets
 #
