@@ -125,24 +125,6 @@ osip_add_ixt (osip_t * osip, ixt_t * ixt)
   osip_ixt_unlock (osip);
 }
 
-static void
-osip_remove_ixt (osip_t * osip, ixt_t * ixt)
-{
-  int i;
-  ixt_t *tmp;
-
-  /* add in list osip_t->ixt */
-  osip_ixt_lock (osip);
-  for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++) {
-    tmp = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-    if (tmp == ixt) {
-      osip_list_remove (&osip->ixt_retransmissions, i);
-      break;
-    }
-  }
-  osip_ixt_unlock (osip);
-}
-
 static int
 ixt_init (ixt_t ** ixt)
 {

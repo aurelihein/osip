@@ -309,7 +309,7 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
       parse_ok++;
     }
     if (0 == parse_ok) {
-      char *quote1, *quote2, *tmp;
+      const char *quote1, *quote2, *tmp;
 
       /* CAUTION */
       /* parameter not understood!!! I'm too lazy to handle IT */
