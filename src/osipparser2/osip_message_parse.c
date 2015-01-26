@@ -987,10 +987,12 @@ osip_message_get_reason (int replycode)
     {414, "Request-URI Too Large"},
     {415, "Unsupported Media Type"},
     {416, "Unsupported Uri Scheme"},
+    {417, "Unknown Resource-Priority"},
     {420, "Bad Extension"},
     {421, "Extension Required"},
     {422, "Session Interval Too Small"},
     {423, "Interval Too Short"},
+    {469, "Bad Info Package"},
     {480, "Temporarily not available"},
     {481, "Call Leg/Transaction Does Not Exist"},
     {482, "Loop Detected"},
@@ -1011,6 +1013,7 @@ osip_message_get_reason (int replycode)
     {503, "Service Unavailable"},
     {504, "Gateway Time-out"},
     {505, "SIP Version not supported"},
+    {513, "Message Too Large"},
   };
   static const struct code_to_reason reasons6xx[] = {
     {600, "Busy Everywhere"},
