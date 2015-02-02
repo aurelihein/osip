@@ -706,19 +706,11 @@ msg_osip_body_parse (osip_message_t * sip, const char *start_of_buf, const char 
     else {
       /* if content_length does not exist, set it. */
       char tmp[16];
-
-      /* case where content-length is missing but the
-         body only contains non-binary data */
-      if (0 == osip_strcasecmp (sip->content_type->type, "application")
-          && 0 == osip_strcasecmp (sip->content_type->subtype, "sdp")) {
-        osip_body_len = strlen (start_of_body);
-        sprintf (tmp, "%i", (int) osip_body_len);
-        i = osip_message_set_content_length (sip, tmp);
-        if (i != 0)
-          return i;
-      }
-      else
-        return OSIP_SYNTAXERROR;        /* Content-type may be non binary data */
+      osip_body_len = length;
+      sprintf (tmp, "%i", (int) osip_body_len);
+      i = osip_message_set_content_length (sip, tmp);
+      if (i != 0)
+	return i;
     }
 
     if (length < osip_body_len) {
@@ -866,9 +858,19 @@ _osip_message_parse (osip_message_t * sip, const char *buf, size_t length, int s
   }
   tmp = (char *) next_header_index;
 
-  /* this is a *very* simple test... (which handle most cases...) */
-  if (tmp[0] == '\0' || tmp[1] == '\0' || tmp[2] == '\0') {
-    /* this is mantory in the oSIP stack */
+  if (sip->content_length != NULL && sip->content_length->value == NULL) {
+    /* empty content_length header */
+    osip_content_length_free(sip->content_length);
+    sip->content_length=NULL;
+  }
+
+  if (sip->content_length != NULL && sip->content_length->value != NULL && atoi(sip->content_length->value) >0) {
+    /* body exist */
+  } else if (sip->content_length == NULL && '\r' == next_header_index[0] && '\n' == next_header_index[1] && length - (tmp - beg) - (2) >0) {
+    /* body exist */
+  } else if (sip->content_length == NULL && '\n' == next_header_index[0] && length - (tmp - beg) - (1) >0) {
+    /* body exist */
+  } else {
     if (sip->content_length == NULL)
       osip_message_set_content_length (sip, "0");
     osip_free (beg);
