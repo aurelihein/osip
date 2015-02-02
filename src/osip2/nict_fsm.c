@@ -270,6 +270,14 @@ nict_rcv_1xx (osip_transaction_t * nict, osip_event_t * evt)
     osip_message_free (nict->last_response);
   }
   nict->last_response = evt->sip;
+
+  /* for unreliable transport increase the retransmission timeout */
+  if (nict->nict_context->timer_e_length > 0) {
+    nict->nict_context->timer_e_length = DEFAULT_T2;
+    osip_gettimeofday (&nict->nict_context->timer_e_start, NULL);
+    add_gettimeofday (&nict->nict_context->timer_e_start, nict->nict_context->timer_e_length);
+  }
+
   __osip_message_callback (OSIP_NICT_STATUS_1XX_RECEIVED, nict, evt->sip);
   __osip_transaction_set_state (nict, NICT_PROCEEDING);
 }
