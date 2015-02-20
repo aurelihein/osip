@@ -518,12 +518,30 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
 
   const char *comma;
   const char *equal;
+  const char *startquote;
+  const char *endquote;
 
   /* find '=' wich is the separator for one param */
   /* find ';' wich is the separator for multiple params */
 
   equal = next_separator (params + 1, '=', ';');
   comma = strchr (params + 1, ';');
+
+  /* If comma points after value start quote, move it to after end quote */
+  if (equal != NULL) {
+    const char *tmp;
+    startquote=NULL;
+    for (tmp=equal+1;tmp[0]==' ';tmp++) {
+    }
+    if (tmp[0]=='"')
+      startquote = tmp;
+    if (startquote != NULL && comma > startquote) {
+      comma = NULL;
+      endquote = __osip_quote_find(startquote + 1);
+      if (endquote)
+        comma = strchr(endquote, ';');
+    }
+  }
 
   while (comma != NULL) {
 
@@ -570,6 +588,22 @@ __osip_generic_param_parseall (osip_list_t * gen_params, const char *params)
     params = comma;
     equal = next_separator (params + 1, '=', ';');
     comma = strchr (params + 1, ';');
+
+    /* If comma points after value start quote, move it to after end quote */
+    if (equal != NULL) {
+      const char *tmp;
+      startquote=NULL;
+      for (tmp=equal+1;tmp[0]==' ';tmp++) {
+      }
+      if (tmp[0]=='"')
+        startquote = tmp;
+      if (startquote != NULL && comma > startquote) {
+        comma = NULL;
+        endquote = __osip_quote_find(startquote + 1);
+        if (endquote)
+          comma = strchr(endquote, ';');
+      }
+    }
   }
 
   /* this is the last header (comma==NULL) */
