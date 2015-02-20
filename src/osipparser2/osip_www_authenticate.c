@@ -75,8 +75,6 @@ __osip_quoted_string_set (const char *name, const char *str, char **result, cons
     else
       return OSIP_SYNTAXERROR;  /* bad header format */
 
-  if (strlen (str) <= strlen (name))
-    return OSIP_SYNTAXERROR;    /* bad header format... */
   if (osip_strncasecmp (name, str, strlen (name)) == 0) {
     const char *quote1;
     const char *quote2;
@@ -308,6 +306,36 @@ osip_www_authenticate_parse (osip_www_authenticate_t * wwwa, const char *hvalue)
       space = next;
       parse_ok++;
     }
+    i = __osip_token_set ("version", space, &(wwwa->version), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space)
+      {
+        space = next;
+        parse_ok++;
+      }
+       i = __osip_quoted_string_set ("targetname", space, &(wwwa->targetname), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space)
+      {
+        space = next;
+        parse_ok++;
+      }
+       i = __osip_quoted_string_set ("gssapi-data", space, &(wwwa->gssapi_data), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space)
+      {
+        space = next;
+        parse_ok++;
+      }
     if (0 == parse_ok) {
       const char *quote1, *quote2, *tmp;
 
@@ -455,6 +483,45 @@ osip_www_authenticate_set_qop_options (osip_www_authenticate_t * www_authenticat
   www_authenticate->qop_options = (char *) qop_options;
 }
 
+char *
+osip_www_authenticate_get_version (osip_www_authenticate_t * www_authenticate)
+{
+  return www_authenticate->version;
+}
+
+void
+osip_www_authenticate_set_version (osip_www_authenticate_t *
+				   www_authenticate, char *version)
+{
+  www_authenticate->version = (char *) version;
+}
+
+char *
+osip_www_authenticate_get_targetname (osip_www_authenticate_t * www_authenticate)
+{
+  return www_authenticate->targetname;
+}
+
+void
+osip_www_authenticate_set_targetname (osip_www_authenticate_t *
+				      www_authenticate, char *targetname)
+{
+  www_authenticate->targetname = (char *) targetname;
+}
+
+char *
+osip_www_authenticate_get_gssapi_data (osip_www_authenticate_t * www_authenticate)
+{
+  return www_authenticate->gssapi_data;
+}
+
+void
+osip_www_authenticate_set_gssapi_data (osip_www_authenticate_t *
+                                       www_authenticate, char *gssapi_data)
+{
+  www_authenticate->gssapi_data = (char *) gssapi_data;
+}
+
 
 
 /* returns the www_authenticate header as a string.          */
@@ -487,6 +554,12 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa, char **dest)
     len = len + strlen (wwwa->algorithm) + 12;
   if (wwwa->qop_options != NULL)
     len = len + strlen (wwwa->qop_options) + 6;
+  if (wwwa->version != NULL)
+    len = len + strlen (wwwa->version) + 10;
+  if (wwwa->targetname != NULL)
+    len = len + strlen (wwwa->targetname) + 13;
+  if (wwwa->gssapi_data != NULL)
+    len = len + strlen (wwwa->gssapi_data) + 14;
 
   tmp = (char *) osip_malloc (len);
   if (tmp == NULL)
@@ -523,7 +596,18 @@ osip_www_authenticate_to_str (const osip_www_authenticate_t * wwwa, char **dest)
     tmp = osip_strn_append (tmp, ", qop=", 6);
     tmp = osip_str_append (tmp, wwwa->qop_options);
   }
-
+  if (wwwa->version != NULL) {
+      tmp = osip_strn_append (tmp, ", version=", 10);
+      tmp = osip_str_append (tmp, wwwa->version);
+  }
+  if (wwwa->targetname != NULL) {
+      tmp = osip_strn_append (tmp, ", targetname=", 13);
+      tmp = osip_str_append (tmp, wwwa->targetname);
+  }
+  if (wwwa->gssapi_data != NULL) {
+      tmp = osip_strn_append (tmp, ", gssapi-data=", 14);
+      tmp = osip_str_append (tmp, wwwa->gssapi_data);
+  }
   if (wwwa->realm == NULL) {
     /* remove comma */
     len = strlen (wwwa->auth_type);
@@ -550,6 +634,9 @@ osip_www_authenticate_free (osip_www_authenticate_t * www_authenticate)
   osip_free (www_authenticate->stale);
   osip_free (www_authenticate->algorithm);
   osip_free (www_authenticate->qop_options);
+  osip_free (www_authenticate->version);
+  osip_free (www_authenticate->targetname);
+  osip_free (www_authenticate->gssapi_data);
 
   osip_free (www_authenticate);
 }
@@ -615,6 +702,27 @@ osip_www_authenticate_clone (const osip_www_authenticate_t * wwwa, osip_www_auth
   if (wa->qop_options == NULL && wwwa->qop_options != NULL) {
     osip_www_authenticate_free (wa);
     return OSIP_NOMEM;
+  }
+  if (wwwa->version != NULL)
+    wa->version = osip_strdup (wwwa->version);
+  if (wa->version==NULL && wwwa->version!=NULL)
+  {
+	  osip_www_authenticate_free (wa);
+	  return OSIP_NOMEM;
+  }
+  if (wwwa->targetname != NULL)
+    wa->targetname = osip_strdup (wwwa->targetname);
+  if (wa->targetname==NULL && wwwa->targetname!=NULL)
+  {
+	  osip_www_authenticate_free (wa);
+	  return OSIP_NOMEM;
+  }
+  if (wwwa->gssapi_data != NULL)
+    wa->gssapi_data = osip_strdup (wwwa->gssapi_data);
+  if (wa->gssapi_data==NULL && wwwa->gssapi_data!=NULL)
+  {
+	  osip_www_authenticate_free (wa);
+	  return OSIP_NOMEM;
   }
 
   *dest = wa;

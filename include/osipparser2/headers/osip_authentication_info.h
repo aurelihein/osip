@@ -45,11 +45,17 @@
  */
   struct osip_authentication_info
   {
+    char *auth_type;	/**< Authentication Type (Basic or Digest) */
     char *nextnonce;    /**< nextnonce value */
     char *qop_options;  /**< qop options value */
     char *rspauth;      /**< rspauth value */
     char *cnonce;       /**< cnonce value */
     char *nonce_count;  /**< noncecount value */
+    char *snum;         /**< snum value */
+    char *srand;        /**< srand value */
+    char *realm;        /**< realm value */
+    char *targetname;   /**< targetname value */
+    char *opaque;       /**< opaque value */
   };
 
 
@@ -89,6 +95,17 @@ extern "C"
 			      osip_authentication_info_t ** dest);
 
 
+/**
+ * Get value of the auth_type parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_auth_type (osip_authentication_info_t * header);
+/**
+ * Add the auth_type parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_auth_type (osip_authentication_info_t * header, char *value);
 /**
  * Get value of the nextnonce parameter from a Authenication-Info element.
  * @param header The element to work on.
@@ -145,7 +162,61 @@ extern "C"
  * @param value The value of the new parameter.
  */
   void osip_authentication_info_set_nonce_count (osip_authentication_info_t * header, char *value);
-
+/**
+ * Get value of the snum parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_snum (osip_authentication_info_t * header);
+/**
+ * Add the snum parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_snum (osip_authentication_info_t * header, char *value);
+/**
+ * Get value of the srand parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_srand (osip_authentication_info_t * header);
+/**
+ * Add the srand parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_srand (osip_authentication_info_t * header, char *value);
+/**
+ * Get value of the targetname parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_targetname (osip_authentication_info_t * header);
+/**
+ * Add the targetname parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_targetname (osip_authentication_info_t * header, char *value);
+/**
+ * Get value of the realm parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_realm (osip_authentication_info_t * header);
+/**
+ * Add the realm parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_realm (osip_authentication_info_t * header, char *value);
+/**
+ * Get value of the opaque parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+  char *osip_authentication_info_get_opaque (osip_authentication_info_t * header);
+/**
+ * Add the opaque parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authentication_info_set_opaque (osip_authentication_info_t * header, char *value);
 
 #ifdef __cplusplus
 }

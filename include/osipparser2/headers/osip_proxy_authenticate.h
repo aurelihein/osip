@@ -177,6 +177,39 @@ extern "C"
  * @param value The value of the new parameter.
  */
 #define osip_proxy_authenticate_set_qop_options(header,value) osip_www_authenticate_set_qop_options(header,value)
+/**
+ * Get value of the version parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authenticate_get_version(header) osip_www_authenticate_get_version(header)
+/**
+ * Add the version parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authenticate_set_version(header,value) osip_www_authenticate_set_version(header,value)
+/**
+ * Get value of the targetname parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authenticate_get_targetname(header) osip_www_authenticate_get_targetname(header)
+/**
+ * Add the targetname parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authenticate_set_targetname(header,value) osip_www_authenticate_set_targetname(header,value)
+/**
+ * Get value of the gssapi_data parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authenticate_get_gssapi_data(header) osip_www_authenticate_get_gssapi_data(header)
+/**
+ * Add the gssapi_data parameter from a Proxy-Authenticate element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authenticate_set_gssapi_data(header,value) osip_www_authenticate_set_gssapi_data(header,value)
 
 
 #ifdef __cplusplus

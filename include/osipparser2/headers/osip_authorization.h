@@ -57,6 +57,11 @@
     char *opaque;		/**< opaque (optionnal) */
     char *message_qop;		/**< message_qop (optionnal) */
     char *nonce_count;		/**< nonce_count (optionnal) */
+    char *version;		/**< version (optional - NTLM) */
+    char *targetname;		/**< targetname (optional - NTLM) */
+    char *gssapi_data;		/**< gssapi-data (optional - NTLM) */
+    char *crand;
+	  char *cnum;
     char *auth_param;		/**< other parameters (optionnal) */
   };
 
@@ -228,6 +233,66 @@ extern "C"
  * @param value The value of the new parameter.
  */
   void osip_authorization_set_nonce_count (osip_authorization_t * header, char *value);
+/**
+ * Get value of the version parameter from a Authorization element.
+ * @param header The element to work on.
+ */
+  char *osip_authorization_get_version (osip_authorization_t * header);
+/**
+ * Add the version parameter from a Authorization element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authorization_set_version (osip_authorization_t * header,
+					char *value);
+/**
+ * Get value of the targetname parameter from a Authorization element.
+ * @param header The element to work on.
+ */
+  char *osip_authorization_get_targetname (osip_authorization_t * header);
+/**
+ * Add the targetname parameter from a Authorization element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authorization_set_targetname (osip_authorization_t * header,
+					char *value);
+/**
+ * Get value of the gssapi_data parameter from a Authorization element.
+ * @param header The element to work on.
+ */
+  char *osip_authorization_get_gssapi_data (osip_authorization_t * header);
+/**
+ * Add the gssapi_data parameter from a Authorization element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authorization_set_gssapi_data (osip_authorization_t * header,
+					char *value);
+/**
+ * Get value of the crand parameter from a Authorization element.
+ * @param header The element to work on.
+ */
+  char *osip_authorization_get_crand (osip_authorization_t * header);
+/**
+ * Add the crand parameter from a Authorization element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authorization_set_crand (osip_authorization_t * header,
+				     char *value);
+/**
+ * Get value of the cnum parameter from a Authorization element.
+ * @param header The element to work on.
+ */
+  char *osip_authorization_get_cnum (osip_authorization_t * header);
+/**
+ * Add the gssapi_data parameter from a Authorization element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+  void osip_authorization_set_cnum (osip_authorization_t * header,
+				    char *value);
 
 #ifdef __cplusplus
 }

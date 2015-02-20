@@ -129,6 +129,61 @@ extern "C"
  * @param value The value of the new parameter.
  */
 #define osip_proxy_authentication_info_set_nonce_count(header, value) osip_authentication_info_set_nonce_count(header, value)
+/**
+ * Get value of the snum parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authentication_info_get_snum(header) osip_authentication_info_get_snum(header)
+/**
+ * Add the snum parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authentication_info_set_snum(header, value) osip_authentication_info_set_snum(header, value)
+/**
+ * Get value of the srand parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authentication_info_get_srand(header) osip_authentication_info_get_srand(header)
+/**
+ * Add the srand parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authentication_info_set_srand(header, value) osip_authentication_info_set_srand(header, value)
+/**
+ * Get value of the targetname parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authentication_info_get_targetname(header) osip_authentication_info_get_targetname(header)
+/**
+ * Add the targetname parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authentication_info_set_targetname(header, value) osip_authentication_info_set_targetname(header, value)
+/**
+ * Get value of the realm parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authentication_info_get_realm(header) osip_authentication_info_get_realm(header)
+/**
+ * Add the realm parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authentication_info_set_realm(header, value) osip_authentication_info_set_realm(header, value)
+/**
+ * Get value of the opaque parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ */
+#define osip_proxy_authentication_info_get_opaque(header) osip_authentication_info_get_opaque(header)
+/**
+ * Add the opaque parameter from a Authenication-Info element.
+ * @param header The element to work on.
+ * @param value The value of the new parameter.
+ */
+#define osip_proxy_authentication_info_set_opaque(header, value) osip_authentication_info_set_opaque(header, value)
 
 
 #ifdef __cplusplus

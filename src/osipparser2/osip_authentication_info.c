@@ -33,11 +33,7 @@ osip_authentication_info_init (osip_authentication_info_t ** dest)
     osip_malloc (sizeof (osip_authentication_info_t));
   if (*dest == NULL)
     return OSIP_NOMEM;
-  (*dest)->nextnonce = NULL;
-  (*dest)->qop_options = NULL;
-  (*dest)->rspauth = NULL;
-  (*dest)->cnonce = NULL;
-  (*dest)->nonce_count = NULL;
+  memset (*dest, 0, sizeof (osip_authentication_info_t));
   return OSIP_SUCCESS;
 }
 
@@ -81,11 +77,20 @@ osip_message_set_authentication_info (osip_message_t * sip, const char *hvalue)
 int
 osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *hvalue)
 {
-  const char *space;
+	const char *space, *hack;
   const char *next = NULL;
   int i;
 
-  space = hvalue;
+  space = strchr (hvalue, ' ');
+  hack = strchr( hvalue, '=');
+  if(space && hack && hack > space) {
+	  ainfo->auth_type = (char *) osip_malloc (space - hvalue + 1);
+	  if (ainfo->auth_type==NULL)
+		  return OSIP_NOMEM;
+	  osip_strncpy (ainfo->auth_type, hvalue, space - hvalue);
+  }
+  else
+    space = hvalue;
 
   for (;;) {
     int parse_ok = 0;
@@ -131,6 +136,51 @@ osip_authentication_info_parse (osip_authentication_info_t * ainfo, const char *
       return i;
     if (next == NULL)
       return OSIP_SUCCESS;      /* end of header detected! */
+    else if (next != space) {
+      space = next;
+      parse_ok++;
+    }
+    i = __osip_quoted_string_set ("snum", space, &(ainfo->snum), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space) {
+      space = next;
+      parse_ok++;
+    }
+    i = __osip_quoted_string_set ("srand", space, &(ainfo->srand), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space) {
+      space = next;
+      parse_ok++;
+    }
+    i = __osip_quoted_string_set ("targetname", space, &(ainfo->targetname), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space) {
+      space = next;
+      parse_ok++;
+    }
+    i = __osip_quoted_string_set ("realm", space, &(ainfo->realm), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
+    else if (next != space) {
+      space = next;
+      parse_ok++;
+    }
+    i = __osip_quoted_string_set ("opaque", space, &(ainfo->opaque), &next);
+    if (i!=0)
+      return i;
+    if (next == NULL)
+      return OSIP_SUCCESS;               /* end of header detected! */
     else if (next != space) {
       space = next;
       parse_ok++;
@@ -182,6 +232,18 @@ osip_message_get_authentication_info (const osip_message_t * sip, int pos, osip_
 
   *dest = authentication_info;
   return pos;
+}
+
+char *
+osip_authentication_info_get_auth_type (osip_authentication_info_t *authentication_info)
+{
+  return authentication_info->auth_type;
+}
+
+void
+osip_authentication_info_set_auth_type (osip_authentication_info_t *authentication_info, char *auth_type)
+{
+  authentication_info->auth_type = (char *) auth_type;
 }
 
 char *
@@ -244,6 +306,75 @@ osip_authentication_info_set_qop_options (osip_authentication_info_t * authentic
   authentication_info->qop_options = (char *) qop_options;
 }
 
+char *
+osip_authentication_info_get_snum (osip_authentication_info_t *
+				   authentication_info)
+{
+  return authentication_info->snum;
+}
+
+void
+osip_authentication_info_set_snum (osip_authentication_info_t *
+				   authentication_info, char *snum)
+{
+  authentication_info->snum = (char *) snum;
+}
+
+char *
+osip_authentication_info_get_srand (osip_authentication_info_t *
+				   authentication_info)
+{
+  return authentication_info->srand;
+}
+
+void
+osip_authentication_info_set_srand (osip_authentication_info_t *
+				   authentication_info, char *srand)
+{
+  authentication_info->srand = (char *) srand;
+}
+
+char *
+osip_authentication_info_get_targetname (osip_authentication_info_t *
+				   authentication_info)
+{
+  return authentication_info->targetname;
+}
+
+void
+osip_authentication_info_set_targetname (osip_authentication_info_t *
+				   authentication_info, char *targetname)
+{
+  authentication_info->targetname = (char *) targetname;
+}
+
+char *
+osip_authentication_info_get_realm (osip_authentication_info_t *
+				   authentication_info)
+{
+  return authentication_info->realm;
+}
+
+void
+osip_authentication_info_set_realm (osip_authentication_info_t *
+				   authentication_info, char *realm)
+{
+  authentication_info->realm = (char *) realm;
+}
+
+char *
+osip_authentication_info_get_opaque (osip_authentication_info_t *
+				   authentication_info)
+{
+  return authentication_info->opaque;
+}
+
+void
+osip_authentication_info_set_opaque (osip_authentication_info_t *
+				   authentication_info, char *opaque)
+{
+  authentication_info->opaque = (char *) opaque;
+}
 
 
 /* returns the authentication_info header as a string.          */
@@ -253,13 +384,15 @@ int
 osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char **dest)
 {
   size_t len;
-  char *tmp;
+  char *tmp, *start;
 
   *dest = NULL;
   if (ainfo == NULL)
     return OSIP_BADPARAMETER;
 
   len = 0;
+  if (ainfo->auth_type != NULL)
+    len = len + strlen (ainfo->auth_type) + 1;
   if (ainfo->nextnonce != NULL)
     len = len + strlen (ainfo->nextnonce) + 11;
   if (ainfo->rspauth != NULL)
@@ -270,6 +403,16 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char 
     len = len + strlen (ainfo->nonce_count) + 5;
   if (ainfo->qop_options != NULL)
     len = len + strlen (ainfo->qop_options) + 6;
+  if (ainfo->snum != NULL)
+    len = len + strlen (ainfo->snum) + 7;
+  if (ainfo->srand != NULL)
+    len = len + strlen (ainfo->srand) + 8;
+  if (ainfo->targetname != NULL)
+    len = len + strlen (ainfo->targetname) + 13;
+  if (ainfo->realm != NULL)
+    len = len + strlen (ainfo->realm) + 8;
+  if (ainfo->opaque != NULL)
+    len = len + strlen (ainfo->opaque) + 8;
 
   if (len == 0)
     return OSIP_BADPARAMETER;
@@ -279,39 +422,85 @@ osip_authentication_info_to_str (const osip_authentication_info_t * ainfo, char 
     return OSIP_NOMEM;
   *dest = tmp;
 
+  start = tmp;
+  if (ainfo->auth_type != NULL) {
+    tmp = osip_str_append (tmp, ainfo->auth_type);
+    tmp = osip_str_append (tmp, " ");
+    start = tmp;
+  }
+
   if (ainfo->qop_options != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
     tmp = osip_strn_append (tmp, "qop=", 4);
     tmp = osip_str_append (tmp, ainfo->qop_options);
   }
   if (ainfo->nextnonce != NULL) {
-    if (tmp != *dest) {
+    if (tmp != start) {
       tmp = osip_strn_append (tmp, ", ", 2);
     }
     tmp = osip_strn_append (tmp, "nextnonce=", 10);
     tmp = osip_str_append (tmp, ainfo->nextnonce);
   }
   if (ainfo->rspauth != NULL) {
-    if (tmp != *dest) {
+    if (tmp != start) {
       tmp = osip_strn_append (tmp, ", ", 2);
     }
     tmp = osip_strn_append (tmp, "rspauth=", 8);
     tmp = osip_str_append (tmp, ainfo->rspauth);
   }
   if (ainfo->cnonce != NULL) {
-    if (tmp != *dest) {
+    if (tmp != start) {
       tmp = osip_strn_append (tmp, ", ", 2);
     }
     tmp = osip_strn_append (tmp, "cnonce=", 7);
     tmp = osip_str_append (tmp, ainfo->cnonce);
   }
   if (ainfo->nonce_count != NULL) {
-    if (tmp != *dest) {
+    if (tmp != start) {
       tmp = osip_strn_append (tmp, ", ", 2);
     }
     tmp = osip_strn_append (tmp, "nc=", 3);
     tmp = osip_str_append (tmp, ainfo->nonce_count);
   }
 
+
+  if (ainfo->snum != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
+    tmp = osip_strn_append (tmp, "snum=", 5);
+    tmp = osip_str_append (tmp, ainfo->snum);
+  }
+  if (ainfo->srand != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
+    tmp = osip_strn_append (tmp, "srand=", 6);
+    tmp = osip_str_append (tmp, ainfo->srand);
+    }
+  if (ainfo->targetname != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
+    tmp = osip_strn_append (tmp, "targetname=", 11);
+    tmp = osip_str_append (tmp, ainfo->targetname);
+  }
+  if (ainfo->realm != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
+    tmp = osip_strn_append (tmp, "realm=", 6);
+    tmp = osip_str_append (tmp, ainfo->realm);
+  }
+  if (ainfo->opaque != NULL) {
+    if (tmp != start) {
+      tmp = osip_strn_append (tmp, ", ", 2);
+    }
+    tmp = osip_strn_append (tmp, "opaque=", 7);
+    tmp = osip_str_append (tmp, ainfo->opaque);
+  }
   return OSIP_SUCCESS;
 }
 
@@ -323,11 +512,17 @@ osip_authentication_info_free (osip_authentication_info_t * authentication_info)
   if (authentication_info == NULL)
     return;
 
+  osip_free (authentication_info->auth_type);
   osip_free (authentication_info->nextnonce);
   osip_free (authentication_info->rspauth);
   osip_free (authentication_info->cnonce);
   osip_free (authentication_info->nonce_count);
   osip_free (authentication_info->qop_options);
+  osip_free (authentication_info->snum);
+  osip_free (authentication_info->srand);
+  osip_free (authentication_info->targetname);
+  osip_free (authentication_info->realm);
+  osip_free (authentication_info->opaque);
   osip_free (authentication_info);
 }
 
@@ -344,6 +539,8 @@ osip_authentication_info_clone (const osip_authentication_info_t * ainfo, osip_a
   i = osip_authentication_info_init (&wa);
   if (i != 0)                   /* allocation failed */
     return i;
+  if (ainfo->auth_type != NULL)
+    wa->auth_type = osip_strdup (ainfo->auth_type);
   if (ainfo->nextnonce != NULL)
     wa->nextnonce = osip_strdup (ainfo->nextnonce);
   if (ainfo->cnonce != NULL)
@@ -354,6 +551,16 @@ osip_authentication_info_clone (const osip_authentication_info_t * ainfo, osip_a
     wa->nonce_count = osip_strdup (ainfo->nonce_count);
   if (ainfo->qop_options != NULL)
     wa->qop_options = osip_strdup (ainfo->qop_options);
+  if (ainfo->snum != NULL)
+    wa->snum = osip_strdup (ainfo->snum);
+  if (ainfo->srand != NULL)
+    wa->srand = osip_strdup (ainfo->srand);
+  if (ainfo->targetname != NULL)
+    wa->targetname = osip_strdup (ainfo->targetname);
+  if (ainfo->realm != NULL)
+    wa->realm = osip_strdup (ainfo->realm);
+  if (ainfo->opaque != NULL)
+    wa->opaque = osip_strdup (ainfo->opaque);
 
   *dest = wa;
   return OSIP_SUCCESS;
