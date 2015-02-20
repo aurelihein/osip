@@ -197,10 +197,15 @@ osip_stop_200ok_retransmissions (osip_t * osip, osip_message_t * ack)
   int i;
   ixt_t *ixt;
 
+  if (ack==NULL || ack->cseq==NULL || ack->cseq->number==NULL)
+    return NULL;
+
   osip_ixt_lock (osip);
   for (i = 0; !osip_list_eol (&osip->ixt_retransmissions, i); i++) {
     ixt = (ixt_t *) osip_list_get (&osip->ixt_retransmissions, i);
-    if (osip_dialog_match_as_uas (ixt->dialog, ack) == 0) {
+    if (ixt->msg2xx != NULL && ixt->msg2xx->cseq != NULL && ixt->msg2xx->cseq->number != NULL)
+      continue;
+    if (osip_dialog_match_as_uas (ixt->dialog, ack) == 0  && strcmp (ixt->msg2xx->cseq->number, ack->cseq->number) == 0) {
       osip_list_remove (&osip->ixt_retransmissions, i);
       dialog = ixt->dialog;
       ixt_free (ixt);
