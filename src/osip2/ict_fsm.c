@@ -329,6 +329,26 @@ ict_create_ack (osip_transaction_t * ict, osip_message_t * response)
     }
   }
 
+  if (response->status_code!=401 && response->status_code!=407) {
+    /* ack MUST contains the Authorization headers field from the original request */
+    if (osip_list_size (&ict->orig_request->authorizations) > 0) {
+      i = osip_list_clone (&ict->orig_request->authorizations, &ack->authorizations, (int (*)(void *, void **)) &osip_authorization_clone);
+      if (i != 0) {
+        osip_message_free (ack);
+        return NULL;
+      }
+    }
+
+    /* ack MUST contains the Proxy-Authorization headers field from the original request */
+    if (osip_list_size (&ict->orig_request->proxy_authorizations) > 0) {
+      i = osip_list_clone (&ict->orig_request->proxy_authorizations, &ack->proxy_authorizations, (int (*)(void *, void **)) &osip_proxy_authorization_clone);
+      if (i != 0) {
+        osip_message_free (ack);
+        return NULL;
+      }
+    }
+  }
+
   /* may be we could add some other headers: */
   /* For example "Max-Forward" */
 
