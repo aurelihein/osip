@@ -482,6 +482,7 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
     return OSIP_NOMEM;
   }
   copy->message_property = sip->message_property;
+  copy->application_data = sip->application_data;
 
   *dest = copy;
   return OSIP_SUCCESS;
