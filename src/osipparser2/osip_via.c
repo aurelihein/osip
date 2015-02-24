@@ -251,6 +251,8 @@ osip_via_parse (osip_via_t * via, const char *hvalue)
     if (via->port == NULL)
       return OSIP_NOMEM;
     osip_clrncpy (via->port, port + 1, via_params - port - 1);
+    if(osip_atoi(via->port) < 0)
+      return OSIP_SYNTAXERROR;
   }
   else
     port = via_params;
