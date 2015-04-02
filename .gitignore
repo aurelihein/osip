@@ -33,6 +33,7 @@ scripts/config.guess
 scripts/config.sub
 scripts/depcomp
 scripts/ltmain.sh
+scripts/compile
 stamp-h1
 osip.1
 doxygen.dox
