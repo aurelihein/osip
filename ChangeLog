@@ -1,3 +1,22 @@
+libosip2 (5.0.0)
+	* fix cseq check in order to stop retransmission of 200ok
+	* update to reject negative value in port number
+	* add support for ntlm authentication in parser
+	* include application_data when cloning sip message
+	* fix to allow correct parsing of quoted string in from/to/contact/...
+	* add authorizations and proxy_authorizations into ACK for 3xx, 4xx, 5xx, and 6xx (if answer was not 401/407)
+	* additionnal check for cseq number for matching incoming ack restransmission
+	* patch to transmit ack for OSIP_ICT_ACK_SENT event
+	* improve management of body length // fix a bug when initial value of body is \0.
+	* increase timer E as soon as we receive 1xx for NICT.
+	* update all reasons according to RFC.
+	* add some reason code from rfc4412, rfc3261 and rfc6086.
+	* parse addr spec with LAQUOT and RAQUOT in generic parameters.
+	* avoid issue with comma in userinfo of URI which may appear for several headers such as Contact.
+	* do not use multiple header method for t, f, i, r, refer-to, b, referred-by headers.
+	* allow faster connection with non blocking reliable sockets.
+	* improve android time compensation.
+
 libosip2 (4.1.0)
 	* fix sdp re-allocation
 	* increase max length size

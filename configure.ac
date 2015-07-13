@@ -4,16 +4,16 @@ AC_PREREQ(2.50)
 AC_INIT(include/osip2/osip.h)
 
 AC_MSG_NOTICE([osip2                   The GNU Open SIP library.])
-AC_MSG_NOTICE([Copyright (C) 2001-2012 Aymeric MOIZARD - <amoizard@antisip.com>])
+AC_MSG_NOTICE([Copyright (C) 2001-2015 Aymeric MOIZARD - <amoizard@antisip.com>])
 
 
 dnl *********************************************************************
 dnl Source packaging numbers
-OSIP_MAJOR_VERSION=4
-OSIP_MINOR_VERSION=1
+OSIP_MAJOR_VERSION=5
+OSIP_MINOR_VERSION=0
 OSIP_MICRO_VERSION=0
 
-SONAME_MAJOR_VERSION=11
+SONAME_MAJOR_VERSION=12
 SONAME_MINOR_VERSION=0
 SONAME_MICRO_VERSION=0
 
