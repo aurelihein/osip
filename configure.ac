@@ -1,50 +1,24 @@
-dnl Process this file with autoconf to produce a configure script.
-AC_REVISION($Revision: 1.82 $)dnl
 AC_PREREQ(2.50)
-AC_INIT(include/osip2/osip.h)
+AC_INIT([libosip2], [5.0.0])
+AC_CONFIG_SRCDIR([include/osip2/osip.h])
 
-AC_MSG_NOTICE([osip2                   The GNU Open SIP library.])
+AC_MSG_NOTICE([libosip2                The GNU Open SIP library.])
 AC_MSG_NOTICE([Copyright (C) 2001-2015 Aymeric MOIZARD - <amoizard@antisip.com>])
 
-
-dnl *********************************************************************
-dnl Source packaging numbers
-OSIP_MAJOR_VERSION=5
-OSIP_MINOR_VERSION=0
-OSIP_MICRO_VERSION=0
-
-SONAME_MAJOR_VERSION=12
-SONAME_MINOR_VERSION=0
-SONAME_MICRO_VERSION=0
-
-OSIP_VERSION=$OSIP_MAJOR_VERSION.$OSIP_MINOR_VERSION.$OSIP_MICRO_VERSION
-
-LIBOSIP_SO_VERSION=$SONAME_MAJOR_VERSION:$SONAME_MINOR_VERSION:$SONAME_MICRO_VERSION
-
-AC_SUBST(LIBOSIP_SO_VERSION, $LIBOSIP_SO_VERSION)
-
-AC_SUBST(OSIP_VERSION)
-
-if test "x$PRERELEASE" = "x"; then
- VERSION=$OSIP_VERSION
-else
- VERSION="$OSIP_VERSION-$PRERELEASE"
-fi
-
-PACKAGE=libosip2
+AC_SUBST(LIBOSIP_SO_VERSION, 12:0:0)
+AC_SUBST(OSIP_VERSION, $VERSION)
 
 AC_MSG_RESULT([Configuring ${PACKAGE} ${VERSION}])
 OS=`uname|sed -e 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/'`
 AC_MSG_RESULT([Building Package on ${OS}])
 
 
-
 dnl *********************************************************************
 dnl Initialize automake stuff
 AC_CONFIG_AUX_DIR(scripts)
 AC_CONFIG_HEADERS(osip-config.h)
-AM_INIT_AUTOMAKE($PACKAGE, $VERSION)
-AM_ACLOCAL_INCLUDE(scripts)
+AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([scripts])
 
 AC_CANONICAL_HOST                                                               
 
@@ -77,11 +51,6 @@ enable_mpatrol=$enableval,enable_mpatrol="no")
 AC_ARG_ENABLE(gprof,
 [  --enable-gprof          turn on profiling support.],
 enable_gprof=$enableval,enable_gprof="no")
-
-dnl build with multithreaded support (need semaphore).
-AC_ARG_ENABLE(mt,
-[  --enable-mt             compile oSIP without multi-thread support.],
-enable_mt=$enableval,enable_mt="yes")
 
 dnl support for linux-thread or posix thread (pthread.h)
 AC_ARG_ENABLE(pthread,
@@ -117,6 +86,11 @@ dnl minimize size of code.
 AC_ARG_ENABLE(minisize,
 [  --enable-minisize       only compile minimal voip related code).],
 enable_minisize=$enableval,enable_minisize="no")
+
+dnl build with multithreaded support (need semaphore).
+AC_ARG_ENABLE(mt,
+[  --enable-mt             compile oSIP without multi-thread support.],
+enable_mt=$enableval,enable_mt="yes")
 
 dnl compile with mt support
 if test "x$enable_mt" = "xyes"; then

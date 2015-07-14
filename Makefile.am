@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I scripts
 EXTRA_DIST = README BUGS FEATURES HISTORY autogen.sh libosip2.pc.in
 
 SUBDIRS = include src scripts help platform

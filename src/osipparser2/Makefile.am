@@ -31,6 +31,6 @@ libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
  $(PARSER_LIB) $(EXTRA_LIB) -no-undefined
 
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 AM_CFLAGS = $(SIP_CFLAGS) $(SIP_PARSER_FLAGS) $(SIP_EXTRA_FLAGS)
 
