@@ -604,6 +604,12 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 
       u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
 
+      if (osip_strcasecmp(u_param->gname, "x-obr")==0 || osip_strcasecmp(u_param->gname, "x-obp")==0) {
+        /* x-obr and x-obp are internal params used by exosip: they must not appear in messages */
+        pos++;
+        continue;
+      }
+
       tmp1 = __osip_uri_escape_uri_param (u_param->gname);
       if (tmp1 == NULL) {
         osip_free (buf);
