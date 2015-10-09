@@ -4,8 +4,7 @@
 
 If you want the latest version, you can use the CVS:
 
-  $> export CVS_RSH="ssh"
-  $> cvs -z3 -d:ext:anoncvs@savannah.gnu.org:/webcvs/osip co osip
+  $> git clone git://git.savannah.gnu.org/osip.git
   $> ./autogen.sh
      
     Note that you must have libtool, autoconf & automake to be able
@@ -44,10 +43,9 @@ A nice way would also be:
 Here is a list of options you can give to the 'configure' command line:
 
 configure --disable-mt             ==> disable any thread support,
-flags: "-UOSIP_MT"
+flags: "-DOSIP_MONOTHREAD"
 
 configure --disable-debug          ==> disable debug.
-flags: "-UENABLE_DEBUG"
 
 configure --disable-trace          ==> disable the trace in the logfile.
 flags: "-UENABLE_TRACE"
