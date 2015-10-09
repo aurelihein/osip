@@ -1,4 +1,6 @@
 libosip2 (5.0.0)
+	* STRUCTURE change: additionnal parameter for "struct osip_srv_entry" used for failover in eXosip2.
+
 	* fix cseq check in order to stop retransmission of 200ok
 	* update to reject negative value in port number
 	* add support for ntlm authentication in parser

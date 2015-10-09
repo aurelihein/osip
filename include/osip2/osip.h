@@ -295,6 +295,7 @@ extern "C" {
     int rweight;                     /**< rweight  */
     int port;                        /**< port  */
     char ipaddress[512];             /**< ipaddress result  */
+    struct timeval srv_is_broken;    /**< time when we considered SRV entry broken */
   };
 
 #define OSIP_SRV_STATE_UNKNOWN 0         /**< unknown */
