@@ -151,6 +151,8 @@ extern "C" {
   int osip_message_parse_sipfrag (osip_message_t * sip, const char *buf, size_t length);
 /**
  * Get a string representation of a osip_message_t element.
+ * NOTE: You need to release the sip buffer returned by this API when you
+ * are done with the buffer. ie: osip_free(dest)
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
@@ -159,6 +161,8 @@ extern "C" {
 /**
  * Get a string representation of a message/sipfrag part
  * stored in an osip_message_t element.
+ * NOTE: You need to release the sip buffer returned by this API when you
+ * are done with the buffer. ie: osip_free(dest)
  * @param sip The element to work on.
  * @param dest new allocated buffer returned.
  * @param message_length The length of the returned buffer.
