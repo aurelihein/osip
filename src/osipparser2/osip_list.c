@@ -219,6 +219,10 @@ osip_list_get_first (osip_list_t * li, osip_list_iterator_t * iterator)
 void *
 osip_list_get_next (osip_list_iterator_t * iterator)
 {
+  if (iterator->actual == NULL) {
+    return OSIP_SUCCESS;
+  }
+
   iterator->prev = &(iterator->actual->next);
   iterator->actual = iterator->actual->next;
   ++(iterator->pos);
