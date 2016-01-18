@@ -967,7 +967,7 @@ osip_trace (char *filename_long, int li, osip_trace_level_t level, FILE * f, cha
   if (now.tv_usec - start.tv_usec > 0)
     relative_time = relative_time + ((now.tv_usec - start.tv_usec) / 1000);
   else
-    relative_time = relative_time - 1 + ((now.tv_usec - start.tv_usec) / 1000);
+    relative_time = relative_time - ((start.tv_usec - now.tv_usec) / 1000);
 #endif
 
   if (filename_long != NULL) {
