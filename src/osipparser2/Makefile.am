@@ -15,16 +15,17 @@ osip_call_id.c             osip_message_parse.c       \
 osip_contact.c             osip_message_to_str.c      \
 osip_content_length.c      osip_parser_cfg.c          \
 osip_content_type.c        osip_proxy_authenticate.c  \
-osip_mime_version.c        osip_port.c
+osip_mime_version.c        osip_port.c                \
+osip_call_info.c           osip_content_disposition.c
 
 if BUILD_MAXSIZE
 libosipparser2_la_SOURCES+=osip_accept_encoding.c osip_content_encoding.c \
 osip_authentication_info.c  osip_proxy_authentication_info.c \
 osip_accept_language.c      osip_accept.c                    \
 osip_alert_info.c           osip_error_info.c                \
-osip_allow.c                osip_content_disposition.c       \
-sdp_accessor.c              sdp_message.c                    \
-osip_call_info.c
+osip_allow.c                \
+sdp_accessor.c              sdp_message.c
+
 endif
 
 libosipparser2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \

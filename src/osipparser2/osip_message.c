@@ -46,9 +46,7 @@ osip_message_init (osip_message_t ** sip)
 #endif
   osip_list_init (&(*sip)->authorizations);
   (*sip)->call_id = NULL;
-#ifndef MINISIZE
   osip_list_init (&(*sip)->call_infos);
-#endif
   osip_list_init (&(*sip)->contacts);
 
 #ifndef MINISIZE
@@ -140,12 +138,12 @@ osip_message_free (osip_message_t * sip)
   osip_list_special_free (&sip->alert_infos, (void (*)(void *)) &osip_alert_info_free);
   osip_list_special_free (&sip->allows, (void (*)(void *)) &osip_allow_free);
   osip_list_special_free (&sip->authentication_infos, (void (*)(void *)) &osip_authentication_info_free);
-  osip_list_special_free (&sip->call_infos, (void (*)(void *)) &osip_call_info_free);
   osip_list_special_free (&sip->content_encodings, (void (*)(void *)) &osip_content_encoding_free);
   osip_list_special_free (&sip->error_infos, (void (*)(void *)) &osip_error_info_free);
   osip_list_special_free (&sip->proxy_authentication_infos, (void (*)(void *))
                           &osip_proxy_authentication_info_free);
 #endif
+  osip_list_special_free (&sip->call_infos, (void (*)(void *)) &osip_call_info_free);
   osip_list_special_free (&sip->contacts, (void (*)(void *)) &osip_contact_free);
   if (sip->content_length != NULL)
     osip_content_length_free (sip->content_length);
@@ -309,22 +307,6 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
     }
   }
   {
-    osip_call_info_t *call_info;
-    osip_call_info_t *call_info2;
-
-    pos = 0;
-    while (!osip_list_eol (&sip->call_infos, pos)) {
-      call_info = (osip_call_info_t *) osip_list_get (&sip->call_infos, pos);
-      i = osip_call_info_clone (call_info, &call_info2);
-      if (i != 0) {
-        osip_message_free (copy);
-        return i;
-      }
-      osip_list_add (&copy->call_infos, call_info2, -1);
-      pos++;
-    }
-  }
-  {
     osip_content_encoding_t *content_encoding;
     osip_content_encoding_t *content_encoding2;
 
@@ -374,6 +356,22 @@ osip_message_clone (const osip_message_t * sip, osip_message_t ** dest)
     }
   }
 #endif
+  {
+    osip_call_info_t *call_info;
+    osip_call_info_t *call_info2;
+
+    pos = 0;
+    while (!osip_list_eol (&sip->call_infos, pos)) {
+      call_info = (osip_call_info_t *) osip_list_get (&sip->call_infos, pos);
+      i = osip_call_info_clone (call_info, &call_info2);
+      if (i != 0) {
+        osip_message_free (copy);
+        return i;
+      }
+      osip_list_add (&copy->call_infos, call_info2, -1);
+      pos++;
+    }
+  }
   i = osip_list_clone (&sip->authorizations, &copy->authorizations, (int (*)(void *, void **)) &osip_authorization_clone);
   if (i != 0) {
     osip_message_free (copy);

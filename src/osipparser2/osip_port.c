@@ -523,6 +523,8 @@ osip_strncasecmp (const char *s1, const char *s2, size_t len)
 #endif
 }
 
+#endif
+
 char *
 osip_strcasestr (const char *haystack, const char *needle)
 {
@@ -542,8 +544,6 @@ osip_strcasestr (const char *haystack, const char *needle)
   }
   return (char *) haystack;
 }
-
-#endif
 
 /* remove SPACE before and after the content */
 int

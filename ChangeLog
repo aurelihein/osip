@@ -1,6 +1,7 @@
 libosip2 (5.0.0)
 	* STRUCTURE change: additionnal parameter for "struct osip_srv_entry" used for failover in eXosip2.
 
+	* fix a possible buffer overflow of 1 byte in sdp_message_to_str (size=sdp allocated size)
 	* fix cseq check in order to stop retransmission of 200ok
 	* update to reject negative value in port number
 	* add support for ntlm authentication in parser

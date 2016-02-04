@@ -238,22 +238,14 @@ extern "C" {
  * @param sip The element to work on.
  * @param hvalue The string describing the element.
  */
-#ifndef MINISIZE
   int osip_message_set_call_info (osip_message_t * sip, const char *hvalue);
-#else
-#define osip_message_set_call_info(sip,value)            osip_message_set_header((osip_message_t *)sip,(const char *)"Call-Info",value)
-#endif
 /**
  * Get one Call-info header.
  * @param sip The element to work on.
  * @param pos The index of the element to get.
  * @param dest A pointer on the header found.
  */
-#ifndef MINISIZE
   int osip_message_get_call_info (const osip_message_t * sip, int pos, osip_call_info_t ** dest);
-#else
-#define osip_message_get_call_info(sip,pos,dest)          osip_message_header_get_byname(( osip_message_t *)sip,(const char *)"call-info",pos,(osip_header_t **)dest)
-#endif
 /**
  * Set the Contact header.
  * @param sip The element to work on.

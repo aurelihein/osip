@@ -394,7 +394,7 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t * message_length
 #ifndef MINISIZE
     table[25] =
 #else
-    table[15] =
+    table[16] =
 #endif
     {
       {
@@ -410,13 +410,13 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t * message_length
       "WWW-Authenticate: ", 18, NULL, NULL, (int (*)(void *, char **)) &osip_www_authenticate_to_str}, {
       "Proxy-Authenticate: ", 20, NULL, NULL, (int (*)(void *, char **)) &osip_www_authenticate_to_str}, {
       "Proxy-Authorization: ", 21, NULL, NULL, (int (*)(void *, char **)) &osip_authorization_to_str}, {
+      "Call-Info: ", 11, NULL, NULL, (int (*)(void *, char **)) &osip_call_info_to_str}, {
       "Content-Type: ", 14, NULL, NULL, (int (*)(void *, char **)) &osip_content_type_to_str}, {
       "Mime-Version: ", 14, NULL, NULL, (int (*)(void *, char **)) &osip_content_length_to_str},
 #ifndef MINISIZE
       {
       "Allow: ", 7, NULL, NULL, (int (*)(void *, char **)) &osip_allow_to_str}, {
       "Content-Encoding: ", 18, NULL, NULL, (int (*)(void *, char **)) &osip_content_encoding_to_str}, {
-      "Call-Info: ", 11, NULL, NULL, (int (*)(void *, char **)) &osip_call_info_to_str}, {
       "Alert-Info: ", 12, NULL, NULL, (int (*)(void *, char **)) &osip_call_info_to_str}, {
       "Error-Info: ", 12, NULL, NULL, (int (*)(void *, char **)) &osip_call_info_to_str}, {
       "Accept: ", 8, NULL, NULL, (int (*)(void *, char **)) &osip_accept_to_str}, {
@@ -440,12 +440,12 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t * message_length
     table[9].header_list = &sip->www_authenticates;
     table[10].header_list = &sip->proxy_authenticates;
     table[11].header_list = &sip->proxy_authorizations;
-    table[12].header_data = sip->content_type;
-    table[13].header_data = sip->mime_version;
+    table[12].header_list = &sip->call_infos;
+    table[13].header_data = sip->content_type;
+    table[14].header_data = sip->mime_version;
 #ifndef MINISIZE
-    table[14].header_list = &sip->allows;
-    table[15].header_list = &sip->content_encodings;
-    table[16].header_list = &sip->call_infos;
+    table[15].header_list = &sip->allows;
+    table[16].header_list = &sip->content_encodings;
     table[17].header_list = &sip->alert_infos;
     table[18].header_list = &sip->error_infos;
     table[19].header_list = &sip->accepts;

@@ -70,9 +70,7 @@ extern "C" {
 #endif
     osip_list_t authorizations;                   /**< Authorizations headers */
     osip_call_id_t *call_id;                      /**< Call-ID header */
-#ifndef MINISIZE
     osip_list_t call_infos;                       /**< Call-Infos header */
-#endif
     osip_list_t contacts;                         /**< Contacts headers */
 #ifndef MINISIZE
     osip_list_t content_encodings;                /**< Content-Encodings headers */
