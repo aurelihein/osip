@@ -852,7 +852,7 @@ osip_create_transaction (osip_t * osip, osip_event_t * evt)
       ctx_type = NICT;
   }
   else {
-    OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_ERROR, NULL, "Cannot build a transction for this message!\n"));
+    OSIP_TRACE (osip_trace (__FILE__, __LINE__, OSIP_ERROR, NULL, "Cannot build a transaction for this message!\n"));
     return NULL;
   }
 
