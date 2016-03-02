@@ -66,14 +66,13 @@ osip_list_special_free (osip_list_t * li, void (*free_func) (void *))
 void
 osip_list_ofchar_free (osip_list_t * li)
 {
-  int pos = 0;
   char *chain;
 
   if (li == NULL)
     return;
-  while (!osip_list_eol (li, pos)) {
-    chain = (char *) osip_list_get (li, pos);
-    osip_list_remove (li, pos);
+  while (!osip_list_eol (li, 0)) {
+    chain = (char *) osip_list_get (li, 0);
+    osip_list_remove (li, 0);
     osip_free (chain);
   }
 }
@@ -200,16 +199,16 @@ osip_list_get (const osip_list_t * li, int pos)
 
 /* added by bennewit@cs.tu-berlin.de */
 void *
-osip_list_get_first (osip_list_t * li, osip_list_iterator_t * iterator)
+osip_list_get_first (const osip_list_t * li, osip_list_iterator_t * iterator)
 {
-  if (0 >= li->nb_elt) {
+  if (li==NULL || 0 >= li->nb_elt) {
     iterator->actual = 0;
     return OSIP_SUCCESS;
   }
 
   iterator->actual = li->node;
-  iterator->prev = &li->node;
-  iterator->li = li;
+  iterator->prev = (__node_t**)&li->node;
+  iterator->li = (osip_list_t*)li;
   iterator->pos = 0;
 
   return li->node->element;

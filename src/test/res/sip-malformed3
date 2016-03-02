@@ -1,3 +1,4 @@
+expected_error:-5 incorrect Via and Contact headers.
 INVITE sip:user@company.com SIP/2.0
 To: sip:j.user@company.com
 From: sip:caller@university.edu

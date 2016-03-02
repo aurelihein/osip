@@ -73,7 +73,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define osip_accept_clone(header, dest) osip_content_type_clone(header, dest)
+#define osip_accept_clone osip_content_type_clone
 /**
  * Allocate and add a header parameter in an Accept element.
  * @param header The element to work on.

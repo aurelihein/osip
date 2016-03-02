@@ -1,3 +1,4 @@
+expected_error:0 REGISTER with a Escaped Header in a Legal SIP URL of a Contact
 REGISTER sip:company.com SIP/2.0
 To: sip:user@company.com
 From: sip:user@company.com

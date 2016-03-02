@@ -1,3 +1,4 @@
+expected_error:0 Invite with an illegal SIP Date format.
 INVITE sip:user@company.com SIP/2.0
 To: sip:user@company.com
 From: sip:caller@university.edu

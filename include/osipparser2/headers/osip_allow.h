@@ -72,7 +72,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define osip_allow_clone(header, dest)  osip_content_length_clone(header, dest)
+#define osip_allow_clone  osip_content_length_clone
 
 
 #ifdef __cplusplus

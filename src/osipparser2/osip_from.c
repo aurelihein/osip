@@ -328,14 +328,11 @@ osip_from_to_str (const osip_from_t * from, char **dest)
   osip_free (url);
 
   {
-    int pos = 0;
-    osip_generic_param_t *u_param;
     size_t plen;
     char *tmp;
-
-    while (!osip_list_eol (&from->gen_params, pos)) {
-      u_param = (osip_generic_param_t *) osip_list_get (&from->gen_params, pos);
-
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&from->gen_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       if (u_param->gvalue == NULL)
         plen = strlen (u_param->gname) + 2;
       else
@@ -348,7 +345,7 @@ osip_from_to_str (const osip_from_t * from, char **dest)
         snprintf (tmp, len - (tmp - buf), ";%s", u_param->gname);
       else
         snprintf (tmp, len - (tmp - buf), ";%s=%s", u_param->gname, u_param->gvalue);
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
   *dest = buf;
@@ -465,29 +462,25 @@ osip_from_compare (osip_from_t * from1, osip_from_t * from2)
   tag1 = NULL;
   tag2 = NULL;
   {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-
-    while (!osip_list_eol (&from1->gen_params, pos)) {
-      u_param = (osip_generic_param_t *) osip_list_get (&from1->gen_params, pos);
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&from1->gen_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       if (0 == strncmp (u_param->gname, "tag", 3)) {
         tag1 = u_param->gvalue;
         break;
       }
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
   {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-
-    while (!osip_list_eol (&from2->gen_params, pos)) {
-      u_param = (osip_generic_param_t *) osip_list_get (&from2->gen_params, pos);
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&from2->gen_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       if (0 == strncmp (u_param->gname, "tag", 3)) {
         tag2 = u_param->gvalue;
         break;
       }
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
 

@@ -1,3 +1,4 @@
+expected_error:0 illegal-missing content-length for unknown body type (to be rejected/accepted by app)
 INVITE sip:user@comapny.com SIP/2.0
 To: sip:j.user@company.com
 From: sip:caller@university.edu

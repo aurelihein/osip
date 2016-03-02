@@ -22,6 +22,10 @@
 #include <osipparser2/osip_port.h>
 #include <osipparser2/osip_message.h>
 
+#define osip_is_alpha(in) (  \
+       (in >= 'a' && in <= 'z') || \
+       (in >= 'A' && in <= 'Z'))
+
 /* allocate a new url structure */
 /* OUTPUT: osip_uri_t *url | structure to save results.   */
 /* OUTPUT: err_t *err | structure to store error.   */
@@ -104,7 +108,8 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
   const char *params;
   const char *headers;
   const char *tmp;
-
+  int i;
+  
   /* basic tests */
   if (buf == NULL || buf[0] == '\0')
     return OSIP_BADPARAMETER;
@@ -115,6 +120,14 @@ osip_uri_parse (osip_uri_t * url, const char *buf)
 
   if (tmp - buf < 2)
     return OSIP_SYNTAXERROR;
+
+  i=0;
+  while (buf+i<tmp) {
+    if (!osip_is_alpha(buf[i]))
+      return OSIP_SYNTAXERROR;
+    i++;
+  }
+  
   url->scheme = (char *) osip_malloc (tmp - buf + 1);
   if (url->scheme == NULL)
     return OSIP_NOMEM;
@@ -594,19 +607,17 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
   }
 
   {
-    int pos = 0;
-    osip_uri_param_t *u_param;
+    osip_list_iterator_t it;
+    osip_uri_param_t *u_param = (osip_uri_param_t*) osip_list_get_first(&url->url_params, &it);
+    while (u_param != OSIP_SUCCESS) {
 
-    while (!osip_list_eol (&url->url_params, pos)) {
       char *tmp1;
       char *tmp2 = NULL;
       char *previous_buf;
 
-      u_param = (osip_uri_param_t *) osip_list_get (&url->url_params, pos);
-
       if (osip_strcasecmp(u_param->gname, "x-obr")==0 || osip_strcasecmp(u_param->gname, "x-obp")==0) {
         /* x-obr and x-obp are internal params used by exosip: they must not appear in messages */
-        pos++;
+        u_param = (osip_uri_param_t *) osip_list_get_next(&it);
         continue;
       }
 
@@ -644,20 +655,18 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
         osip_free (tmp2);
       }
       osip_free (tmp1);
-      pos++;
+      u_param = (osip_uri_param_t *) osip_list_get_next(&it);
     }
   }
 
   {
-    int pos = 0;
-    osip_uri_header_t *u_header;
-
-    while (!osip_list_eol (&url->url_headers, pos)) {
+    osip_list_iterator_t it;
+    osip_uri_header_t *u_header = (osip_uri_header_t*) osip_list_get_first(&url->url_headers, &it);
+    while (u_header != OSIP_SUCCESS) {
       char *tmp1;
       char *tmp2;
       char *previous_buf;
 
-      u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
       tmp1 = __osip_uri_escape_header_param (u_header->gname);
 
       if (tmp1 == NULL) {
@@ -685,13 +694,13 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
       }
       tmp = buf;
       tmp = tmp + strlen (tmp);
-      if (pos == 0)
+      if (it.pos == 0)
         snprintf (tmp, len - (tmp - buf), "?%s=%s", tmp1, tmp2);
       else
         snprintf (tmp, len - (tmp - buf), "&%s=%s", tmp1, tmp2);
       osip_free (tmp1);
       osip_free (tmp2);
-      pos++;
+      u_header = (osip_uri_header_t *) osip_list_get_next(&it);
     }
   }
 
@@ -703,8 +712,6 @@ osip_uri_to_str (const osip_uri_t * url, char **dest)
 void
 osip_uri_free (osip_uri_t * url)
 {
-  int pos = 0;
-
   if (url == NULL)
     return;
   osip_free (url->scheme);
@@ -718,9 +725,9 @@ osip_uri_free (osip_uri_t * url)
   {
     osip_uri_header_t *u_header;
 
-    while (!osip_list_eol (&url->url_headers, pos)) {
-      u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, pos);
-      osip_list_remove (&url->url_headers, pos);
+    while (!osip_list_eol (&url->url_headers, 0)) {
+      u_header = (osip_uri_header_t *) osip_list_get (&url->url_headers, 0);
+      osip_list_remove (&url->url_headers, 0);
       osip_uri_header_free (u_header);
     }
   }
@@ -836,26 +843,27 @@ osip_uri_param_freelist (osip_list_t * params)
 int
 osip_uri_param_get_byname (osip_list_t * params, char *pname, osip_uri_param_t ** url_param)
 {
-  int pos = 0;
   size_t pname_len;
   osip_uri_param_t *u_param;
-
+  osip_list_iterator_t it;
+    
   *url_param = NULL;
   if (pname == NULL)
     return OSIP_BADPARAMETER;
   pname_len = strlen (pname);
   if (pname_len <= 0)
     return OSIP_BADPARAMETER;
-  while (!osip_list_eol (params, pos)) {
+
+  u_param = (osip_uri_param_t*) osip_list_get_first(params, &it);
+  while (u_param != OSIP_SUCCESS) {
     size_t len;
 
-    u_param = (osip_uri_param_t *) osip_list_get (params, pos);
     len = strlen (u_param->gname);
     if (pname_len == len && osip_strncasecmp (u_param->gname, pname, strlen (pname)) == 0) {
       *url_param = u_param;
       return OSIP_SUCCESS;
     }
-    pos++;
+    u_param = (osip_uri_param_t *) osip_list_get_next(&it);
   }
   return OSIP_UNDEFINED_ERROR;
 }

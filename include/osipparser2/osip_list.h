@@ -157,7 +157,7 @@ extern "C" {
  * @param li The element to work on.
  * @param it The iterator.
  */
-  void *osip_list_get_first (osip_list_t * li, osip_list_iterator_t * it);
+  void *osip_list_get_first (const osip_list_t * li, osip_list_iterator_t * it);
 /**
  * GEt next iterator.
  * @param it The element to work on.

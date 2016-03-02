@@ -72,7 +72,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define osip_accept_language_clone(header, dest) osip_accept_encoding_clone(header, dest)
+#define osip_accept_language_clone osip_accept_encoding_clone
 
 /**
  * Get the value of an Accept-Language element.

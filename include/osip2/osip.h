@@ -21,10 +21,6 @@
 #ifndef _OSIP_H_
 #define _OSIP_H_
 
-#if defined(HAVE_DICT_DICT_H)
-#include <dict/dict.h>
-#endif
-
 #include <osipparser2/osip_const.h>
 
 /* Time-related functions and data types */
@@ -585,12 +581,11 @@ extern "C" {
 
     int (*cb_send_message) (osip_transaction_t *, osip_message_t *, char *, int, int);     /**< callback to send message */
 
-#if defined(HAVE_DICT_DICT_H)
-    dict *osip_ict_hastable;                              /**< htable of ict transactions */
-    dict *osip_ist_hastable;                              /**< htable of ist transactions */
-    dict *osip_nict_hastable;                             /**< htable of nict transactions */
-    dict *osip_nist_hastable;                             /**< htable of nist transactions */
-#endif
+    void *osip_ict_hastable;                              /**< htable of ict transactions */
+    void *osip_ist_hastable;                              /**< htable of ist transactions */
+    void *osip_nict_hastable;                             /**< htable of nict transactions */
+    void *osip_nist_hastable;                             /**< htable of nist transactions */
+
   };
 
 /**

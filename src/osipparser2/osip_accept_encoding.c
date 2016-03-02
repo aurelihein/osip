@@ -124,13 +124,10 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, cha
 
   sprintf (buf, "%s", accept_encoding->element);
   {
-    int pos = 0;
     size_t plen;
-    osip_generic_param_t *u_param;
-
-    while (!osip_list_eol (&accept_encoding->gen_params, pos)) {
-      u_param = (osip_generic_param_t *)
-        osip_list_get (&accept_encoding->gen_params, pos);
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&accept_encoding->gen_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       if (u_param->gvalue == NULL)
         plen = strlen (u_param->gname) + 2;
       else
@@ -143,7 +140,7 @@ osip_accept_encoding_to_str (const osip_accept_encoding_t * accept_encoding, cha
         snprintf (tmp, len - (tmp - buf), ";%s", u_param->gname);
       else
         snprintf (tmp, len - (tmp - buf), ";%s=%s", u_param->gname, u_param->gvalue);
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
   *dest = buf;
@@ -186,19 +183,17 @@ osip_accept_encoding_clone (const osip_accept_encoding_t * ctt, osip_accept_enco
     return OSIP_NOMEM;
   }
   {
-    int pos = 0;
-    osip_generic_param_t *u_param;
     osip_generic_param_t *dest_param;
-
-    while (!osip_list_eol (&ctt->gen_params, pos)) {
-      u_param = (osip_generic_param_t *) osip_list_get (&ctt->gen_params, pos);
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&ctt->gen_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       i = osip_generic_param_clone (u_param, &dest_param);
       if (i != 0) {
         osip_accept_encoding_free (ct);
         return i;
       }
       osip_list_add (&ct->gen_params, dest_param, -1);
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
   *dest = ct;

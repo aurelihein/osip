@@ -13,8 +13,7 @@ if BUILD_MT
 libosip2_la_SOURCES+=port_sema.c port_thread.c port_condv.c
 endif
 
-libosip2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) \
- $(FSM_LIB) $(EXTRA_LIB) ../osipparser2/libosipparser2.la -no-undefined
+libosip2_la_LDFLAGS = -version-info $(LIBOSIP_SO_VERSION) ../osipparser2/libosipparser2.la $(FSM_LIB) $(EXTRA_LIB) -no-undefined
 
 
 AM_CPPFLAGS = -I$(top_srcdir)/include

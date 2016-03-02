@@ -313,12 +313,9 @@ osip_via_to_str (const osip_via_t * via, char **dest)
 
 
   {
-    int pos = 0;
-    osip_generic_param_t *u_param;
-
-    while (!osip_list_eol (&via->via_params, pos)) {
-      u_param = (osip_generic_param_t *) osip_list_get (&via->via_params, pos);
-
+    osip_list_iterator_t it;
+    osip_generic_param_t *u_param = (osip_generic_param_t*) osip_list_get_first(&via->via_params, &it);
+    while (u_param != OSIP_SUCCESS) {
       if (u_param->gvalue == NULL)
         plen = strlen (u_param->gname) + 2;
       else
@@ -331,7 +328,7 @@ osip_via_to_str (const osip_via_t * via, char **dest)
         sprintf (tmp, ";%s", u_param->gname);
       else
         sprintf (tmp, ";%s=%s", u_param->gname, u_param->gvalue);
-      pos++;
+      u_param = (osip_generic_param_t *) osip_list_get_next(&it);
     }
   }
 

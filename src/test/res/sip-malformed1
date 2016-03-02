@@ -1,3 +1,4 @@
+expected_error:0
 INVITE sip:user@company.com SIP/2.0
 CSeq: 0 INVITE
 Via: SIP/2.0/UDP 135.180.130.133

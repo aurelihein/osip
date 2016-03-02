@@ -72,7 +72,7 @@ extern "C"
  * @param header The element to work on.
  * @param dest A pointer on the copy of the element.
  */
-#define  osip_error_info_clone(header, dest)  osip_call_info_clone(header, dest)
+#define  osip_error_info_clone  osip_call_info_clone
 
 /**
  * Set the uri in the Error-Info element.

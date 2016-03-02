@@ -169,9 +169,6 @@ extern "C" {
   int osip_strncasecmp (const char *s1, const char *s2, size_t len);
 
 #else
-#if defined (HAVE_STRING_H)
-#include <string.h>
-#endif
 #define osip_atoi  atoi
 #define osip_strcasecmp  strcasecmp
 #define osip_strncasecmp  strncasecmp

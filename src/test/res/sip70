@@ -1,3 +1,4 @@
+expected_error:0 illegal-use-of-escaped-headers-in-request-uri
 INVITE sip:user@company.com?Route=%3Csip:sip.example.com%3E SIP/2.0
 To: sip:user@company.com
 From: sip:caller@university.edu
