@@ -43,22 +43,26 @@ extern "C" {
   void add_gettimeofday (struct timeval *atv, int ms);
   void min_timercmp (struct timeval *tv1, struct timeval *tv2);
 
-/* OS-dependent */
-#if defined(WIN32) || defined(_WIN32_WCE) || defined (__VXWORKS_OS__) || defined(__arc__)
 /* Operations on struct timeval */
+#if !defined(timerisset)
 #define osip_timerisset(tvp)         ((tvp)->tv_sec || (tvp)->tv_usec)
+#else
+#define osip_timerisset(tvp)            timerisset(tvp)
+#endif
+
+#if !defined(timercmp)
 #define osip_timercmp(a, b, CMP)                          \
   (((a)->tv_sec == (b)->tv_sec) ?                          \
    ((a)->tv_usec CMP (b)->tv_usec) :                       \
    ((a)->tv_sec CMP (b)->tv_sec))
-#define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
-
 #else
-/* Operations on struct timeval */
-#define osip_timerisset(tvp)            timerisset(tvp)
 #define osip_timercmp(tvp, uvp, cmp)    timercmp(tvp,uvp,cmp)
-#define osip_timerclear(tvp)            timerclear(tvp)
+#endif
 
+#if !defined(timerclear)
+#define osip_timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
+#else
+#define osip_timerclear(tvp)            timerclear(tvp)
 #endif
 
   int osip_gettimeofday (struct timeval *tp, void *tz);
