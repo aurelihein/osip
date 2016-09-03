@@ -376,6 +376,13 @@ _osip_message_to_str (osip_message_t * sip, char **dest, size_t * message_length
     /* A start-line isn't required for message/sipfrag parts. */
   }
   else {
+    size_t message_len = strlen(tmp);
+    if (_osip_message_realloc (&message, dest, message_len + 3, &malloc_size) < 0) {
+      osip_free (tmp);
+      *dest = NULL;
+      return OSIP_NOMEM;
+    }
+
     message = osip_str_append (message, tmp);
     osip_free (tmp);
     message = osip_strn_append (message, CRLF, 2);
