@@ -1465,8 +1465,10 @@ osip_clrncpy (char *dst, const char *src, size_t len)
   char *p;
   size_t spaceless_length;
 
-  if (src == NULL)
+  if (src == NULL || len == 0) {
+    *dst = '\0';
     return NULL;
+  }
 
   /* find the start of relevant text */
   pbeg = src;
