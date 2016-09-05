@@ -33,7 +33,7 @@ static void usage (void);
 static void
 usage ()
 {
-  fprintf (stderr, "Usage: ./torture_test torture_file number [-v (verbose)] [-c (clone)] [-p (performance: loop 100.000]\n");
+  fprintf (stderr, "Usage: ./torture_test torture_file [-v (verbose)] [-c (clone)] [-p (performance: loop 100.000]\n");
   exit (1);
 }
 
@@ -99,7 +99,7 @@ main (int argc, char **argv)
   }
   success = test_message (ptr, len, verbose, clone, loop);
   if (verbose) {
-    fprintf (stdout, "test %s : ============================ \n", argv[2]);
+    fprintf (stdout, "test %s : ============================ \n", argv[1]);
     fwrite (msg, 1, len, stdout);
   }
   if (success==expected_error)
