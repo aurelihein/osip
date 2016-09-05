@@ -1,6 +1,9 @@
 libosip2 (5.0.0)
 	* STRUCTURE change: additionnal parameter for "struct osip_srv_entry" used for failover in eXosip2.
 
+	* fix overflow: sr #109133: Heap buffer overflow in utility function *osip_clrncpy*
+	* fix overflow: sr #109132: Heap buffer overflow in *osip_body_to_str*
+	* fix overflow: sr #109131: Heap buffer overflow in `_osip_message_to_str`
 	* simplify usage of timercmp/timerisset/timerclear
 	* optimize list search: use iterator
 	* improve/update autotools (./configure and options, Makefile.am, ax_thread.m4...)
